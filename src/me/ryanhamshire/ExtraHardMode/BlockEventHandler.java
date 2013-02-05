@@ -21,9 +21,11 @@ package me.ryanhamshire.ExtraHardMode;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
@@ -74,7 +76,7 @@ public class BlockEventHandler implements Listener
 				Material tool = inHandStack.getType();
 				if(tool != Material.IRON_PICKAXE && tool != Material.DIAMOND_PICKAXE)
 				{
-					ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.StoneMiningHelp);
+					notifyPlayer(player, Messages.StoneMiningHelp, "ehm.silent.stone_mining_help", Sound.CAT_HISS, 10);
 					breakEvent.setCancelled(true);
 					return;
 				}
@@ -218,7 +220,7 @@ public class BlockEventHandler implements Listener
 				Block adjacentBlock = adjacentBlocks[i];
 				if(adjacentBlock.getType() == Material.STONE)
 				{
-					ExtraHardMode.sendMessage(player, TextMode.Err, Messages.NoPlacingOreAgainstStone);
+					notifyPlayer(player, Messages.NoPlacingOreAgainstStone, "ehm.silent.no_placing_ore_against_stone", Sound.ARROW_HIT, 10);
 					placeEvent.setCancelled(true);
 					return;
 				}
@@ -242,7 +244,7 @@ public class BlockEventHandler implements Listener
 				block.getY() < ExtraHardMode.instance.config_standardTorchMinY &&
 				(block.getType() == Material.TORCH || block.getType() == Material.JACK_O_LANTERN || (block.getType() == Material.FIRE && block.getRelative(BlockFace.DOWN).getType() == Material.NETHERRACK)))
 				{
-					ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.NoTorchesHere);
+					notifyPlayer(player, Messages.NoTorchesHere, "ehm.silent.no_torches_here", Sound.FIZZ, 20);
 					placeEvent.setCancelled(true);
 					return;
 				}
@@ -256,7 +258,7 @@ public class BlockEventHandler implements Listener
 				block.getZ() == player.getLocation().getBlockZ() &&
 				block.getY() <  player.getLocation().getBlockY() )
 			{
-				ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.RealisticBuilding);
+				notifyPlayer(player, Messages.RealisticBuilding, "ehm.silent.realistic_building_1", Sound.NOTE_STICKS, 1);
 				placeEvent.setCancelled(true);
 				return;
 			}
@@ -266,7 +268,7 @@ public class BlockEventHandler implements Listener
 			//if standing directly over lava, prevent placement
 			if(underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
 			{
-				ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.RealisticBuilding);
+				notifyPlayer(player, Messages.RealisticBuilding, "ehm.silent.realistic_building_2", Sound.NOTE_STICKS, 1);
 				placeEvent.setCancelled(true);
 				return;
 			}
@@ -279,7 +281,7 @@ public class BlockEventHandler implements Listener
 				//if over lava or more air, prevent placement
 				if(underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
 				{
-					ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.RealisticBuilding);
+					notifyPlayer(player, Messages.RealisticBuilding, "ehm.silent.realistic_building_3", Sound.NOTE_STICKS, 1);
 					placeEvent.setCancelled(true);
 					return;
 				}
@@ -297,8 +299,8 @@ public class BlockEventHandler implements Listener
 				attachmentMaterial == Material.LONG_GRASS ||
 				attachmentMaterial == Material.SAND)
 			{
+				notifyPlayer(player, Messages.LimitedTorchPlacements, "ehm.silent.limited_torch_placement", Sound.FIZZ, 20);
 				placeEvent.setCancelled(true);
-				ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.LimitedTorchPlacements);
 				return;				
 			}
 		}
@@ -424,5 +426,34 @@ public class BlockEventHandler implements Listener
 			event.setCancelled(true);
 			event.getBlock().setType(Material.LONG_GRASS); //dead shrub
 		}
-	} 
+	}
+	
+	/**
+	 * Send the player an informative message to explain what he's doing wrong.
+	 * After that play errorsounds instead of spamming the chat window. Uses the permission
+	 * to temporarily store which message has been shown already. 
+	 * @author diemex
+	 * @param player
+	 * @param permissionName name of the temporary permission
+	 * @param sound errorsound to play after the event got cancelled
+	 * @param soundPitch
+	 */
+	public void notifyPlayer 	(Player player, Messages msgName,
+								String permissionName, Sound sound, float soundPitch)
+	{
+		if (!player.hasPermission(permissionName) && permissionName != null) 
+		{
+			ExtraHardMode.sendMessage(player, TextMode.Instr, msgName);
+			player.addAttachment(ExtraHardMode.instance, permissionName, true);
+		}
+		try
+		{
+			player.playSound(player.getLocation(), sound, 1, soundPitch);
+		}
+		catch (Exception e){
+			ExtraHardMode.instance.getLogger().log(Level.WARNING, 
+					"Problem playing back sound: " + sound.toString());
+		}
+	}
+	
 }

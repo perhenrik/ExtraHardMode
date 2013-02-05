@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.bukkit.Chunk;
 import org.bukkit.DyeColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -479,7 +480,12 @@ class EntityEventHandler implements Listener
 			{
 				for(int i = 1; i < ExtraHardMode.instance.config_moreMonstersMultiplier; i++)
 				{
-					Entity newEntity = world.spawnEntity(event.getLocation(), entityType);
+					Entity newEntity = null;
+					//prevent infinite Silverfish excavations
+					if (entityType != EntityType.SILVERFISH){
+						newEntity = world.spawnEntity(event.getLocation(), entityType);
+						return;
+					}
 					if(EntityEventHandler.isLootLess(entity))
 					{
 						EntityEventHandler.markLootLess((LivingEntity)newEntity);
@@ -615,7 +621,19 @@ class EntityEventHandler implements Listener
 		{
 			if(entity.getType() == EntityType.CREEPER && ExtraHardMode.random(ExtraHardMode.instance.config_creepersDropTNTOnDeathPercent))
 			{
-				world.spawnEntity(entity.getLocation(), EntityType.PRIMED_TNT);
+				//Only allow dropping of tnt in caves
+				Block underBlock = entity.getLocation().getBlock().getRelative(BlockFace.DOWN);
+				if (underBlock.getLightFromSky() == 0 && underBlock.getY() < 60)
+				{
+					if (underBlock.getType() == Material.STONE || 
+						underBlock.getType() == Material.COBBLESTONE || 
+						underBlock.getType() == Material.DIRT || 
+						underBlock.getType() == Material.GRAVEL)
+					{
+						world.playEffect(entity.getLocation(), Effect.GHAST_SHRIEK, 1); //This was for debugging, but I left it because it's cool
+						world.spawnEntity(entity.getLocation(), EntityType.PRIMED_TNT);
+					}
+				}
 			}
 		}
 		
@@ -1098,15 +1116,19 @@ class EntityEventHandler implements Listener
 		
 		//FEATURE: charged creepers explode on hit
 		if(ExtraHardMode.instance.config_chargedCreepersExplodeOnHit && !ExtraHardMode.instance.config_workAroundExplosionsBugs)
-		{			
+		{
 			if(entityType == EntityType.CREEPER && !entity.isDead())
 			{
 				Creeper creeper = (Creeper)entity;
-				if(creeper.isPowered())
+				//Prevent explosions from creepers that wander into cactuses etc.
+				if (creeper.getTarget() != null && creeper.getTarget() instanceof Player)
 				{
-					entity.remove();
-					world.createExplosion(entity.getLocation(), 4F);  //equal to a TNT blast
-				}
+					if(creeper.isPowered())
+					{
+						entity.remove();
+						world.createExplosion(entity.getLocation(), 4F);  //equal to a TNT blast
+					}
+				}	
 			}
 		}
 		

@@ -474,7 +474,7 @@ public class ExtraHardMode extends JavaPlugin
 		
 		//create falling block
 		FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
-		fallingBlock.setDropItem(false);
+		fallingBlock.setDropItem(true);
 		
 		//remove original block
 		block.setType(Material.AIR);
