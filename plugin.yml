@@ -1,8 +1,10 @@
-name: ExtraHardMode
-main: me.ryanhamshire.ExtraHardMode.ExtraHardMode
+name: ${project.artifactId}
+main: ${project.mainclass}
+version: ${project.version}
+description: ${project.description}
+dev-url: ${project.url}
 softdepend: [Multiverse-Core, My Worlds, MystCraft, Transporter]
-dev-url: http://dev.bukkit.org/server-mods/fun-hard-mode
-version: 3.0.1
+authors: [bigscary, Diemex, Mitsugaru]
 commands:
 permissions:
     extrahardmode.bypass:

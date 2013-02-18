@@ -21,11 +21,10 @@ package me.ryanhamshire.ExtraHardMode;
 import org.bukkit.ChatColor;
 
 //just a few constants for chat color codes
-class TextMode 
-{	
-	final static ChatColor Info = ChatColor.BLUE;
-	final static ChatColor Instr = ChatColor.YELLOW;
-	final static ChatColor Warn = ChatColor.GOLD;
-	final static ChatColor Err = ChatColor.RED;
-	final static ChatColor Success = ChatColor.GREEN;
+public class TextMode {
+   public final static ChatColor Info = ChatColor.BLUE;
+   public final static ChatColor Instr = ChatColor.YELLOW;
+   public final static ChatColor Warn = ChatColor.GOLD;
+   public final static ChatColor Err = ChatColor.RED;
+   public final static ChatColor Success = ChatColor.GREEN;
 }
