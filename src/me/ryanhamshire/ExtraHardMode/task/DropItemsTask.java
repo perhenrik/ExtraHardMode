@@ -16,33 +16,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.ryanhamshire.ExtraHardMode;
+package me.ryanhamshire.ExtraHardMode.task;
 
-import org.bukkit.entity.Player;
+import java.util.List;
 
-public class SetPlayerHealthAndFoodTask implements Runnable {
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 
-	private Player player;
-	private int health;
-	private int food;
+public class DropItemsTask implements Runnable {
+
+	private List<ItemStack> itemsToDrop;
+	private Location location;
 	
-	public SetPlayerHealthAndFoodTask(Player player, int health, int food)
+	public DropItemsTask(List<ItemStack> itemsToDrop, Location location)
 	{
-		this.player = player;
-		this.health = health;
-		this.food = food;
+		this.itemsToDrop = itemsToDrop;
+		this.location = location;
 	}
 
 	@Override
 	public void run()
 	{
-		try
+		for(int i = 0; i < itemsToDrop.size(); i++)
 		{
-			this.player.setHealth(this.health);
+			location.getWorld().dropItemNaturally(location, itemsToDrop.get(i));
 		}
-		catch(IllegalArgumentException e){ }  //if less than zero or higher than max, no changes
-		
-		this.player.setFoodLevel(this.food);
 	}
 
 }

@@ -16,31 +16,37 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.ryanhamshire.ExtraHardMode;
+package me.ryanhamshire.ExtraHardMode.task;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
-public class DropItemsTask implements Runnable {
+public class WebCleanupTask implements Runnable {
 
-	private List<ItemStack> itemsToDrop;
-	private Location location;
+	private ArrayList<Block> webs;
 	
-	public DropItemsTask(List<ItemStack> itemsToDrop, Location location)
+	public WebCleanupTask(ArrayList<Block> changedBlocks)
 	{
-		this.itemsToDrop = itemsToDrop;
-		this.location = location;
+		this.webs = changedBlocks;
 	}
 
 	@Override
 	public void run()
 	{
-		for(int i = 0; i < itemsToDrop.size(); i++)
+		for(int i = 0; i < webs.size(); i++)
 		{
-			location.getWorld().dropItemNaturally(location, itemsToDrop.get(i));
+			Block web = webs.get(i);
+			
+			//don't load a chunk just to clean up webs
+			if(!web.getChunk().isLoaded()) continue;
+			
+			//only turn webs to air.  there's a chance the web may have been replaced since it was placed.
+			if(web.getType() == Material.WEB)
+			{
+				web.setType(Material.AIR);
+			}
 		}
 	}
-
 }

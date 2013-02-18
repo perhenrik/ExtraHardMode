@@ -16,37 +16,33 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.ryanhamshire.ExtraHardMode;
+package me.ryanhamshire.ExtraHardMode.task;
 
-import java.util.ArrayList;
+import org.bukkit.entity.Player;
 
-import org.bukkit.Material;
-import org.bukkit.block.Block;
+public class SetPlayerHealthAndFoodTask implements Runnable {
 
-public class WebCleanupTask implements Runnable {
-
-	private ArrayList<Block> webs;
+	private Player player;
+	private int health;
+	private int food;
 	
-	public WebCleanupTask(ArrayList<Block> changedBlocks)
+	public SetPlayerHealthAndFoodTask(Player player, int health, int food)
 	{
-		this.webs = changedBlocks;
+		this.player = player;
+		this.health = health;
+		this.food = food;
 	}
 
 	@Override
 	public void run()
 	{
-		for(int i = 0; i < webs.size(); i++)
+		try
 		{
-			Block web = webs.get(i);
-			
-			//don't load a chunk just to clean up webs
-			if(!web.getChunk().isLoaded()) continue;
-			
-			//only turn webs to air.  there's a chance the web may have been replaced since it was placed.
-			if(web.getType() == Material.WEB)
-			{
-				web.setType(Material.AIR);
-			}
+			this.player.setHealth(this.health);
 		}
+		catch(IllegalArgumentException e){ }  //if less than zero or higher than max, no changes
+		
+		this.player.setFoodLevel(this.food);
 	}
+
 }

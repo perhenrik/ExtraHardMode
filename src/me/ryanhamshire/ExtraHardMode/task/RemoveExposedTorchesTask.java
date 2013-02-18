@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.ryanhamshire.ExtraHardMode;
+package me.ryanhamshire.ExtraHardMode.task;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;

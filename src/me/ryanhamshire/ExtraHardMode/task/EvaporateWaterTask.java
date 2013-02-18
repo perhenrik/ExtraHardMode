@@ -16,24 +16,27 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.ryanhamshire.ExtraHardMode;
+package me.ryanhamshire.ExtraHardMode.task;
 
-import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
-public class CreateExplosionTask implements Runnable {
+public class EvaporateWaterTask implements Runnable {
 
-	private Location location;
-	private float power;
+	private Block block;
 	
-	public CreateExplosionTask(Location location, float power)
+	public EvaporateWaterTask(Block block)
 	{
-		this.location = location;
-		this.power = power;
+		this.block = block;
 	}
 
 	@Override
 	public void run()
 	{
-		this.location.getWorld().createExplosion(this.location, this.power);
+		//changes a water source block to a non-source block, allowing it to spread and evaporate away
+		if(this.block.getType() == Material.STATIONARY_WATER)
+		{
+			this.block.setData((byte)1);
+		}
 	}
 }

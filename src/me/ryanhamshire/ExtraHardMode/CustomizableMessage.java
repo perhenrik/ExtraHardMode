@@ -18,16 +18,24 @@
 
 package me.ryanhamshire.ExtraHardMode;
 
-public class CustomizableMessage 
-{
-	public Messages id;
-	public String text;
-	public String notes;
-	
-	public CustomizableMessage(Messages id, String text, String notes)
-	{
-		this.id = id;
-		this.text = text;
-		this.notes = notes;
-	}
+//TODO should this be removed?
+public class CustomizableMessage {
+   public Type id;
+   public String text;
+   public String notes;
+
+   public CustomizableMessage(Type id, String text, String notes) {
+      this.id = id;
+      this.text = text;
+      this.notes = notes;
+   }
+
+   public enum Type {
+      NoTorchesHere,
+      StoneMiningHelp,
+      NoPlacingOreAgainstStone,
+      RealisticBuilding,
+      LimitedTorchPlacements,
+      NoCraftingMelonSeeds
+   }
 }
