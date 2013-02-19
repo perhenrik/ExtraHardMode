@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import me.ryanhamshire.ExtraHardMode.command.Commander;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
@@ -81,6 +82,9 @@ public class ExtraHardMode extends JavaPlugin {
       registerModule(DataStoreModule.class, new DataStoreModule(this));
       registerModule(EntityModule.class, new EntityModule(this));
       registerModule(BlockModule.class, new BlockModule(this));
+      
+      //Register command
+      getCommand("ehm").setExecutor(new Commander(this));
 
       // get enabled world names from the config file
       List<String> enabledWorldNames = rootConfig.getStringList(RootNode.WORLDS);
