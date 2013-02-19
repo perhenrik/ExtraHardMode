@@ -19,6 +19,8 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -31,11 +33,15 @@ public class RemoveExposedTorchesTask implements Runnable {
    private Chunk chunk;
 
    public RemoveExposedTorchesTask(ExtraHardMode plugin, Chunk chunk) {
+      this.plugin = plugin;
       this.chunk = chunk;
    }
 
    @Override
    public void run() {
+      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+      boolean rainBreakTorches = config.getBoolean(RootNode.RAIN_BREAKS_TORCHES);
+      boolean weakFoodCrops = config.getBoolean(RootNode.WEAK_FOOD_CROPS);
       // if rain has stopped, don't do anything
       if(!this.chunk.getWorld().hasStorm())
          return;
@@ -47,7 +53,7 @@ public class RemoveExposedTorchesTask implements Runnable {
                Material blockType = block.getType();
 
                if(blockType != Material.AIR) {
-                  if(plugin.config_rainBreaksTorches && blockType == Material.TORCH) {
+                  if(rainBreakTorches && blockType == Material.TORCH) {
                      Biome biome = block.getBiome();
                      if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS)
                         break;
@@ -56,7 +62,7 @@ public class RemoveExposedTorchesTask implements Runnable {
                      chunk.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.TORCH, 1));
                   }
 
-                  else if(plugin.config_weakFoodCrops
+                  else if(weakFoodCrops
                         && (blockType == Material.CROPS || blockType == Material.MELON_STEM || blockType == Material.CARROT
                               || blockType == Material.PUMPKIN_STEM || blockType == Material.POTATO || blockType == Material.RED_ROSE
                               || blockType == Material.YELLOW_FLOWER || blockType == Material.LONG_GRASS)) {

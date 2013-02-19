@@ -27,7 +27,7 @@ public class BlockPhysicsCheckTask implements Runnable {
       Material material = block.getType();
       if((block.getRelative(BlockFace.DOWN).getType() == Material.AIR || block.getRelative(BlockFace.DOWN).isLiquid() || block.getRelative(
             BlockFace.DOWN).getType() == Material.TORCH)
-            && (material == Material.SAND || material == Material.GRAVEL || plugin.config_moreFallingBlocks.contains(material))) {
+            && (material == Material.SAND || material == Material.GRAVEL || plugin.getFallingBlocks().contains(material))) {
          module.applyPhysics(block);
          fall = true;
       }

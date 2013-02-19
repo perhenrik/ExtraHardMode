@@ -22,27 +22,24 @@ import org.bukkit.entity.Player;
 
 public class SetPlayerHealthAndFoodTask implements Runnable {
 
-	private Player player;
-	private int health;
-	private int food;
-	
-	public SetPlayerHealthAndFoodTask(Player player, int health, int food)
-	{
-		this.player = player;
-		this.health = health;
-		this.food = food;
-	}
+   private Player player;
+   private int health;
+   private int food;
 
-	@Override
-	public void run()
-	{
-		try
-		{
-			this.player.setHealth(this.health);
-		}
-		catch(IllegalArgumentException e){ }  //if less than zero or higher than max, no changes
-		
-		this.player.setFoodLevel(this.food);
-	}
+   public SetPlayerHealthAndFoodTask(Player player, int health, int food) {
+      this.player = player;
+      this.health = health;
+      this.food = food;
+   }
+
+   @Override
+   public void run() {
+      try {
+         this.player.setHealth(this.health);
+      } catch(IllegalArgumentException e) {
+      } // if less than zero or higher than max, no changes
+
+      this.player.setFoodLevel(this.food);
+   }
 
 }

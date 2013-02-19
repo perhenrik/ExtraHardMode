@@ -1,6 +1,10 @@
 package me.ryanhamshire.ExtraHardMode.module;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Wither;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -49,6 +53,26 @@ public class EntityModule extends EHMModule {
       }
 
       return false;
+   }
+
+   /**
+    * Clears any webbing which may be trapping this entity (assumes
+    * two-block-tall entity)
+    * 
+    * @param entity
+    *           - Entity to help.
+    */
+   public void clearWebbing(Entity entity) {
+      Block feetBlock = entity.getLocation().getBlock();
+      Block headBlock = feetBlock.getRelative(BlockFace.UP);
+
+      Block[] blocks = { feetBlock, headBlock };
+      for(int i = 0; i < blocks.length; i++) {
+         Block block = blocks[i];
+         if(block.getType() == Material.WEB) {
+            block.setType(Material.AIR);
+         }
+      }
    }
 
    @Override

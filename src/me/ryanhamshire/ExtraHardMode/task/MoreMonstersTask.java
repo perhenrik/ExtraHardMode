@@ -22,6 +22,8 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -114,13 +116,14 @@ public class MoreMonstersTask implements Runnable {
 
       // plan for the next pass
       previousLocations.clear();
+      RootConfig config = plugin.getModuleForClass(RootConfig.class);
       Player[] players = plugin.getServer().getOnlinePlayers();
       for(int i = 0; i < players.length; i++) {
          Player player = players[i];
 
          // skip disabled worlds, players with bypass permission, and players
          // not in survival mode
-         if(!plugin.config_enabled_worlds.contains(player.getWorld()) || player.hasPermission("extrahardmode.bypass")
+         if(!plugin.getEnabledWorlds().contains(player.getWorld()) || player.hasPermission("extrahardmode.bypass")
                || player.getGameMode() != GameMode.SURVIVAL)
             continue;
 
@@ -133,7 +136,7 @@ public class MoreMonstersTask implements Runnable {
          // in normal worlds, respect Y level setting in config, and skip any
          // locations where sunlight reaches
          if(world.getEnvironment() == Environment.NORMAL
-               && (location.getY() > plugin.config_monsterSpawnsInLightMaxY || location.getBlock().getLightFromSky() > 0))
+               && (location.getY() > config.getInt(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y) || location.getBlock().getLightFromSky() > 0))
             continue;
 
          // plan to check this location again later to possibly spawn monsters

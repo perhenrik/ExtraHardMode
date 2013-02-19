@@ -20,10 +20,12 @@ package me.ryanhamshire.ExtraHardMode.event;
 
 import java.util.List;
 
-import me.ryanhamshire.ExtraHardMode.CustomizableMessage;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.PlayerData;
-import me.ryanhamshire.ExtraHardMode.TextMode;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
+import me.ryanhamshire.ExtraHardMode.config.messages.MessagesConfig;
 import me.ryanhamshire.ExtraHardMode.task.EvaporateWaterTask;
 import me.ryanhamshire.ExtraHardMode.task.SetPlayerHealthAndFoodTask;
 
@@ -67,11 +69,11 @@ public class PlayerEventHandler implements Listener {
    public void onPlayerRespawn(PlayerRespawnEvent respawnEvent) {
       Player player = respawnEvent.getPlayer();
       World world = respawnEvent.getPlayer().getWorld();
-      if(!plugin.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass"))
+      if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
          return;
-
-      SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, plugin.config_playerRespawnHealth,
-            plugin.config_playerRespawnFoodLevel);
+      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+      SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, config.getInt(RootNode.PLAYER_RESPAWN_HEALTH),
+            config.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL));
       plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L); // half-second
                                                                                     // delay
       // FEATURE: players can't swim when they're carrying a lot of weight
@@ -84,13 +86,13 @@ public class PlayerEventHandler implements Listener {
    void onPlayerInteract(PlayerInteractEvent event) {
       Player player = event.getPlayer();
       World world = event.getPlayer().getWorld();
-      if(!plugin.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass"))
+      if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
          return;
-
+      RootConfig config = plugin.getModuleForClass(RootConfig.class);
       Action action = event.getAction();
 
       // FEATURE: bonemeal doesn't work on mushrooms
-      if(plugin.config_noBonemealOnMushrooms && action == Action.RIGHT_CLICK_BLOCK) {
+      if(config.getBoolean(RootNode.NO_BONEMEAL_ON_MUSHROOMS) && action == Action.RIGHT_CLICK_BLOCK) {
          Block block = event.getClickedBlock();
          if(block.getType() == Material.RED_MUSHROOM || block.getType() == Material.BROWN_MUSHROOM) {
             // what's the player holding?
@@ -107,7 +109,7 @@ public class PlayerEventHandler implements Listener {
 
       // FEATURE: seed reduction. some plants die even when a player uses
       // bonemeal.
-      if(plugin.config_weakFoodCrops && action == Action.RIGHT_CLICK_BLOCK) {
+      if(config.getBoolean(RootNode.WEAK_FOOD_CROPS) && action == Action.RIGHT_CLICK_BLOCK) {
          Block block = event.getClickedBlock();
 
          Material materialInHand = player.getItemInHand().getType();
@@ -119,7 +121,7 @@ public class PlayerEventHandler implements Listener {
 
       // FEATURE: putting out fire up close catches the player on fire
       Block block = event.getClickedBlock();
-      if(plugin.config_extinguishingFireIgnitesPlayers && block != null && block.getType() != Material.AIR) {
+      if(config.getBoolean(RootNode.EXTINGUISHING_FIRE_IGNITES_PLAYERS) && block != null && block.getType() != Material.AIR) {
          if(block.getRelative(event.getBlockFace()).getType() == Material.FIRE) {
             player.setFireTicks(100); // 20L ~ 1 seconds; 100L ~ 5 seconds
          }
@@ -129,11 +131,12 @@ public class PlayerEventHandler implements Listener {
    // when a player fills a bucket...
    @EventHandler(priority = EventPriority.LOW)
    void onPlayerFillBucket(PlayerBucketFillEvent event) {
+      RootConfig config = plugin.getModuleForClass(RootConfig.class);
       // FEATURE: can't move water source blocks
-      if(plugin.config_dontMoveWaterSourceBlocks) {
+      if(config.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS)) {
          Player player = event.getPlayer();
          World world = event.getPlayer().getWorld();
-         if(!plugin.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass"))
+         if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
             return;
 
          // only care about stationary (source) water
@@ -162,11 +165,12 @@ public class PlayerEventHandler implements Listener {
    // when a player empties a bucket...
    @EventHandler(priority = EventPriority.NORMAL)
    void onPlayerEmptyBucket(PlayerBucketEmptyEvent event) {
+      RootConfig config = plugin.getModuleForClass(RootConfig.class);
       // FEATURE: can't move water source blocks
-      if(plugin.config_dontMoveWaterSourceBlocks) {
+      if(config.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS)) {
          Player player = event.getPlayer();
          World world = event.getPlayer().getWorld();
-         if(!plugin.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass"))
+         if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
             return;
 
          // only care about water buckets
@@ -185,7 +189,7 @@ public class PlayerEventHandler implements Listener {
    void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
       World world = event.getFrom();
 
-      if(!plugin.config_enabled_worlds.contains(world))
+      if(!plugin.getEnabledWorlds().contains(world))
          return;
 
       // FEATURE: respawn the ender dragon when the last player leaves the end
@@ -225,8 +229,9 @@ public class PlayerEventHandler implements Listener {
    // when a player moves...
    @EventHandler(priority = EventPriority.NORMAL)
    void onPlayerMove(PlayerMoveEvent event) {
+      RootConfig config = plugin.getModuleForClass(RootConfig.class);
       // FEATURE: no swimming while heavy
-      if(!plugin.config_noSwimmingInArmor)
+      if(!config.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR))
          return;
 
       // only care about moving up
@@ -252,11 +257,11 @@ public class PlayerEventHandler implements Listener {
       // only enabled worlds, and players without bypass permission
       Player player = event.getPlayer();
       World world = player.getWorld();
-      if(!plugin.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass"))
+      if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
          return;
 
       PlayerData playerData = plugin.dataStore.getPlayerData(player.getName());
-
+      MessagesConfig messages = plugin.getModuleForClass(MessagesConfig.class);
       // if no cached value, calculate
       if(playerData.cachedWeightStatus == null) {
          // count worn clothing (counts double)
@@ -285,7 +290,7 @@ public class PlayerEventHandler implements Listener {
       // if too heavy, not allowed to swim
       if(playerData.cachedWeightStatus == true) {
          event.setCancelled(true);
-         plugin.sendMessage(player, TextMode.Warn, CustomizableMessage.Type.NoSwimmingInArmor);
+         player.sendMessage(messages.getString(MessageNode.NO_SWIMMING_IN_ARMOR));
       }
    }
 
