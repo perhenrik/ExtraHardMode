@@ -6,17 +6,24 @@ dev-url: ${project.url}
 softdepend: [Multiverse-Core, My Worlds, MystCraft, Transporter]
 authors: [bigscary, Diemex, Mitsugaru]
 commands:
+    ehm:
+        description: Root command for ExtraHardMode
+        usage: /ehm - Show the main menu
 permissions:
     ExtraHardMode.*:
         description: Grant ALL the permission nodes
         default: op
         children:
+           ExtraHardMode.admin: true
            ExtraHardMode.bypass: true
            ExtraHardMode.silent.stone_mining_help: true
            ExtraHardMode.silent.no_placing_ore_against_stone: true
            ExtraHardMode.silent.realistic_building: true
            ExtraHardMode.silent.limited_torch_placement: true
            ExtraHardMode.silent.no_torches_here: true
+    ExtraHardMode.admin:
+        description: Grants user ability to administrate the plugin.
+        default: op
     ExtraHardMode.bypass:
         description: Grants bypass permission for some extra hard mode rules.
         default: op

@@ -92,6 +92,7 @@ public class DataStoreModule extends EHMModule {
    @Override
    public void closing() {
       playerNameToPlayerDataMap.clear();
+      previousLocations.clear();
    }
 
    /**

@@ -9,6 +9,10 @@ public enum PermissionNode {
     */
    BYPASS("bypass"),
    /**
+    * Admin.
+    */
+   ADMIN("admin"),
+   /**
     * Silent.
     */
    SILENT_STONE_MINING_HELP("silent.stone_mining_help"),
