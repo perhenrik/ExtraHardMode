@@ -27,7 +27,7 @@ public class Commander extends CommandHandler {
       sender.sendMessage("    help" + ChatColor.YELLOW + " - Show the help menu");
       sender.sendMessage("    version" + ChatColor.YELLOW + " - Show version info");
       if(sender.hasPermission(PermissionNode.ADMIN.getNode())) {
-         sender.sendMessage("  reload " + ChatColor.YELLOW + "- Reload the plugin");
+         sender.sendMessage("    reload " + ChatColor.YELLOW + "- Reload the plugin");
       }
       return true;
    }
