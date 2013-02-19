@@ -217,7 +217,7 @@ public enum RootNode implements ConfigNode {
    /**
     * percentage of item stacks lost on death
     */
-   PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("ExtraHardMode.PlayerDeath.ItemStacksForfeitPercent", VarType.BOOLEAN, 10),
+   PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("ExtraHardMode.PlayerDeath.ItemStacksForfeitPercent", VarType.INTEGER, 10),
    /**
     * how much health after respawn
     */
