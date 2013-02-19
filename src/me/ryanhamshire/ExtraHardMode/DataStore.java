@@ -18,12 +18,7 @@
 
 package me.ryanhamshire.ExtraHardMode;
 
-import java.io.*;
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * class which manages all ExtraHardMode data (except for config options)
@@ -32,19 +27,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * this to a module.
  */
 public class DataStore {
-   private ExtraHardMode plugin;
-   /**
-    * in-memory cache for messages
-    */
-   private String[] messages;
    /**
     * in-memory cache for player data
     */
    private ConcurrentHashMap<String, PlayerData> playerNameToPlayerDataMap = new ConcurrentHashMap<String, PlayerData>();
-
-   public DataStore(ExtraHardMode plugin) {
-      this.plugin = plugin;
-   }
 
    // retrieves player data from memory
    synchronized public PlayerData getPlayerData(String playerName) {

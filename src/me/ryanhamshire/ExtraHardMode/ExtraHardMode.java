@@ -87,7 +87,7 @@ public class ExtraHardMode extends JavaPlugin {
    @Override
    public void onEnable() {
       // TODO get rid of this
-      this.dataStore = new DataStore(this);
+      this.dataStore = new DataStore();
       // Generate Root Config
       RootConfig rootConfig = new RootConfig(this);
       // Register modules
