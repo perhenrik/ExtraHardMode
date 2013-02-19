@@ -19,10 +19,27 @@ public enum MessageNode implements ConfigNode {
          "Congratulations on defeating the dragon!  If you can't reach the fountain to jump into the portal, throw an ender pearl at it."),
    NO_SWIMMING_IN_ARMOR("Message.NoSwimmingInArmor", "You're carrying too much weight to swim!");
 
+   /**
+    * Configuration path.
+    */
    private final String path;
+   /**
+    * Messages are always strings.
+    */
    private final VarType type = VarType.STRING;
+   /**
+    * Default value.
+    */
    private final Object defaultValue;
 
+   /**
+    * Constructor.
+    * 
+    * @param path
+    *           - Configuration path.
+    * @param def
+    *           - Default value.
+    */
    private MessageNode(String path, Object def) {
       this.path = path;
       this.defaultValue = def;

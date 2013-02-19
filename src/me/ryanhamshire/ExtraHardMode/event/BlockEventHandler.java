@@ -25,7 +25,7 @@ import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
-import me.ryanhamshire.ExtraHardMode.module.PhysicsModule;
+import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import me.ryanhamshire.ExtraHardMode.task.EvaporateWaterTask;
 import me.ryanhamshire.ExtraHardMode.task.RemoveExposedTorchesTask;
@@ -58,6 +58,9 @@ import org.bukkit.util.Vector;
  * event handlers related to blocks
  */
 public class BlockEventHandler implements Listener {
+   /**
+    * Plugin instance.
+    */
    private ExtraHardMode plugin;
 
    /**
@@ -93,7 +96,7 @@ public class BlockEventHandler implements Listener {
       if(config.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING) && world.getEnvironment() == Environment.THE_END) {
          if(block.getType() != Material.ENDER_STONE) {
             breakEvent.setCancelled(true);
-            player.sendMessage(messages.getString(MessageNode.LIMITED_END_BUILDING));
+            plugin.sendMessage(player, messages.getString(MessageNode.LIMITED_END_BUILDING));
             return;
          } else {
             int absoluteDistanceFromBlock = Math.abs(block.getX() - player.getLocation().getBlockX());
@@ -104,7 +107,7 @@ public class BlockEventHandler implements Listener {
 
             if(block.getY() < player.getLocation().getBlockY() + absoluteDistanceFromBlock) {
                breakEvent.setCancelled(true);
-               player.sendMessage(messages.getString(MessageNode.LIMITED_END_BUILDING));
+               plugin.sendMessage(player, messages.getString(MessageNode.LIMITED_END_BUILDING));
                return;
             }
          }
@@ -168,7 +171,7 @@ public class BlockEventHandler implements Listener {
          }
       }
 
-      PhysicsModule module = plugin.getModuleForClass(PhysicsModule.class);
+      BlockModule module = plugin.getModuleForClass(BlockModule.class);
 
       // FEATURE: trees chop more naturally
       if(block.getType() == Material.LOG && config.getBoolean(RootNode.BETTER_TREE_CHOPPING)) {
@@ -230,7 +233,7 @@ public class BlockEventHandler implements Listener {
       // up to ground level
       if(config.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING) && world.getEnvironment() == Environment.THE_END) {
          placeEvent.setCancelled(true);
-         player.sendMessage(messages.getString(MessageNode.LIMITED_END_BUILDING));
+         plugin.sendMessage(player, messages.getString(MessageNode.LIMITED_END_BUILDING));
          return;
       }
 
@@ -257,7 +260,7 @@ public class BlockEventHandler implements Listener {
          return;
       }
 
-      PhysicsModule module = plugin.getModuleForClass(PhysicsModule.class);
+      BlockModule module = plugin.getModuleForClass(BlockModule.class);
       // FEATURE: more falling blocks
       module.physicsCheck(block, 0, true);
 
@@ -322,7 +325,12 @@ public class BlockEventHandler implements Listener {
       }
    }
 
-   // when a dispenser dispenses...
+   /**
+    * when a dispenser dispenses...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
    void onBlockDispense(BlockDispenseEvent event) {
       // FEATURE: can't move water source blocks
@@ -453,13 +461,18 @@ public class BlockEventHandler implements Listener {
    public void onBlockGrow(BlockGrowEvent event) {
       // FEATURE: fewer seeds = shrinking crops. when a plant grows to its full
       // size, it may be replaced by a dead shrub
-      if(plugin.plantDies(event.getBlock(), event.getNewState().getData().getData())) {
+      if(plugin.getModuleForClass(BlockModule.class).plantDies(event.getBlock(), event.getNewState().getData().getData())) {
          event.setCancelled(true);
          event.getBlock().setType(Material.LONG_GRASS); // dead shrub
       }
    }
 
-   // when a tree or mushroom grows...
+   /**
+    * when a tree or mushroom grows...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
    public void onStructureGrow(StructureGrowEvent event) {
       World world = event.getWorld();
@@ -495,7 +508,7 @@ public class BlockEventHandler implements Listener {
    public void notifyPlayer(Player player, MessageNode node, PermissionNode perm, Sound sound, float soundPitch) {
       if(!player.hasPermission(perm.getNode())) {
          MessageConfig config = plugin.getModuleForClass(MessageConfig.class);
-         player.sendMessage(config.getString(node));
+         plugin.sendMessage(player, config.getString(node));
          player.playSound(player.getLocation(), sound, 1, soundPitch);
       }
 

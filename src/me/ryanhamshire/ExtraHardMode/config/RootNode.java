@@ -158,8 +158,8 @@ public enum RootNode implements ConfigNode {
     */
    FORTRESS_PIGS_DROP_WART("ExtraHardMode.PigZombies.DropWartInFortresses", VarType.BOOLEAN, true),
    /**
-    * whether ghasts should deflect arrows and drop extra loot
-    * TODO make this a percentage like skeleton deflect
+    * whether ghasts should deflect arrows and drop extra loot TODO make this a
+    * percentage like skeleton deflect
     */
    GHASTS_DEFLECT_ARROWS("ExtraHardMode.Ghasts.DeflectArrows", VarType.BOOLEAN, true),
    /**
@@ -239,10 +239,29 @@ public enum RootNode implements ConfigNode {
     */
    MORE_FALLING_BLOCKS("ExtraHardMode.AdditionalFallingBlocks", VarType.LIST, new DefaultFallingBlocks());
 
+   /**
+    * Path.
+    */
    private final String path;
+   /**
+    * Variable type.
+    */
    private final VarType type;
+   /**
+    * Default value.
+    */
    private final Object defaultValue;
 
+   /**
+    * Constructor.
+    * 
+    * @param path
+    *           - Configuration path.
+    * @param type
+    *           - Variable type.
+    * @param def
+    *           - Default value.
+    */
    private RootNode(String path, VarType type, Object def) {
       this.path = path;
       this.type = type;

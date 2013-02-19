@@ -27,11 +27,34 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 
+/**
+ * Respawn a zombie for a given location with a target player.
+ */
 public class RespawnZombieTask implements Runnable {
+
+   /**
+    * Plugin instance.
+    */
    private ExtraHardMode plugin;
+   /**
+    * Respawn location.
+    */
    private Location location;
+   /**
+    * Target player.
+    */
    private Player player;
 
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - Plugin instance.
+    * @param location
+    *           - Respawn location.
+    * @param target
+    *           - Target player.
+    */
    public RespawnZombieTask(ExtraHardMode plugin, Location location, Player target) {
       this.plugin = plugin;
       this.location = location;
@@ -46,13 +69,12 @@ public class RespawnZombieTask implements Runnable {
       }
       EntityModule module = plugin.getModuleForClass(EntityModule.class);
       Zombie zombie = (Zombie) location.getWorld().spawnEntity(location, EntityType.ZOMBIE);
-      zombie.setHealth(zombie.getHealth() / 2); // zombie has half normal zombie
-                                                // health
-      module.markLootLess(zombie); // this zombie will not drop loot
-                                   // (again)
-      if(this.player != null && this.player.isOnline()) // zombie is still mad
-                                                        // at the same player
-      {
+      // zombie has half normal zombie health
+      zombie.setHealth(zombie.getHealth() / 2);
+      // this zombie will not drop loot (again)
+      module.markLootLess(zombie);
+      // zombie is still madat the same player
+      if(this.player != null && this.player.isOnline()) {
          zombie.setTarget(this.player);
       }
    }

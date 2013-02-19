@@ -12,8 +12,17 @@ import org.bukkit.metadata.FixedMetadataValue;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 
+/**
+ * Module that contains logic dealing with entities.
+ */
 public class EntityModule extends EHMModule {
 
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - plugin instance.
+    */
    public EntityModule(ExtraHardMode plugin) {
       super(plugin);
    }
@@ -29,7 +38,14 @@ public class EntityModule extends EHMModule {
       entity.setMetadata("extrahard_environmentalDamage", new FixedMetadataValue(plugin, entity.getMaxHealth()));
    }
 
-   // tracks total environmental damage done to an entity
+   /**
+    * Tracks total environmental damage done to an entity
+    * 
+    * @param entity
+    *           - Entity to check.
+    * @param damage
+    *           - Amount of damage.
+    */
    public void addEnvironmentalDamage(LivingEntity entity, int damage) {
       if(!entity.hasMetadata("extrahard_environmentalDamage")) {
          entity.setMetadata("extrahard_environmentalDamage", new FixedMetadataValue(plugin, damage));
@@ -39,16 +55,23 @@ public class EntityModule extends EHMModule {
       }
    }
 
-   // checks whether an entity should drop items when it dies
+   /**
+    * Checks whether an entity should drop items when it dies
+    * 
+    * @param entity
+    *           - Entity to check.
+    * @return True if the entity is lootable, else false.
+    */
    public boolean isLootLess(LivingEntity entity) {
       if(entity instanceof Creature && entity.hasMetadata("extrahard_environmentalDamage")) {
          int totalDamage = entity.getMetadata("extrahard_environmentalDamage").get(0).asInt();
+         // wither is exempt. he can't be farmed because
+         // creating him requires combining not-farmable
+         // components
          if(!(entity instanceof Wither)) {
             return (totalDamage > entity.getMaxHealth() / 2);
          } else {
-            return false; // wither is exempt. he can't be farmed because
-                          // creating him requires combining not-farmable
-                          // components
+            return false;
          }
       }
 

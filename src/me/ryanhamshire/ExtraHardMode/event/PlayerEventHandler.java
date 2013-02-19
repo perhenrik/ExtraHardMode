@@ -25,8 +25,9 @@ import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
-import me.ryanhamshire.ExtraHardMode.module.DataStore;
-import me.ryanhamshire.ExtraHardMode.module.DataStore.PlayerData;
+import me.ryanhamshire.ExtraHardMode.module.BlockModule;
+import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
+import me.ryanhamshire.ExtraHardMode.module.DataStoreModule.PlayerData;
 import me.ryanhamshire.ExtraHardMode.task.EvaporateWaterTask;
 import me.ryanhamshire.ExtraHardMode.task.SetPlayerHealthAndFoodTask;
 
@@ -57,15 +58,31 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+/**
+ * Event handler for player events.
+ */
 public class PlayerEventHandler implements Listener {
+   /**
+    * Plugin instance.
+    */
    private ExtraHardMode plugin;
 
-   // typical constructor, yawn
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - Plugin instance.
+    */
    public PlayerEventHandler(ExtraHardMode plugin) {
       this.plugin = plugin;
    }
 
-   // FEATURE: respawning players start without full health or food
+   /**
+    * FEATURE: respawning players start without full health or food
+    * 
+    * @param respawnEvent
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true)
    public void onPlayerRespawn(PlayerRespawnEvent respawnEvent) {
       Player player = respawnEvent.getPlayer();
@@ -78,11 +95,16 @@ public class PlayerEventHandler implements Listener {
       plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L); // half-second
                                                                                     // delay
       // FEATURE: players can't swim when they're carrying a lot of weight
-      PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
-      playerData.cachedWeightStatus = null;
+      PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+      playerData.cachedWeightStatus = false;
    }
 
-   // when a player interacts with the world
+   /**
+    * when a player interacts with the world
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(priority = EventPriority.LOWEST)
    void onPlayerInteract(PlayerInteractEvent event) {
       Player player = event.getPlayer();
@@ -114,7 +136,7 @@ public class PlayerEventHandler implements Listener {
          Block block = event.getClickedBlock();
 
          Material materialInHand = player.getItemInHand().getType();
-         if(materialInHand == Material.INK_SACK && !plugin.plantDies(block, Byte.MAX_VALUE)) {
+         if(materialInHand == Material.INK_SACK && !plugin.getModuleForClass(BlockModule.class).plantDies(block, Byte.MAX_VALUE)) {
             event.setCancelled(true);
             block.setType(Material.LONG_GRASS); // dead shrub
          }
@@ -129,7 +151,12 @@ public class PlayerEventHandler implements Listener {
       }
    }
 
-   // when a player fills a bucket...
+   /**
+    * when a player fills a bucket...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(priority = EventPriority.LOW)
    void onPlayerFillBucket(PlayerBucketFillEvent event) {
       RootConfig config = plugin.getModuleForClass(RootConfig.class);
@@ -163,7 +190,12 @@ public class PlayerEventHandler implements Listener {
       }
    }
 
-   // when a player empties a bucket...
+   /**
+    * when a player empties a bucket...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(priority = EventPriority.NORMAL)
    void onPlayerEmptyBucket(PlayerBucketEmptyEvent event) {
       RootConfig config = plugin.getModuleForClass(RootConfig.class);
@@ -185,7 +217,12 @@ public class PlayerEventHandler implements Listener {
       }
    }
 
-   // when a player changes worlds...
+   /**
+    * when a player changes worlds...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(priority = EventPriority.MONITOR)
    void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
       World world = event.getFrom();
@@ -227,7 +264,12 @@ public class PlayerEventHandler implements Listener {
       }
    }
 
-   // when a player moves...
+   /**
+    * when a player moves...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(priority = EventPriority.NORMAL)
    void onPlayerMove(PlayerMoveEvent event) {
       RootConfig config = plugin.getModuleForClass(RootConfig.class);
@@ -261,10 +303,10 @@ public class PlayerEventHandler implements Listener {
       if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
          return;
 
-      PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
+      PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
       MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
       // if no cached value, calculate
-      if(playerData.cachedWeightStatus == null) {
+      if(!playerData.cachedWeightStatus) {
          // count worn clothing (counts double)
          PlayerInventory inventory = player.getInventory();
          int weight = 0;
@@ -291,37 +333,52 @@ public class PlayerEventHandler implements Listener {
       // if too heavy, not allowed to swim
       if(playerData.cachedWeightStatus == true) {
          event.setCancelled(true);
-         player.sendMessage(messages.getString(MessageNode.NO_SWIMMING_IN_ARMOR));
+         plugin.sendMessage(player, messages.getString(MessageNode.NO_SWIMMING_IN_ARMOR));
       }
    }
 
-   // when a player drops an item
+   /**
+    * when a player drops an item
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
    void onPlayerDropItem(PlayerDropItemEvent event) {
       // FEATURE: players can't swim when they're carrying a lot of weight
       Player player = event.getPlayer();
-      PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
-      playerData.cachedWeightStatus = null;
+      PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+      playerData.cachedWeightStatus = false;
    }
 
-   // when a player picks up an item
+   /**
+    * when a player picks up an item
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
    void onPlayerPickupItem(PlayerPickupItemEvent event) {
       // FEATURE: players can't swim when they're carrying a lot of weight
       Player player = event.getPlayer();
-      PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
-      playerData.cachedWeightStatus = null;
+      PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+      playerData.cachedWeightStatus = false;
    }
 
-   // when a player interacts with an inventory
+   /**
+    * When a player interacts with an inventory.
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
    void onPlayerInventoryClick(InventoryClickEvent event) {
       // FEATURE: players can't swim when they're carrying a lot of weight
       HumanEntity humanEntity = event.getWhoClicked();
       if(humanEntity instanceof Player) {
          Player player = (Player) humanEntity;
-         PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
-         playerData.cachedWeightStatus = null;
+         PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+         playerData.cachedWeightStatus = false;
       }
    }
 }

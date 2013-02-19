@@ -83,7 +83,7 @@ public abstract class ModularConfig extends EHMModule {
     * 
     * @param node
     *           - ConfigNode path to use.
-    * @param o
+    * @param value
     *           - Value to use.
     */
    public void set(final ConfigNode node, final Object value) {
@@ -95,7 +95,7 @@ public abstract class ModularConfig extends EHMModule {
     * 
     * @param path
     *           - Path to use.
-    * @param o
+    * @param value
     *           - Value to use.
     */
    public abstract void set(final String path, final Object value);

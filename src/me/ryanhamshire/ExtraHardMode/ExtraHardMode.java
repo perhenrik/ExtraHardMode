@@ -31,19 +31,14 @@ import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.event.BlockEventHandler;
 import me.ryanhamshire.ExtraHardMode.event.EntityEventHandler;
 import me.ryanhamshire.ExtraHardMode.event.PlayerEventHandler;
-import me.ryanhamshire.ExtraHardMode.module.DataStore;
-import me.ryanhamshire.ExtraHardMode.module.DataStore.PlayerData;
+import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
+import me.ryanhamshire.ExtraHardMode.module.DataStoreModule.PlayerData;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
-import me.ryanhamshire.ExtraHardMode.module.PhysicsModule;
+import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.service.IModule;
 import me.ryanhamshire.ExtraHardMode.task.MoreMonstersTask;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -74,11 +69,6 @@ public class ExtraHardMode extends JavaPlugin {
    private final List<World> config_enabled_worlds = new ArrayList<World>();
 
    /**
-    * which materials beyond sand and gravel should be subject to gravity
-    */
-   private final List<Material> config_moreFallingBlocks = new ArrayList<Material>();
-
-   /**
     * initializes well... everything
     */
    @Override
@@ -88,9 +78,9 @@ public class ExtraHardMode extends JavaPlugin {
       // Register modules
       registerModule(RootConfig.class, rootConfig);
       registerModule(MessageConfig.class, new MessageConfig(this));
-      registerModule(DataStore.class, new DataStore(this));
+      registerModule(DataStoreModule.class, new DataStoreModule(this));
       registerModule(EntityModule.class, new EntityModule(this));
-      registerModule(PhysicsModule.class, new PhysicsModule(this));
+      registerModule(BlockModule.class, new BlockModule(this));
 
       // get enabled world names from the config file
       List<String> enabledWorldNames = rootConfig.getStringList(RootNode.WORLDS);
@@ -102,19 +92,6 @@ public class ExtraHardMode extends JavaPlugin {
             this.getLogger().warning("Error: There's no world named '" + worldName + "'.  Please update your config.yml.");
          } else {
             this.config_enabled_worlds.add(world);
-         }
-      }
-
-      // try to load the list from the config file
-      List<String> moreFallingBlocksList = rootConfig.getStringList(RootNode.MORE_FALLING_BLOCKS);
-
-      // parse this final list of additional falling blocks
-      for(String materialName : moreFallingBlocksList) {
-         Material material = Material.getMaterial(materialName);
-         if(material == null) {
-            getLogger().warning("Additional Falling Blocks Configuration: Material not found: " + materialName + ".");
-         } else {
-            this.config_moreFallingBlocks.add(material);
          }
       }
 
@@ -140,21 +117,23 @@ public class ExtraHardMode extends JavaPlugin {
    }
 
    /**
-    * sends a color-coded message to a player
+    * Sends a message to a player. Attempts to not spam the player with
+    * messages.
     * 
     * @param player
-    * @param color
+    *           - Target player.
     * @param message
+    *           - Message to send.
     */
-   public void sendMessage(Player player, ChatColor color, String message) {
+   public void sendMessage(Player player, String message) {
       if(player == null) {
-         getLogger().info(color + message);
+         getLogger().warning("Could not send the following message: " + message);
       } else {
          // FEATURE: don't spam messages
-         PlayerData playerData = getModuleForClass(DataStore.class).getPlayerData(player.getName());
+         PlayerData playerData = getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
          long now = Calendar.getInstance().getTimeInMillis();
          if(!message.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000) {
-            player.sendMessage(color + message);
+            player.sendMessage(message);
             playerData.lastMessageSent = message;
             playerData.lastMessageTimestamp = now;
          }
@@ -179,59 +158,6 @@ public class ExtraHardMode extends JavaPlugin {
     */
    public Random getRandom() {
       return randomNumberGenerator;
-   }
-
-   public boolean plantDies(Block block, byte newDataValue) {
-      World world = block.getWorld();
-      RootConfig config = getModuleForClass(RootConfig.class);
-      if(!this.config_enabled_worlds.contains(world) || !config.getBoolean(RootNode.WEAK_FOOD_CROPS))
-         return false;
-
-      // not evaluated until the plant is nearly full grown
-      if(newDataValue <= (byte) 6)
-         return false;
-
-      Material material = block.getType();
-      if(material == Material.CROPS || material == Material.MELON_STEM || material == Material.CARROT || material == Material.PUMPKIN_STEM
-            || material == Material.POTATO) {
-         int deathProbability = 25;
-
-         // plants in the dark always die
-         if(block.getLightFromSky() < 10) {
-            deathProbability = 100;
-         }
-
-         else {
-
-            Biome biome = block.getBiome();
-
-            // the desert environment is very rough on crops
-            if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS) {
-               deathProbability += 50;
-            }
-
-            // unwatered crops are more likely to die
-            Block belowBlock = block.getRelative(BlockFace.DOWN);
-            byte moistureLevel = 0;
-            if(belowBlock.getType() == Material.SOIL) {
-               moistureLevel = belowBlock.getData();
-            }
-
-            if(moistureLevel == 0) {
-               deathProbability += 25;
-            }
-         }
-
-         if(random(deathProbability)) {
-            return true;
-         }
-      }
-
-      return false;
-   }
-
-   public List<Material> getFallingBlocks() {
-      return config_moreFallingBlocks;
    }
 
    public List<World> getEnabledWorlds() {

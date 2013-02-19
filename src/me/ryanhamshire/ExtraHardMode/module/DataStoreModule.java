@@ -33,20 +33,35 @@ import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 /**
  * Manages miscellaneous data.
  */
-public class DataStore extends EHMModule {
+public class DataStoreModule extends EHMModule {
 
    /**
-    * in-memory cache for player data
+    * In-memory cache for player data
     */
    private final Map<String, PlayerData> playerNameToPlayerDataMap = new ConcurrentHashMap<String, PlayerData>();
 
+   /**
+    * List of previous locations.
+    */
    private final List<SimpleEntry<Player, Location>> previousLocations = new CopyOnWriteArrayList<>();
 
-   public DataStore(ExtraHardMode plugin) {
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - Plugin instance.
+    */
+   public DataStoreModule(ExtraHardMode plugin) {
       super(plugin);
    }
 
-   // retrieves player data from memory
+   /**
+    * Retrieves player data from memory
+    * 
+    * @param playerName
+    *           - Name of player.
+    * @return PlayerData associated with it.
+    */
    public PlayerData getPlayerData(String playerName) {
       // first, look in memory
       PlayerData playerData = this.playerNameToPlayerDataMap.get(playerName);
@@ -61,6 +76,11 @@ public class DataStore extends EHMModule {
       return this.playerNameToPlayerDataMap.get(playerName);
    }
 
+   /**
+    * Get the list of previous locations of players.
+    * 
+    * @return List of players to location entries.
+    */
    public List<SimpleEntry<Player, Location>> getPreviousLocations() {
       return previousLocations;
    }
@@ -75,11 +95,22 @@ public class DataStore extends EHMModule {
    }
 
    /**
-    * holds all of ExtraHardMode's player-tied data
+    * Holds all of ExtraHardMode's player-tied data
     */
    public class PlayerData {
+      /**
+       * Last message sent.
+       */
       public String lastMessageSent = "";
+      /**
+       * Last message timestamp.
+       */
       public long lastMessageTimestamp = 0;
-      public Boolean cachedWeightStatus = null;
+      /**
+       * Cached weight status.
+       * TODO need to check and see that I didn't just
+       * break this.
+       */
+      public boolean cachedWeightStatus = false;
    }
 }

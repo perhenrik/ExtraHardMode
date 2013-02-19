@@ -9,8 +9,17 @@ import org.bukkit.configuration.ConfigurationSection;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.service.ModularConfig;
 
+/**
+ * Configuration handler for the root config.yml file.
+ */
 public class RootConfig extends ModularConfig {
 
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - plugin instance.
+    */
    public RootConfig(ExtraHardMode plugin) {
       super(plugin);
    }

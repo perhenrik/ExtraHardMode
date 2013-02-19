@@ -1,5 +1,8 @@
 package me.ryanhamshire.ExtraHardMode.service;
 
+/**
+ * Represents a module.
+ */
 public interface IModule {
    /**
     * Called when the module has been registered to the API.

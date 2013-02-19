@@ -28,10 +28,28 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Task to remove exposed torches.
+ */
 public class RemoveExposedTorchesTask implements Runnable {
+
+   /**
+    * Plugin instance.
+    */
    private ExtraHardMode plugin;
+   /**
+    * Chunk to iterate over.
+    */
    private Chunk chunk;
 
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - Plugin instance.
+    * @param chunk
+    *           - Target chunk.
+    */
    public RemoveExposedTorchesTask(ExtraHardMode plugin, Chunk chunk) {
       this.plugin = plugin;
       this.chunk = chunk;
@@ -52,33 +70,33 @@ public class RemoveExposedTorchesTask implements Runnable {
                Block block = chunk.getBlock(x, y, z);
                Material blockType = block.getType();
 
-               if(blockType != Material.AIR) {
-                  if(rainBreakTorches && blockType == Material.TORCH) {
-                     Biome biome = block.getBiome();
-                     if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS)
-                        break;
+               if(blockType == Material.AIR) {
+                  continue;
+               }
 
-                     block.setType(Material.AIR);
-                     chunk.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.TORCH, 1));
-                  }
-
-                  else if(weakFoodCrops
-                        && (blockType == Material.CROPS || blockType == Material.MELON_STEM || blockType == Material.CARROT
-                              || blockType == Material.PUMPKIN_STEM || blockType == Material.POTATO || blockType == Material.RED_ROSE
-                              || blockType == Material.YELLOW_FLOWER || blockType == Material.LONG_GRASS)) {
-                     Biome biome = block.getBiome();
-                     if(biome == Biome.FROZEN_OCEAN || biome == Biome.FROZEN_RIVER || biome == Biome.ICE_MOUNTAINS || biome == Biome.ICE_PLAINS
-                           || biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS) {
-                        block.setType(Material.SNOW);
-                        if(plugin.getRandom().nextBoolean()) {
-                           block.setData((byte) 1);
-                        } else {
-                           block.setData((byte) 2);
-                        }
-                     }
-                  } else {
+               if(rainBreakTorches && blockType == Material.TORCH) {
+                  Biome biome = block.getBiome();
+                  if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS)
                      break;
+
+                  block.setType(Material.AIR);
+                  chunk.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.TORCH, 1));
+               } else if(weakFoodCrops
+                     && (blockType == Material.CROPS || blockType == Material.MELON_STEM || blockType == Material.CARROT
+                           || blockType == Material.PUMPKIN_STEM || blockType == Material.POTATO || blockType == Material.RED_ROSE
+                           || blockType == Material.YELLOW_FLOWER || blockType == Material.LONG_GRASS)) {
+                  Biome biome = block.getBiome();
+                  if(biome == Biome.FROZEN_OCEAN || biome == Biome.FROZEN_RIVER || biome == Biome.ICE_MOUNTAINS || biome == Biome.ICE_PLAINS
+                        || biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS) {
+                     block.setType(Material.SNOW);
+                     if(plugin.getRandom().nextBoolean()) {
+                        block.setData((byte) 1);
+                     } else {
+                        block.setData((byte) 2);
+                     }
                   }
+               } else {
+                  break;
                }
             }
          }

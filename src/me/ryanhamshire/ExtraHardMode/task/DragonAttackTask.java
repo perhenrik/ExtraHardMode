@@ -29,12 +29,34 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+/**
+ * Task to allow a dragon to do additional attacks.
+ */
 public class DragonAttackTask implements Runnable {
 
+   /**
+    * Plugin instance.
+    */
    private ExtraHardMode plugin;
+   /**
+    * Target player.
+    */
    private Player player;
+   /**
+    * Attacking dragon.
+    */
    private Entity dragon;
 
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - Plugin instance.
+    * @param dragon
+    *           - Dragon.
+    * @param player
+    *           - Target player.
+    */
    public DragonAttackTask(ExtraHardMode plugin, Entity dragon, Player player) {
       this.plugin = plugin;
       this.dragon = dragon;

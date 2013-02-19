@@ -15,11 +15,23 @@ import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
 import me.ryanhamshire.ExtraHardMode.service.ModularConfig;
 
+/**
+ * Configuration handler for the messages.yml file.
+ */
 public class MessageConfig extends ModularConfig {
-
+   /**
+    * File reference.
+    */
    private final File file;
+   /**
+    * Configuration object reference.
+    */
    private final YamlConfiguration config;
 
+   /**
+    * Constructor.
+    * @param plugin - Plugin instance.
+    */
    public MessageConfig(ExtraHardMode plugin) {
       super(plugin);
       file = new File(plugin.getDataFolder().getAbsolutePath() + "/messages.yml");

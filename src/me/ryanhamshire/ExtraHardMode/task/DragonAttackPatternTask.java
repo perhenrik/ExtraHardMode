@@ -19,6 +19,7 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
@@ -28,17 +29,44 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+/**
+ * Task to handle the dragon's attack pattern.
+ */
 public class DragonAttackPatternTask implements Runnable {
+   /**
+    * Plugin instance.
+    */
    private ExtraHardMode plugin;
+   /**
+    * Target player.
+    */
    private Player player;
+   /**
+    * Dragon entity.
+    */
    private LivingEntity dragon;
-   private ArrayList<Player> playersFightingDragon;
+   /**
+    * List of players fighting the dragon.
+    */
+   private final List<Player> playersFightingDragon = new ArrayList<>();
 
-   public DragonAttackPatternTask(ExtraHardMode plugin, LivingEntity dragon, Player player, ArrayList<Player> playersFightingDragon) {
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - plugin instance.
+    * @param dragon
+    *           - Dragon.
+    * @param player
+    *           - Target player.
+    * @param playersFightingDragon
+    *           - All fighting players.
+    */
+   public DragonAttackPatternTask(ExtraHardMode plugin, LivingEntity dragon, Player player, List<Player> playersFightingDragon) {
       this.plugin = plugin;
       this.dragon = dragon;
       this.player = player;
-      this.playersFightingDragon = playersFightingDragon;
+      this.playersFightingDragon.addAll(playersFightingDragon);
    }
 
    @Override

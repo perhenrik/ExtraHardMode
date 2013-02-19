@@ -29,7 +29,7 @@ import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
-import me.ryanhamshire.ExtraHardMode.module.PhysicsModule;
+import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.task.CreateExplosionTask;
 import me.ryanhamshire.ExtraHardMode.task.DragonAttackPatternTask;
 import me.ryanhamshire.ExtraHardMode.task.DragonAttackTask;
@@ -99,16 +99,35 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-//handles events related to entities
+/**
+ * Handles events related to entities.
+ */
 public class EntityEventHandler implements Listener {
-
+   /**
+    * Plugin instance.
+    */
    private ExtraHardMode plugin;
+   /**
+    * List of players fighting a dragon.
+    */
+   private final List<Player> playersFightingDragon = new ArrayList<Player>();
 
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - Plugin instance.
+    */
    public EntityEventHandler(ExtraHardMode plugin) {
       this.plugin = plugin;
    }
 
-   // when there's an explosion...
+   /**
+    * when there's an explosion...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(priority = EventPriority.NORMAL)
    public void onExplosion(EntityExplodeEvent event) {
       World world = event.getLocation().getWorld();
@@ -209,7 +228,7 @@ public class EntityEventHandler implements Listener {
             }
 
             // FEATURE: more falling blocks
-            PhysicsModule physics = plugin.getModuleForClass(PhysicsModule.class);
+            BlockModule physics = plugin.getModuleForClass(BlockModule.class);
             physics.physicsCheck(block, 0, true);
          }
       }
@@ -238,7 +257,12 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when a splash potion breaks...
+   /**
+    * when a splash potion breaks...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(priority = EventPriority.LOW)
    public void onPotionSplash(PotionSplashEvent event) {
       ThrownPotion potion = event.getPotion();
@@ -329,7 +353,12 @@ public class EntityEventHandler implements Listener {
 
    }
 
-   // when a creature spawns...
+   /**
+    * when a creature spawns...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(priority = EventPriority.LOW)
    public void onEntitySpawn(CreatureSpawnEvent event) {
       Location location = event.getLocation();
@@ -463,7 +492,12 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when an entity shoots a bow...
+   /**
+    * when an entity shoots a bow...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler
    public void onShootProjectile(ProjectileLaunchEvent event) {
       Location location = event.getEntity().getLocation();
@@ -499,7 +533,12 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when a chunk loads...
+   /**
+    * when a chunk loads...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler
    public void onChunkLoad(ChunkLoadEvent event) {
       Chunk chunk = event.getChunk();
@@ -520,7 +559,12 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when an entity dies...
+   /**
+    * when an entity dies...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler
    public void onEntityDeath(EntityDeathEvent event) {
       LivingEntity entity = event.getEntity();
@@ -629,7 +673,7 @@ public class EntityEventHandler implements Listener {
 
          if(config.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING)) {
             for(Player player : this.playersFightingDragon) {
-               player.sendMessage(messages.getString(MessageNode.DRAGON_FOUNTAIN_TIP));
+               plugin.sendMessage(player, messages.getString(MessageNode.DRAGON_FOUNTAIN_TIP));
             }
          }
 
@@ -787,7 +831,7 @@ public class EntityEventHandler implements Listener {
             locations[2] = entity.getLocation().add(-random1 / 2, 0, -random2);
             locations[3] = entity.getLocation().add(random1 / 2, 0, -random2 / 2);
 
-            ArrayList<Block> changedBlocks = new ArrayList<Block>();
+            List<Block> changedBlocks = new ArrayList<Block>();
             for(int i = 0; i < locations.length; i++) {
                Location location = locations[i];
                Block block = location.getBlock();
@@ -835,9 +879,12 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   private ArrayList<Player> playersFightingDragon = new ArrayList<Player>();
-
-   // when an entity is damaged
+   /**
+    * when an entity is damaged
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
    public void onEntityDamage(EntityDamageEvent event) {
       Entity entity = event.getEntity();
@@ -1082,7 +1129,12 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when a sheep regrows its wool...
+   /**
+    * when a sheep regrows its wool...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler
    public void onSheepRegrowWool(SheepRegrowWoolEvent event) {
       World world = event.getEntity().getWorld();
@@ -1096,7 +1148,12 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when an entity (not a player) teleports...
+   /**
+    * when an entity (not a player) teleports...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler
    public void onEntityTeleport(EntityTeleportEvent event) {
       Entity entity = event.getEntity();
@@ -1163,7 +1220,12 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when an entity targets something (as in to attack it)...
+   /**
+    * when an entity targets something (as in to attack it)...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler
    public void onEntityTarget(EntityTargetEvent event) {
       Entity entity = event.getEntity();
@@ -1184,7 +1246,12 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when a player crafts something...
+   /**
+    * when a player crafts something...
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
    public void onItemCrafted(CraftItemEvent event) {
       HumanEntity entity = event.getWhoClicked();
@@ -1204,7 +1271,7 @@ public class EntityEventHandler implements Listener {
       // FEATURE: no crafting melon seeds
       if(config.getBoolean(RootNode.WEAK_FOOD_CROPS) && result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS) {
          event.setCancelled(true);
-         player.sendMessage(messages.getString(MessageNode.NO_CRAFTING_MELON_SEEDS));
+         plugin.sendMessage(player, messages.getString(MessageNode.NO_CRAFTING_MELON_SEEDS));
          return;
       }
 
@@ -1214,8 +1281,13 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when a player teleports BUG HERE: last i checked, this event didn't fire
-   // from bukkit. so this code is incomplete (i stopped working on it)
+   /**
+    * when a player teleports BUG HERE: last i checked, this event didn't fire
+    * from bukkit. so this code is incomplete (i stopped working on it)
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
    public void onPlayerTeleport(PlayerTeleportEvent event) {
       Player player = event.getPlayer();
@@ -1225,7 +1297,12 @@ public class EntityEventHandler implements Listener {
          return;
    }
 
-   // when an item spawns
+   /**
+    * when an item spawns
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
    public void onItemSpawn(ItemSpawnEvent event) {
       // FEATURE: fountain effect from dragon fireball explosions sometimes
@@ -1240,9 +1317,13 @@ public class EntityEventHandler implements Listener {
       }
    }
 
-   // when an entity tries to change a block (does not include player block
-   // changes)
-   // don't allow endermen to change blocks
+   /**
+    * when an entity tries to change a block (does not include player block
+    * changes) don't allow endermen to change blocks
+    * 
+    * @param event
+    *           - Event that occurred.
+    */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
       Block block = event.getBlock();

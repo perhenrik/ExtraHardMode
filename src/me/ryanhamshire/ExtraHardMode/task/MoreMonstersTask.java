@@ -23,7 +23,7 @@ import java.util.AbstractMap.SimpleEntry;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
-import me.ryanhamshire.ExtraHardMode.module.DataStore;
+import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
 
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -34,17 +34,29 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+/**
+ * Task to spawn more monsters.
+ */
 public class MoreMonstersTask implements Runnable {
 
+   /**
+    * Plugin instance.
+    */
    private ExtraHardMode plugin;
 
+   /**
+    * Constructor.
+    * 
+    * @param plugin
+    *           - Plugin instance.
+    */
    public MoreMonstersTask(ExtraHardMode plugin) {
       this.plugin = plugin;
    }
 
    @Override
    public void run() {
-      DataStore dataStore = plugin.getModuleForClass(DataStore.class);
+      DataStoreModule dataStore = plugin.getModuleForClass(DataStoreModule.class);
       // spawn monsters from the last pass
       for(int i = 0; i < dataStore.getPreviousLocations().size(); i++) {
          SimpleEntry<Player, Location> entry = dataStore.getPreviousLocations().get(i);
@@ -74,10 +86,11 @@ public class MoreMonstersTask implements Runnable {
                      int typeMultiplier = 1;
 
                      // decide which kind and how many
-                     if(random < 30) // silverfish are most common
-                     {
+                     // silverfish are most common
+                     if(random < 30) {
                         monsterType = EntityType.SILVERFISH;
-                        typeMultiplier = 2; // twice as many if silverfish
+                        // twice as many if silverfish
+                        typeMultiplier = 2;
                      } else if(random < 47) {
                         monsterType = EntityType.SKELETON;
                      } else if(random < 64) {
@@ -92,9 +105,7 @@ public class MoreMonstersTask implements Runnable {
                      for(int j = 0; j < totalToSpawn; j++) {
                         world.spawnEntity(location, monsterType);
                      }
-                  }
-
-                  else if(world.getEnvironment() == Environment.NETHER) {
+                  } else if(world.getEnvironment() == Environment.NETHER) {
                      int random = plugin.getRandom().nextInt();
 
                      if(random < 80) {
