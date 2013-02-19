@@ -19,11 +19,11 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.module.DataStore;
 
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -37,8 +37,6 @@ import org.bukkit.entity.Player;
 public class MoreMonstersTask implements Runnable {
 
    private ExtraHardMode plugin;
-   // TODO this appears to be shared between tasks....? Throw to module.
-   private ArrayList<SimpleEntry<Player, Location>> previousLocations;
 
    public MoreMonstersTask(ExtraHardMode plugin) {
       this.plugin = plugin;
@@ -46,13 +44,10 @@ public class MoreMonstersTask implements Runnable {
 
    @Override
    public void run() {
-      if(previousLocations == null) {
-         previousLocations = new ArrayList<SimpleEntry<Player, Location>>();
-      }
-
+      DataStore dataStore = plugin.getModuleForClass(DataStore.class);
       // spawn monsters from the last pass
-      for(int i = 0; i < previousLocations.size(); i++) {
-         SimpleEntry<Player, Location> entry = previousLocations.get(i);
+      for(int i = 0; i < dataStore.getPreviousLocations().size(); i++) {
+         SimpleEntry<Player, Location> entry = dataStore.getPreviousLocations().get(i);
          Player player = entry.getKey();
          Location location = entry.getValue();
          Chunk chunk = location.getChunk();
@@ -115,7 +110,7 @@ public class MoreMonstersTask implements Runnable {
       }
 
       // plan for the next pass
-      previousLocations.clear();
+      dataStore.getPreviousLocations().clear();
       RootConfig config = plugin.getModuleForClass(RootConfig.class);
       Player[] players = plugin.getServer().getOnlinePlayers();
       for(int i = 0; i < players.length; i++) {
@@ -140,7 +135,7 @@ public class MoreMonstersTask implements Runnable {
             continue;
 
          // plan to check this location again later to possibly spawn monsters
-         previousLocations.add(new SimpleEntry<Player, Location>(player, location));
+         dataStore.getPreviousLocations().add(new SimpleEntry<Player, Location>(player, location));
       }
    }
 }

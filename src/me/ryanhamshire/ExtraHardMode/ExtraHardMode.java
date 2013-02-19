@@ -31,6 +31,8 @@ import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.event.BlockEventHandler;
 import me.ryanhamshire.ExtraHardMode.event.EntityEventHandler;
 import me.ryanhamshire.ExtraHardMode.event.PlayerEventHandler;
+import me.ryanhamshire.ExtraHardMode.module.DataStore;
+import me.ryanhamshire.ExtraHardMode.module.DataStore.PlayerData;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.module.PhysicsModule;
 import me.ryanhamshire.ExtraHardMode.service.IModule;
@@ -57,11 +59,6 @@ public class ExtraHardMode extends JavaPlugin {
    public static final String TAG = "[EHM]";
 
    /**
-    * This handles the config files (messages and plugin options)
-    */
-   public DataStore dataStore;
-
-   /**
     * Registered modules.
     */
    private final Map<Class<? extends IModule>, IModule> modules = new HashMap<>();
@@ -86,13 +83,12 @@ public class ExtraHardMode extends JavaPlugin {
     */
    @Override
    public void onEnable() {
-      // TODO get rid of this
-      this.dataStore = new DataStore();
       // Generate Root Config
       RootConfig rootConfig = new RootConfig(this);
       // Register modules
       registerModule(RootConfig.class, rootConfig);
       registerModule(MessageConfig.class, new MessageConfig(this));
+      registerModule(DataStore.class, new DataStore(this));
       registerModule(EntityModule.class, new EntityModule(this));
       registerModule(PhysicsModule.class, new PhysicsModule(this));
 
@@ -155,7 +151,7 @@ public class ExtraHardMode extends JavaPlugin {
          getLogger().info(color + message);
       } else {
          // FEATURE: don't spam messages
-         PlayerData playerData = this.dataStore.getPlayerData(player.getName());
+         PlayerData playerData = getModuleForClass(DataStore.class).getPlayerData(player.getName());
          long now = Calendar.getInstance().getTimeInMillis();
          if(!message.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000) {
             player.sendMessage(color + message);

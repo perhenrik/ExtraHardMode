@@ -16,24 +16,38 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.ryanhamshire.ExtraHardMode;
+package me.ryanhamshire.ExtraHardMode.module;
 
+import java.util.List;
+import java.util.Map;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 
 /**
- * class which manages all ExtraHardMode data (except for config options)
- * 
- * TODO complete redo to clean up the main class and make things easier. Convert
- * this to a module.
+ * Manages miscellaneous data.
  */
-public class DataStore {
+public class DataStore extends EHMModule {
+
    /**
     * in-memory cache for player data
     */
-   private ConcurrentHashMap<String, PlayerData> playerNameToPlayerDataMap = new ConcurrentHashMap<String, PlayerData>();
+   private final Map<String, PlayerData> playerNameToPlayerDataMap = new ConcurrentHashMap<String, PlayerData>();
+
+   private final List<SimpleEntry<Player, Location>> previousLocations = new CopyOnWriteArrayList<>();
+
+   public DataStore(ExtraHardMode plugin) {
+      super(plugin);
+   }
 
    // retrieves player data from memory
-   synchronized public PlayerData getPlayerData(String playerName) {
+   public PlayerData getPlayerData(String playerName) {
       // first, look in memory
       PlayerData playerData = this.playerNameToPlayerDataMap.get(playerName);
 
@@ -45,5 +59,27 @@ public class DataStore {
 
       // try the hash map again. if it's STILL not there, we have a bug to fix
       return this.playerNameToPlayerDataMap.get(playerName);
+   }
+
+   public List<SimpleEntry<Player, Location>> getPreviousLocations() {
+      return previousLocations;
+   }
+
+   @Override
+   public void starting() {
+   }
+
+   @Override
+   public void closing() {
+      playerNameToPlayerDataMap.clear();
+   }
+
+   /**
+    * holds all of ExtraHardMode's player-tied data
+    */
+   public class PlayerData {
+      public String lastMessageSent = "";
+      public long lastMessageTimestamp = 0;
+      public Boolean cachedWeightStatus = null;
    }
 }

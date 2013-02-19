@@ -21,11 +21,12 @@ package me.ryanhamshire.ExtraHardMode.event;
 import java.util.List;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.PlayerData;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
+import me.ryanhamshire.ExtraHardMode.module.DataStore;
+import me.ryanhamshire.ExtraHardMode.module.DataStore.PlayerData;
 import me.ryanhamshire.ExtraHardMode.task.EvaporateWaterTask;
 import me.ryanhamshire.ExtraHardMode.task.SetPlayerHealthAndFoodTask;
 
@@ -77,7 +78,7 @@ public class PlayerEventHandler implements Listener {
       plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L); // half-second
                                                                                     // delay
       // FEATURE: players can't swim when they're carrying a lot of weight
-      PlayerData playerData = plugin.dataStore.getPlayerData(player.getName());
+      PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
       playerData.cachedWeightStatus = null;
    }
 
@@ -260,7 +261,7 @@ public class PlayerEventHandler implements Listener {
       if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
          return;
 
-      PlayerData playerData = plugin.dataStore.getPlayerData(player.getName());
+      PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
       MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
       // if no cached value, calculate
       if(playerData.cachedWeightStatus == null) {
@@ -299,7 +300,7 @@ public class PlayerEventHandler implements Listener {
    void onPlayerDropItem(PlayerDropItemEvent event) {
       // FEATURE: players can't swim when they're carrying a lot of weight
       Player player = event.getPlayer();
-      PlayerData playerData = plugin.dataStore.getPlayerData(player.getName());
+      PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
       playerData.cachedWeightStatus = null;
    }
 
@@ -308,7 +309,7 @@ public class PlayerEventHandler implements Listener {
    void onPlayerPickupItem(PlayerPickupItemEvent event) {
       // FEATURE: players can't swim when they're carrying a lot of weight
       Player player = event.getPlayer();
-      PlayerData playerData = plugin.dataStore.getPlayerData(player.getName());
+      PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
       playerData.cachedWeightStatus = null;
    }
 
@@ -319,7 +320,7 @@ public class PlayerEventHandler implements Listener {
       HumanEntity humanEntity = event.getWhoClicked();
       if(humanEntity instanceof Player) {
          Player player = (Player) humanEntity;
-         PlayerData playerData = plugin.dataStore.getPlayerData(player.getName());
+         PlayerData playerData = plugin.getModuleForClass(DataStore.class).getPlayerData(player.getName());
          playerData.cachedWeightStatus = null;
       }
    }
