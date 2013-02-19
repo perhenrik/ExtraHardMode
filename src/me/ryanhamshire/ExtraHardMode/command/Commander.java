@@ -22,7 +22,7 @@ public class Commander extends CommandHandler {
 
    @Override
    public boolean noArgs(CommandSender sender, Command command, String label) {
-      sender.sendMessage(ChatColor.GRAY + "=========" + ChatColor.RED + plugin.getName() + ChatColor.GRAY + "=========");
+      sender.sendMessage(ChatColor.GRAY + "========= " + ChatColor.RED + plugin.getName() + ChatColor.GRAY + " =========");
       sender.sendMessage(" /ehm");
       sender.sendMessage("    help" + ChatColor.YELLOW + " - Show the help menu");
       sender.sendMessage("    version" + ChatColor.YELLOW + " - Show version info");
