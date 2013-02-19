@@ -24,7 +24,7 @@ import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
-import me.ryanhamshire.ExtraHardMode.config.messages.MessagesConfig;
+import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.PhysicsModule;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import me.ryanhamshire.ExtraHardMode.task.EvaporateWaterTask;
@@ -82,7 +82,7 @@ public class BlockEventHandler implements Listener {
       World world = block.getWorld();
       Player player = breakEvent.getPlayer();
       RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      MessagesConfig messages = plugin.getModuleForClass(MessagesConfig.class);
+      MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
       if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
          return;
@@ -220,7 +220,7 @@ public class BlockEventHandler implements Listener {
       Block block = placeEvent.getBlock();
       World world = block.getWorld();
       RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      MessagesConfig messages = plugin.getModuleForClass(MessagesConfig.class);
+      MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
       if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
          return;
@@ -494,7 +494,7 @@ public class BlockEventHandler implements Listener {
     */
    public void notifyPlayer(Player player, MessageNode node, PermissionNode perm, Sound sound, float soundPitch) {
       if(!player.hasPermission(perm.getNode())) {
-         MessagesConfig config = plugin.getModuleForClass(MessagesConfig.class);
+         MessageConfig config = plugin.getModuleForClass(MessageConfig.class);
          player.sendMessage(config.getString(node));
          player.playSound(player.getLocation(), sound, 1, soundPitch);
       }

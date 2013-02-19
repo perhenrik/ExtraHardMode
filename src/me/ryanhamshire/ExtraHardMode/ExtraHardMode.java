@@ -27,7 +27,7 @@ import java.util.Random;
 
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
-import me.ryanhamshire.ExtraHardMode.config.messages.MessagesConfig;
+import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.event.BlockEventHandler;
 import me.ryanhamshire.ExtraHardMode.event.EntityEventHandler;
 import me.ryanhamshire.ExtraHardMode.event.PlayerEventHandler;
@@ -92,7 +92,7 @@ public class ExtraHardMode extends JavaPlugin {
       RootConfig rootConfig = new RootConfig(this);
       // Register modules
       registerModule(RootConfig.class, rootConfig);
-      registerModule(MessagesConfig.class, new MessagesConfig(this));
+      registerModule(MessageConfig.class, new MessageConfig(this));
       registerModule(EntityModule.class, new EntityModule(this));
       registerModule(PhysicsModule.class, new PhysicsModule(this));
 

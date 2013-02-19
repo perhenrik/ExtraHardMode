@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 /**
  * Represents a command.
  */
-public interface JailCommand {
+public interface ICommand {
 
    /**
     * Execution method for the command.

@@ -25,7 +25,7 @@ import me.ryanhamshire.ExtraHardMode.PlayerData;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
-import me.ryanhamshire.ExtraHardMode.config.messages.MessagesConfig;
+import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.task.EvaporateWaterTask;
 import me.ryanhamshire.ExtraHardMode.task.SetPlayerHealthAndFoodTask;
 
@@ -261,7 +261,7 @@ public class PlayerEventHandler implements Listener {
          return;
 
       PlayerData playerData = plugin.dataStore.getPlayerData(player.getName());
-      MessagesConfig messages = plugin.getModuleForClass(MessagesConfig.class);
+      MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
       // if no cached value, calculate
       if(playerData.cachedWeightStatus == null) {
          // count worn clothing (counts double)

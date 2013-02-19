@@ -15,12 +15,12 @@ import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
 import me.ryanhamshire.ExtraHardMode.service.ModularConfig;
 
-public class MessagesConfig extends ModularConfig {
+public class MessageConfig extends ModularConfig {
 
    private final File file;
    private final YamlConfiguration config;
 
-   public MessagesConfig(ExtraHardMode plugin) {
+   public MessageConfig(ExtraHardMode plugin) {
       super(plugin);
       file = new File(plugin.getDataFolder().getAbsolutePath() + "/messages.yml");
       config = YamlConfiguration.loadConfiguration(file);

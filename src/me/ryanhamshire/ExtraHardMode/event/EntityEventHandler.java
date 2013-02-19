@@ -27,7 +27,7 @@ import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
-import me.ryanhamshire.ExtraHardMode.config.messages.MessagesConfig;
+import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.module.PhysicsModule;
 import me.ryanhamshire.ExtraHardMode.task.CreateExplosionTask;
@@ -531,7 +531,7 @@ public class EntityEventHandler implements Listener {
       }
       RootConfig config = plugin.getModuleForClass(RootConfig.class);
       EntityModule module = plugin.getModuleForClass(EntityModule.class);
-      MessagesConfig messages = plugin.getModuleForClass(MessagesConfig.class);
+      MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
       // FEATURE: some portion of player inventory is permanently lost on death
       if(entity instanceof Player) {
          Player player = (Player) entity;
@@ -1194,7 +1194,7 @@ public class EntityEventHandler implements Listener {
       Player player = (Player) entity;
       World world = player.getWorld();
       RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      MessagesConfig messages = plugin.getModuleForClass(MessagesConfig.class);
+      MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
       if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
          return;

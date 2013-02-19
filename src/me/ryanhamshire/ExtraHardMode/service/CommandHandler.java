@@ -20,7 +20,7 @@ public abstract class CommandHandler implements CommandExecutor {
    /**
     * Registered commands for this handler.
     */
-   protected final Map<String, JailCommand> registeredCommands = new HashMap<String, JailCommand>();
+   protected final Map<String, ICommand> registeredCommands = new HashMap<String, ICommand>();
    /**
     * Registered subcommands and the handler associated with it.
     */
@@ -55,7 +55,7 @@ public abstract class CommandHandler implements CommandExecutor {
     *           - Execution handler that will handle the logic behind the
     *           command.
     */
-   public void registerCommand(String label, JailCommand command) {
+   public void registerCommand(String label, ICommand command) {
       if(registeredCommands.containsKey(label)) {
          plugin.getLogger().warning("Replacing existing command for: " + label);
       }
@@ -113,7 +113,7 @@ public abstract class CommandHandler implements CommandExecutor {
             return handler.onCommand(sender, command, label, shortenArgs(args));
          }
          // Its our command, so handle it if its registered.
-         final JailCommand subCommand = registeredCommands.get(subcmd);
+         final ICommand subCommand = registeredCommands.get(subcmd);
          if(subCommand == null) {
             return unknownCommand(sender, command, label, args);
          }
