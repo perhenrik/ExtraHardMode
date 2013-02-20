@@ -19,8 +19,7 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.RootConfig;
-import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.config.Config;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -57,9 +56,6 @@ public class RemoveExposedTorchesTask implements Runnable {
 
    @Override
    public void run() {
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      boolean rainBreakTorches = config.getBoolean(RootNode.RAIN_BREAKS_TORCHES);
-      boolean weakFoodCrops = config.getBoolean(RootNode.WEAK_FOOD_CROPS);
       // if rain has stopped, don't do anything
       if(!this.chunk.getWorld().hasStorm())
          return;
@@ -74,14 +70,14 @@ public class RemoveExposedTorchesTask implements Runnable {
                   continue;
                }
 
-               if(rainBreakTorches && blockType == Material.TORCH) {
+               if(Config.World__Torches__Rain_Breaks_Torches && blockType == Material.TORCH) {
                   Biome biome = block.getBiome();
                   if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS)
                      break;
 
                   block.setType(Material.AIR);
                   chunk.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.TORCH, 1));
-               } else if(weakFoodCrops
+               } else if(Config.Farming__Weak_Food_Crops__Enable
                      && (blockType == Material.CROPS || blockType == Material.MELON_STEM || blockType == Material.CARROT
                            || blockType == Material.PUMPKIN_STEM || blockType == Material.POTATO || blockType == Material.RED_ROSE
                            || blockType == Material.YELLOW_FLOWER || blockType == Material.LONG_GRASS)) {

@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.RootConfig;
-import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.config.Config;
 
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
@@ -75,13 +74,12 @@ public class DragonAttackPatternTask implements Runnable {
          return;
 
       World world = this.dragon.getWorld();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
 
       // if the player has been defeated
       if(!this.player.isOnline() || world != this.player.getWorld() || this.player.isDead()) {
          // announce the combat result
          this.playersFightingDragon.remove(this.player);
-         if(config.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS) && !this.player.isDead()) {
+         if(Config.Enderdragon__Combat_Announcements && !this.player.isDead()) {
             plugin.getServer().broadcastMessage(this.player.getName() + " has been defeated by the dragon!");
          }
 

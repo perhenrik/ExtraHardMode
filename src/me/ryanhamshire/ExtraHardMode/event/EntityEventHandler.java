@@ -24,8 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.RootConfig;
-import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.config.Config;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
@@ -131,18 +130,18 @@ public class EntityEventHandler implements Listener {
    @EventHandler(priority = EventPriority.NORMAL)
    public void onExplosion(EntityExplodeEvent event) {
       World world = event.getLocation().getWorld();
-      if(!plugin.getEnabledWorlds().contains(world))
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
 
       EntityModule module = plugin.getModuleForClass(EntityModule.class);
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+
       Entity entity = event.getEntity();
 
       // FEATURE: bigger TNT booms, all explosions have 100% block yield
-      if(config.getBoolean(RootNode.BETTER_TNT)) {
+      if(Config.World__Better_Tnt) {
          event.setYield(1);
 
-         if(entity != null && entity.getType() == EntityType.PRIMED_TNT && !config.getBoolean(RootNode.WORK_AROUND_EXPLOSION_BUGS)) {
+         if(entity != null && entity.getType() == EntityType.PRIMED_TNT && !Config.Work_Around_Explosions_Bugs) {
             // create more explosions nearby
             long serverTime = world.getFullTime();
             int random1 = (int) (serverTime + entity.getLocation().getBlockZ()) % 8;
@@ -198,9 +197,7 @@ public class EntityEventHandler implements Listener {
                   }
                   fire.setVelocity(velocity);
                }
-            }
-
-            else if(random < 70) {
+            } else if(random < 70) {
                for(int i = 0; i < 2; i++) {
                   spawnedMonster = (Zombie) entity.getWorld().spawnEntity(entity.getLocation(), EntityType.ZOMBIE);
                   module.markLootLess((LivingEntity) spawnedMonster);
@@ -218,7 +215,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: in hardened stone mode, TNT only softens stone to cobble
-      if(config.getBoolean(RootNode.SUPER_HARD_STONE)) {
+      if(Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration) {
          List<Block> blocks = event.blockList();
          for(int i = 0; i < blocks.size(); i++) {
             Block block = blocks.get(i);
@@ -234,26 +231,20 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: more powerful ghast fireballs
-      if(entity != null && entity instanceof Fireball && !config.getBoolean(RootNode.WORK_AROUND_EXPLOSION_BUGS)) {
+      if(entity != null && entity instanceof Fireball && !Config.Work_Around_Explosions_Bugs) {
          Fireball fireball = (Fireball) entity;
          if(fireball.getShooter() != null && fireball.getShooter().getType() == EntityType.GHAST) {
             event.setCancelled(true);
-            entity.getWorld().createExplosion(entity.getLocation(), 4F, true); // same
-                                                                               // as
-                                                                               // vanilla
-                                                                               // TNT,
-                                                                               // plus
-                                                                               // fire
+            // same as vanilla TNT, plus fire
+            entity.getWorld().createExplosion(entity.getLocation(), 4F, true);
          }
       }
 
       // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
-      if(entity != null && entity instanceof Creeper && !config.getBoolean(RootNode.WORK_AROUND_EXPLOSION_BUGS)) {
+      if(entity != null && entity instanceof Creeper && !Config.Work_Around_Explosions_Bugs) {
          event.setCancelled(true);
-         entity.getWorld().createExplosion(entity.getLocation(), 3F, false); // same
-                                                                             // as
-                                                                             // vanilla
-                                                                             // TNT
+         // same as vanilla TNT
+         entity.getWorld().createExplosion(entity.getLocation(), 3F, false);
       }
    }
 
@@ -268,7 +259,7 @@ public class EntityEventHandler implements Listener {
       ThrownPotion potion = event.getPotion();
       Location location = potion.getLocation();
       World world = location.getWorld();
-      if(!plugin.getEnabledWorlds().contains(world))
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
       EntityModule module = plugin.getModuleForClass(EntityModule.class);
       // FEATURE: enhanced witches. they throw wolf spawner and teleport potions
@@ -309,22 +300,16 @@ public class EntityEventHandler implements Listener {
             } else {
                makeExplosion = true;
             }
-         }
-
-         // 30% teleport
-         else if(random < 60) {
+         } else if(random < 60) {
+            // 30% teleport
             event.setCancelled(true);
             witch.teleport(location);
-         }
-
-         // 30% explosion
-         else if(random < 90) {
+         } else if(random < 90) {
+            // 30% explosion
             event.setCancelled(true);
             makeExplosion = true;
-         }
-
-         // otherwise poison potion (selective target)
-         else {
+         } else {
+            // otherwise poison potion (selective target)
             Collection<LivingEntity> targets = event.getAffectedEntities();
             Iterator<LivingEntity> iterator = targets.iterator();
             while(iterator.hasNext()) {
@@ -363,7 +348,7 @@ public class EntityEventHandler implements Listener {
    public void onEntitySpawn(CreatureSpawnEvent event) {
       Location location = event.getLocation();
       World world = location.getWorld();
-      if(!plugin.getEnabledWorlds().contains(world))
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
 
       // avoid infinite loops
@@ -371,18 +356,18 @@ public class EntityEventHandler implements Listener {
          return;
 
       EntityModule module = plugin.getModuleForClass(EntityModule.class);
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+
       LivingEntity entity = event.getEntity();
 
       EntityType entityType = entity.getType();
 
       // FEATURE: inhibited monster grinders/farms
-      if(config.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS)) {
+      if(Config.General_Monster_Rules__Inhibit_Monster_Grinders) {
          SpawnReason reason = event.getSpawnReason();
 
          // spawners and spawn eggs always spawn a monster, but the monster
          // doesn't drop any loot
-         if(reason == SpawnReason.SPAWNER && (config.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT) > 0 || !(entity instanceof Blaze))) {
+         if(reason == SpawnReason.SPAWNER && (Config.Blazes__Bonus_Nether_Spawn_Percent > 0 || !(entity instanceof Blaze))) {
             module.markLootLess(entity);
          }
 
@@ -396,22 +381,21 @@ public class EntityEventHandler implements Listener {
                if(underBlockType != Material.GRASS && underBlockType != Material.STONE && underBlockType != Material.SAND
                      && underBlockType != Material.GRAVEL && underBlockType != Material.MOSSY_COBBLESTONE && underBlockType != Material.OBSIDIAN
                      && underBlockType != Material.COBBLESTONE && underBlockType != Material.BEDROCK && underBlockType != Material.AIR && // bats
-                     underBlockType != Material.WATER) // squid
-               {
+                     underBlockType != Material.WATER) {
+                  // squid
                   event.setCancelled(true);
                   return;
                }
             } else if(environment == Environment.NETHER) {
                if(underBlockType != Material.NETHERRACK && underBlockType != Material.NETHER_BRICK && underBlockType != Material.SOUL_SAND
-                     && underBlockType != Material.AIR) // ghasts
-               {
+                     && underBlockType != Material.AIR) {
+                  // ghasts
                   event.setCancelled(true);
                   return;
                }
             } else {
-               if(underBlockType != Material.ENDER_STONE && underBlockType != Material.OBSIDIAN && underBlockType != Material.AIR) // ender
-                                                                                                                                   // dragon
-               {
+               if(underBlockType != Material.ENDER_STONE && underBlockType != Material.OBSIDIAN && underBlockType != Material.AIR) {
+                  // ender dragon
                   event.setCancelled(true);
                   return;
                }
@@ -421,7 +405,7 @@ public class EntityEventHandler implements Listener {
 
       // FEATURE: charged creeper spawns
       if(entityType == EntityType.CREEPER) {
-         if(plugin.random(config.getInt(RootNode.CHARGED_CREEPER_SPAWN_PERCENT))) {
+         if(plugin.random(Config.Creepers__Charged_Spawn_Percent)) {
             ((Creeper) entity).setPowered(true);
          }
       }
@@ -429,7 +413,7 @@ public class EntityEventHandler implements Listener {
       // FEATURE: more witches above ground (on grass)
       if(entityType == EntityType.ZOMBIE && world.getEnvironment() == Environment.NORMAL
             && entity.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.GRASS) {
-         if(plugin.random(config.getInt(RootNode.BONUS_WITCH_SPAWN_PERCENT))) {
+         if(plugin.random(Config.Witches__Bonus_Spawn_Percent)) {
             event.setCancelled(true);
             entityType = EntityType.WITCH;
             world.spawnEntity(location, entityType);
@@ -438,7 +422,7 @@ public class EntityEventHandler implements Listener {
 
       // FEATURE: more spiders underground
       if(entityType == EntityType.ZOMBIE && world.getEnvironment() == Environment.NORMAL && location.getBlockY() < world.getSeaLevel() - 5) {
-         if(plugin.random(config.getInt(RootNode.BONUS_UNDERGROUND_SPIDER_SPAWN_PERCENT))) {
+         if(plugin.random(Config.Spiders__Bonus_Underground_Spawn_Percent)) {
             event.setCancelled(true);
             entityType = EntityType.SPIDER;
             world.spawnEntity(location, entityType);
@@ -447,7 +431,7 @@ public class EntityEventHandler implements Listener {
 
       // FEATURE: blazes near bedrock
       else if(entityType == EntityType.SKELETON && world.getEnvironment() == Environment.NORMAL && location.getBlockY() < 20) {
-         if(plugin.random(config.getInt(RootNode.NEAR_BEDROCK_BLAZE_SPAWN_PERCENT))) {
+         if(plugin.random(Config.Blazes__Near_Bedrock_Spawn_Percent)) {
             event.setCancelled(true);
             entityType = EntityType.BLAZE;
             world.spawnEntity(location, entityType);
@@ -456,12 +440,12 @@ public class EntityEventHandler implements Listener {
 
       // FEATURE: more blazes
       else if(entityType == EntityType.PIG_ZOMBIE) {
-         if(plugin.random(config.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT))) {
+         if(plugin.random(Config.Blazes__Bonus_Nether_Spawn_Percent)) {
             event.setCancelled(true);
             entityType = EntityType.BLAZE;
 
             // FEATURE: magma cubes spawn with blazes
-            if(plugin.random(config.getInt(RootNode.FLAME_SLIMES_SPAWN_WITH_NETHER_BLAZE_PRESENT))) {
+            if(plugin.random(Config.Blazes__Bonus_Nether_Spawn_Percent)) {
                MagmaCube cube = (MagmaCube) (world.spawnEntity(location, EntityType.MAGMA_CUBE));
                cube.setSize(1);
             }
@@ -470,12 +454,23 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: extra monster spawns underground
-      int maxY = config.getInt(RootNode.MORE_MONSTERS_MAX_Y);
-      int multiplier = config.getInt(RootNode.MORE_MONSTERS_MULTIPLIER);
+      int maxY = Config.General_Monster_Rules__More_Monsters__Max_Y;
+      int multiplier = Config.General_Monster_Rules__More_Monsters__Multiplier;
       if(maxY > 0) {
          if(world.getEnvironment() == Environment.NORMAL && event.getLocation().getBlockY() < maxY && entity instanceof Monster && entityType != null) {
             for(int i = 1; i < multiplier; i++) {
                Entity newEntity = world.spawnEntity(event.getLocation(), entityType);
+               /*
+                * TODO DateFormat format = new SimpleDateFormat("HH:mm:ss");
+                * Calendar cal = Calendar.getInstance();
+                * ExtraHardMode.instance.getServer().broadcastMessage("[" +
+                * format.format(cal.getTime()) + "] "+ ChatColor.GREEN +
+                * "Spawned " + entityType.getName() + " on " +
+                * location.getBlock().getRelative(BlockFace.DOWN,
+                * 1).getType().name() + ChatColor.AQUA + " at X:" +
+                * location.getBlockX() + " Y: " + location.getY() + " Z: " +
+                * location.getZ());
+                */
                if(module.isLootLess(entity)) {
                   module.markLootLess((LivingEntity) newEntity);
                }
@@ -484,7 +479,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: always-angry pig zombies
-      if(config.getBoolean(RootNode.ALWAYS_ANGRY_PIG_ZOMBIES)) {
+      if(Config.PigZombie__Always_Angry) {
          if(entity instanceof PigZombie) {
             PigZombie pigZombie = (PigZombie) entity;
             pigZombie.setAnger(Integer.MAX_VALUE);
@@ -504,7 +499,7 @@ public class EntityEventHandler implements Listener {
       World world = location.getWorld();
       EntityType entityType = event.getEntityType();
 
-      if(!plugin.getEnabledWorlds().contains(world))
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
 
       if(event.getEntity() == null)
@@ -515,9 +510,9 @@ public class EntityEventHandler implements Listener {
          return;
 
       Arrow arrow = (Arrow) event.getEntity();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+
       LivingEntity shooter = arrow.getShooter();
-      if(shooter != null && shooter.getType() == EntityType.SKELETON && plugin.random(config.getInt(RootNode.SKELETONS_RELEASE_SILVERFISH))) {
+      if(shooter != null && shooter.getType() == EntityType.SKELETON && plugin.random(Config.Skeletons__Shoot_Silverfish_Percent)) {
          Skeleton skeleton = (Skeleton) shooter;
          EntityModule module = plugin.getModuleForClass(EntityModule.class);
          // cancel arrow fire
@@ -544,11 +539,11 @@ public class EntityEventHandler implements Listener {
       Chunk chunk = event.getChunk();
       World world = chunk.getWorld();
 
-      if(!plugin.getEnabledWorlds().contains(world))
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+
       // FEATURE: always-angry pig zombies
-      if(config.getBoolean(RootNode.ALWAYS_ANGRY_PIG_ZOMBIES)) {
+      if(Config.PigZombie__Always_Angry) {
          Entity[] entities = chunk.getEntities();
          for(int i = 0; i < entities.length; i++) {
             if(entities[i] instanceof PigZombie) {
@@ -570,10 +565,10 @@ public class EntityEventHandler implements Listener {
       LivingEntity entity = event.getEntity();
       World world = entity.getWorld();
 
-      if(!plugin.getEnabledWorlds().contains(world)) {
+      if(!Config.Enabled_Worlds.contains(world.getName())) {
          return;
       }
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+
       EntityModule module = plugin.getModuleForClass(EntityModule.class);
       MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
       // FEATURE: some portion of player inventory is permanently lost on death
@@ -581,7 +576,7 @@ public class EntityEventHandler implements Listener {
          Player player = (Player) entity;
          if(!player.hasPermission("extrahardmode.bypass")) {
             List<ItemStack> drops = event.getDrops();
-            int numberOfStacksToRemove = (int) (drops.size() * (config.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT) / 100f));
+            int numberOfStacksToRemove = (int) (drops.size() * (Config.Player__Death_Item_Stacks_Forfeit_Percent / 100f));
             for(int i = 0; i < numberOfStacksToRemove && drops.size() > 0; i++) {
                int indexOfStackToRemove = plugin.getRandom().nextInt(drops.size());
                drops.remove(indexOfStackToRemove);
@@ -595,7 +590,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: zombies may reanimate if not on fire when they die
-      final int zombiesReanimatePercent = config.getInt(RootNode.ZOMBIES_REANIMATE_PERCENT);
+      final int zombiesReanimatePercent = Config.Zombies__Reanimate_Percent;
       if(zombiesReanimatePercent > 0) {
          if(entity.getType() == EntityType.ZOMBIE) {
             Zombie zombie = (Zombie) entity;
@@ -619,7 +614,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: creepers may drop activated TNT when they die
-      final int creeperDropTNTPercent = config.getInt(RootNode.CREEPERS_DROP_TNT_ON_DEATH_PERCENT);
+      final int creeperDropTNTPercent = Config.Creepers__Drop_Tnt_On_Death_Percent;
       if(creeperDropTNTPercent > 0) {
          if(entity.getType() == EntityType.CREEPER && plugin.random(creeperDropTNTPercent)) {
             world.spawnEntity(entity.getLocation(), EntityType.PRIMED_TNT);
@@ -627,7 +622,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: pig zombies drop nether wart when slain in nether fortresses
-      if(config.getBoolean(RootNode.FORTRESS_PIGS_DROP_WART) && world.getEnvironment() == Environment.NETHER && entity instanceof PigZombie) {
+      if(Config.PigZombie__Drop_Warts_In_Fortresses && world.getEnvironment() == Environment.NETHER && entity instanceof PigZombie) {
          Block underBlock = entity.getLocation().getBlock().getRelative(BlockFace.DOWN);
          if(underBlock.getType() == Material.NETHER_BRICK) {
             event.getDrops().add(new ItemStack(Material.NETHER_STALK));
@@ -635,7 +630,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: nether blazes drop extra loot (glowstone and gunpowder)
-      if(config.getBoolean(RootNode.BLAZES_DROP_BONUS_LOOT) && entity instanceof Blaze) {
+      if(Config.Blazes__Drop_Bonus_Loot && entity instanceof Blaze) {
          if(world.getEnvironment() == Environment.NETHER) {
             // 50% chance of each
             if(plugin.getRandom().nextInt(2) == 0) {
@@ -652,16 +647,16 @@ public class EntityEventHandler implements Listener {
 
       // FEATURE: ender dragon drops prizes on death
       if(entity instanceof EnderDragon) {
-         if(config.getBoolean(RootNode.ENDER_DRAGON_DROPS_VILLAGER_EGGS)) {
+         if(Config.Enderdragon__Drops_Villager_Eggs) {
             ItemStack itemStack = new ItemStack(Material.MONSTER_EGG, 2, (short) 120);
             world.dropItemNaturally(entity.getLocation().add(10, 0, 0), itemStack);
          }
 
-         if(config.getBoolean(RootNode.ENDER_DRAGON_DROPS_EGG)) {
+         if(Config.Enderdragon__Drops_Dragon_Egg) {
             world.dropItemNaturally(entity.getLocation().add(10, 0, 0), new ItemStack(Material.DRAGON_EGG));
          }
 
-         if(config.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS)) {
+         if(Config.Enderdragon__Combat_Announcements) {
             StringBuilder builder = new StringBuilder("The dragon has been defeated!  ( By: ");
             for(Player player : this.playersFightingDragon) {
                builder.append(player.getName() + " ");
@@ -671,7 +666,7 @@ public class EntityEventHandler implements Listener {
             plugin.getServer().broadcastMessage(builder.toString());
          }
 
-         if(config.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING)) {
+         if(Config.Enderdragon__No_Building_In_End) {
             for(Player player : this.playersFightingDragon) {
                plugin.sendMessage(player, messages.getString(MessageNode.DRAGON_FOUNTAIN_TIP));
             }
@@ -682,7 +677,7 @@ public class EntityEventHandler implements Listener {
 
       // FEATURE: monsters which take environmental damage or spawn from
       // spawners don't drop loot and exp (monster grinder inhibitor)
-      if(config.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS) && entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.SQUID) {
+      if(Config.General_Monster_Rules__Inhibit_Monster_Grinders && entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.SQUID) {
          boolean noLoot = false;
 
          if(module.isLootLess(entity)) {
@@ -768,12 +763,12 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: animals don't drop experience (because they're easy to "farm")
-      if(config.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS) && entity instanceof Animals) {
+      if(Config.General_Monster_Rules__Inhibit_Monster_Grinders && entity instanceof Animals) {
          event.setDroppedExp(0);
       }
 
       // FEATURE: ghasts deflect arrows and drop extra loot and exp
-      if(config.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS)) {
+      if(Config.Ghasts__Deflect_Arrows) {
          if(entity instanceof Ghast) {
             event.setDroppedExp(event.getDroppedExp() * 10);
             List<ItemStack> itemDrops = event.getDrops();
@@ -785,8 +780,8 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: blazes explode on death in normal world
-      if(config.getBoolean(RootNode.BLAZES_EXPLODE_ON_DEATH) && entity instanceof Blaze && world.getEnvironment() == Environment.NORMAL
-            && !config.getBoolean(RootNode.WORK_AROUND_EXPLOSION_BUGS)) {
+      if(Config.Blazes__Explode_On_Death && entity instanceof Blaze && world.getEnvironment() == Environment.NORMAL
+            && !Config.Work_Around_Explosions_Bugs) {
          // create explosion
          world.createExplosion(entity.getLocation(), 2F, true); // equal to a
                                                                 // TNT blast,
@@ -799,7 +794,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: nether blazes may multiply on death
-      final int blazeSplitPercent = config.getInt(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT);
+      final int blazeSplitPercent = Config.Blazes__Nether_Blazes_Split_On_Death_Percent;
       if(blazeSplitPercent > 0 && world.getEnvironment() == Environment.NETHER && entity instanceof Blaze) {
          if(plugin.random(blazeSplitPercent)) {
             Entity firstNewBlaze = world.spawnEntity(entity.getLocation(), EntityType.BLAZE);
@@ -817,7 +812,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: spiders drop web on death
-      if(config.getBoolean(RootNode.SPIDERS_DROP_WEB_ON_DEATH)) {
+      if(Config.Spiders__Drop_Web_On_Death) {
          if(entity instanceof Spider) {
             // random web placement
             long serverTime = world.getFullTime();
@@ -891,10 +886,9 @@ public class EntityEventHandler implements Listener {
       EntityType entityType = entity.getType();
       World world = entity.getWorld();
 
-      if(!plugin.getEnabledWorlds().contains(world))
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
 
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
       EntityModule module = plugin.getModuleForClass(EntityModule.class);
 
       // is this an entity damaged by entity event?
@@ -910,7 +904,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: the dragon has new attacks
-      if(subEvent != null && entity.getType() == EntityType.ENDER_DRAGON && config.getBoolean(RootNode.ENDER_DRAGON_ADDITIONAL_ATTACKS)) {
+      if(subEvent != null && entity.getType() == EntityType.ENDER_DRAGON && Config.Enderdragon__Additional_Attacks) {
          Player damager = null;
          if(subEvent.getDamager() instanceof Player) {
             damager = (Player) subEvent.getDamager();
@@ -928,7 +922,7 @@ public class EntityEventHandler implements Listener {
                DragonAttackPatternTask task = new DragonAttackPatternTask(plugin, (LivingEntity) entity, damager, this.playersFightingDragon);
                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);
 
-               if(config.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS)) {
+               if(Config.Enderdragon__Combat_Announcements) {
                   plugin.getServer().broadcastMessage(damager.getName() + " is challenging the dragon!");
                }
             }
@@ -950,7 +944,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: zombies can apply a debilitating effect
-      if(config.getBoolean(RootNode.ZOMBIES_DEBILITATE_PLAYERS)) {
+      if(Config.Zombies__Debilitate_Players) {
          if(subEvent != null && subEvent.getDamager() instanceof Zombie) {
             if(entity instanceof Player) {
                Player player = (Player) entity;
@@ -962,8 +956,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: magma cubes become blazes when they take damage
-      if(entityType == EntityType.MAGMA_CUBE && config.getBoolean(RootNode.MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE) && !entity.isDead()
-            && !config.getBoolean(RootNode.WORK_AROUND_EXPLOSION_BUGS)) {
+      if(entityType == EntityType.MAGMA_CUBE && Config.MagmaCubes__Become_Blazes_On_Damage && !entity.isDead() && !Config.Work_Around_Explosions_Bugs) {
          entity.remove(); // remove magma cube
          entity.getWorld().spawnEntity(entity.getLocation().add(0, 2, 0), EntityType.BLAZE); // replace
                                                                                              // with
@@ -975,7 +968,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: arrows pass through skeletons
-      final int deflect = config.getInt(RootNode.SKELETONS_DEFLECT_ARROWS);
+      final int deflect = Config.Skeletons__Deflect_Arrows_Percent;
       if(entityType == EntityType.SKELETON && subEvent != null && deflect > 0) {
          Entity damageSource = subEvent.getDamager();
 
@@ -1000,7 +993,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: extra damage and effects from environmental damage
-      if(config.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE)) {
+      if(Config.Player__Enhanced_Environmental_Damage) {
          Player player = null;
          if(entity instanceof Player) {
             player = (Player) entity;
@@ -1025,7 +1018,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: skeletons can knock back
-      final int knockBackPercent = config.getInt(RootNode.SKELETONS_KNOCK_BACK_PERCENT);
+      final int knockBackPercent = Config.Skeletons__Knock_Back_Percent;
       if(knockBackPercent > 0) {
          if(subEvent != null) {
             if(subEvent.getDamager() instanceof Arrow) {
@@ -1049,7 +1042,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: blazes drop fire on hit
-      if(config.getBoolean(RootNode.BLAZES_DROP_FIRE_ON_DAMAGE)) {
+      if(Config.Blazes__Drop_Fire_On_Damage) {
          if(entityType == EntityType.BLAZE) {
             Blaze blaze = (Blaze) entity;
 
@@ -1070,7 +1063,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: charged creepers explode on hit
-      if(config.getBoolean(RootNode.CHARGED_CREEPERS_EXPLODE_ON_HIT) && !config.getBoolean(RootNode.WORK_AROUND_EXPLOSION_BUGS)) {
+      if(Config.Creepers__Charged_Creepers_Explode_On_Hit && !Config.Work_Around_Explosions_Bugs) {
          if(entityType == EntityType.CREEPER && !entity.isDead()) {
             Creeper creeper = (Creeper) entity;
             if(creeper.isPowered()) {
@@ -1083,7 +1076,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: flaming creepers explode
-      if(config.getBoolean(RootNode.FLAMING_CREEPERS_EXPLODE) && !config.getBoolean(RootNode.WORK_AROUND_EXPLOSION_BUGS)) {
+      if(Config.Creepers__Flaming_Creepers_Explode && !Config.Work_Around_Explosions_Bugs) {
          if(entityType == EntityType.CREEPER && !entity.isDead()) {
             Creeper creeper = (Creeper) entity;
             if(creeper.getFireTicks() > 0 && plugin.getRandom().nextBoolean()) {
@@ -1096,7 +1089,7 @@ public class EntityEventHandler implements Listener {
       }
 
       // FEATURE: ghasts deflect arrows and drop extra loot
-      if(config.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS)) {
+      if(Config.Ghasts__Deflect_Arrows) {
          // only ghasts, and only if damaged by another entity (as opposed to
          // environmental damage)
          if(entity instanceof Ghast && event instanceof EntityDamageByEntityEvent) {
@@ -1121,7 +1114,7 @@ public class EntityEventHandler implements Listener {
 
       // FEATURE: monsters which take environmental damage don't drop loot or
       // experience (monster grinder inhibitor)
-      if(config.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS) && entity instanceof LivingEntity) {
+      if(Config.General_Monster_Rules__Inhibit_Monster_Grinders && entity instanceof LivingEntity) {
          DamageCause damageCause = event.getCause();
          if(damageCause != DamageCause.ENTITY_ATTACK && damageCause != DamageCause.PROJECTILE && damageCause != DamageCause.BLOCK_EXPLOSION) {
             module.addEnvironmentalDamage((LivingEntity) entity, event.getDamage());
@@ -1138,11 +1131,11 @@ public class EntityEventHandler implements Listener {
    @EventHandler
    public void onSheepRegrowWool(SheepRegrowWoolEvent event) {
       World world = event.getEntity().getWorld();
-      if(!plugin.getEnabledWorlds().contains(world))
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+
       // FEATURE: sheep are all white, and may be dyed only temporarily
-      if(config.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL)) {
+      if(Config.Farming__Sheep_Only_Regrow_White_Wool) {
          Sheep sheep = event.getEntity();
          sheep.setColor(DyeColor.WHITE);
       }
@@ -1158,13 +1151,13 @@ public class EntityEventHandler implements Listener {
    public void onEntityTeleport(EntityTeleportEvent event) {
       Entity entity = event.getEntity();
       World world = entity.getWorld();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      if(!plugin.getEnabledWorlds().contains(world))
+
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
       if(world.getEnvironment() != Environment.NORMAL)
          return;
 
-      if(entity instanceof Enderman && config.getBoolean(RootNode.IMPROVED_ENDERMAN_TELEPORTATION)) {
+      if(entity instanceof Enderman && Config.Enderman__Improved_Teleportation) {
          Enderman enderman = (Enderman) entity;
 
          // ignore endermen which aren't fighting players
@@ -1230,7 +1223,7 @@ public class EntityEventHandler implements Listener {
    public void onEntityTarget(EntityTargetEvent event) {
       Entity entity = event.getEntity();
       World world = entity.getWorld();
-      if(!plugin.getEnabledWorlds().contains(world))
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
 
       EntityModule module = plugin.getModuleForClass(EntityModule.class);
@@ -1260,23 +1253,23 @@ public class EntityEventHandler implements Listener {
 
       Player player = (Player) entity;
       World world = player.getWorld();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+
       MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
-      if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
+      if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission("extrahardmode.bypass"))
          return;
 
       Material result = event.getRecipe().getResult().getType();
 
       // FEATURE: no crafting melon seeds
-      if(config.getBoolean(RootNode.WEAK_FOOD_CROPS) && result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS) {
+      if(Config.Farming__No_Crafting_Melon_Seeds && result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS) {
          event.setCancelled(true);
          plugin.sendMessage(player, messages.getString(MessageNode.NO_CRAFTING_MELON_SEEDS));
          return;
       }
 
       // FEATURE: extra TNT from the TNT recipe
-      if(config.getBoolean(RootNode.BETTER_TNT) && event.getRecipe().getResult().getType() == Material.TNT) {
+      if(Config.World__Better_Tnt && event.getRecipe().getResult().getType() == Material.TNT) {
          player.getInventory().addItem(new ItemStack(Material.TNT, 2));
       }
    }
@@ -1292,8 +1285,8 @@ public class EntityEventHandler implements Listener {
    public void onPlayerTeleport(PlayerTeleportEvent event) {
       Player player = event.getPlayer();
       World world = player.getWorld();
-      if(event.getCause() != TeleportCause.END_PORTAL || !plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass")
-            || world.getEnvironment() == Environment.THE_END)
+      if(event.getCause() != TeleportCause.END_PORTAL || !Config.Enabled_Worlds.contains(world.getName())
+            || player.hasPermission("extrahardmode.bypass") || world.getEnvironment() == Environment.THE_END)
          return;
    }
 
@@ -1309,7 +1302,7 @@ public class EntityEventHandler implements Listener {
       // causes fire to drop as an item. this is the fix for that.
       Item item = event.getEntity();
       World world = item.getWorld();
-      if(!plugin.getEnabledWorlds().contains(world) || world.getEnvironment() != Environment.THE_END)
+      if(!Config.Enabled_Worlds.contains(world.getName()) || world.getEnvironment() != Environment.THE_END)
          return;
 
       if(item.getItemStack().getType() == Material.FIRE) {
@@ -1328,7 +1321,7 @@ public class EntityEventHandler implements Listener {
    public void onEntityChangeBlock(EntityChangeBlockEvent event) {
       Block block = event.getBlock();
       World world = block.getWorld();
-      if(!plugin.getEnabledWorlds().contains(world))
+      if(!Config.Enabled_Worlds.contains(world.getName()))
          return;
 
       if(event.getEntity().getType() == EntityType.SILVERFISH && event.getTo() == Material.MONSTER_EGGS) {

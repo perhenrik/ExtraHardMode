@@ -18,11 +18,11 @@
 
 package me.ryanhamshire.ExtraHardMode.event;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.RootConfig;
-import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.config.Config;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
@@ -64,6 +64,12 @@ public class BlockEventHandler implements Listener {
    private ExtraHardMode plugin;
 
    /**
+    * Block faces to iterate through.
+    */
+   private final BlockFace[] blockFaces = new BlockFace[] { BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
+         BlockFace.WEST };
+
+   /**
     * constructor
     * 
     * @param plugin
@@ -84,16 +90,16 @@ public class BlockEventHandler implements Listener {
       Block block = breakEvent.getBlock();
       World world = block.getWorld();
       Player player = breakEvent.getPlayer();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+
       MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
-      if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
+      if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission("extrahardmode.bypass"))
          return;
 
       // FEATURE: very limited building in the end
       // players are allowed to break only end stone, and only to create a stair
       // up to ground level
-      if(config.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING) && world.getEnvironment() == Environment.THE_END) {
+      if(Config.Enderdragon__No_Building_In_End && world.getEnvironment() == Environment.THE_END) {
          if(block.getType() != Material.ENDER_STONE) {
             breakEvent.setCancelled(true);
             plugin.sendMessage(player, messages.getString(MessageNode.LIMITED_END_BUILDING));
@@ -114,7 +120,7 @@ public class BlockEventHandler implements Listener {
       }
 
       // FEATURE: stone breaks tools much more quickly
-      if(config.getBoolean(RootNode.SUPER_HARD_STONE)) {
+      if(Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration) {
          ItemStack inHandStack = player.getItemInHand();
 
          // if breaking stone with an item in hand and the player does NOT have
@@ -144,37 +150,19 @@ public class BlockEventHandler implements Listener {
 
          // when ore is broken, it softens adjacent stone
          // important to ensure players can reach the ore they break
-         if(block.getType().name().endsWith("_ORE")) {
-            Block adjacentBlock = block.getRelative(BlockFace.DOWN);
-            if(adjacentBlock.getType() == Material.STONE)
-               adjacentBlock.setType(Material.COBBLESTONE);
-
-            adjacentBlock = block.getRelative(BlockFace.UP);
-            if(adjacentBlock.getType() == Material.STONE)
-               adjacentBlock.setType(Material.COBBLESTONE);
-
-            adjacentBlock = block.getRelative(BlockFace.EAST);
-            if(adjacentBlock.getType() == Material.STONE)
-               adjacentBlock.setType(Material.COBBLESTONE);
-
-            adjacentBlock = block.getRelative(BlockFace.WEST);
-            if(adjacentBlock.getType() == Material.STONE)
-               adjacentBlock.setType(Material.COBBLESTONE);
-
-            adjacentBlock = block.getRelative(BlockFace.NORTH);
-            if(adjacentBlock.getType() == Material.STONE)
-               adjacentBlock.setType(Material.COBBLESTONE);
-
-            adjacentBlock = block.getRelative(BlockFace.SOUTH);
-            if(adjacentBlock.getType() == Material.STONE)
-               adjacentBlock.setType(Material.COBBLESTONE);
+         if(block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES")) {
+            for(BlockFace face : blockFaces) {
+               Block adjacentBlock = block.getRelative(face);
+               if(adjacentBlock.getType() == Material.STONE)
+                  adjacentBlock.setType(Material.COBBLESTONE);
+            }
          }
       }
 
       BlockModule module = plugin.getModuleForClass(BlockModule.class);
 
       // FEATURE: trees chop more naturally
-      if(block.getType() == Material.LOG && config.getBoolean(RootNode.BETTER_TREE_CHOPPING)) {
+      if(block.getType() == Material.LOG && Config.World__Better_Tree_Chopping) {
          Block rootBlock = block;
          while(rootBlock.getType() == Material.LOG) {
             rootBlock = rootBlock.getRelative(BlockFace.DOWN);
@@ -194,7 +182,7 @@ public class BlockEventHandler implements Listener {
 
       // FEATURE: no nether wart farming (always drops exactly 1 nether wart
       // when broken)
-      if(config.getBoolean(RootNode.NO_FARMING_NETHER_WART)) {
+      if(Config.Farming__No_Farming_Nether_Wart) {
          if(block.getType() == Material.NETHER_WARTS) {
             block.getDrops().clear();
             block.getDrops().add(new ItemStack(Material.NETHER_STALK));
@@ -202,9 +190,9 @@ public class BlockEventHandler implements Listener {
       }
 
       // FEATURE: breaking netherrack may start a fire
-      if(config.getInt(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT) > 0 && block.getType() == Material.NETHERRACK) {
+      if(Config.World__Broken_Netherrack_Catches_Fire_Percent > 0 && block.getType() == Material.NETHERRACK) {
          Block underBlock = block.getRelative(BlockFace.DOWN);
-         if(underBlock.getType() == Material.NETHERRACK && plugin.random(config.getInt(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT))) {
+         if(underBlock.getType() == Material.NETHERRACK && plugin.random(Config.World__Broken_Netherrack_Catches_Fire_Percent)) {
             breakEvent.setCancelled(true);
             block.setType(Material.FIRE);
          }
@@ -222,16 +210,16 @@ public class BlockEventHandler implements Listener {
       Player player = placeEvent.getPlayer();
       Block block = placeEvent.getBlock();
       World world = block.getWorld();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
+
       MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
-      if(!plugin.getEnabledWorlds().contains(world) || player.hasPermission("extrahardmode.bypass"))
+      if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission("extrahardmode.bypass"))
          return;
 
       // FEATURE: very limited building in the end
       // players are allowed to break only end stone, and only to create a stair
       // up to ground level
-      if(config.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING) && world.getEnvironment() == Environment.THE_END) {
+      if(Config.Enderdragon__No_Building_In_End && world.getEnvironment() == Environment.THE_END) {
          placeEvent.setCancelled(true);
          plugin.sendMessage(player, messages.getString(MessageNode.LIMITED_END_BUILDING));
          return;
@@ -239,15 +227,17 @@ public class BlockEventHandler implements Listener {
 
       // FIX: prevent players from placing ore as an exploit to work around the
       // hardened stone rule
-      if(config.getBoolean(RootNode.SUPER_HARD_STONE) && block.getType().name().endsWith("_ORE")) {
-         Block[] adjacentBlocks = new Block[] { block.getRelative(BlockFace.DOWN), block.getRelative(BlockFace.UP),
-               block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST), block.getRelative(BlockFace.NORTH),
-               block.getRelative(BlockFace.SOUTH) };
+      // ORES for redpower
+      if(Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration
+            && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES"))) {
+         ArrayList<Block> adjacentBlocks = new ArrayList<Block>();
+         for(BlockFace face : blockFaces) {
+            adjacentBlocks.add(block.getRelative(face));
+         }
 
-         for(int i = 0; i < adjacentBlocks.length; i++) {
-            Block adjacentBlock = adjacentBlocks[i];
+         for(Block adjacentBlock : adjacentBlocks) {
             if(adjacentBlock.getType() == Material.STONE) {
-               notifyPlayer(player, MessageNode.NO_PLACING_ORE_AGAINST_STONE, PermissionNode.SILENT_NO_PLACING_ORE_AGAINST_STONE, Sound.ARROW_HIT, 10);
+               plugin.sendMessage(player, messages.getString(MessageNode.NO_PLACING_ORE_AGAINST_STONE));
                placeEvent.setCancelled(true);
                return;
             }
@@ -255,7 +245,7 @@ public class BlockEventHandler implements Listener {
       }
 
       // FEATURE: no farming nether wart
-      if(block.getType() == Material.NETHER_WARTS && config.getBoolean(RootNode.NO_FARMING_NETHER_WART)) {
+      if(block.getType() == Material.NETHER_WARTS && Config.Farming__No_Farming_Nether_Wart) {
          placeEvent.setCancelled(true);
          return;
       }
@@ -266,7 +256,7 @@ public class BlockEventHandler implements Listener {
 
       // FEATURE: no standard torches, jack o lanterns, or fire on top of
       // netherrack near diamond level
-      final int minY = config.getInt(RootNode.STANDARD_TORCH_MIN_Y);
+      final int minY = Config.World__Torches__Torch_Max_Y;
       if(minY > 0) {
          if(world.getEnvironment() == Environment.NORMAL
                && block.getY() < minY
@@ -281,7 +271,7 @@ public class BlockEventHandler implements Listener {
       // FEATURE: players can't place blocks from weird angles (using shift to
       // hover over in the air beyond the edge of solid ground)
       // or directly beneath themselves, for that matter
-      if(config.getBoolean(RootNode.LIMITED_BLOCK_PLACEMENT)) {
+      if(Config.World__Limited_Block_Placement) {
          if(block.getX() == player.getLocation().getBlockX() && block.getZ() == player.getLocation().getBlockZ()
                && block.getY() < player.getLocation().getBlockY()) {
             notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING, Sound.NOTE_STICKS, 1);
@@ -312,13 +302,15 @@ public class BlockEventHandler implements Listener {
       }
 
       // FEATURE: players can't attach torches to common "soft" blocks
-      if(config.getBoolean(RootNode.LIMITED_TORCH_PLACEMENT) && block.getType() == Material.TORCH) {
+      if(Config.World__Torches__Limited_Torch_Placement && block.getType() == Material.TORCH) {
          Torch torch = new Torch(Material.TORCH, block.getData());
          Material attachmentMaterial = block.getRelative(torch.getAttachedFace()).getType();
 
          if(attachmentMaterial == Material.DIRT || attachmentMaterial == Material.GRASS || attachmentMaterial == Material.LONG_GRASS
                || attachmentMaterial == Material.SAND) {
-            notifyPlayer(player, MessageNode.LIMITED_TORCH_PLACEMENTS, PermissionNode.SILENT_LIMITED_TORCH_PLACEMENT, Sound.FIZZ, 20);
+            if(Config.World__Play_Sounds__Torch_Fizzing) {
+               notifyPlayer(player, MessageNode.LIMITED_TORCH_PLACEMENTS, PermissionNode.SILENT_LIMITED_TORCH_PLACEMENT, Sound.FIZZ, 20);
+            }
             placeEvent.setCancelled(true);
             return;
          }
@@ -334,10 +326,10 @@ public class BlockEventHandler implements Listener {
    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
    void onBlockDispense(BlockDispenseEvent event) {
       // FEATURE: can't move water source blocks
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      if(config.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS)) {
+
+      if(Config.World__Water__Dont_Move_Source_Blocks) {
          World world = event.getBlock().getWorld();
-         if(!plugin.getEnabledWorlds().contains(world))
+         if(!Config.Enabled_Worlds.contains(world.getName()))
             return;
 
          // only care about water
@@ -371,12 +363,11 @@ public class BlockEventHandler implements Listener {
    public void onBlockPistonExtend(BlockPistonExtendEvent event) {
       List<Block> blocks = event.getBlocks();
       World world = event.getBlock().getWorld();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
 
       // FEATURE: prevent players from circumventing hardened stone rules by
       // placing ore, then pushing the ore next to stone before breaking it
 
-      if(!config.getBoolean(RootNode.SUPER_HARD_STONE) || !plugin.getEnabledWorlds().contains(world))
+      if(!Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration || !Config.Enabled_Worlds.contains(world.getName()))
          return;
 
       // which blocks are being pushed?
@@ -408,9 +399,8 @@ public class BlockEventHandler implements Listener {
 
       Block block = event.getRetractLocation().getBlock();
       World world = block.getWorld();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
 
-      if(!config.getBoolean(RootNode.SUPER_HARD_STONE) || !plugin.getEnabledWorlds().contains(world))
+      if(!Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration || !Config.Enabled_Worlds.contains(world.getName()))
          return;
 
       Material material = block.getType();
@@ -430,12 +420,14 @@ public class BlockEventHandler implements Listener {
    public void onWeatherChange(WeatherChangeEvent event) {
       // FEATURE: rainfall breaks exposed torches (exposed to the sky)
       World world = event.getWorld();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      if(!plugin.getEnabledWorlds().contains(world) || !config.getBoolean(RootNode.RAIN_BREAKS_TORCHES))
-         return;
 
-      if(!event.toWeatherState())
+      if(!Config.Enabled_Worlds.contains(world.getName())) {
+         return;
+      }
+
+      if(!event.toWeatherState()) {
          return; // if not raining
+      }
 
       // plan to remove torches chunk by chunk gradually throughout the rain
       // period
@@ -477,18 +469,51 @@ public class BlockEventHandler implements Listener {
    public void onStructureGrow(StructureGrowEvent event) {
       World world = event.getWorld();
       Block block = event.getLocation().getBlock();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      if(!plugin.getEnabledWorlds().contains(world) || (event.getPlayer() != null && event.getPlayer().hasPermission("extrahardmode.bypass")))
+
+      if(!Config.Enabled_Worlds.contains(world.getName()) || (event.getPlayer() != null && event.getPlayer().hasPermission("extrahardmode.bypass")))
          return;
 
       // FEATURE: no big plant growth in deserts
-      if(config.getBoolean(RootNode.WEAK_FOOD_CROPS)) {
+      if(Config.Farming__Weak_Food_Crops__Arid_Infertile_Desserts) {
          Biome biome = block.getBiome();
          if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS) {
             event.setCancelled(true);
          }
       }
    }
+
+   // TODO FINISH FEATURE
+   /*
+    * //FEATURE Make Cobblestone Generators generate SmoothStone
+    * 
+    * @EventHandler public void onTransformFromTo (BlockFromToEvent event) {
+    * //the block that triggered the event Block block = event.getBlock();
+    * Material bMaterial = block.getType(); //the block that will be changed
+    * Block toBlock = event.getToBlock(); Material toMaterial =
+    * toBlock.getType();
+    * 
+    * if(bMaterial.name().contains("LAVA") ||
+    * bMaterial.name().contains("WATER")) { if(toMaterial == Material.AIR) {
+    * //Example: SourceBlock is Lava, then either water or stationary water can
+    * create cobble Material possibilityOne = ( Material.WATER == bMaterial
+    * ||//if Material.STATIONARY_WATER == bMaterial//or ? Material.LAVA//then
+    * set to : Material.WATER);//otherwise set to Material possibilityTwo = (
+    * Material.WATER == bMaterial ||//if Material.STATIONARY_WATER ==
+    * bMaterial//or ? Material.STATIONARY_LAVA//then :
+    * Material.STATIONARY_WATER);//otherwise
+    * 
+    * if(generatesCobble(bMaterial.getId(), toBlock)) {
+    * //event.setCancelled(true); } } } }
+    * 
+    * public boolean generatesCobble(int id, Block b) { int mirrorID1 = (id == 8
+    * || id == 9 ? 10 : 8); int mirrorID2 = (id == 8 || id == 9 ? 11 : 9);
+    * for(BlockFace face : faces) { Block r = b.getRelative(face, 1);
+    * ExtraHardMode
+    * .instance.getServer().getPlayer("Diemex94").sendMessage(ChatColor.RED +
+    * " Face: " + face.name() + " Material = " + r.getType().name());
+    * if(r.getTypeId() == mirrorID1 || r.getTypeId() == mirrorID2) { return
+    * true; } } return false; }
+    */
 
    /**
     * Send the player an informative message to explain what he's doing wrong.

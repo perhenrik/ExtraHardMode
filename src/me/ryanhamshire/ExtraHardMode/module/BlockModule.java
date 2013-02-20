@@ -11,8 +11,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.FallingBlock;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.RootConfig;
-import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.config.Config;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 import me.ryanhamshire.ExtraHardMode.task.BlockPhysicsCheckTask;
 
@@ -86,8 +85,7 @@ public class BlockModule extends EHMModule {
     */
    public boolean plantDies(Block block, byte newDataValue) {
       World world = block.getWorld();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      if(!plugin.getEnabledWorlds().contains(world) || !config.getBoolean(RootNode.WEAK_FOOD_CROPS)) {
+      if(!Config.Enabled_Worlds.contains(world.getName()) || !Config.Farming__Weak_Food_Crops__Enable) {
          return false;
       }
 
@@ -143,12 +141,8 @@ public class BlockModule extends EHMModule {
 
    @Override
    public void starting() {
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      // try to load the list from the config file
-      List<String> moreFallingBlocksList = config.getStringList(RootNode.MORE_FALLING_BLOCKS);
-
       // parse this final list of additional falling blocks
-      for(String materialName : moreFallingBlocksList) {
+      for(String materialName : Config.More_Falling_Blocks) {
          Material material = Material.getMaterial(materialName);
          if(material == null) {
             plugin.getLogger().warning("Additional Falling Blocks Configuration: Material not found: " + materialName + ".");

@@ -21,15 +21,17 @@ package me.ryanhamshire.ExtraHardMode.task;
 import java.util.AbstractMap.SimpleEntry;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.RootConfig;
-import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.config.Config;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
+import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -58,8 +60,7 @@ public class MoreMonstersTask implements Runnable {
    public void run() {
       DataStoreModule dataStore = plugin.getModuleForClass(DataStoreModule.class);
       // spawn monsters from the last pass
-      for(int i = 0; i < dataStore.getPreviousLocations().size(); i++) {
-         SimpleEntry<Player, Location> entry = dataStore.getPreviousLocations().get(i);
+      for(SimpleEntry<Player, Location> entry : dataStore.getPreviousLocations()) {
          Player player = entry.getKey();
          Location location = entry.getValue();
          Chunk chunk = location.getChunk();
@@ -122,31 +123,44 @@ public class MoreMonstersTask implements Runnable {
 
       // plan for the next pass
       dataStore.getPreviousLocations().clear();
-      RootConfig config = plugin.getModuleForClass(RootConfig.class);
-      Player[] players = plugin.getServer().getOnlinePlayers();
-      for(int i = 0; i < players.length; i++) {
-         Player player = players[i];
-
-         // skip disabled worlds, players with bypass permission, and players
-         // not in survival mode
-         if(!plugin.getEnabledWorlds().contains(player.getWorld()) || player.hasPermission("extrahardmode.bypass")
-               || player.getGameMode() != GameMode.SURVIVAL)
-            continue;
-
+      for(Player player : plugin.getServer().getOnlinePlayers()) {
          Location location = player.getLocation();
+         Block playerBlock = location.getBlock();
          World world = player.getWorld();
 
-         if(world.getEnvironment() == Environment.THE_END)
-            continue;
+         if(Config.Enabled_Worlds.contains(player.getWorld().getName()) && player.hasPermission(PermissionNode.BYPASS.getNode())
+               && player.getGameMode() == GameMode.SURVIVAL) {
+            // Only spawn monsters in normal world. End is crowded with enderman
+            // and nether is too extreme anyway, add config later
+            if(world.getEnvironment() == Environment.NORMAL
+                  && (location.getY() > Config.General_Monster_Rules__Monsters_Spawn_In_Light_Max_Y || location.getBlock().getLightFromSky() > 0)) {
+               // the playerBlock should always be air, but if the player stands
+               // on a slab he actually is in the slab
+               if(playerBlock.getType().equals(Material.AIR)) {
+                  for(int i = 0; i <= 3; i++) {
+                     Location checkUnder = location.subtract(0, 1, 0);
+                     Block checkUnderBlock = checkUnder.getBlock();
+                     if(checkUnderBlock.getType() != Material.AIR) {
+                        location = checkUnder;
+                        playerBlock = location.getBlock();
+                        // the playerBlock is now the block where the monster
+                        // should spawn on, next up: verify block
+                        break;
+                     }
+                  }
+               }
+               // no spawning on steps, stairs and transparent blocks
+               if(playerBlock.getType().name().endsWith("STEP") || playerBlock.getType().name().endsWith("STAIRS")
+                     || playerBlock.getType().isTransparent() || playerBlock.getType().isOccluding() || playerBlock.getType().equals(Material.AIR)) {
+                  // don't spawn here
+                  return;
+               }
 
-         // in normal worlds, respect Y level setting in config, and skip any
-         // locations where sunlight reaches
-         if(world.getEnvironment() == Environment.NORMAL
-               && (location.getY() > config.getInt(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y) || location.getBlock().getLightFromSky() > 0))
-            continue;
+               // Once we are here the block is safe to spawn on
+               dataStore.getPreviousLocations().add(new SimpleEntry<Player, Location>(player, location));
 
-         // plan to check this location again later to possibly spawn monsters
-         dataStore.getPreviousLocations().add(new SimpleEntry<Player, Location>(player, location));
+            }
+         }
       }
    }
 }

@@ -20,14 +20,11 @@ package me.ryanhamshire.ExtraHardMode;
 
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import me.ryanhamshire.ExtraHardMode.command.Commander;
-import me.ryanhamshire.ExtraHardMode.config.RootConfig;
-import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.config.Config;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.event.BlockEventHandler;
 import me.ryanhamshire.ExtraHardMode.event.EntityEventHandler;
@@ -39,7 +36,6 @@ import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.service.IModule;
 import me.ryanhamshire.ExtraHardMode.task.MoreMonstersTask;
 
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -65,19 +61,14 @@ public class ExtraHardMode extends JavaPlugin {
    private final Random randomNumberGenerator = new Random();
 
    /**
-    * list of worlds where extra hard mode rules apply
-    */
-   private final List<World> config_enabled_worlds = new CopyOnWriteArrayList<World>();
-
-   /**
     * initializes well... everything
     */
    @Override
    public void onEnable() {
-      // Generate Root Config
-      RootConfig rootConfig = new RootConfig(this);
+      Config.load(this);
       // Register modules
-      registerModule(RootConfig.class, rootConfig);
+      //TODO switch to this
+      //registerModule(RootConfig.class, new RootConfig(this));
       registerModule(MessageConfig.class, new MessageConfig(this));
       registerModule(DataStoreModule.class, new DataStoreModule(this));
       registerModule(EntityModule.class, new EntityModule(this));
@@ -85,19 +76,6 @@ public class ExtraHardMode extends JavaPlugin {
       
       //Register command
       getCommand("ehm").setExecutor(new Commander(this));
-
-      // get enabled world names from the config file
-      List<String> enabledWorldNames = rootConfig.getStringList(RootNode.WORLDS);
-
-      // validate enabled world names
-      for(String worldName : enabledWorldNames) {
-         World world = this.getServer().getWorld(worldName);
-         if(world == null) {
-            this.getLogger().warning("Error: There's no world named '" + worldName + "'.  Please update your config.yml.");
-         } else {
-            this.config_enabled_worlds.add(world);
-         }
-      }
 
       // register for events
       PluginManager pluginManager = this.getServer().getPluginManager();
@@ -162,10 +140,6 @@ public class ExtraHardMode extends JavaPlugin {
     */
    public Random getRandom() {
       return randomNumberGenerator;
-   }
-
-   public List<World> getEnabledWorlds() {
-      return config_enabled_worlds;
    }
 
    public String getTag() {
