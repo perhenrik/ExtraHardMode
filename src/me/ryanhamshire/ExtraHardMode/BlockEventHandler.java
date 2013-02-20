@@ -18,39 +18,42 @@
 
 package me.ryanhamshire.ExtraHardMode;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDispenseEvent;
-import org.bukkit.event.block.BlockGrowEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Torch;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //event handlers related to blocks
 public class BlockEventHandler implements Listener 
 {
+	//TODO
+	private final BlockFace[] blockFaces = new BlockFace[]
+			{
+			BlockFace.UP,
+			BlockFace.DOWN,
+			BlockFace.NORTH,
+			BlockFace.EAST,
+			BlockFace.SOUTH,
+			BlockFace.WEST
+			};
 	//constructor
 	public BlockEventHandler()
 	{
+		//UNECESSARY
 	}
 	
 	//when a player breaks a block...
@@ -61,22 +64,49 @@ public class BlockEventHandler implements Listener
 		World world = block.getWorld();
 		Player player = breakEvent.getPlayer();
 		
-		if(!ExtraHardMode.instance.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass")) return;
+		if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(DataStore.bypass_Perm)) return;
+		
+		//FEATURE: very limited building in the end
+		//players are allowed to break only end stone, and only to create a stair up to ground level
+		if(Config.Enderdragon__No_Building_In_End && world.getEnvironment() == Environment.THE_END)
+		{
+			if(block.getType() != Material.ENDER_STONE)
+			{
+				breakEvent.setCancelled(true);
+				ExtraHardMode.sendMessage(player, TextMode.Err, Messages.LimitedEndBuilding);
+				return;
+			}
+			else
+			{
+				int absoluteDistanceFromBlock = Math.abs(block.getX() - player.getLocation().getBlockX());
+				int zdistance = Math.abs(block.getZ() - player.getLocation().getBlockZ());
+				if(zdistance > absoluteDistanceFromBlock)
+				{
+					absoluteDistanceFromBlock = zdistance;
+				}
+				
+				if(block.getY() < player.getLocation().getBlockY() + absoluteDistanceFromBlock)
+				{
+					breakEvent.setCancelled(true);
+					ExtraHardMode.sendMessage(player, TextMode.Err, Messages.LimitedEndBuilding);
+					return;
+				}				
+			}
+		}
 		
 		//FEATURE: stone breaks tools much more quickly
-		if(ExtraHardMode.instance.config_superHardStone)
+		if(Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration)
 		{			
 			ItemStack inHandStack = player.getItemInHand();			
 			
 			//if breaking stone with an item in hand and the player does NOT have the bypass permission
-			if(	(block.getType() == Material.STONE || block.getType() == Material.ENDER_STONE) && 
-				inHandStack != null)
+			if(	block.getType() == Material.STONE && inHandStack != null)
 			{				
 				//if not using an iron or diamond pickaxe, don't allow breakage and explain to the player
 				Material tool = inHandStack.getType();
 				if(tool != Material.IRON_PICKAXE && tool != Material.DIAMOND_PICKAXE)
 				{
-					notifyPlayer(player, Messages.StoneMiningHelp, "ehm.silent.stone_mining_help", Sound.CAT_HISS, 10);
+					ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.StoneMiningHelp);
 					breakEvent.setCancelled(true);
 					return;
 				}
@@ -97,83 +127,40 @@ public class BlockEventHandler implements Listener
 			
 			//when ore is broken, it softens adjacent stone
 			//important to ensure players can reach the ore they break
-			if(block.getType().name().endsWith("_ORE"))
+			if(block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES"))
 			{
-				Block adjacentBlock = block.getRelative(BlockFace.DOWN);
-				if(adjacentBlock.getType() == Material.STONE) adjacentBlock.setType(Material.COBBLESTONE);
-				
-				adjacentBlock = block.getRelative(BlockFace.UP);
-				if(adjacentBlock.getType() == Material.STONE) adjacentBlock.setType(Material.COBBLESTONE);
-				
-				adjacentBlock = block.getRelative(BlockFace.EAST);
-				if(adjacentBlock.getType() == Material.STONE) adjacentBlock.setType(Material.COBBLESTONE);
-				
-				adjacentBlock = block.getRelative(BlockFace.WEST);
-				if(adjacentBlock.getType() == Material.STONE) adjacentBlock.setType(Material.COBBLESTONE);
-				
-				adjacentBlock = block.getRelative(BlockFace.NORTH);
-				if(adjacentBlock.getType() == Material.STONE) adjacentBlock.setType(Material.COBBLESTONE);
-				
-				adjacentBlock = block.getRelative(BlockFace.SOUTH);
-				if(adjacentBlock.getType() == Material.STONE) adjacentBlock.setType(Material.COBBLESTONE);
+                for (BlockFace face: blockFaces) {
+                    Block adjacentBlock = block.getRelative(face);
+                    if (adjacentBlock.getType() == Material.STONE)adjacentBlock.setType(Material.COBBLESTONE);
+                }
 			}
 		}
-		
+
+		//FEATURE: trees chop more naturally
+		if(block.getType() == Material.LOG && Config.World__Better_Tree_Chopping)
+		{
+			Block rootBlock = block;
+			while(rootBlock.getType() == Material.LOG)
+			{
+				rootBlock = rootBlock.getRelative(BlockFace.DOWN);
+			}
+
+			if(rootBlock.getType() == Material.DIRT || rootBlock.getType() == Material.GRASS)
+			{
+				Block aboveLog = block.getRelative(BlockFace.UP);
+				while(aboveLog.getType() == Material.LOG)
+				{
+					ExtraHardMode.applyPhysics(aboveLog);
+					aboveLog = aboveLog.getRelative(BlockFace.UP);
+				}
+			}
+		}
+
 		//FEATURE: more falling blocks
 		ExtraHardMode.physicsCheck(block, 0, true);
 		
-		//FEATURE: breaking a melon stem can result in 0-2 seeds returned
-		if(ExtraHardMode.instance.config_seedReduction)
-		{
-			if(block.getType() == Material.MELON_STEM)
-			{
-				Collection<ItemStack> drops = block.getDrops();
-				drops.clear();
-				
-				int randomNumber = ExtraHardMode.randomNumberGenerator.nextInt(100);
-				
-				if(randomNumber >= 30)
-				{
-					drops.add(new ItemStack(Material.MELON_SEEDS));
-				}
-				
-				if(randomNumber >= 70)
-				{
-					drops.add(new ItemStack(Material.MELON_SEEDS));
-				}				
-			}
-		}
-		
-		//FEATURE: breaking a wheat can result in 0-2 seeds returned
-		if(ExtraHardMode.instance.config_seedReduction)
-		{
-			if(block.getType() == Material.CROPS)
-			{
-				Collection<ItemStack> drops = block.getDrops();
-				
-				//remove any seeds
-				Iterator<ItemStack> iterator = drops.iterator();
-				while(iterator.hasNext())
-				{
-					ItemStack itemStack = iterator.next();
-					if(itemStack.getType() == Material.SEEDS)
-					{
-						iterator.remove();
-					}
-				}				
-				
-				//add back in the right amount
-				int randomNumber = ExtraHardMode.randomNumberGenerator.nextInt(100);
-				
-				if(randomNumber >= 50)
-				{
-					//drops.add(new ItemStack(Material.SEEDS));
-				}
-			}
-		}
-		
 		//FEATURE: no nether wart farming (always drops exactly 1 nether wart when broken)
-		if(ExtraHardMode.instance.config_noFarmingNetherWart)
+		if(Config.Farming__No_Farming_Nether_Wart)
 		{
 			if(block.getType() == Material.NETHER_WARTS)
 			{
@@ -183,10 +170,10 @@ public class BlockEventHandler implements Listener
 		}
 		
 		//FEATURE: breaking netherrack may start a fire
-		if(ExtraHardMode.instance.config_brokenNetherrackCatchesFirePercent > 0 && block.getType() == Material.NETHERRACK)
+		if(Config.World__Broken_Netherrack_Catches_Fire_Percent > 0 && block.getType() == Material.NETHERRACK)
 		{
 			Block underBlock = block.getRelative(BlockFace.DOWN);
-			if(underBlock.getType() == Material.NETHERRACK && ExtraHardMode.random(ExtraHardMode.instance.config_brokenNetherrackCatchesFirePercent))
+			if(underBlock.getType() == Material.NETHERRACK && ExtraHardMode.random(Config.World__Broken_Netherrack_Catches_Fire_Percent))
 			{
 				breakEvent.setCancelled(true);
 				block.setType(Material.FIRE);
@@ -202,25 +189,31 @@ public class BlockEventHandler implements Listener
 		Block block = placeEvent.getBlock();
 		World world = block.getWorld();
 		
-		if(!ExtraHardMode.instance.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass")) return;
+		if(Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(DataStore.bypass_Perm) || player.getGameMode() == GameMode.CREATIVE) return;
+		
+		//FEATURE: very limited building in the end
+		//players are allowed to break only end stone, and only to create a stair up to ground level
+		if(Config.Enderdragon__No_Building_In_End && world.getEnvironment() == Environment.THE_END)
+		{
+			placeEvent.setCancelled(true);
+			ExtraHardMode.sendMessage(player, TextMode.Err, Messages.LimitedEndBuilding);
+			return;
+		}
 		
 		//FIX: prevent players from placing ore as an exploit to work around the hardened stone rule
-		if(ExtraHardMode.instance.config_superHardStone && block.getType().name().endsWith("_ORE"))
+		if(Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES"))) //ORES for redpower
 		{
-			Block [] adjacentBlocks = new Block [] {
-				block.getRelative(BlockFace.DOWN),
-				block.getRelative(BlockFace.UP),
-				block.getRelative(BlockFace.EAST),
-				block.getRelative(BlockFace.WEST),
-				block.getRelative(BlockFace.NORTH),
-				block.getRelative(BlockFace.SOUTH) };
-				
-			for(int i = 0; i < adjacentBlocks.length; i++)
+			ArrayList <Block> adjacentBlocks = new ArrayList<Block>();
+			for (BlockFace face: blockFaces)
 			{
-				Block adjacentBlock = adjacentBlocks[i];
+			    adjacentBlocks.add(block.getRelative(face));
+			}
+				
+			for(Block adjacentBlock: adjacentBlocks)
+			{
 				if(adjacentBlock.getType() == Material.STONE)
 				{
-					notifyPlayer(player, Messages.NoPlacingOreAgainstStone, "ehm.silent.no_placing_ore_against_stone", Sound.ARROW_HIT, 10);
+					ExtraHardMode.sendMessage(player, TextMode.Err, Messages.NoPlacingOreAgainstStone);
 					placeEvent.setCancelled(true);
 					return;
 				}
@@ -228,7 +221,7 @@ public class BlockEventHandler implements Listener
 		}
 			
 		//FEATURE: no farming nether wart
-		if(block.getType() == Material.NETHER_WARTS && ExtraHardMode.instance.config_noFarmingNetherWart)
+		if(block.getType() == Material.NETHER_WARTS && Config.Farming__No_Farming_Nether_Wart)
 		{
 			placeEvent.setCancelled(true);
 			return;
@@ -238,13 +231,15 @@ public class BlockEventHandler implements Listener
 		ExtraHardMode.physicsCheck(block, 0, true);
 		
 		//FEATURE: no standard torches, jack o lanterns, or fire on top of netherrack near diamond level
-		if(ExtraHardMode.instance.config_standardTorchMinY > 0)
+		if(Config.World__Torches__Torch_Max_Y> 0)
 		{
-			if(	world.getEnvironment() == Environment.NORMAL &&
-				block.getY() < ExtraHardMode.instance.config_standardTorchMinY &&
-				(block.getType() == Material.TORCH || block.getType() == Material.JACK_O_LANTERN || (block.getType() == Material.FIRE && block.getRelative(BlockFace.DOWN).getType() == Material.NETHERRACK)))
+			if (	world.getEnvironment() == Environment.NORMAL && block.getY() < Config.World__Torches__Torch_Max_Y
+				&& (    block.getType() == Material.TORCH ||
+						block.getType() == Material.JACK_O_LANTERN ||
+					   (block.getType() == Material.FIRE && block.getRelative(BlockFace.DOWN).getType() == Material.NETHERRACK)))
 				{
-					notifyPlayer(player, Messages.NoTorchesHere, "ehm.silent.no_torches_here", Sound.FIZZ, 20);
+					if (Config.World__Play_Sounds__Torch_Fizzing) player.playSound (block.getLocation(), Sound.FIZZ, 1, 20);
+					ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.NoTorchesHere);
 					placeEvent.setCancelled(true);
 					return;
 				}
@@ -252,23 +247,25 @@ public class BlockEventHandler implements Listener
 		
 		//FEATURE: players can't place blocks from weird angles (using shift to hover over in the air beyond the edge of solid ground)
 		//or directly beneath themselves, for that matter
-		if(ExtraHardMode.instance.config_limitedBlockPlacement)
+		if(Config.World__Limited_Block_Placement)
 		{
+
 			if(	block.getX() == player.getLocation().getBlockX() &&
 				block.getZ() == player.getLocation().getBlockZ() &&
 				block.getY() <  player.getLocation().getBlockY() )
 			{
-				notifyPlayer(player, Messages.RealisticBuilding, "ehm.silent.realistic_building_1", Sound.NOTE_STICKS, 1);
+				ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.RealisticBuilding);
 				placeEvent.setCancelled(true);
 				return;
 			}
 			
-			Block underBlock = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+			Block playerBlock = player.getLocation().getBlock();
+			Block underBlock = playerBlock.getRelative(BlockFace.DOWN);
 			
 			//if standing directly over lava, prevent placement
 			if(underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
 			{
-				notifyPlayer(player, Messages.RealisticBuilding, "ehm.silent.realistic_building_2", Sound.NOTE_STICKS, 1);
+				ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.RealisticBuilding);
 				placeEvent.setCancelled(true);
 				return;
 			}
@@ -279,9 +276,11 @@ public class BlockEventHandler implements Listener
 				underBlock = underBlock.getRelative(BlockFace.DOWN);
 				
 				//if over lava or more air, prevent placement
-				if(underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
+				if((underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
+					&& (!playerBlock.getType().name().contains("STEP") && !playerBlock.getType().name().contains("STAIRS")))
 				{
-					notifyPlayer(player, Messages.RealisticBuilding, "ehm.silent.realistic_building_3", Sound.NOTE_STICKS, 1);
+					
+					ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.RealisticBuilding);
 					placeEvent.setCancelled(true);
 					return;
 				}
@@ -289,7 +288,7 @@ public class BlockEventHandler implements Listener
 		}
 		
 		//FEATURE: players can't attach torches to common "soft" blocks
-		if(ExtraHardMode.instance.config_limitedTorchPlacement && block.getType() == Material.TORCH)
+		if(Config.World__Torches__Limited_Torch_Placement && block.getType() == Material.TORCH)
 		{
 			Torch torch = new Torch(Material.TORCH, block.getData());
 			Material attachmentMaterial = block.getRelative(torch.getAttachedFace()).getType();
@@ -299,9 +298,9 @@ public class BlockEventHandler implements Listener
 				attachmentMaterial == Material.LONG_GRASS ||
 				attachmentMaterial == Material.SAND)
 			{
-				notifyPlayer(player, Messages.LimitedTorchPlacements, "ehm.silent.limited_torch_placement", Sound.FIZZ, 20);
 				placeEvent.setCancelled(true);
-				return;				
+				if (Config.World__Play_Sounds__Torch_Fizzing) player.playSound (block.getLocation(), Sound.FIZZ, 1, 20);
+				ExtraHardMode.sendMessage(player, TextMode.Instr, Messages.LimitedTorchPlacements);
 			}
 		}
 	}
@@ -310,10 +309,10 @@ public class BlockEventHandler implements Listener
 	void onBlockDispense(BlockDispenseEvent event)
 	{
 		//FEATURE: can't move water source blocks
-		if(ExtraHardMode.instance.config_dontMoveWaterSourceBlocks)
+		if(Config.World__Water__Dont_Move_Source_Blocks)
 		{
 			World world = event.getBlock().getWorld();
-			if(!ExtraHardMode.instance.config_enabled_worlds.contains(world)) return;
+			if(!Config.Enabled_Worlds.contains(world.getName())) return;
 			
 			//only care about water
 			if(event.getItem().getType() == Material.WATER_BUCKET)
@@ -353,15 +352,14 @@ public class BlockEventHandler implements Listener
 		
 		//FEATURE: prevent players from circumventing hardened stone rules by placing ore, then pushing the ore next to stone before breaking it
 		
-		if(!ExtraHardMode.instance.config_superHardStone || !ExtraHardMode.instance.config_enabled_worlds.contains(world)) return;
+		if(!Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration|| !Config.Enabled_Worlds.contains(world.getName())) return;
 				
 		//which blocks are being pushed?
-		for(int i = 0; i < blocks.size(); i++)
+		for(Block block: blocks)
 		{
 			//if any are ore or stone, don't push
-			Block block = blocks.get(i);
 			Material material = block.getType();
-			if(material == Material.STONE || material.name().endsWith("_ORE"))
+			if(material == Material.STONE || material.name().endsWith("ORE") || material.name().endsWith("ORES"))
 			{
 				event.setCancelled(true);
 				return;
@@ -381,13 +379,12 @@ public class BlockEventHandler implements Listener
 		Block block = event.getRetractLocation().getBlock();
 		World world = block.getWorld();
 		
-		if(!ExtraHardMode.instance.config_superHardStone || !ExtraHardMode.instance.config_enabled_worlds.contains(world)) return;
+		if(!Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration|| !Config.Enabled_Worlds.contains(world.getName())) return;
 		
 		Material material = block.getType();
-		if(material == Material.STONE || material.name().endsWith("_ORE"))
+		if(material == Material.STONE || material.name().endsWith("ORE") || material.name().endsWith("ORES"))
 		{
 			event.setCancelled(true);
-			return;
 		}
 	} 
 	
@@ -397,21 +394,20 @@ public class BlockEventHandler implements Listener
 	{
 		//FEATURE: rainfall breaks exposed torches (exposed to the sky)
 		World world = event.getWorld();
-		if(!ExtraHardMode.instance.config_enabled_worlds.contains(world) || !ExtraHardMode.instance.config_rainBreaksTorches) return;
-		
-		if(!event.toWeatherState()) return;  //if not raining
-		
-		//plan to remove torches chunk by chunk gradually throughout the rain period
-		Chunk [] chunks = world.getLoadedChunks();
-		if(chunks.length > 0)
-		{
-			int startOffset = ExtraHardMode.randomNumberGenerator.nextInt(chunks.length);
-			for(int i = 0; i < chunks.length; i++)
-			{
-				Chunk chunk = chunks[(startOffset + i) % chunks.length];
-				
-				RemoveExposedTorchesTask task = new RemoveExposedTorchesTask(chunk);
-				ExtraHardMode.instance.getServer().getScheduler().scheduleSyncDelayedTask(ExtraHardMode.instance, task, i * 20L);
+		if (Config.Enabled_Worlds.contains(world.getName())) {
+
+			if (!event.toWeatherState()) return;  //if not raining
+
+			//plan to remove torches and cover crops chunk by chunk gradually throughout the rain period
+			Chunk[] chunks = world.getLoadedChunks();
+			if (chunks.length > 0) {
+				int startOffset = ExtraHardMode.randomNumberGenerator.nextInt(chunks.length);
+				for (int i = 0; i < chunks.length; i++) {
+					Chunk chunk = chunks[(startOffset + i) % chunks.length];
+
+					RemoveExposedTorchesTask task = new RemoveExposedTorchesTask(chunk);
+					ExtraHardMode.instance.getServer().getScheduler().scheduleSyncDelayedTask(ExtraHardMode.instance, task, i * 20L);
+				}
 			}
 		}
 	} 
@@ -421,39 +417,79 @@ public class BlockEventHandler implements Listener
 	public void onBlockGrow (BlockGrowEvent event)
 	{
 		//FEATURE: fewer seeds = shrinking crops.  when a plant grows to its full size, it may be replaced by a dead shrub
-		if(!ExtraHardMode.instance.allowGrow(event.getBlock(), event.getNewState().getData().getData()))
+		if(ExtraHardMode.instance.plantDies(event.getBlock(), event.getNewState().getData().getData()))
 		{
 			event.setCancelled(true);
 			event.getBlock().setType(Material.LONG_GRASS); //dead shrub
 		}
 	}
-	
-	/**
-	 * Send the player an informative message to explain what he's doing wrong.
-	 * After that play errorsounds instead of spamming the chat window. Uses the permission
-	 * to temporarily store which message has been shown already. 
-	 * @author diemex
-	 * @param player
-	 * @param permissionName name of the temporary permission
-	 * @param sound errorsound to play after the event got cancelled
-	 * @param soundPitch
-	 */
-	public void notifyPlayer 	(Player player, Messages msgName,
-								String permissionName, Sound sound, float soundPitch)
+
+	//when a tree or mushroom grows...
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+	public void onStructureGrow(StructureGrowEvent event)
 	{
-		if (!player.hasPermission(permissionName) && permissionName != null) 
+		World world = event.getWorld();
+		Block block = event.getLocation().getBlock();
+		if(!Config.Enabled_Worlds.contains(world.getName()) || (event.getPlayer() != null && event.getPlayer().hasPermission(DataStore.bypass_Perm))) return;
+
+		//FEATURE: no big plant growth in deserts
+		if(Config.Farming__Weak_Food_Crops__Arid_Infertile_Desserts)
 		{
-			ExtraHardMode.sendMessage(player, TextMode.Instr, msgName);
-			player.addAttachment(ExtraHardMode.instance, permissionName, true);
-		}
-		try
-		{
-			player.playSound(player.getLocation(), sound, 1, soundPitch);
-		}
-		catch (Exception e){
-			ExtraHardMode.instance.getLogger().log(Level.WARNING, 
-					"Problem playing back sound: " + sound.toString());
+			Biome biome = block.getBiome();
+			if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS)
+			{
+				event.setCancelled(true);
+			}
 		}
 	}
 	
+	//TODO FINISH FEATURE
+	/*//FEATURE Make Cobblestone Generators generate SmoothStone
+	@EventHandler
+	public void onTransformFromTo (BlockFromToEvent event)
+	{
+		//the block that triggered the event
+	    Block block = event.getBlock();
+	    Material bMaterial = block.getType();
+	    //the block that will be changed
+	    Block toBlock = event.getToBlock();
+	    Material toMaterial = toBlock.getType();
+	    
+	    if(bMaterial.name().contains("LAVA") || bMaterial.name().contains("WATER"))
+	    {
+	        if(toMaterial == Material.AIR)
+	        {
+	        	//Example: SourceBlock is Lava, then either water or stationary water can create cobble
+	        	Material possibilityOne = (	Material.WATER == bMaterial ||//if
+	        								Material.STATIONARY_WATER == bMaterial//or
+	        								? Material.LAVA//then set to 
+	        								: Material.WATER);//otherwise set to
+	        	Material possibilityTwo = (	Material.WATER == bMaterial ||//if
+	        								Material.STATIONARY_WATER == bMaterial//or
+	        								? Material.STATIONARY_LAVA//then
+	        								: Material.STATIONARY_WATER);//otherwise
+	        	
+	            if(generatesCobble(bMaterial.getId(), toBlock))
+	            {
+	                //event.setCancelled(true);
+	            }
+	        }
+	    }
+	}
+	 
+	public boolean generatesCobble(int id, Block b)
+	{
+	    int mirrorID1 = (id == 8 || id == 9 ? 10 : 8);
+	    int mirrorID2 = (id == 8 || id == 9 ? 11 : 9);
+	    for(BlockFace face : faces)
+	    {
+	        Block r = b.getRelative(face, 1);
+	        ExtraHardMode.instance.getServer().getPlayer("Diemex94").sendMessage(ChatColor.RED + " Face: " + face.name() + " Material = " + r.getType().name());
+	        if(r.getTypeId() == mirrorID1 || r.getTypeId() == mirrorID2)
+	        {
+	            return true;
+	        }
+	    }
+	    return false;
+	}*/
 }

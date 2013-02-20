@@ -18,32 +18,31 @@
 
 package me.ryanhamshire.ExtraHardMode;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.command.*;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.block.BlockFace;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Calendar;
+import java.util.Random;
+import java.util.logging.Logger;
 
 public class ExtraHardMode extends JavaPlugin
 {
 	//for convenience, a reference to the instance of this plugin
 	public static ExtraHardMode instance;
 	
-	//for logging to the console and log file
-	private static Logger log = Logger.getLogger("Minecraft");
+	//for logging to the console and logger file
+	private static Logger logger;
 	
 	//this handles the config files (messages and plugin options)
 	public DataStore dataStore;
@@ -51,359 +50,24 @@ public class ExtraHardMode extends JavaPlugin
 	//for computing random chance
 	static Random randomNumberGenerator = new Random();
 	
-	//configuration variables, loaded/saved from a config.yml
-	public ArrayList<World> config_enabled_worlds;			        //list of worlds where extra hard mode rules apply
-	
-	//general monster rules
-	public int config_moreMonstersMaxY;								//max y value for extra monster spawns
-	public int config_moreMonstersMultiplier;						//what to multiply monster spawns by
-	public int config_monsterSpawnsInLightMaxY;						//max y value for monsters to spawn in the light
-	
-	//monster grinder fix rules
-	public boolean config_inhibitMonsterGrinders;					//whether monster grinders (or "farms") should be inhibited
-	
-	//world modification rules
-	public int config_standardTorchMinY;							//minimum y for placing standard torches
-	public boolean config_superHardStone;							//whether stone is hardened to encourage cave exploration over tunneling
-	public boolean config_limitedBlockPlacement;					//whether players may place blocks directly underneath themselves
-	public boolean config_betterTNT;								//whether TNT should be more powerful and plentiful
-	public ArrayList<Material> config_moreFallingBlocks;			//which materials beyond sand and gravel should be subject to gravity
-	public boolean config_limitedTorchPlacement;					//whether players are limited to placing torches against specific materials
-	public boolean config_rainBreaksTorches;						//whether rain should break torches
-	public int config_brokenNetherrackCatchesFirePercent;			//percent chance for broken netherrack to start a fire
-	
-	//zombie rules
-	public boolean config_zombiesDebilitatePlayers;					//whether zombies apply a debuff to players on hit
-	public int config_zombiesReanimatePercent;						//percent chance for a zombie to reanimate after death
-	
-	//skeleton rules
-	public int config_skeletonsKnockBackPercent;					//percent chance skeletons have a chance to knock back targets with arrows
-	public int config_skeletonsReleaseSilverfishPercent;			//percent chance skeletons will release silverfish instead of firing arrows
-	public int config_skeletonsDeflectArrowsPercent;				//whether or not arrows will pass harmlessly through skeletons
-	
-	//creeper rules
-	public int config_chargedCreeperSpawnPercent;					//percentage of creepers which will spawn charged
-	public boolean config_chargedCreepersExplodeOnHit;				//whether charged creepers explode when damaged
-	public int config_creepersDropTNTOnDeathPercent;				//percentage of creepers which spawn activated TNT on death
-	
-	//pig zombie rules
-	public boolean config_alwaysAngryPigZombies;					//whether pig zombies are always hostile
-	public boolean config_fortressPigsDropWart;						//whether pig zombies drop nether wart in nether fortresses
-	
-	//ghast rules
-	public boolean config_ghastsDeflectArrows;						//whether ghasts should deflect arrows and drop extra loot
-	
-	//magma cube rules
-	public boolean config_magmaCubesBecomeBlazesOnDamage;			//whether damaging a magma cube turns it into a blaze
-	public int config_flameSlimesSpawnWithNetherBlazePercent;		//percentage chance that a blaze spawn will trigger a flame slime spawn as well
-	
-	//blaze rules
-	public int config_bonusNetherBlazeSpawnPercent;					//percentage of pig zombies which will be replaced with blazes
-	public boolean config_blazesExplodeOnDeath;						//whether blazes explode and spread fire when they die
-	public int config_nearBedrockBlazeSpawnPercent;					//percentage of skeletons near bedrock which will be replaced with blazes
-	public int config_netherBlazesSplitOnDeathPercent;				//percentage chance that a blaze slain in the nether will split into two blazes
-	public boolean config_blazesDropFireOnDamage;					//whether blazes drop fire when damaged
-	public boolean config_blazesDropBonusLoot;						//whether blazes drop extra loot
-	
-	//spider rules
-	public int config_bonusUndergroundSpiderSpawnPercent;			//percentage of zombies which will be replaced with spiders under sea level
-	public boolean config_spidersDropWebOnDeath;					//whether spiders drop webbing when they die
-	
-	//enderman rules
-	public boolean config_improvedEndermanTeleportation;			//whether endermen may teleport players
-	
-	//witch rules
-	public int config_bonusWitchSpawnPercent;						//percentage of surface zombies which spawn as witches
-	
-	//ender dragon rules
-	public boolean config_respawnEnderDragon;						//whether the ender dragon respawns
-	public boolean config_enderDragonDropsEgg;						//whether it drops an egg when slain
-	public boolean config_enderDragonDropsVillagerEggs;				//whether it drops a pair of villager eggs when slain
-	public boolean config_enderDragonAdditionalAttacks;				//whether the dragon spits fireballs and summons minions
-	
-	//melons and wheat
-	public boolean config_seedReduction;							//whether melon and grass seeds are more rare
-	
-	//mushrooms
-	public boolean config_noBonemealOnMushrooms;					//whether bonemeal may be used on mushrooms
-	
-	//nether wart
-	public boolean config_noFarmingNetherWart;						//whether nether wart will ever drop more than 1 wart when broken
-	
-	//sheep (wool)
-	public boolean config_sheepRegrowWhiteWool;						//whether sheep will always regrow white wool
-	
-	//water
-	public boolean config_dontMoveWaterSourceBlocks;				//whether players may move water source blocks
-	
-	//player death
-	public int config_playerRespawnHealth;							//how much health after respawn
-	public int config_playerRespawnFoodLevel;						//how much food bar after respawn
-	public int config_playerDeathItemStacksForfeitPercent;			//percentage of item stacks lost on death
-	
-	//player damage
-	public boolean config_enhancedEnvironmentalDamage;				//whether players take additional damage and/or debuffs from environmental injuries
-	public boolean config_extinguishingFireIgnitesPlayers;			//whether players catch fire when extinguishing a fire up close
-	
-	//explosions disable option, needed to dodge bugs in popular plugins
-	public boolean config_workAroundExplosionsBugs;
-	
 	//adds a server log entry
-	public static void AddLogEntry(String entry)
+	public static void log (String entry)
 	{
-		log.info("ExtraHardMode: " + entry);
+		logger.info(entry);
 	}
 	
 	//initializes well...   everything
 	public void onEnable()
-	{ 		
-		AddLogEntry("Extra Hard Mode enabled.");
-		
+	{ 	
+		long time = System.currentTimeMillis();
+		logger = getServer().getLogger();
 		this.dataStore = new DataStore();
 		
 		instance = this;
+        logger = instance.getLogger();
 		
-		//load the config if it exists
-		FileConfiguration config = YamlConfiguration.loadConfiguration(new File(DataStore.configFilePath));
-		
-		//read configuration settings (note defaults), write back to config file
-		
-		//enabled worlds defaults
-		ArrayList<String> defaultEnabledWorldNames = new ArrayList<String>();
-		List<World> worlds = this.getServer().getWorlds(); 
-		for(int i = 0; i < worlds.size(); i++)
-		{
-			defaultEnabledWorldNames.add(worlds.get(i).getName());
-		}
-		
-		//get enabled world names from the config file
-		List<String> enabledWorldNames = config.getStringList("ExtraHardMode.Worlds");
-		if(enabledWorldNames == null || enabledWorldNames.size() == 0)
-		{			
-			enabledWorldNames = defaultEnabledWorldNames;
-		}
-		
-		//validate enabled world names
-		this.config_enabled_worlds = new ArrayList<World>();
-		for(int i = 0; i < enabledWorldNames.size(); i++)
-		{
-			String worldName = enabledWorldNames.get(i);
-			World world = this.getServer().getWorld(worldName);
-			if(world == null)
-			{
-				AddLogEntry("Error: There's no world named \"" + worldName + "\".  Please update your config.yml.");
-			}
-			else
-			{
-				this.config_enabled_worlds.add(world);
-			}
-		}
-		
-		//write enabled world names to config file
-		config.set("ExtraHardMode.Worlds", enabledWorldNames);
-		
-		this.config_standardTorchMinY = config.getInt("ExtraHardMode.PermanentFlameMinYCoord", 30);
-		config.set("ExtraHardMode.PermanentFlameMinYCoord", this.config_standardTorchMinY);
-		
-		this.config_superHardStone = config.getBoolean("ExtraHardMode.HardenedStone", true);
-		config.set("ExtraHardMode.HardenedStone", this.config_superHardStone);
-		
-		this.config_enhancedEnvironmentalDamage = config.getBoolean("ExtraHardMode.EnhancedEnvironmentalInjuries", true);
-		config.set("ExtraHardMode.EnhancedEnvironmentalInjuries", this.config_enhancedEnvironmentalDamage);
-		
-		this.config_extinguishingFireIgnitesPlayers = config.getBoolean("ExtraHardMode.ExtinguishingFiresIgnitesPlayers", true);
-		config.set("ExtraHardMode.ExtinguishingFiresIgnitesPlayers", this.config_extinguishingFireIgnitesPlayers);
-		
-		this.config_betterTNT = config.getBoolean("ExtraHardMode.BetterTNT", true);
-		config.set("ExtraHardMode.BetterTNT", this.config_betterTNT);
-		
-		this.config_inhibitMonsterGrinders = config.getBoolean("ExtraHardMode.InhibitMonsterGrinders", true);
-		config.set("ExtraHardMode.InhibitMonsterGrinders", this.config_inhibitMonsterGrinders);
-		
-		this.config_limitedBlockPlacement = config.getBoolean("ExtraHardMode.LimitedBlockPlacement", true);
-		config.set("ExtraHardMode.LimitedBlockPlacement", this.config_limitedBlockPlacement);
-		
-		this.config_limitedTorchPlacement = config.getBoolean("ExtraHardMode.LimitedTorchPlacement", true);
-		config.set("ExtraHardMode.LimitedTorchPlacement", this.config_limitedTorchPlacement);
-		
-		this.config_rainBreaksTorches = config.getBoolean("ExtraHardMode.RainBreaksTorches", true);
-		config.set("ExtraHardMode.RainBreaksTorches", this.config_rainBreaksTorches);		
-		
-		this.config_brokenNetherrackCatchesFirePercent = config.getInt("ExtraHardMode.NetherrackCatchesFirePercent", 20);
-		config.set("ExtraHardMode.NetherrackCatchesFirePercent", this.config_brokenNetherrackCatchesFirePercent);		
-		
-		this.config_moreMonstersMaxY = config.getInt("ExtraHardMode.MoreMonsters.MaxYCoord", 55);
-		config.set("ExtraHardMode.MoreMonsters.MaxYCoord", this.config_moreMonstersMaxY);
-		
-		this.config_moreMonstersMultiplier = config.getInt("ExtraHardMode.MoreMonsters.Multiplier", 2);
-		config.set("ExtraHardMode.MoreMonsters.Multiplier", this.config_moreMonstersMultiplier);
-		
-		this.config_monsterSpawnsInLightMaxY = config.getInt("ExtraHardMode.MonstersSpawnInLightMaxY", 50);
-		config.set("ExtraHardMode.MonstersSpawnInLightMaxY", this.config_monsterSpawnsInLightMaxY);		
-		
-		this.config_zombiesDebilitatePlayers = config.getBoolean("ExtraHardMode.Zombies.SlowPlayers", true);
-		config.set("ExtraHardMode.Zombies.SlowPlayers", this.config_zombiesDebilitatePlayers);
-		
-		this.config_zombiesReanimatePercent = config.getInt("ExtraHardMode.Zombies.ReanimatePercent", 50);
-		config.set("ExtraHardMode.Zombies.ReanimatePercent", this.config_zombiesReanimatePercent);
-		
-		this.config_skeletonsKnockBackPercent = config.getInt("ExtraHardMode.Skeletons.ArrowsKnockBackPercent", 30);
-		config.set("ExtraHardMode.Skeletons.ArrowsKnockBackPercent", this.config_skeletonsKnockBackPercent);
-		
-		this.config_skeletonsReleaseSilverfishPercent = config.getInt("ExtraHardMode.Skeletons.ReleaseSilverfishPercent", 30);
-		config.set("ExtraHardMode.Skeletons.ReleaseSilverfishPercent", this.config_skeletonsReleaseSilverfishPercent);
-		
-		this.config_skeletonsDeflectArrowsPercent = config.getInt("ExtraHardMode.Skeletons.DeflectArrowsPercent", 100);
-		config.set("ExtraHardMode.Skeletons.DeflectArrowsPercent", this.config_skeletonsDeflectArrowsPercent);
-		
-		this.config_bonusUndergroundSpiderSpawnPercent = config.getInt("ExtraHardMode.Spiders.BonusUndergroundSpawnPercent", 20);
-		config.set("ExtraHardMode.Spiders.BonusUndergroundSpawnPercent", this.config_bonusUndergroundSpiderSpawnPercent);
-		
-		this.config_spidersDropWebOnDeath = config.getBoolean("ExtraHardMode.Spiders.DropWebOnDeath", true);
-		config.set("ExtraHardMode.Spiders.DropWebOnDeath", this.config_spidersDropWebOnDeath);
-		
-		this.config_bonusWitchSpawnPercent = config.getInt("ExtraHardMode.Witches.BonusSpawnPercent", 5);
-		config.set("ExtraHardMode.Witches.BonusSpawnPercent", this.config_bonusWitchSpawnPercent);
-		
-		this.config_chargedCreeperSpawnPercent = config.getInt("ExtraHardMode.Creepers.ChargedCreeperSpawnPercent", 20);
-		config.set("ExtraHardMode.Creepers.ChargedCreeperSpawnPercent", this.config_chargedCreeperSpawnPercent);
-		
-		this.config_creepersDropTNTOnDeathPercent = config.getInt("ExtraHardMode.Creepers.DropTNTOnDeathPercent", 10);
-		config.set("ExtraHardMode.Creepers.DropTNTOnDeathPercent", this.config_creepersDropTNTOnDeathPercent);
-		
-		this.config_chargedCreepersExplodeOnHit = config.getBoolean("ExtraHardMode.Creepers.ChargedCreepersExplodeOnDamage", true);
-		config.set("ExtraHardMode.Creepers.ChargedCreepersExplodeOnDamage", this.config_chargedCreepersExplodeOnHit);
-		
-		this.config_nearBedrockBlazeSpawnPercent = config.getInt("ExtraHardMode.Blazes.NearBedrockSpawnPercent", 50);
-		config.set("ExtraHardMode.Blazes.NearBedrockSpawnPercent", this.config_nearBedrockBlazeSpawnPercent);
-		
-		this.config_bonusNetherBlazeSpawnPercent = config.getInt("ExtraHardMode.Blazes.BonusNetherSpawnPercent", 20);
-		config.set("ExtraHardMode.Blazes.BonusNetherSpawnPercent", this.config_bonusNetherBlazeSpawnPercent);
-		
-		this.config_flameSlimesSpawnWithNetherBlazePercent = config.getInt("ExtraHardMode.MagmaCubes.SpawnWithNetherBlazePercent", 100);
-		config.set("ExtraHardMode.MagmaCubes.SpawnWithNetherBlazePercent", this.config_flameSlimesSpawnWithNetherBlazePercent);
-		
-		this.config_magmaCubesBecomeBlazesOnDamage = config.getBoolean("ExtraHardMode.MagmaCubes.GrowIntoBlazesOnDamage", true);
-		config.set("ExtraHardMode.MagmaCubes.GrowIntoBlazesOnDamage", this.config_magmaCubesBecomeBlazesOnDamage);
-		
-		this.config_blazesExplodeOnDeath = config.getBoolean("ExtraHardMode.Blazes.ExplodeOnDeath", true);
-		config.set("ExtraHardMode.Blazes.ExplodeOnDeath", this.config_blazesExplodeOnDeath);
-		
-		this.config_blazesDropFireOnDamage = config.getBoolean("ExtraHardMode.Blazes.DropFireOnDamage", true);
-		config.set("ExtraHardMode.Blazes.DropFireOnDamage", this.config_blazesDropFireOnDamage);
-		
-		this.config_blazesDropBonusLoot = config.getBoolean("ExtraHardMode.Blazes.BonusLoot", true);
-		config.set("ExtraHardMode.Blazes.BonusLoot", this.config_blazesDropBonusLoot);
-		
-		this.config_netherBlazesSplitOnDeathPercent = config.getInt("ExtraHardMode.Blazes.NetherSplitOnDeathPercent", 25);
-		config.set("ExtraHardMode.Blazes.NetherSplitOnDeathPercent", this.config_netherBlazesSplitOnDeathPercent);
-		
-		this.config_alwaysAngryPigZombies = config.getBoolean("ExtraHardMode.PigZombies.AlwaysAngry", true);
-		config.set("ExtraHardMode.PigZombies.AlwaysAngry", this.config_alwaysAngryPigZombies);
-		
-		this.config_fortressPigsDropWart = config.getBoolean("ExtraHardMode.PigZombies.DropWartInFortresses", true);
-		config.set("ExtraHardMode.PigZombies.DropWartInFortresses", this.config_fortressPigsDropWart);
-		
-		this.config_ghastsDeflectArrows = config.getBoolean("ExtraHardMode.Ghasts.DeflectArrows", true);
-		config.set("ExtraHardMode.Ghasts.DeflectArrows", this.config_ghastsDeflectArrows);
-		
-		this.config_improvedEndermanTeleportation = config.getBoolean("ExtraHardMode.Endermen.MayTeleportPlayers", true);
-		config.set("ExtraHardMode.Endermen.MayTeleportPlayers", this.config_improvedEndermanTeleportation);
-		
-		this.config_respawnEnderDragon = config.getBoolean("ExtraHardMode.EnderDragon.Respawns", true);
-		config.set("ExtraHardMode.EnderDragon.Respawns", this.config_respawnEnderDragon);		
-		
-		this.config_enderDragonDropsEgg = config.getBoolean("ExtraHardMode.EnderDragon.DropsEgg", true);
-		config.set("ExtraHardMode.EnderDragon.DropsEgg", this.config_enderDragonDropsEgg);
-		
-		this.config_enderDragonDropsVillagerEggs = config.getBoolean("ExtraHardMode.EnderDragon.DropsVillagerEggs", true);
-		config.set("ExtraHardMode.EnderDragon.DropsVillagerEggs", this.config_enderDragonDropsVillagerEggs);
-		
-		this.config_enderDragonAdditionalAttacks = config.getBoolean("ExtraHardMode.EnderDragon.HarderBattle", true);
-		config.set("ExtraHardMode.EnderDragon.HarderBattle", this.config_enderDragonAdditionalAttacks);		
-		
-		this.config_seedReduction = config.getBoolean("ExtraHardMode.Farming.FewerSeeds", true);
-		config.set("ExtraHardMode.Farming.FewerSeeds", this.config_seedReduction);
-		
-		this.config_noBonemealOnMushrooms = config.getBoolean("ExtraHardMode.Farming.NoBonemealOnMushrooms", true);
-		config.set("ExtraHardMode.Farming.NoBonemealOnMushrooms", this.config_noBonemealOnMushrooms);		
-		
-		this.config_noFarmingNetherWart = config.getBoolean("ExtraHardMode.Farming.NoFarmingNetherWart", true);
-		config.set("ExtraHardMode.Farming.NoFarmingNetherWart", this.config_noFarmingNetherWart);
-		
-		this.config_sheepRegrowWhiteWool = config.getBoolean("ExtraHardMode.Farming.SheepGrowOnlyWhiteWool", true);
-		config.set("ExtraHardMode.Farming.SheepGrowOnlyWhiteWool", this.config_sheepRegrowWhiteWool);
-		
-		this.config_dontMoveWaterSourceBlocks = config.getBoolean("ExtraHardMode.Farming.BucketsDontMoveWaterSources", true);
-		config.set("ExtraHardMode.Farming.BucketsDontMoveWaterSources", this.config_dontMoveWaterSourceBlocks);
-		
-		this.config_playerDeathItemStacksForfeitPercent = config.getInt("ExtraHardMode.PlayerDeath.ItemStacksForfeitPercent", 10);
-		config.set("ExtraHardMode.PlayerDeath.ItemStacksForfeitPercent", this.config_playerDeathItemStacksForfeitPercent);
-		
-		this.config_playerRespawnHealth = config.getInt("ExtraHardMode.PlayerDeath.RespawnHealth", 15);
-		config.set("ExtraHardMode.PlayerDeath.RespawnHealth", this.config_playerRespawnHealth);
-		
-		this.config_playerRespawnFoodLevel = config.getInt("ExtraHardMode.PlayerDeath.RespawnFoodLevel", 15);
-		config.set("ExtraHardMode.PlayerDeath.RespawnFoodLevel", this.config_playerRespawnFoodLevel);
-		
-		this.config_workAroundExplosionsBugs = config.getBoolean("ExtraHardMode.WorkAroundOtherPluginsExplosionBugs", false);
-		config.set("ExtraHardMode.WorkAroundOtherPluginsExplosionBugs", this.config_workAroundExplosionsBugs);
-		
-		
-		//default additional falling blocks
-		this.config_moreFallingBlocks = new ArrayList<Material>();
-		this.config_moreFallingBlocks.add(Material.DIRT);
-		this.config_moreFallingBlocks.add(Material.GRASS);
-		this.config_moreFallingBlocks.add(Material.COBBLESTONE);
-		this.config_moreFallingBlocks.add(Material.MOSSY_COBBLESTONE);
-		this.config_moreFallingBlocks.add(Material.MYCEL);
-		
-		//build a default config entry for those blocks
-		ArrayList<String> defaultMoreFallingBlocksList = new ArrayList<String>();
-		for(int i = 0; i < this.config_moreFallingBlocks.size(); i++)
-		{
-			defaultMoreFallingBlocksList.add(this.config_moreFallingBlocks.get(i).name());
-		}
-		
-		//try to load the list from the config file
-		List<String> moreFallingBlocksList = config.getStringList("ExtraHardMode.AdditionalFallingBlocks");
-		
-		//if it fails, use the above default list instead
-		if(moreFallingBlocksList == null || moreFallingBlocksList.size() == 0)
-		{
-			ExtraHardMode.AddLogEntry("Warning: The additional falling blocks list may not be empty.  If you don't want any additional falling blocks, list only a material which is never a block, like DIAMOND_SWORD.");
-			moreFallingBlocksList = defaultMoreFallingBlocksList;
-		}
-		
-		//parse this final list of additional falling blocks
-		this.config_moreFallingBlocks = new ArrayList<Material>();
-		for(int i = 0; i < moreFallingBlocksList.size(); i++)
-		{
-			String blockName = moreFallingBlocksList.get(i);
-			Material material = Material.getMaterial(blockName);
-			if(material == null)
-			{
-				ExtraHardMode.AddLogEntry("Additional Falling Blocks Configuration: Material not found: " + blockName + ".");
-			}
-			else
-			{
-				this.config_moreFallingBlocks.add(material);
-			}
-		}
-		
-		//write it back to the config
-		config.set("ExtraHardMode.AdditionalFallingBlocks", moreFallingBlocksList);
-		
-		//save config values to file system
-		try
-		{
-			config.save(DataStore.configFilePath);
-		}
-		catch(IOException exception)
-		{
-			AddLogEntry("Unable to write to the configuration file at \"" + DataStore.configFilePath + "\"");
-		}
-		
+		Config.load(instance);
+
 		//register for events
 		PluginManager pluginManager = this.getServer().getPluginManager();
 		
@@ -421,7 +85,9 @@ public class ExtraHardMode extends JavaPlugin
 		
 		//FEATURE: monsters spawn in the light under a configurable Y level
 		MoreMonstersTask task = new MoreMonstersTask();
-		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 1200L, 1200L);  //every 60 seconds
+		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 120L, 120L);  //TODO every 60 seconds
+		time = System.currentTimeMillis() - time;
+		log("Took " + time + " milliseconds to initialize");
 	}
 	
 	//handles slash commands
@@ -431,8 +97,10 @@ public class ExtraHardMode extends JavaPlugin
 	}
 	
 	public void onDisable()
-	{ 
-		AddLogEntry("ExtraHardMode disabled.");
+	{
+		instance = null;
+		HandlerList.unregisterAll(); //unregister all Listeners
+		getServer().getScheduler().cancelAllTasks(); //cancel all tasks
 	}
 	
 	//sends a color-coded message to a player
@@ -447,11 +115,19 @@ public class ExtraHardMode extends JavaPlugin
 	{
 		if(player == null)
 		{
-			ExtraHardMode.AddLogEntry(color + message);
+			ExtraHardMode.log(color + message);
 		}
 		else
 		{
-			player.sendMessage(color + message);
+			//FEATURE: don't spam messages
+			PlayerData playerData = ExtraHardMode.instance.dataStore.getPlayerData(player.getName());
+			long now = Calendar.getInstance().getTimeInMillis();
+			if(!message.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
+			{
+				player.sendMessage(color + message);
+				playerData.lastMessageSent = message;
+				playerData.lastMessageTimestamp = now;
+			}
 		}
 	}	
 	
@@ -474,7 +150,7 @@ public class ExtraHardMode extends JavaPlugin
 		
 		//create falling block
 		FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
-		fallingBlock.setDropItem(true);
+		fallingBlock.setDropItem (false);
 		
 		//remove original block
 		block.setType(Material.AIR);
@@ -486,20 +162,60 @@ public class ExtraHardMode extends JavaPlugin
 		return randomNumberGenerator.nextInt(101) < percentChance;
 	}
 	
-	boolean allowGrow(Block block, byte newDataValue)
+	boolean plantDies(Block block, byte newDataValue)
 	{
 		World world = block.getWorld();
-		if(!ExtraHardMode.instance.config_enabled_worlds.contains(world) || !ExtraHardMode.instance.config_seedReduction) return true;
+		if(!Config.Enabled_Worlds.contains(world.getName()) || !Config.Farming__Weak_Food_Crops__Enable) return false;
+		
+		//not evaluated until the plant is nearly full grown
+		if(newDataValue <= (byte)6) return false;
 		
 		Material material = block.getType();				
-		if(material == Material.CROPS || material == Material.MELON_STEM || material == Material.CARROT || material == Material.PUMPKIN_STEM || material == Material.POTATO)
+		if( material == Material.CROPS ||
+			material == Material.MELON_STEM ||
+			material == Material.CARROT ||
+			material == Material.PUMPKIN_STEM ||
+			material == Material.POTATO )
 		{
-			if(newDataValue > (byte)6 && ExtraHardMode.random(25))
+			int deathProbability = Config.Farming__Weak_Food_Crops__Vegetation_Loss_Percentage;
+			
+			//plants in the dark always die
+			if(block.getLightFromSky() < 10)
 			{
-				return false;
+				deathProbability = 100 ;
+			}
+			
+			else
+			{
+			    if (Config.Farming__Weak_Food_Crops__Arid_Infertile_Desserts)
+			    {
+					Biome biome = block.getBiome();
+
+					//the desert environment is very rough on crops
+					if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS)
+					{
+					}
+			    }
+				//unwatered crops are more likely to die
+				Block belowBlock = block.getRelative(BlockFace.DOWN);
+				byte moistureLevel = 0;
+				if(belowBlock.getType() == Material.SOIL)
+				{
+					moistureLevel = belowBlock.getData();
+				}
+				
+				if(moistureLevel == 0)
+				{
+					deathProbability += 25;
+				}
+			}
+			
+			if(ExtraHardMode.random(deathProbability))
+			{
+				return true;
 			}			
 		}
 		
-		return true;
+		return false;
 	}
 }

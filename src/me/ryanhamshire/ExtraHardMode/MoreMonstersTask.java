@@ -18,20 +18,25 @@
 
 package me.ryanhamshire.ExtraHardMode;
 
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 
-public class MoreMonstersTask implements Runnable {
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Calendar;
 
+public class MoreMonstersTask implements Runnable
+{
+
+    //static is bad....
 	private static ArrayList<SimpleEntry<Player, Location>> previousLocations;
 	
 	@Override
@@ -54,17 +59,17 @@ public class MoreMonstersTask implements Runnable {
 			try
 			{
 				//chunk must be loaded, player must not be close, and there must be no other players in the chunk
-				if(location.getChunk().isLoaded() && player.isOnline() && location.distanceSquared(player.getLocation()) > 150)
+				if(location.getChunk().isLoaded() && player.isOnline() /*TODO&& location.distanceSquared(player.getLocation()) > 150*/)
 				{
 					boolean playerInChunk = false;
 					Entity [] entities = chunk.getEntities();
-					for(int j = 0; j < entities.length; j++)
+					for(Entity entity: entities)
 					{
-						if(entities[j].getType() == EntityType.PLAYER)
+						/*if(entity.getType() == EntityType.PLAYER)
 						{
 							playerInChunk = true;
 							break;
-						}
+						}*/
 					}
 					
 					if(!playerInChunk)
@@ -102,7 +107,12 @@ public class MoreMonstersTask implements Runnable {
 							int totalToSpawn = typeMultiplier;
 							for(int j = 0; j < totalToSpawn; j++)
 							{
-								world.spawnEntity(location, monsterType);								
+								world.spawnEntity(location, monsterType);
+								//TODO
+								DateFormat format = new SimpleDateFormat("HH:mm:ss");
+								Calendar cal = Calendar.getInstance();
+								player.sendMessage("[" + format.format(cal.getTime()) + "] "+ ChatColor.GREEN + "Spawned " + monsterType.getName() + " on " + location.getBlock().getRelative(BlockFace.DOWN, 1).getType().name() + ChatColor.AQUA + " at X:" + location.getBlockX() + " Y: " + location.getY() + " Z: " + location.getZ() + ChatColor.BLUE + " - Distance: " + player.getLocation().distance(location));
+								
 							}
 						}
 						
@@ -112,7 +122,8 @@ public class MoreMonstersTask implements Runnable {
 							
 							if(random < 80)
 							{
-								world.spawnEntity(location, EntityType.PIG_ZOMBIE);
+								PigZombie zombie = (PigZombie) world.spawnEntity(location, EntityType.PIG_ZOMBIE);
+								zombie.setAnger(Integer.MAX_VALUE);
 							}
 							else
 							{
@@ -122,29 +133,59 @@ public class MoreMonstersTask implements Runnable {
 					}
 				}
 			}
-			catch(IllegalArgumentException exception) { }  //in case the player is in a different world from the saved location
+			catch(IllegalArgumentException ignored) { }  //in case the player is in a different world from the saved location
 		}
 		
 		//plan for the next pass
 		MoreMonstersTask.previousLocations.clear();
-		Player [] players = ExtraHardMode.instance.getServer().getOnlinePlayers(); 
-		for(int i = 0; i < players.length; i++)
+		for(Player player: ExtraHardMode.instance.getServer().getOnlinePlayers())
 		{
-			Player player = players[i];
-			
-			//skip disabled worlds, players with bypass permission, and players not in survival mode
-			if(!ExtraHardMode.instance.config_enabled_worlds.contains(player.getWorld()) || player.hasPermission("extrahardmode.bypass") || player.getGameMode() != GameMode.SURVIVAL) continue;
-			
 			Location location = player.getLocation();
+			Block playerBlock = location.getBlock();
 			World world = player.getWorld();
-			
-			if(world.getEnvironment() == Environment.THE_END) continue;
-			
-			//in normal worlds, respect Y level setting in config, and skip any locations where sunlight reaches
-			if(world.getEnvironment() == Environment.NORMAL && (location.getY() > ExtraHardMode.instance.config_monsterSpawnsInLightMaxY || location.getBlock().getLightFromSky() > 0)) continue;
-			
-			//plan to check this location again later to possibly spawn monsters
-			MoreMonstersTask.previousLocations.add(new SimpleEntry<Player, Location>(player, location));
-		}
-	}
+
+        if (Config.Enabled_Worlds.contains(player.getWorld().getName())
+            && player.hasPermission(DataStore.bypass_Perm)
+            && player.getGameMode() == GameMode.SURVIVAL)
+        {
+            //Only spawn monsters in normal world. End is crowded with enderman and nether is too extreme anyway, add config later
+            if (world.getEnvironment() == Environment.NORMAL
+                    && ( location.getY() > Config.General_Monster_Rules__Monsters_Spawn_In_Light_Max_Y
+                    ||   location.getBlock().getLightFromSky() > 0 ))
+            {
+                //the playerBlock should always be air, but if the player stands on a slab he actually is in the slab
+                if (playerBlock.getType().equals(Material.AIR))
+                {
+                    for (int i = 0; i <= 3; i++)
+                    {
+                        Location checkUnder = location.subtract(0,1,0);
+                        Block checkUnderBlock = checkUnder.getBlock();
+                        if (checkUnderBlock.getType() != Material.AIR)
+                        {
+                            location = checkUnder;
+                            playerBlock = location.getBlock();
+                            //the playerBlock is now the block where the monster should spawn on, next up: verify block
+                            break;
+                        }
+                    }
+                }
+                //no spawning on steps, stairs and transparent blocks
+                if ( playerBlock.getType().name().endsWith("STEP")
+                   ||playerBlock.getType().name().endsWith("STAIRS")
+                   ||playerBlock.getType().isTransparent()
+                   ||playerBlock.getType().isOccluding()
+                   ||playerBlock.getType().equals(Material.AIR))
+                   {
+                    //don't spawn here
+                    return;
+                   }
+
+                //Once we are here the block is safe to spawn on
+                MoreMonstersTask.previousLocations.add(new SimpleEntry<Player, Location>(player, location));
+
+                }
+            }
+        }
+    }
 }
+

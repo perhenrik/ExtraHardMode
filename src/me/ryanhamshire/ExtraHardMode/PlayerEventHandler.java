@@ -17,44 +17,35 @@
  */
 
 package me.ryanhamshire.ExtraHardMode;
-import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 class PlayerEventHandler implements Listener 
 {
-	//typical constructor, yawn
-	PlayerEventHandler()
-	{		
-	}	
-	
+
 	//FEATURE: respawning players start without full health or food
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerRespawn(PlayerRespawnEvent respawnEvent)
 	{
 		Player player = respawnEvent.getPlayer();
 		World world = respawnEvent.getPlayer().getWorld();
-		if(!ExtraHardMode.instance.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass")) return;
+		if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(DataStore.bypass_Perm)) return;
 		
-		SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, ExtraHardMode.instance.config_playerRespawnHealth, ExtraHardMode.instance.config_playerRespawnFoodLevel);
+		SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, Config.Player__Respawn_Health, Config.Player__Respawn_Food_Level);
 		ExtraHardMode.instance.getServer().getScheduler().scheduleSyncDelayedTask(ExtraHardMode.instance, task, 10L);  //half-second delay		
 	}
 	
@@ -64,12 +55,12 @@ class PlayerEventHandler implements Listener
 	{
 		Player player = event.getPlayer();
 		World world = event.getPlayer().getWorld();
-		if(!ExtraHardMode.instance.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass")) return;
+		if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(DataStore.bypass_Perm)) return;
 		
 		Action action = event.getAction();
 		
 		//FEATURE: bonemeal doesn't work on mushrooms
-		if(ExtraHardMode.instance.config_noBonemealOnMushrooms && action == Action.RIGHT_CLICK_BLOCK)
+		if(Config.Farming__No_Bonemeal_On_Mushrooms && action == Action.RIGHT_CLICK_BLOCK)
 		{
 			Block block = event.getClickedBlock();
 			if(block.getType() == Material.RED_MUSHROOM || block.getType() == Material.BROWN_MUSHROOM)
@@ -78,7 +69,7 @@ class PlayerEventHandler implements Listener
 				Material materialInHand = player.getItemInHand().getType();
 				
 				//if bonemeal, cancel the event
-				if(materialInHand == Material.INK_SACK)  //bukkit bug labels bone meal as ink sack
+				if(materialInHand == Material.INK_SACK)  //TODO bukkit bug labels bone meal as ink sack
 				{
 					event.setCancelled(true);
 				}
@@ -86,12 +77,12 @@ class PlayerEventHandler implements Listener
 		}
 		
 		//FEATURE: seed reduction.  some plants die even when a player uses bonemeal.
-		if(ExtraHardMode.instance.config_seedReduction && action == Action.RIGHT_CLICK_BLOCK)
+		if(Config.Farming__Weak_Food_Crops__Enable && action == Action.RIGHT_CLICK_BLOCK)
 		{
 			Block block = event.getClickedBlock();
 			
 			Material materialInHand = player.getItemInHand().getType();
-			if(materialInHand == Material.INK_SACK && !ExtraHardMode.instance.allowGrow(block, Byte.MAX_VALUE))
+			if(materialInHand == Material.INK_SACK && ExtraHardMode.instance.plantDies(block, Byte.MAX_VALUE))
 			{
 				event.setCancelled(true);
 				block.setType(Material.LONG_GRASS);  //dead shrub
@@ -100,7 +91,7 @@ class PlayerEventHandler implements Listener
 		
 		//FEATURE: putting out fire up close catches the player on fire
 		Block block = event.getClickedBlock();
-		if(ExtraHardMode.instance.config_extinguishingFireIgnitesPlayers && block != null && block.getType() != Material.AIR)
+		if(Config.Player__Extinguishing_Fire_Ignites_Players && block != null && block.getType() != Material.AIR)
 		{
 			if(block.getRelative(event.getBlockFace()).getType() == Material.FIRE)
 			{
@@ -114,11 +105,11 @@ class PlayerEventHandler implements Listener
 	void onPlayerFillBucket(PlayerBucketFillEvent event)
 	{
 		//FEATURE: can't move water source blocks
-		if(ExtraHardMode.instance.config_dontMoveWaterSourceBlocks)
+		if(Config.World__Water__Dont_Move_Source_Blocks)
 		{
 			Player player = event.getPlayer();
 			World world = event.getPlayer().getWorld();
-			if(!ExtraHardMode.instance.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass")) return;
+			if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(DataStore.bypass_Perm)) return;
 			
 			//only care about stationary (source) water 
 			Block block = event.getBlockClicked();
@@ -148,11 +139,11 @@ class PlayerEventHandler implements Listener
 	void onPlayerEmptyBucket(PlayerBucketEmptyEvent event)
 	{
 		//FEATURE: can't move water source blocks
-		if(ExtraHardMode.instance.config_dontMoveWaterSourceBlocks)
+		if(Config.World__Water__Dont_Move_Source_Blocks)
 		{
 			Player player = event.getPlayer();
 			World world = event.getPlayer().getWorld();
-			if(!ExtraHardMode.instance.config_enabled_worlds.contains(world) || player.hasPermission("extrahardmode.bypass")) return;
+			if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(DataStore.bypass_Perm)) return;
 			
 			//only care about water buckets
 			if(player.getItemInHand().getType() == Material.WATER_BUCKET)
@@ -165,13 +156,32 @@ class PlayerEventHandler implements Listener
 		}
 	}
 	
+	//when a player dumps a bucket...
+	//block use of buckets within other players' claims
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+	public void onPlayerBucketEmpty (PlayerBucketEmptyEvent bucketEvent)
+	{
+		Player player = bucketEvent.getPlayer();
+		World world = player.getWorld();
+		
+		if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(DataStore.bypass_Perm)) return;
+		
+		//FEATURE: very limited building in the end
+		//players are allowed to break only end stone, and only to create a stair up to ground level
+		if(Config.Enderdragon__No_Building_In_End && world.getEnvironment() == Environment.THE_END)
+		{
+			bucketEvent.setCancelled(true);
+			ExtraHardMode.sendMessage(player, TextMode.Err, Messages.LimitedEndBuilding);
+		}
+	}
+	
 	//when a player changes worlds...
 	@EventHandler(priority = EventPriority.MONITOR)
 	void onPlayerChangeWorld(PlayerChangedWorldEvent event)
 	{
 		World world = event.getFrom();
 		
-		if(!ExtraHardMode.instance.config_enabled_worlds.contains(world)) return;
+		if(!Config.Enabled_Worlds.contains(world.getName())) return;
 		
 		//FEATURE: respawn the ender dragon when the last player leaves the end
 		if(world.getEnvironment() != Environment.THE_END) return;
@@ -179,19 +189,17 @@ class PlayerEventHandler implements Listener
 		if(world.getPlayers().size() > 0) return;
 		
 		//look for an ender dragon
-		List<Entity> entities = world.getEntities();
 		EnderDragon enderDragon = null;
-		for(int i = 0; i < entities.size(); i++)
+		for(Entity entity : world.getEntities())
 		{
-			Entity entity = entities.get(i);
 			if(entity instanceof EnderDragon)
 			{
-				enderDragon = (EnderDragon)entities.get(i);
+				enderDragon = (EnderDragon)entity;
 				break;
 			}
 			
 			//clean up any summoned minions
-			if(entity.getType() == EntityType.ZOMBIE || entity.getType() == EntityType.BLAZE)
+			if(entity.getType() == EntityType.ZOMBIE || entity.getType() == EntityType.BLAZE || entity.getType() == EntityType.VILLAGER)
 			{
 				entity.remove();
 			}
@@ -209,4 +217,116 @@ class PlayerEventHandler implements Listener
 			world.spawnEntity(new Location(world, 0, world.getMaxHeight() - 1, 0), EntityType.ENDER_DRAGON);
 		}		
 	}
+
+	//Bypass permission can be set to not default to ops
+	@EventHandler (priority = EventPriority.LOW)
+	public void onPlayerLogin (PlayerLoginEvent event)
+	{
+		if (event.getPlayer().isOp() && Config.Plugin__Ops_Bypass_By_Default)
+			event.getPlayer().addAttachment(ExtraHardMode.instance, DataStore.bypass_Perm, true);
+	}
+
+	//when a player moves...
+	@EventHandler(priority = EventPriority.NORMAL)
+	void onPlayerMove(PlayerMoveEvent event)
+	{
+		//FEATURE: no swimming while heavy
+		if(!Config.World__Water__No_Swimming_In_Armor) return;
+
+		//only care about moving up
+		Location from = event.getFrom();
+		Location to = event.getTo();
+		if(to.getY() <= from.getY()) return;
+
+		//only when in water
+		Block fromBlock = from.getBlock();
+		if(!fromBlock.isLiquid()) return;
+
+		Block toBlock = to.getBlock();
+		if(!toBlock.isLiquid()) return;
+
+		//only when in deep water
+		Block underFromBlock = fromBlock.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN);
+		if(!underFromBlock.isLiquid()) return;
+
+		//only enabled worlds, and players without bypass permission
+		Player player = event.getPlayer();
+		World world = player.getWorld();
+		if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission("extrahardmode.bypass")) return;
+
+		PlayerData playerData = ExtraHardMode.instance.dataStore.getPlayerData(player.getName());
+
+		//if no cached value, calculate
+		if(playerData.cachedWeightStatus == null)
+		{
+			//count worn clothing (counts double)
+			PlayerInventory inventory = player.getInventory();
+			int weight = 0;
+			ItemStack [] armor = inventory.getArmorContents();
+			for(ItemStack armorPiece : armor)
+			{
+				if(armorPiece != null && armorPiece.getType() != Material.AIR)
+				{
+					weight += 2;
+				}
+			}
+
+			//count contents
+			for(ItemStack itemStack : inventory.getContents())
+			{
+				if(itemStack != null && itemStack.getType() != Material.AIR)
+				{
+					weight++;
+					if(weight > 18)
+					{
+						break;
+					}
+				}
+			}
+
+			playerData.cachedWeightStatus = weight > 18;
+		}
+
+		//if too heavy, not allowed to swim
+		if(playerData.cachedWeightStatus == true)
+		{
+			event.setCancelled(true);
+			ExtraHardMode.sendMessage(player, TextMode.Warn, Messages.NoSwimmingInArmor);
+		}
+	}
+
+	//when a player drops an item
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+	void onPlayerDropItem(PlayerDropItemEvent event)
+	{
+		//FEATURE: players can't swim when they're carrying a lot of weight
+		Player player = event.getPlayer();
+		PlayerData playerData = ExtraHardMode.instance.dataStore.getPlayerData(player.getName());
+		playerData.cachedWeightStatus = null;
+	}
+
+	//when a player picks up an item
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+	void onPlayerPickupItem(PlayerPickupItemEvent event)
+	{
+		//FEATURE: players can't swim when they're carrying a lot of weight
+		Player player = event.getPlayer();
+		PlayerData playerData = ExtraHardMode.instance.dataStore.getPlayerData(player.getName());
+		playerData.cachedWeightStatus = null;
+	}
+
+	//when a player interacts with an inventory
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+	void onPlayerInventoryClick(InventoryClickEvent event)
+	{
+		//FEATURE: players can't swim when they're carrying a lot of weight
+		HumanEntity humanEntity = event.getWhoClicked();
+		if(humanEntity instanceof Player)
+		{
+			Player player = (Player)humanEntity;
+			PlayerData playerData = ExtraHardMode.instance.dataStore.getPlayerData(player.getName());
+			playerData.cachedWeightStatus = null;
+		}
+	}
+
 }

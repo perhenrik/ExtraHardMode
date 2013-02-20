@@ -18,11 +18,13 @@
 
 package me.ryanhamshire.ExtraHardMode;
 
-import java.io.*;
-import java.util.*;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 //singleton class which manages all ExtraHardMode data (except for config options)
 public class DataStore 
@@ -35,6 +37,11 @@ public class DataStore
 	final static String configFilePath = dataLayerFolderPath + File.separator + "config.yml";
 	final static String messagesFilePath = dataLayerFolderPath + File.separator + "messages.yml";
 	
+	//in-memory cache for player data
+	private ConcurrentHashMap<String, PlayerData> playerNameToPlayerDataMap = new ConcurrentHashMap<String, PlayerData>();
+
+	public static String bypass_Perm = "extrahardmode.bypass";
+
 	public DataStore()
 	{
 		this.initialize();
@@ -60,8 +67,11 @@ public class DataStore
 		this.addDefault(defaults, Messages.NoPlacingOreAgainstStone, "Sorry, you can't place ore next to stone.", null);
 		this.addDefault(defaults, Messages.RealisticBuilding, "You can't build while in the air.", null);
 		this.addDefault(defaults, Messages.LimitedTorchPlacements, "It's too soft there to fasten a torch.", null);
-		this.addDefault(defaults, Messages.NoCraftingMelonSeeds, "This melon appears to be seedless!", null);		
-		
+		this.addDefault(defaults, Messages.NoCraftingMelonSeeds, "That appears to be seedless!", null);
+		this.addDefault(defaults, Messages.LimitedEndBuilding, "Sorry, building here is very limited.  You may only break blocks to reach ground level.", null);
+		this.addDefault(defaults, Messages.DragonFountainTip, "Congratulations on defeating the dragon!  If you can't reach the fountain to jump into the portal, throw an ender pearl at it.", null);
+		this.addDefault(defaults, Messages.NoSwimmingInArmor, "You're carrying too much weight to swim!", null);
+
 		//load the config file
 		FileConfiguration config = YamlConfiguration.loadConfiguration(new File(messagesFilePath));
 		
@@ -75,7 +85,7 @@ public class DataStore
 			//if default is missing, log an error and use some fake data for now so that the plugin can run
 			if(messageData == null)
 			{
-				ExtraHardMode.AddLogEntry("Missing message for " + messageID.name() + ".  Please contact the developer.");
+				ExtraHardMode.log("Missing message for " + messageID.name() + ".  Please contact the developer.");
 				messageData = new CustomizableMessage(messageID, "Missing message!  ID: " + messageID.name() + ".  Please contact a server admin.", null);
 			}
 			
@@ -97,7 +107,7 @@ public class DataStore
 		}
 		catch(IOException exception)
 		{
-			ExtraHardMode.AddLogEntry("Unable to write to the configuration file at \"" + DataStore.messagesFilePath + "\"");
+			ExtraHardMode.log("Unable to write to the configuration file at \"" + DataStore.messagesFilePath + "\"");
 		}
 		
 		defaults.clear();
@@ -122,5 +132,22 @@ public class DataStore
 		}
 		
 		return message;		
+	}
+	
+	//retrieves player data from memory
+	synchronized public PlayerData getPlayerData(String playerName)
+	{
+		//first, look in memory
+		PlayerData playerData = this.playerNameToPlayerDataMap.get(playerName);
+		
+		//if not there, create a fresh entry
+		if(playerData == null)
+		{
+			playerData = new PlayerData();
+			this.playerNameToPlayerDataMap.put(playerName, playerData);
+		}
+		
+		//try the hash map again.  if it's STILL not there, we have a bug to fix
+		return this.playerNameToPlayerDataMap.get(playerName);
 	}
 }

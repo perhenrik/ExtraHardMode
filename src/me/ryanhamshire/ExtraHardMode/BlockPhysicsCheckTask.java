@@ -21,12 +21,14 @@ public class BlockPhysicsCheckTask implements Runnable {
 		block = block.getWorld().getBlockAt(block.getLocation());
 		boolean fall = false;
 		Material material = block.getType();
-		if(	(block.getRelative(BlockFace.DOWN).getType() == Material.AIR || block.getRelative(BlockFace.DOWN).isLiquid() || block.getRelative(BlockFace.DOWN).getType() == Material.TORCH) &&
-			(material == Material.SAND || material == Material.GRAVEL || ExtraHardMode.instance.config_moreFallingBlocks.contains(material)))
-		{
-			ExtraHardMode.applyPhysics(block);
-			fall = true;
-		}		
+		if (material == Material.SAND || material == Material.GRAVEL || Config.More_Falling_Blocks.contains(material.name()))
+			if (   block.getRelative(BlockFace.DOWN).getType() == Material.AIR
+				|| block.getRelative(BlockFace.DOWN).isLiquid()
+				|| block.getRelative(BlockFace.DOWN).getType() == Material.TORCH)
+			{
+				ExtraHardMode.applyPhysics(block);
+				fall = true;
+			}
 		
 		if(fall || this.recursionCount == 0)
 		{
