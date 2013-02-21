@@ -38,7 +38,7 @@ public class Config {
     private static transient boolean logVerbose = false;
 
     private static transient FileConfiguration config;
-    private static transient String configPath = dataLayerFolderPath + File.separator + "config.yml";
+    private static transient String configPath = dataLayerFolderPath + File.separator + "old_config.yml";
     private static transient File configFile = new File (configPath);
 
     /**This saves the defaults and restores them on a reload, static variables don't get cleared on a reload**/
@@ -60,9 +60,9 @@ public class Config {
 
     /**Plugin General Stuff**/
     public static boolean
-            Plugin__Ops_Bypass_By_Default = true,
-		    Plugin__Creative_Mode_Bypasses_Most_Limitations = true,
-		    Plugin__Enable_Advanced_Support_For_Vanilla_Mods = false;
+            //Plugin__Ops_Bypass_By_Default = true,
+		    Plugin__Creative_Mode_Bypasses_Most_Limitations = true;
+		    //Plugin__Enable_Advanced_Support_For_Vanilla_Mods = false;
 
 
     /**world rules**/
@@ -281,7 +281,7 @@ public class Config {
      *
      * When the parsing has finished the config gets written back to disk. If logVerbose is true it will throw an error
      * everytime there is no maxValue or minValue defined, so you should set that to false before deploying.
-     * @param plugin
+     * @param plugin reference to the plugin that called us
      */
     public static void load (Plugin plugin)
     {
@@ -445,7 +445,7 @@ public class Config {
      *     My Super Option:
      *
      * @param fieldName field to convert
-     * @return
+     * @return a parsed yaml path
      */
     private static String varNameToYamlPath (String fieldName) {
         fieldName = fieldName.replaceAll("__", ".");
@@ -467,7 +467,7 @@ public class Config {
 
     /**
      * Used when informing about errors which aren't common
-     * @param msg
+     * @param msg to print
      */
     private static void logInfo (String msg)
     {
@@ -476,11 +476,11 @@ public class Config {
 
     /**
      * This is for real Errors
-     * @param msg
+     * @param msg error to print
      */
     private static void logException (String msg)
     {
-        logger.severe(msg);
+        logger.severe (msg);
     }
 
 

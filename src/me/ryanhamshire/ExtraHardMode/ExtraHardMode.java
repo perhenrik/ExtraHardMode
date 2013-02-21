@@ -25,6 +25,7 @@ import java.util.Random;
 
 import me.ryanhamshire.ExtraHardMode.command.Commander;
 import me.ryanhamshire.ExtraHardMode.config.Config;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.event.BlockEventHandler;
 import me.ryanhamshire.ExtraHardMode.event.EntityEventHandler;
@@ -53,7 +54,7 @@ public class ExtraHardMode extends JavaPlugin {
    /**
     * Registered modules.
     */
-   private final Map<Class<? extends IModule>, IModule> modules = new HashMap<>();
+   private final Map<Class<? extends IModule>, IModule> modules = new HashMap<Class<? extends IModule>, IModule>();
 
    /**
     * for computing random chance
@@ -64,38 +65,39 @@ public class ExtraHardMode extends JavaPlugin {
     * initializes well... everything
     */
    @Override
-   public void onEnable() {
-      Config.load(this);
-      // Register modules
-      //TODO switch to this
-      //registerModule(RootConfig.class, new RootConfig(this));
-      registerModule(MessageConfig.class, new MessageConfig(this));
-      registerModule(DataStoreModule.class, new DataStoreModule(this));
-      registerModule(EntityModule.class, new EntityModule(this));
-      registerModule(BlockModule.class, new BlockModule(this));
-      
-      //Register command
-      getCommand("ehm").setExecutor(new Commander(this));
+   public void onEnable()
+   {
+       Config.load(this);
+       // Register modules
+       //TODO change to RootConfig
+       //registerModule(RootConfig.class, new RootConfig(this));
+       registerModule(MessageConfig.class, new MessageConfig(this));
+       registerModule(DataStoreModule.class, new DataStoreModule(this));
+       registerModule(EntityModule.class, new EntityModule(this));
+       registerModule(BlockModule.class, new BlockModule(this));
 
-      // register for events
-      PluginManager pluginManager = this.getServer().getPluginManager();
+       //Register command
+       getCommand("ehm").setExecutor(new Commander(this));
 
-      // player events
-      PlayerEventHandler playerEventHandler = new PlayerEventHandler(this);
-      pluginManager.registerEvents(playerEventHandler, this);
+       // register for events
+       PluginManager pluginManager = this.getServer().getPluginManager();
 
-      // block events
-      BlockEventHandler blockEventHandler = new BlockEventHandler(this);
-      pluginManager.registerEvents(blockEventHandler, this);
+       // player events
+       PlayerEventHandler playerEventHandler = new PlayerEventHandler(this);
+       pluginManager.registerEvents(playerEventHandler, this);
 
-      // entity events
-      EntityEventHandler entityEventHandler = new EntityEventHandler(this);
-      pluginManager.registerEvents(entityEventHandler, this);
+       // block events
+       BlockEventHandler blockEventHandler = new BlockEventHandler(this);
+       pluginManager.registerEvents(blockEventHandler, this);
 
-      // FEATURE: monsters spawn in the light under a configurable Y level
-      MoreMonstersTask task = new MoreMonstersTask(this);
-      // Every 60 seconds
-      this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 1200L, 1200L);
+       // entity events
+       EntityEventHandler entityEventHandler = new EntityEventHandler(this);
+       pluginManager.registerEvents(entityEventHandler, this);
+
+       // FEATURE: monsters spawn in the light under a configurable Y level
+       MoreMonstersTask task = new MoreMonstersTask(this);
+       // TODO Config: Every x seconds revert to 1200L
+       this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 0L, 120L);
    }
 
    /**
@@ -107,19 +109,24 @@ public class ExtraHardMode extends JavaPlugin {
     * @param message
     *           - Message to send.
     */
-   public void sendMessage(Player player, String message) {
-      if(player == null) {
-         getLogger().warning("Could not send the following message: " + message);
-      } else {
-         // FEATURE: don't spam messages
-         PlayerData playerData = getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-         long now = Calendar.getInstance().getTimeInMillis();
-         if(!message.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000) {
-            player.sendMessage(message);
-            playerData.lastMessageSent = message;
-            playerData.lastMessageTimestamp = now;
-         }
-      }
+   public void sendMessage(Player player, String message)
+   {
+       if (player == null)
+       {
+           getLogger().warning("Could not send the following message: " + message);
+       }
+       else
+       {
+           // FEATURE: don't spam messages
+           PlayerData playerData = getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+           long now = Calendar.getInstance().getTimeInMillis();
+           if (!message.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
+           {
+               player.sendMessage(message);
+               playerData.lastMessageSent = message;
+               playerData.lastMessageTimestamp = now;
+           }
+       }
    }
 
    /**
@@ -156,17 +163,21 @@ public class ExtraHardMode extends JavaPlugin {
     * @throws IllegalArgumentException
     *            - Thrown if an argument is null.
     */
-   public <T extends IModule> void registerModule(Class<T> clazz, T module) {
-      // Check arguments.
-      if(clazz == null) {
-         throw new IllegalArgumentException("Class cannot be null");
-      } else if(module == null) {
-         throw new IllegalArgumentException("Module cannot be null");
-      }
-      // Add module.
-      modules.put(clazz, module);
-      // Tell module to start.
-      module.starting();
+   public <T extends IModule> void registerModule(Class<T> clazz, T module)
+   {
+       // Check arguments.
+       if (clazz == null)
+       {
+           throw new IllegalArgumentException("Class cannot be null");
+       }
+       else if (module == null)
+       {
+           throw new IllegalArgumentException("Module cannot be null");
+       }
+       // Add module.
+       modules.put(clazz, module);
+       // Tell module to start.
+       module.starting();
    }
 
    /**
@@ -177,20 +188,23 @@ public class ExtraHardMode extends JavaPlugin {
     * @return Module that was removed. Returns null if no instance of the module
     *         is registered.
     */
-   public <T extends IModule> T deregisterModuleForClass(Class<T> clazz) {
-      // Check arguments.
-      if(clazz == null) {
-         throw new IllegalArgumentException("Class cannot be null");
-      }
-      // Grab module and tell it its closing.
-      T module = clazz.cast(modules.get(clazz));
-      if(module != null) {
-         module.closing();
-      }
-      return module;
+   public <T extends IModule> T deregisterModuleForClass(Class<T> clazz)
+   {
+       // Check arguments.
+       if (clazz == null)
+       {
+           throw new IllegalArgumentException("Class cannot be null");
+       }
+       // Grab module and tell it its closing.
+       T module = clazz.cast(modules.get(clazz));
+       if (module != null)
+       {
+           module.closing();
+       }
+       return module;
    }
 
-   /**
+    /**
     * Retrieve a registered module.
     * 
     * @param clazz

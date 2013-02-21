@@ -38,37 +38,46 @@ public abstract class ModularConfig extends EHMModule {
     *           - ConfigNode to update.
     */
    @SuppressWarnings("unchecked")
-   public void updateOption(final ConfigNode node) {
-      final ConfigurationSection config = plugin.getConfig();
-      switch(node.getVarType()) {
-      case LIST: {
-         List<String> list = config.getStringList(node.getPath());
-         if(list == null) {
-            list = (List<String>) node.getDefaultValue();
-         }
-         OPTIONS.put(node, list);
-         break;
-      }
-      case DOUBLE: {
-         OPTIONS.put(node, config.getDouble(node.getPath(), (Double) node.getDefaultValue()));
-         break;
-      }
-      case STRING: {
-         OPTIONS.put(node, config.getString(node.getPath(), (String) node.getDefaultValue()));
-         break;
-      }
-      case INTEGER: {
-         OPTIONS.put(node, config.getInt(node.getPath(), (Integer) node.getDefaultValue()));
-         break;
-      }
-      case BOOLEAN: {
-         OPTIONS.put(node, config.getBoolean(node.getPath(), (Boolean) node.getDefaultValue()));
-         break;
-      }
-      default: {
-         OPTIONS.put(node, config.get(node.getPath(), node.getDefaultValue()));
-      }
-      }
+   public void updateOption(final ConfigNode node)
+   {
+       final ConfigurationSection config = plugin.getConfig();
+       switch (node.getVarType())
+       {
+           case LIST:
+           {
+               List<String> list = config.getStringList(node.getPath());
+               if (list == null)
+               {
+                   list = (List<String>) node.getDefaultValue();
+               }
+               OPTIONS.put(node, list);
+               break;
+           }
+           case DOUBLE:
+           {
+               OPTIONS.put(node, config.getDouble(node.getPath(), (Double) node.getDefaultValue()));
+               break;
+           }
+           case STRING:
+           {
+               OPTIONS.put(node, config.getString(node.getPath(), (String) node.getDefaultValue()));
+               break;
+           }
+           case INTEGER:
+           {
+               OPTIONS.put(node, config.getInt(node.getPath(), (Integer) node.getDefaultValue()));
+               break;
+           }
+           case BOOLEAN:
+           {
+               OPTIONS.put(node, config.getBoolean(node.getPath(), (Boolean) node.getDefaultValue()));
+               break;
+           }
+           default:
+           {
+               OPTIONS.put(node, config.get(node.getPath(), node.getDefaultValue()));
+           }
+       }
    }
 
    /**
@@ -107,22 +116,28 @@ public abstract class ModularConfig extends EHMModule {
     *           - Node to use.
     * @return Value of the node. Returns -1 if unknown.
     */
-   public int getInt(final ConfigNode node) {
-      int i = -1;
-      switch(node.getVarType()) {
-      case INTEGER: {
-         try {
-            i = ((Integer) OPTIONS.get(node)).intValue();
-         } catch(NullPointerException npe) {
-            i = ((Integer) node.getDefaultValue()).intValue();
-         }
-         break;
-      }
-      default: {
-         throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as an integer.");
-      }
-      }
-      return i;
+   public int getInt(final ConfigNode node)
+   {
+       int i = -1;
+       switch (node.getVarType())
+       {
+           case INTEGER:
+           {
+               try
+               {
+                   i = ((Integer) OPTIONS.get(node)).intValue();
+               } catch (NullPointerException npe)
+               {
+                   i = ((Integer) node.getDefaultValue()).intValue();
+               }
+               break;
+           }
+           default:
+           {
+               throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as an integer.");
+           }
+       }
+       return i;
    }
 
    /**
@@ -132,21 +147,26 @@ public abstract class ModularConfig extends EHMModule {
     *           - Node to use.
     * @return Value of the node. Returns and empty string if unknown.
     */
-   public String getString(final ConfigNode node) {
-      String out = "";
-      switch(node.getVarType()) {
-      case STRING: {
-         out = (String) OPTIONS.get(node);
-         if(out == null) {
-            out = (String) node.getDefaultValue();
-         }
-         break;
-      }
-      default: {
-         throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a string.");
-      }
-      }
-      return out;
+   public String getString(final ConfigNode node)
+   {
+       String out = "";
+       switch (node.getVarType())
+       {
+           case STRING:
+           {
+               out = (String) OPTIONS.get(node);
+               if (out == null)
+               {
+                   out = (String) node.getDefaultValue();
+               }
+               break;
+           }
+           default:
+           {
+               throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a string.");
+           }
+       }
+       return out;
    }
 
    /**
@@ -157,22 +177,27 @@ public abstract class ModularConfig extends EHMModule {
     * @return Value of the node. Returns an empty list if unknown.
     */
    @SuppressWarnings("unchecked")
-   public List<String> getStringList(final ConfigNode node) {
-      List<String> list = new ArrayList<String>();
-      switch(node.getVarType()) {
-      case LIST: {
-         final ConfigurationSection config = plugin.getConfig();
-         list = config.getStringList(node.getPath());
-         if(list == null) {
-            list = (List<String>) node.getDefaultValue();
-         }
-         break;
-      }
-      default: {
-         throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a List<String>.");
-      }
-      }
-      return list;
+   public List<String> getStringList(final ConfigNode node)
+   {
+       List<String> list = new ArrayList<String>();
+       switch (node.getVarType())
+       {
+           case LIST:
+           {
+               final ConfigurationSection config = plugin.getConfig();
+               list = config.getStringList(node.getPath());
+               if (list == null)
+               {
+                   list = (List<String>) node.getDefaultValue();
+               }
+               break;
+           }
+           default:
+           {
+               throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a List<String>.");
+           }
+       }
+       return list;
    }
 
    /**
@@ -182,22 +207,28 @@ public abstract class ModularConfig extends EHMModule {
     *           - Node to use.
     * @return Value of the node. Returns 0 if unknown.
     */
-   public double getDouble(final ConfigNode node) {
-      double d = 0.0;
-      switch(node.getVarType()) {
-      case DOUBLE: {
-         try {
-            d = ((Double) OPTIONS.get(node)).doubleValue();
-         } catch(NullPointerException npe) {
-            d = ((Double) node.getDefaultValue()).doubleValue();
-         }
-         break;
-      }
-      default: {
-         throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a double.");
-      }
-      }
-      return d;
+   public double getDouble(final ConfigNode node)
+   {
+       double d = 0.0;
+       switch (node.getVarType())
+       {
+           case DOUBLE:
+           {
+               try
+               {
+                   d = ((Double) OPTIONS.get(node)).doubleValue();
+               } catch (NullPointerException npe)
+               {
+                   d = ((Double) node.getDefaultValue()).doubleValue();
+               }
+               break;
+           }
+           default:
+           {
+               throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a double.");
+           }
+       }
+       return d;
    }
 
    /**
@@ -207,18 +238,22 @@ public abstract class ModularConfig extends EHMModule {
     *           - Node to use.
     * @return Value of the node. Returns false if unknown.
     */
-   public boolean getBoolean(final ConfigNode node) {
-      boolean b = false;
-      switch(node.getVarType()) {
-      case BOOLEAN: {
-         b = ((Boolean) OPTIONS.get(node)).booleanValue();
-         break;
-      }
-      default: {
-         throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a boolean.");
-      }
-      }
-      return b;
+   public boolean getBoolean(final ConfigNode node)
+   {
+       boolean b = false;
+       switch (node.getVarType())
+       {
+           case BOOLEAN:
+           {
+               b = ((Boolean) OPTIONS.get(node)).booleanValue();
+               break;
+           }
+           default:
+           {
+               throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a boolean.");
+           }
+       }
+       return b;
    }
 
    /**

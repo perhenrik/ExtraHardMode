@@ -47,7 +47,7 @@ public class DragonAttackPatternTask implements Runnable {
    /**
     * List of players fighting the dragon.
     */
-   private final List<Player> playersFightingDragon = new ArrayList<>();
+   private final List<Player> playersFightingDragon = new ArrayList<Player>();
 
    /**
     * Constructor.

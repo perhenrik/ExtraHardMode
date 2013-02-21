@@ -12,71 +12,83 @@ import me.ryanhamshire.ExtraHardMode.service.ModularConfig;
 /**
  * Configuration handler for the root config.yml file.
  */
-public class RootConfig extends ModularConfig {
+//TODO add default worlds to config
+public class RootConfig extends ModularConfig
+{
 
-   /**
-    * Constructor.
-    * 
-    * @param plugin
-    *           - plugin instance.
-    */
-   public RootConfig(ExtraHardMode plugin) {
-      super(plugin);
-   }
+    /**
+     * Constructor. You no say?
+     *
+     * @param plugin - plugin instance.
+     */
+    public RootConfig(ExtraHardMode plugin)
+    {
+        super(plugin);
+    }
 
-   @Override
-   public void starting() {
-      loadDefaults(plugin.getConfig());
-      plugin.saveConfig();
-      reload();
-   }
+    @Override
+    public void starting()
+    {
+        loadDefaults(plugin.getConfig());
+        plugin.saveConfig();
+        reload();
+    }
 
-   @Override
-   public void closing() {
-      plugin.reloadConfig();
-      plugin.saveConfig();
-   }
+    @Override
+    public void closing()
+    {
+        plugin.reloadConfig();
+        plugin.saveConfig();
+    }
 
-   @Override
-   public void save() {
-      plugin.saveConfig();
-   }
+    @Override
+    public void save()
+    {
+        plugin.saveConfig();
+    }
 
-   @Override
-   public void set(String path, Object value) {
-      final ConfigurationSection config = plugin.getConfig();
-      config.set(path, value);
-      plugin.saveConfig();
-   }
+    @Override
+    public void set(String path, Object value)
+    {
+        final ConfigurationSection config = plugin.getConfig();
+        config.set(path, value);
+        plugin.saveConfig();
+    }
 
-   @Override
-   public void reload() {
-      plugin.reloadConfig();
-      loadSettings(plugin.getConfig());
-      boundsCheck();
-   }
+    @Override
+    public void reload()
+    {
+        plugin.reloadConfig();
+        loadSettings(plugin.getConfig());
+        boundsCheck();
+    }
 
-   @Override
-   public void loadSettings(ConfigurationSection config) {
-      for(final RootNode node : RootNode.values()) {
-         updateOption(node);
-      }
-   }
+    @Override
+    public void loadSettings(ConfigurationSection config)
+    {
+        for (final RootNode node : RootNode.values())
+        {
+            updateOption(node);
+        }
+    }
 
-   @Override
-   public void loadDefaults(ConfigurationSection config) {
-      for(RootNode node : RootNode.values()) {
-         if(!config.contains(node.getPath())) {
-            config.set(node.getPath(), node.getDefaultValue());
-         }
-      }
-   }
+    @Override
+    public void loadDefaults(ConfigurationSection config)
+    {
+        for (RootNode node : RootNode.values())
+        {
+            if (!config.contains(node.getPath()))
+            {
+                config.set(node.getPath(), node.getDefaultValue());
+            }
+        }
+    }
 
    @Override
    public void boundsCheck() {
       // Check worlds
       List<String> list = getStringList(RootNode.WORLDS);
-      if(list.isEmpty()) {
+      if(list.isEmpty()) { //TODO doesn't validate when /ehm reload
          plugin.getLogger().warning(plugin.getTag() + " No worlds selected!");
       }
       List<World> worlds = new ArrayList<World>();
@@ -94,7 +106,7 @@ public class RootConfig extends ModularConfig {
       validateYCoordinate(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y, worlds);
       // Check percentages
       validatePercentage(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT);
-      // TODO should this be special?
+      // TODO iterate through the names, reflection hacking, or add maxValue to Nodes, maybe just for integers
       validatePercentage(RootNode.MORE_MONSTERS_MULTIPLIER);
       validatePercentage(RootNode.ZOMBIES_REANIMATE_PERCENT);
       validatePercentage(RootNode.SKELETONS_KNOCK_BACK_PERCENT);
@@ -126,6 +138,7 @@ public class RootConfig extends ModularConfig {
       int value = getInt(node);
       boolean changed = false;
       if(value < 0) {
+          //TODO create method in Main to call "getLogger().warning(plugin.getTag()"
          plugin.getLogger().warning(plugin.getTag() + " Y coordinate for " + node.getPath() + " cannot be less than 0.");
          set(node, 0);
          changed = true;
