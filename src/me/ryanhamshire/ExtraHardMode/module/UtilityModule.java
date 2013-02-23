@@ -1,3 +1,17 @@
+/*
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.ryanhamshire.ExtraHardMode.module;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
@@ -13,6 +27,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 /**
  * Put all the Utility Stuff here that doesn't fit into the other modules
  */
+@SuppressWarnings("SameParameterValue")
 public class UtilityModule extends EHMModule
 {
     /**
@@ -27,12 +42,13 @@ public class UtilityModule extends EHMModule
 
     /**
      * Generates a Firework with random colors and the given Firework Type
-     * @param type
-     * @return
+     *
+     * @param type The type of firework
+     * @return nothing
      */
     public void fireWorkRandomColors(FireworkEffect.Type type, Location location)
     {
-        Firework firework = (Firework)location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+        Firework firework = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
 
         //Generate the colors
@@ -53,20 +69,22 @@ public class UtilityModule extends EHMModule
     /**
      * Returns if Material is a plant that should be affected by the farming Rules
      */
-    public boolean isPlant (Material material)
+    public boolean isPlant(Material material)
     {
-        if (    material.equals(Material.CROPS)
-            ||  material.equals(Material.POTATO)
-            ||  material.equals(Material.CARROT)
-            ||  material.equals(Material.MELON_STEM)
-            ||  material.equals(Material.PUMPKIN_STEM))
-            return true;
-        return false;
+        return material.equals(Material.CROPS)
+                || material.equals(Material.POTATO)
+                || material.equals(Material.CARROT)
+                || material.equals(Material.MELON_STEM)
+                || material.equals(Material.PUMPKIN_STEM);
     }
 
     @Override
-    public void starting(){}
+    public void starting()
+    {
+    }
 
     @Override
-    public void closing(){}
+    public void closing()
+    {
+    }
 }

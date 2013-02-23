@@ -1,7 +1,4 @@
 /*
-    ExtraHardMode Server Plugin for Minecraft
-    Copyright (C) 2012 Ryan Hamshire
-
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,6 +13,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 package me.ryanhamshire.ExtraHardMode.task;
 
 import org.bukkit.Material;
@@ -25,27 +23,30 @@ import org.bukkit.block.Block;
  * Changes a water source block to a non-source block, allowing it to spread and
  * evaporate away.
  */
-public class EvaporateWaterTask implements Runnable {
+public class EvaporateWaterTask implements Runnable
+{
 
-   /**
-    * Target block.
-    */
-   private Block block;
+    /**
+     * Target block.
+     */
+    private Block block;
 
-   /**
-    * Constructor.
-    * 
-    * @param block
-    *           - Target block.
-    */
-   public EvaporateWaterTask(Block block) {
-      this.block = block;
-   }
+    /**
+     * Constructor.
+     *
+     * @param block - Target block.
+     */
+    public EvaporateWaterTask(Block block)
+    {
+        this.block = block;
+    }
 
-   @Override
-   public void run() {
-      if(this.block.getType() == Material.STATIONARY_WATER) {
-         this.block.setData((byte) 1);
-      }
-   }
+    @Override
+    public void run()
+    {
+        if (this.block.getType() == Material.STATIONARY_WATER)
+        {
+            this.block.setData((byte) 1);
+        }
+    }
 }

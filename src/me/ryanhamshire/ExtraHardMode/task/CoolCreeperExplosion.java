@@ -1,3 +1,17 @@
+/*
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
@@ -10,25 +24,21 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
 /**
- * Created with IntelliJ IDEA.
- * User: max
- * Date: 2/22/13
- * Time: 3:59 PM
- * To change this template use File | Settings | File Templates.
+ * Launches a creeper into the air with fireworks and lets him explode midair
  */
 public class CoolCreeperExplosion implements Runnable
 {
-    Creeper deadBomber;
-    Creeper suicideBomber;
-    ExtraHardMode plugin;
-    UtilityModule utils;
-    BukkitScheduler scheduler;
+    private Creeper deadBomber;
+    private Creeper suicideBomber;
+    private ExtraHardMode plugin;
+    private UtilityModule utils;
+    private BukkitScheduler scheduler;
 
-    final int numOfExplosions = 5;
-    final int ticksBetweenExplosions = 4;
-    final int ticksBeforeCatapult = 3;
-    final int ticksBeforeSuicide = 8;
-    int mainDelay = 0;
+    private final int numOfExplosions = 5;
+    private final int ticksBetweenExplosions = 4;
+    private final int ticksBeforeCatapult = 3;
+    private final int ticksBeforeSuicide = 8;
+    private int mainDelay = 0;
 
     public CoolCreeperExplosion(Creeper entity, ExtraHardMode plugin)
     {
@@ -42,7 +52,7 @@ public class CoolCreeperExplosion implements Runnable
      * Contains the mainLogic for creating a cool explosion
      */
     @Override
-    public void run ()
+    public void run()
     {
         /*
             Using Runnables and Asyncs seems to be the only way to introduce delays between actions without blocking the main thread
@@ -51,8 +61,7 @@ public class CoolCreeperExplosion implements Runnable
         //For simplicity we let the creeper die and spawn a new one at the same location
         World world = deadBomber.getWorld();
         Location location = deadBomber.getLocation();
-        Class clazz = deadBomber.getClass();
-        suicideBomber = world.spawn(location, deadBomber.getClass());
+        suicideBomber = world.spawn(location, Creeper.class);
         if (suicideBomber instanceof Creeper)
         {
             if (deadBomber.isPowered())
@@ -84,6 +93,7 @@ public class CoolCreeperExplosion implements Runnable
      */
     private class AscendToHeaven implements Runnable
     {//Catapult Creeper into sky, afterwards explode in midair
+
         @Override
         public void run()
         {
@@ -107,7 +117,7 @@ public class CoolCreeperExplosion implements Runnable
     private class RiseToGlory implements Runnable
     {
         @Override
-        public void run ()
+        public void run()
         {
             if (suicideBomber != null)
             {

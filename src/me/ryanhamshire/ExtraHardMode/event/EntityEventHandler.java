@@ -1,7 +1,4 @@
 /*
-    ExtraHardMode Server Plugin for Minecraft
-    Copyright (C) 2012 Ryan Hamshire
-
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -43,8 +40,6 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.LazyMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -713,11 +708,11 @@ public class EntityEventHandler implements Listener
         {
             if (entity.getType().equals(EntityType.CREEPER))
                 if (entity.getLastDamageCause().getCause().equals(DamageCause.FIRE)
-                    || entity.getLastDamageCause().getCause().equals(DamageCause.FIRE_TICK)
-                    || entity.getLastDamageCause().getCause().equals(DamageCause.LAVA))
+                        || entity.getLastDamageCause().getCause().equals(DamageCause.FIRE_TICK)
+                        || entity.getLastDamageCause().getCause().equals(DamageCause.LAVA))
                 {
                     Creeper creeper = (Creeper) entity;
-                    CoolCreeperExplosion bigBoom = new CoolCreeperExplosion (creeper, plugin);
+                    CoolCreeperExplosion bigBoom = new CoolCreeperExplosion(creeper, plugin);
                     bigBoom.run();
                 }
         }
@@ -773,7 +768,7 @@ public class EntityEventHandler implements Listener
                 StringBuilder builder = new StringBuilder("The dragon has been defeated!  ( By: ");
                 for (Player player : this.playersFightingDragon)
                 {
-                    builder.append(player.getName() + " ");
+                    builder.append(player.getName()).append(" ");
                 }
                 builder.append(")");
 
@@ -832,9 +827,9 @@ public class EntityEventHandler implements Listener
                         underBlock.getRelative(BlockFace.SOUTH_EAST), underBlock.getRelative(BlockFace.NORTH_WEST),
                         underBlock.getRelative(BlockFace.SOUTH_WEST)};
 
-                for (int i = 0; i < adjacentBlocks.length; i++)
+                for (Block adjacentBlock : adjacentBlocks)
                 {
-                    block = adjacentBlocks[i];
+                    block = adjacentBlock;
                     if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER)
                     {
                         noLoot = true;
@@ -858,10 +853,8 @@ public class EntityEventHandler implements Listener
                             new Location(monsterEyeLocation.getWorld(), .8 * monsterEyeLocation.getX() + .2 * playerEyeLocation.getX(),
                                     monsterEyeLocation.getY(), .8 * monsterEyeLocation.getZ() + .2 * playerEyeLocation.getZ()),};
 
-                    for (int i = 0; i < locations.length; i++)
+                    for (Location middleLocation : locations)
                     {
-                        Location middleLocation = locations[i];
-
                         // monster is blocked at eye level, unable to advance toward
                         // killer
                         if (middleLocation.getBlock().getType() != Material.AIR)
@@ -906,9 +899,8 @@ public class EntityEventHandler implements Listener
             {
                 event.setDroppedExp(event.getDroppedExp() * 10);
                 List<ItemStack> itemDrops = event.getDrops();
-                for (int i = 0; i < itemDrops.size(); i++)
+                for (ItemStack itemDrop : itemDrops)
                 {
-                    ItemStack itemDrop = itemDrops.get(i);
                     itemDrop.setAmount(itemDrop.getAmount() * 10);
                 }
             }
@@ -942,7 +934,7 @@ public class EntityEventHandler implements Listener
                 secondNewBlaze.setVelocity(new Vector(-1, 0, -1));
 
                 // if this blaze was marked lootless, mark the new blazes the same
-                if (module.isLootLess((LivingEntity) entity))
+                if (module.isLootLess(entity))
                 {
                     module.markLootLess((LivingEntity) firstNewBlaze);
                     module.markLootLess((LivingEntity) secondNewBlaze);
@@ -968,9 +960,8 @@ public class EntityEventHandler implements Listener
                 locations[3] = entity.getLocation().add(random1 / 2, 0, -random2 / 2);
 
                 List<Block> changedBlocks = new ArrayList<Block>();
-                for (int i = 0; i < locations.length; i++)
+                for (Location location : locations)
                 {
-                    Location location = locations[i];
                     Block block = location.getBlock();
 
                     // don't replace anything solid with web
@@ -994,9 +985,9 @@ public class EntityEventHandler implements Listener
                                 block.getRelative(BlockFace.NORTH), block.getRelative(BlockFace.SOUTH)};
 
                         boolean nextToCactus = false;
-                        for (int j = 0; j < adjacentBlocks.length; j++)
+                        for (Block adjacentBlock : adjacentBlocks)
                         {
-                            if (adjacentBlocks[j].getType() == Material.CACTUS)
+                            if (adjacentBlock.getType() == Material.CACTUS)
                             {
                                 nextToCactus = true;
                                 break;
@@ -1095,11 +1086,11 @@ public class EntityEventHandler implements Listener
 
                 Chunk chunk = damager.getLocation().getChunk();
                 Entity[] entities = chunk.getEntities();
-                for (int i = 0; i < entities.length; i++)
+                for (Entity entity1 : entities)
                 {
-                    if (entities[i].getType() == EntityType.ENDERMAN)
+                    if (entity1.getType() == EntityType.ENDERMAN)
                     {
-                        Enderman enderman = (Enderman) entities[i];
+                        Enderman enderman = (Enderman) entity1;
                         enderman.setTarget(damager);
                     }
                 }
@@ -1190,7 +1181,7 @@ public class EntityEventHandler implements Listener
                 }
                 else if (cause == DamageCause.FIRE_TICK)
                 {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 1, 1));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                 }
             }
         }
@@ -1269,7 +1260,7 @@ public class EntityEventHandler implements Listener
                         }
                         else if (damageByEntityEvent.getDamager() != null && damageByEntityEvent.getDamager() instanceof Arrow)
                         {   //Damaged by an arrow shot by a player
-                            Arrow arrow = (Arrow)damageByEntityEvent.getDamager();
+                            Arrow arrow = (Arrow) damageByEntityEvent.getDamager();
                             Player damager = (Player) arrow.getShooter();
                             if (damager != null && damager.hasPermission(PermissionNode.BYPASS_CREEPERS.getNode()))
                                 return;

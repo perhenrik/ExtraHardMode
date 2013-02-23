@@ -1,7 +1,4 @@
 /*
-    ExtraHardMode Server Plugin for Minecraft
-    Copyright (C) 2012 Ryan Hamshire
-
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,45 +13,48 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.ryanhamshire.ExtraHardMode.task;
 
-import java.util.List;
+package me.ryanhamshire.ExtraHardMode.task;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 /**
  * Task to drop items at a specified location.
  */
-public class DropItemsTask implements Runnable {
+class DropItemsTask implements Runnable
+{
 
-   /**
-    * Items to drop.
-    */
-   private List<ItemStack> itemsToDrop;
-   /**
-    * Location of item drop.
-    */
-   private Location location;
+    /**
+     * Items to drop.
+     */
+    private List<ItemStack> itemsToDrop;
+    /**
+     * Location of item drop.
+     */
+    private Location location;
 
-   /**
-    * Constructor.
-    * 
-    * @param itemsToDrop
-    *           - List of items to drop.
-    * @param location
-    *           - Drop point location.
-    */
-   public DropItemsTask(List<ItemStack> itemsToDrop, Location location) {
-      this.itemsToDrop = itemsToDrop;
-      this.location = location;
-   }
+    /**
+     * Constructor.
+     *
+     * @param itemsToDrop - List of items to drop.
+     * @param location    - Drop point location.
+     */
+    public DropItemsTask(List<ItemStack> itemsToDrop, Location location)
+    {
+        this.itemsToDrop = itemsToDrop;
+        this.location = location;
+    }
 
-   @Override
-   public void run() {
-      for(ItemStack item : itemsToDrop) {
-         location.getWorld().dropItemNaturally(location, item);
-      }
-   }
+    @Override
+    public void run()
+    {
+        for (ItemStack item : itemsToDrop)
+        {
+            location.getWorld().dropItemNaturally(location, item);
+        }
+    }
 
 }

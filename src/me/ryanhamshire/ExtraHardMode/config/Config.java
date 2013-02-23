@@ -1,3 +1,17 @@
+/*
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.ryanhamshire.ExtraHardMode.config;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,72 +43,127 @@ import java.util.logging.Logger;
  * Sadly this class has become a lot more complicated than I had originally envisioned, but imo it's still pretty okay for what it does.
  */
 @SuppressWarnings("unused")
-public class Config {
+public class Config
+{
 
-   private final static String dataLayerFolderPath = "plugins" + File.separator + "ExtraHardMode";
-   
+    private final static String dataLayerFolderPath = "plugins" + File.separator + "ExtraHardMode";
+
     private static transient Plugin plugin = null;
     private static transient Logger logger;
     private static transient boolean logVerbose = false;
 
     private static transient FileConfiguration config;
     private static transient String configPath = dataLayerFolderPath + File.separator + "config.yml";
-    private static transient File configFile = new File (configPath);
+    private static transient File configFile = new File(configPath);
 
-    /**This saves the defaults and restores them on a reload, static variables don't get cleared on a reload**/
-    private static transient HashMap <String,Object> defaults;
+    /**
+     * This saves the defaults and restores them on a reload, static variables don't get cleared on a reload*
+     */
+    private static transient HashMap<String, Object> defaults;
 
-    /**The topmost Node in the YamlFile **/
-    private static transient final String MAIN_NODE= "Extra Hard Mode",
-    /**prefix to define a max value for a variable	**/ MAX = "MAX_",
-    /** 		""		  min			""			**/ MIN = "MIN_";
+    /**
+     * The topmost Node in the YamlFile *
+     */
+    private static transient final String MAIN_NODE = "Extra Hard Mode",
+    /**
+     * prefix to define a max value for a variable	*
+     */
+    MAX = "MAX_",
+            MIN = "MIN_";
 
     private final static transient int
             WORLD_HEIGHT = 255, //This is default max for all variables ending with _Y
             MAX_PERCENTAGE = 100, //Max Value for all variables containing percentage
-		    MIN_INT = 0; //All int's from the config must be bigger than 0
+            MIN_INT = 0; //All int's from the config must be bigger than 0
 
-    /**list of worlds where extra hard mode rules apply**/
-    public static ArrayList <String> Enabled_Worlds;
+    /**
+     * list of worlds where extra hard mode rules apply*
+     */
+    public static ArrayList<String> Enabled_Worlds;
 
 
-    /**Plugin General Stuff**/
+    /**
+     * Plugin General Stuff*
+     */
     public static boolean
-            //Plugin__Ops_Bypass_By_Default = true,
-		    //Plugin__Creative_Mode_Bypasses_Building_Restrictions = true,
-		    /*Plugin__Enable_Advanced_Support_For_Vanilla_Mods = false;*/ /**explosions disable option, needed to dodge bugs in popular plugins**/
+            /**explosions disable option, needed to dodge bugs in popular plugins**/
             Plugin__Disable_Explosions = false;
 
 
-
-
-
-    /**world rules**/
-    public static int                                               /**maximum y for placing torches**/
-            World__Torches__Torch_Max_Y = 30, 				        /**percent chance for broken netherrack to start a fire**/
-            World__Broken_Netherrack_Catches_Fire_Percent = 20;     /**whether stone is hardened to encourage cave exploration over tunneling**/
-    public static boolean
-			World__Mining__Breaking_Ores_Softens_Surrounding_Stone = true,         /**whether players may place blocks directly underneath themselves**/
-            World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration = true, /**whether TNT should be more powerful and plentiful**/
-	        World__Limited_Block_Placement = true,				                   /**whether players are limited to placing torches against specific materials**/
-            World__Better_Tnt__Enable = true,							           /**whether rain should break torches**/
-            World__Better_Tnt__More_Tnt = true,
-            World__Torches__Limited_Torch_Placement = true,				           /**which materials beyond sand and gravel should be subject to gravity**/
-            World__Torches__Rain_Breaks_Torches = true,					           /**Play Fizzing Sound when Torches get put out**/
-            World__Play_Sounds__Torch_Fizzing = true,                              /**Play Ghast Sound when Creeper drops Tnt**/
-	        World__Play_Sounds__Creeper_Tnt_Warning = false,                       /**Tree Logs fall realistically**/
-	        World__Better_Tree_Chopping = true;
-
-    /**water**/
-    public static boolean                                                          /**whether players may move water source blocks**/
-			World__Water__Dont_Move_Source_Blocks = true,                          /**Limited Swimming in Armor**/
-	        World__Water__No_Swimming_In_Armor = true;
-
-
-    /**general monster rules**/															/**max y-level for extra monster spawns**/
+    /**
+     * world rules*
+     */
     public static int
-            General_Monster_Rules__More_Monsters__Max_Y = 55,			/**what to multiply monster spawns by**/
-            General_Monster_Rules__More_Monsters__Multiplier = 2;		/**max y-level for monsters to spawn in the light**/
+            /**maximum y for placing torches**/
+            World__Torches__Torch_Max_Y = 30,
+    /**
+     * percent chance for broken netherrack to start a fire*
+     */
+    World__Broken_Netherrack_Catches_Fire_Percent = 20;
+    /**
+     * whether stone is hardened to encourage cave exploration over tunneling*
+     */
+    public static boolean
+            World__Mining__Breaking_Ores_Softens_Surrounding_Stone = true,
+    /**
+     * whether players may place blocks directly underneath themselves*
+     */
+    World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration = true,
+    /**
+     * whether TNT should be more powerful and plentiful*
+     */
+    World__Limited_Block_Placement = true,
+    /**
+     * whether players are limited to placing torches against specific materials*
+     */
+    World__Better_Tnt__Enable = true,
+    /**
+     * whether rain should break torches*
+     */
+    World__Better_Tnt__More_Tnt = true,
+    /**
+     * Cant place torches on soft materials*
+     */
+    World__Torches__Limited_Torch_Placement = true,
+    /**
+     * which materials beyond sand and gravel should be subject to gravity*
+     */
+    World__Torches__Rain_Breaks_Torches = true,
+    /**
+     * Play Fizzing Sound when Torches get put out*
+     */
+    World__Play_Sounds__Torch_Fizzing = true,
+    /**
+     * Play Ghast Sound when Creeper drops Tnt*
+     */
+    World__Play_Sounds__Creeper_Tnt_Warning = false,
+    /**
+     * Tree Logs fall realistically*
+     */
+    World__Better_Tree_Chopping = true;
+
+    /**
+     * water*
+     */
+    public static boolean                                                          /**whether players may move water source blocks**/
+            World__Water__Dont_Move_Source_Blocks = true, /**
+ * Limited Swimming in Armor*
+ */
+World__Water__No_Swimming_In_Armor = true;
+
+
+    /**general monster rules**/
+    /**
+     * max y-level for extra monster spawns*
+     */
+    public static int
+            General_Monster_Rules__More_Monsters__Max_Y = 55, /**
+ * what to multiply monster spawns by*
+ */
+General_Monster_Rules__More_Monsters__Multiplier = 2;
+    /**
+     * max y-level for monsters to spawn in the light*
+     */
     public static boolean
             General_Monster_Rules__Monsters_Spawn_In_Light__More_Monsters_When_Y_Lower__Enable = true;
     public static int
@@ -106,126 +175,261 @@ public class Config {
             MAX_General_Monster_Rules__More_Monsters__Multiplier = 25;
 
 
-    /**monster grinder fix rules**/											/**whether monster grinders (or "farms") should be inhibited**/
-    public static  boolean 	General_Monster_Rules__Inhibit_Monster_Grinders = true;
+    /**monster grinder fix rules**/
+    /**
+     * whether monster grinders (or "farms") should be inhibited*
+     */
+    public static boolean General_Monster_Rules__Inhibit_Monster_Grinders = true;
 
 
     /**zombie rules**/
-    /**whether zombies apply a debuff to players on hit**/
-    public static boolean 	Zombies__Debilitate_Players = true;				/**percent chance for a zombie to reanimate after death**/
-    public static int 		Zombies__Reanimate_Percent = 50;
+    /**
+     * whether zombies apply a debuff to players on hit*
+     */
+    public static boolean Zombies__Debilitate_Players = true;
+    /**
+     * percent chance for a zombie to reanimate after death*
+     */
+    public static int Zombies__Reanimate_Percent = 50;
 
 
-    /**skeleton rules**/													/**percent chance skeletons have a chance to knock back targets with arrows**/
+    /**skeleton rules**/
+    /**
+     * percent chance skeletons have a chance to knock back targets with arrows*
+     */
     public static int
-            Skeletons__Knock_Back_Percent = 30,				/**percent chance skeletons will release silverfish instead of firing arrows**/
-	        Skeletons__Shoot_Silverfish_Percent = 30,		/**whether or not arrows will pass harmlessly through skeletons**/
-            Skeletons__Deflect_Arrows_Percent = 100;
+            Skeletons__Knock_Back_Percent = 30,
+    /**
+     * percent chance skeletons will release silverfish instead of firing arrows*
+     */
+    Skeletons__Shoot_Silverfish_Percent = 30,
+    /**
+     * whether or not arrows will pass harmlessly through skeletons*
+     */
+    Skeletons__Deflect_Arrows_Percent = 100;
 
     public static boolean
             Silverfish__Cant_Enter_Blocks = true;
-
-    /**creeper rules**/
-    public static int                                       /**percentage of creepers which will spawn charged**/
-            Creepers__Charged_Spawn_Percent = 20,			/**percentage of creepers which spawn activated TNT on death**/
-            Creepers__Drop_Tnt_On_Death_Percent = 10,		/**Max Y to potentially only allow them to explode in caves**/
-            Creepers__Drop_Tnt_On_Death_Max_Y = 50;
-    public static boolean                                           /**whether charged creepers explode when damaged**/
-            Creepers__Charged_Creepers_Explode_On_Hit = true,		/**whether creepers explode when caught on fire**/
-            Creepers__Flaming_Creepers_Explode = true;
-
-
-    /**pig zombie rules**/													/**whether pig zombies are always hostile**/
-    public static boolean
-            PigZombie__Always_Angry = true,					/**whether pig zombies drop nether wart in nether fortresses**/
-            PigZombie__Drop_Warts_In_Fortresses = true;
-
-
-    /**ghast rules**/														/**whether ghasts should deflect arrows and drop extra loot**/
-    public static boolean 	Ghasts__Deflect_Arrows = true;
-
-
-    /**magma cube rules**/													/**whether damaging a magma cube turns it into a blaze**/
-    public static boolean 	MagmaCubes__Become_Blazes_On_Damage = true;		/**percentage chance that a blaze spawn will trigger a flame slime spawn as well**/
+    /**
+     * creeper rules*
+     */
     public static int
-			MagmaCubes__Spawn_Blaze_On_Death_Percent = 100,
-			MagmaCubes__Spawn_A_MagmaCube_With_A_Blaze_Percent = 50;
-
-
-    /**blaze rules**/														/**whether blazes explode and spread fire when they die**/
+            /**percentage of creepers which will spawn charged**/
+            Creepers__Charged_Spawn_Percent = 20,
+    /**
+     * percentage of creepers which spawn activated TNT on death*
+     */
+    Creepers__Drop_Tnt_On_Death_Percent = 10,
+    /**
+     * Max Y to potentially only allow them to explode in caves*
+     */
+    Creepers__Drop_Tnt_On_Death_Max_Y = 50;
     public static boolean
-            Blazes__Explode_On_Death =  true,				/**whether blazes drop fire when damaged**/
-            Blazes__Drop_Fire_On_Damage = true,				/**whether blazes drop extra loot**/
-            Blazes__Drop_Bonus_Loot = true;					/**percentage of pig zombies which will be replaced with blazes**/
+            /**whether charged creepers explode when damaged**/
+            Creepers__Charged_Creepers_Explode_On_Hit = true,
+    /**
+     * whether creepers explode when caught on fire*
+     */
+    Creepers__Flaming_Creepers_Explode = true;
+
+
+    /**pig zombie rules**/
+    /**
+     * whether pig zombies are always hostile*
+     */
+    public static boolean
+            PigZombie__Always_Angry = true, /**
+ * whether pig zombies drop nether wart in nether fortresses*
+ */
+PigZombie__Drop_Warts_In_Fortresses = true;
+
+
+    /**ghast rules**/
+    /**
+     * whether ghasts should deflect arrows and drop extra loot*
+     */
+    public static boolean Ghasts__Deflect_Arrows = true;
+
+
+    /**magma cube rules**/
+    /**
+     * whether damaging a magma cube turns it into a blaze*
+     */
+    public static boolean MagmaCubes__Become_Blazes_On_Damage = true;
+    /**
+     * percentage chance that a blaze spawn will trigger a flame slime spawn as well*
+     */
     public static int
-            Blazes__Bonus_Nether_Spawn_Percent = 20,		/**percentage of skeletons near bedrock which will be replaced with blazes**/
-            Blazes__Near_Bedrock_Spawn_Percent = 50,		/**percentage chance that a blaze slain in the nether will split into two blazes**/
-            Blazes__Nether_Blazes_Split_On_Death_Percent = 25;
+            MagmaCubes__Spawn_Blaze_On_Death_Percent = 100,
+            MagmaCubes__Spawn_A_MagmaCube_With_A_Blaze_Percent = 50;
 
 
-    /**spider rules**/														/**percentage of zombies which will be replaced with spiders under sea level**/
-    public static int 		Spiders__Bonus_Underground_Spawn_Percent = 20;	/**whether spiders drop webbing when they die**/
-    public static boolean 	Spiders__Drop_Web_On_Death = true;
+    /**
+     * blaze rules*
+     */
 
-
-    /**enderman rules**/													/**whether endermen may teleport players**/
-    public static boolean 	Enderman__Improved_Teleportation = true;
-
-
-    /**witch rules**/														/**percentage of surface zombies which spawn as witches**/
-    public static int 		Witches__Bonus_Spawn_Percent = 5;
-
-
-    /**ender dragon rules**/												/**whether the ender dragon respawns**/
     public static boolean
-            Enderdragon__Respawn = true,					/**whether it drops an egg when slain**/
-            Enderdragon__Drops_Dragon_Egg = true,			/**whether it drops a pair of villager eggs when slain**/
-            Enderdragon__Drops_Villager_Eggs = true,		/**whether the dragon spits fireballs and summons minions**/
-            Enderdragon__Additional_Attacks = true,			/**whether server wide messages will broadcast player victories and defeats**/
-            Enderdragon__Combat_Announcements = true,		/**whether players will be allowed to build in the end**/
-            Enderdragon__No_Building_In_End = true;
+            /**
+             * whether blazes explode and spread fire when they die*
+             */
+            Blazes__Explode_On_Death = true,
+    /**
+     * whether blazes drop fire when damaged*
+     */
+    Blazes__Drop_Fire_On_Damage = true,
+    /**
+     * whether blazes drop extra loot*
+     */
+    Blazes__Drop_Bonus_Loot = true;
+    /**
+     * percentage of pig zombies which will be replaced with blazes*
+     */
+    public static int
+            Blazes__Bonus_Nether_Spawn_Percent = 20,
+    /**
+     * percentage of skeletons near bedrock which will be replaced with blazes*
+     */
+    Blazes__Near_Bedrock_Spawn_Percent = 50,
+    /**
+     * percentage chance that a blaze slain in the nether will split into two blazes*
+     */
+    Blazes__Nether_Blazes_Split_On_Death_Percent = 25;
 
 
-	/**Farming**/
-    public static boolean                                   /**whether food crops die more easily**/
-			Farming__Weak_Food_Crops__Enable = true,        /**plants don't grow in desserts**/
-			Farming__Weak_Food_Crops__Arid_Infertile_Desserts = true, /**whether bonemeal may be used on mushrooms**/
-            Farming__Weak_Food_Crops__Snow_Breaks_Crops = true,
-            Farming__No_Bonemeal_On_Mushrooms = true,		/**whether nether wart will ever drop more than 1 wart when broken**/
-            Farming__No_Farming_Nether_Wart = true,			/**whether sheep will always regrow white wool**/
-            Farming__Sheep_Only_Regrow_White_Wool = true,   /**whether crafting melonsseeds from melonds should be blocked**/
-			Farming__No_Crafting_Melon_Seeds = true,
+    /**spider rules**/
+    /**
+     * percentage of zombies which will be replaced with spiders under sea level*
+     */
+    public static int Spiders__Bonus_Underground_Spawn_Percent = 20;
+    /**
+     * whether spiders drop webbing when they die*
+     */
+    public static boolean Spiders__Drop_Web_On_Death = true;
+
+
+    /**enderman rules**/
+    /**
+     * whether endermen may teleport players*
+     */
+    public static boolean Enderman__Improved_Teleportation = true;
+
+
+    /**witch rules**/
+    /**
+     * percentage of surface zombies which spawn as witches*
+     */
+    public static int Witches__Bonus_Spawn_Percent = 5;
+
+
+    /**
+     * ender dragon rules*
+     */
+
+    public static boolean
+            /**
+             * whether the ender dragon respawns*
+             */
+            Enderdragon__Respawn = true,
+    /**
+     * whether it drops an egg when slain*
+     */
+    Enderdragon__Drops_Dragon_Egg = true,
+    /**
+     * whether it drops a pair of villager eggs when slain*
+     */
+    Enderdragon__Drops_Villager_Eggs = true,
+    /**
+     * whether the dragon spits fireballs and summons minions*
+     */
+    Enderdragon__Additional_Attacks = true,
+    /**
+     * whether server wide messages will broadcast player victories and defeats*
+     */
+    Enderdragon__Combat_Announcements = true,
+    /**
+     * whether players will be allowed to build in the end*
+     */
+    Enderdragon__No_Building_In_End = true;
+
+
+    /**
+     * Farming*
+     */
+    public static boolean
+            /**whether food crops die more easily**/
+            Farming__Weak_Food_Crops__Enable = true,
+    /**
+     * plants don't grow in desserts*
+     */
+    Farming__Weak_Food_Crops__Arid_Infertile_Desserts = true,
+    /**
+     * whether bonemeal may be used on mushrooms*
+     */
+    Farming__Weak_Food_Crops__Snow_Breaks_Crops = true,
+            Farming__No_Bonemeal_On_Mushrooms = true,
+    /**
+     * whether nether wart will ever drop more than 1 wart when broken*
+     */
+    Farming__No_Farming_Nether_Wart = true,
+    /**
+     * whether sheep will always regrow white wool*
+     */
+    Farming__Sheep_Only_Regrow_White_Wool = true,
+    /**
+     * whether crafting melonsseeds from melonds should be blocked*
+     */
+    Farming__No_Crafting_Melon_Seeds = true,
             Farming__Animal_Exp_Nerf = true;
-	public static int
-			Farming__Weak_Food_Crops__Vegetation_Loss_Percentage = 25;
+    public static int
+            Farming__Weak_Food_Crops__Vegetation_Loss_Percentage = 25;
 
 
-    /**Player Death**/
-    public static int                                       /**how much health after respawn**/
-            Player__Respawn_Health = 15,					/**how much food bar after respawn**/
-            Player__Respawn_Food_Level = 15, 				/**percentage of item stacks lost on death**/
-            Player__Death_Item_Stacks_Forfeit_Percent = 10;
+    /**
+     * Player Death*
+     */
+    public static int
+            /**how much health after respawn**/
+            Player__Respawn_Health = 15,
+    /**
+     * how much food bar after respawn*
+     */
+    Player__Respawn_Food_Level = 15,
+    /**
+     * percentage of item stacks lost on death*
+     */
+    Player__Death_Item_Stacks_Forfeit_Percent = 10;
     private final static int
             MAX_Player__Respawn_Health = 20,
             MIN_Player__Respawn_Health = 1,
             MAX_Player__Respawn_Food_Level = 20;
 
 
-    /**player damage**/
-    public static boolean                                   /**whether players take additional damage and/or debuffs from environmental injuries**/
-            Player__Enhanced_Environmental_Damage = true,	/**whether players catch fire when extinguishing a fire up close**/
-            Player__Extinguishing_Fire_Ignites_Players = true;
+    /**
+     * player damage*
+     */
+    public static boolean
+            /**
+             * whether players take additional damage and/or debuffs from environmental injuries
+             **/
+            Player__Enhanced_Environmental_Damage = true,
+    /**
+     * whether players catch fire when extinguishing a fire up close*
+     */
+    Player__Extinguishing_Fire_Ignites_Players = true;
 
 
-    /**More Falling Blocks**/								/**which materials beyond sand and gravel should be subject to gravity**/
-    public static ArrayList <String> More_Falling_Blocks;
-    private final static transient Material [] Defaults_More_Falling_Blocks = new Material[] {
+    /**More Falling Blocks**/
+    /**
+     * which materials beyond sand and gravel should be subject to gravity*
+     */
+    public static ArrayList<String> More_Falling_Blocks;
+    private final static transient Material[] Defaults_More_Falling_Blocks = new Material[]{
             Material.COBBLESTONE,
             Material.MOSSY_COBBLESTONE,
             Material.DIRT,
             Material.GRASS,
             Material.MYCEL,
-            Material.JACK_O_LANTERN };
+            Material.JACK_O_LANTERN};
 
 
     /**
@@ -233,21 +437,23 @@ public class Config {
      * in one line when we declare the fields. With this approach we don't have fields that we declared and forgot to initialize.
      * Also it makes it easier to understand the config, because initialization, defaultValue and description are in one place.
      */
-    public static void saveDefaults ()
+    public static void saveDefaults()
     {
-        defaults = new HashMap <String, Object>();
-        for (Field field: Config.class.getDeclaredFields())
+        defaults = new HashMap<String, Object>();
+        for (Field field : Config.class.getDeclaredFields())
         {
-            if (Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers()) &! Modifier.isTransient(field.getModifiers()))
+            if (Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers()) & !Modifier.isTransient(field.getModifiers()))
             {
                 String fieldName = field.getName();
                 Object obj = null;
-                try {
+                try
+                {
                     obj = field.get(null);
-                } catch (IllegalAccessException e) {
+                } catch (IllegalAccessException e)
+                {
                     logInfo("saveDefaults: IllegalAccess to Field: " + fieldName);
                 }
-                if (obj != null)defaults.put(fieldName, obj);
+                if (obj != null) defaults.put(fieldName, obj);
             }
         }
     }
@@ -255,19 +461,22 @@ public class Config {
     /**
      * Load the defaultValues when the server reloads
      */
-    public static void loadDefaults ()
+    public static void loadDefaults()
     {
         if (defaults == null) return;
-        for (Field field: Config.class.getDeclaredFields()){
-            if (Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers()) &! Modifier.isTransient(field.getModifiers()))
+        for (Field field : Config.class.getDeclaredFields())
+        {
+            if (Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers()) & !Modifier.isTransient(field.getModifiers()))
             {
                 String fieldName = field.getName();
                 Object defaultValue = defaults.get(fieldName);
                 if (defaultValue != null)
                 {
-                    try {
+                    try
+                    {
                         field.set(null, defaultValue);
-                    } catch (IllegalAccessException e) {
+                    } catch (IllegalAccessException e)
+                    {
                         logVerbose("IllegalAccessException while accessing Field: " + fieldName + " in loadDefaults()");
                     }
                 }
@@ -281,7 +490,7 @@ public class Config {
      * My_Category__Option -> "Extra Hard Mode.My Category.Option
      * It prefixes everything with the global MainNode, converts double underscores to dots and underscores to spaces
      * It uses this generated name as the path for yaml
-     *
+     * <p/>
      * booleans get no specialTreatment. However ints can have min and max values, which are checked and set to the min
      * or max values if they exceed the limits. Max and Min values can be defined by using the same VariableName and
      * prefixing it either with MIN_ or MAX_. But only private final variables are considered to be possible candidates
@@ -290,12 +499,13 @@ public class Config {
      * String ArrayLists get parsed if they exist in the config , normally these are a bit more complex and you should
      * initialize them before the parsing starts. If you need to validate your Lists you can add another else if to check
      * for it.
-     *
+     * <p/>
      * When the parsing has finished the config gets written back to disk. If logVerbose is true it will throw an error
      * everytime there is no maxValue or minValue defined, so you should set that to false before deploying.
+     *
      * @param plugin reference to the plugin that called us
      */
-    public static void load (Plugin plugin)
+    public static void load(Plugin plugin)
     {
         if (defaults != null)
             loadDefaults();
@@ -311,12 +521,12 @@ public class Config {
         Enabled_Worlds = new ArrayList<String>();
         More_Falling_Blocks = new ArrayList<String>();
 
-        for (World loadedWorld: plugin.getServer().getWorlds())
+        for (World loadedWorld : plugin.getServer().getWorlds())
         {   //All loaded Worlds
             Enabled_Worlds.add(loadedWorld.getName());
         }
 
-        for (Material material: Defaults_More_Falling_Blocks)
+        for (Material material : Defaults_More_Falling_Blocks)
         {   //default Falling Blocks
             More_Falling_Blocks.add(material.name());
         }
@@ -325,11 +535,11 @@ public class Config {
 
         for (Field field : Config.class.getDeclaredFields())
         {
-	        if (   Modifier.isStatic 	    (field.getModifiers())
-                && Modifier.isPublic 		(field.getModifiers())
-                &! Modifier.isTransient 	(field.getModifiers())
-                &! Modifier.isFinal 		(field.getModifiers())
-                )
+            if (Modifier.isStatic(field.getModifiers())
+                    && Modifier.isPublic(field.getModifiers())
+                    & !Modifier.isTransient(field.getModifiers())
+                    & !Modifier.isFinal(field.getModifiers())
+                    )
             {
                 String fieldName = field.getName();
                 String path = varNameToYamlPath(fieldName);
@@ -343,33 +553,35 @@ public class Config {
 
                         if (fieldType.equals("int"))
                         {
-	                        int maxValue = 0;
+                            int maxValue = 0;
 
-	                        if (StringUtils.containsIgnoreCase(fieldName, "percent"))
-		                        maxValue = MAX_PERCENTAGE;
-	                        else if (fieldName.toLowerCase().endsWith("_y"))
-		                        maxValue = WORLD_HEIGHT;
-	                        else
-		                        maxValue = getSpecialInt(fieldName, MAX, 100);
+                            if (StringUtils.containsIgnoreCase(fieldName, "percent"))
+                                maxValue = MAX_PERCENTAGE;
+                            else if (fieldName.toLowerCase().endsWith("_y"))
+                                maxValue = WORLD_HEIGHT;
+                            else
+                                maxValue = getSpecialInt(fieldName, MAX, 100);
 
-	                        int minValue = getSpecialInt(fieldName, MIN, MIN_INT);
+                            int minValue = getSpecialInt(fieldName, MIN, MIN_INT);
                             int configInt = config.getInt(path);
 
                             if (maxValue != 0 && configInt >= maxValue)
-                            {	//value in config exceeds the maximum for this value
+                            {    //value in config exceeds the maximum for this value
                                 field.setInt(null, maxValue);
-                            } else if (minValue > configInt)
-                            {	//value in config is too small, may even be negative
+                            }
+                            else if (minValue > configInt)
+                            {    //value in config is too small, may even be negative
                                 field.setInt(null, minValue);
-                            } else
-                            {	//admin didn't derp, we can use the config value
+                            }
+                            else
+                            {    //admin didn't derp, we can use the config value
                                 field.setInt(null, configInt);
                             }
                         }
 
 
                         else if (fieldType.equals("boolean"))
-                        {	//booleans return false if admin puts invalid characters
+                        {    //booleans return false if admin puts invalid characters
                             boolean configBoolean = config.getBoolean(path);
                             field.setBoolean(null, configBoolean);
                         }
@@ -377,14 +589,14 @@ public class Config {
 
                         else if (fieldType.equals("java.util.ArrayList"))
                         {
-                            ArrayList <String> cfgList = (ArrayList<String>) config.getStringList(path);
+                            ArrayList<String> cfgList = (ArrayList<String>) config.getStringList(path);
 
 
                             if (fieldName.equalsIgnoreCase("Enabled_Worlds"))
                             {
-                                ArrayList <String> loadedWorlds = Enabled_Worlds;
+                                ArrayList<String> loadedWorlds = Enabled_Worlds;
                                 Enabled_Worlds = new ArrayList<String>();
-                                for (String cfgWorld: cfgList)
+                                for (String cfgWorld : cfgList)
                                 {
                                     if (loadedWorlds.contains(cfgWorld))
                                     {
@@ -397,7 +609,7 @@ public class Config {
                                 }
                                 if (Enabled_Worlds.isEmpty())
                                 {
-                                    for (String defaultWorld: loadedWorlds)
+                                    for (String defaultWorld : loadedWorlds)
                                     {
                                         Enabled_Worlds.add(defaultWorld);
                                     }
@@ -409,7 +621,7 @@ public class Config {
                             {
                                 //Write the validated values back to MoreFallingBlocks
                                 More_Falling_Blocks = new ArrayList<String>();
-                                for (String strMaterial: cfgList)
+                                for (String strMaterial : cfgList)
                                 {
                                     Material material = Material.getMaterial(strMaterial);
                                     if (material == null)
@@ -419,7 +631,7 @@ public class Config {
                                     else
                                     {
                                         if (!More_Falling_Blocks.contains(strMaterial))//remove duplicates
-                                        More_Falling_Blocks.add(strMaterial);
+                                            More_Falling_Blocks.add(strMaterial);
                                     }
                                 }
 
@@ -432,16 +644,18 @@ public class Config {
                         }
                     }
                     outConfig.set(path, field.get(null));
+                } catch (IllegalAccessException ignored)
+                {
                 }
-                catch (IllegalAccessException ignored) {}
             }
         }
         try
         {
             outConfig.save(configFile);
             time = System.currentTimeMillis() - time;
-            logVerbose ("Took " + time + " ms to initialize");
-        } catch (IOException e) {
+            logVerbose("Took " + time + " ms to initialize");
+        } catch (IOException e)
+        {
             logException("Error: There was a problem while saving config to " + configPath);
             e.printStackTrace();
         }
@@ -451,15 +665,16 @@ public class Config {
      * My_Super_Category__My_Super_Option
      * ->
      * MAIN_NODE.My Super Category.My Super Option
-     *
+     * <p/>
      * MAIN_NODE:
-     *   My Super Category:
-     *     My Super Option:
+     * My Super Category:
+     * My Super Option:
      *
      * @param fieldName field to convert
      * @return a parsed yaml path
      */
-    private static String varNameToYamlPath (String fieldName) {
+    private static String varNameToYamlPath(String fieldName)
+    {
         fieldName = fieldName.replaceAll("__", ".");
         fieldName = fieldName.replaceAll("_", " ");
         fieldName = MAIN_NODE + "." + fieldName;
@@ -469,40 +684,44 @@ public class Config {
     /**
      * Used for Exceptions which are common and would otherwise spam the console.
      * Put verboseLogging = false before deploying, to disable the messages
+     *
      * @param msg message
      */
-    private static void logVerbose (String msg)
+    private static void logVerbose(String msg)
     {
-        if (!logVerbose)return;
+        if (!logVerbose) return;
         logger.info(msg);
     }
 
     /**
      * Used when informing about errors which aren't common
+     *
      * @param msg to print
      */
-    private static void logInfo (String msg)
+    private static void logInfo(String msg)
     {
         logger.info(msg);
     }
 
     /**
      * This is for real Errors
+     *
      * @param msg error to print
      */
-    private static void logException (String msg)
+    private static void logException(String msg)
     {
-        logger.severe (msg);
+        logger.severe(msg);
     }
 
 
     /**
      * Gets a special value, e.g. max/min value of a field with the given fieldName
-     * @param fieldName name of field that should be tested
-     * @param prefix the special prefix for the field
+     *
+     * @param fieldName  name of field that should be tested
+     * @param prefix     the special prefix for the field
      * @param defaultVal this gets returned if the field doesn't exist
      */
-    private static Integer getSpecialInt (String fieldName, String prefix, int defaultVal)
+    private static Integer getSpecialInt(String fieldName, String prefix, int defaultVal)
     {
         String specialName = prefix + fieldName;
         try
@@ -510,18 +729,16 @@ public class Config {
             Field specialField = Config.class.getDeclaredField(specialName);
             if (Modifier.isPrivate(specialField.getModifiers()))
                 return specialField.getInt(Config.class);
-        }
-        catch (NoSuchFieldException e)
-        {	//This Exception gets thrown often, log verbose only
-            logVerbose("No Such Field: " + specialName );
+        } catch (NoSuchFieldException e)
+        {    //This Exception gets thrown often, log verbose only
+            logVerbose("No Such Field: " + specialName);
         } catch (SecurityException e)
         {
             logException("SecurityException while accessing: " + specialName);
         } catch (IllegalArgumentException e)
         {
             logException("IllegalArgumentException while accessing: " + specialName);
-        }
-        catch (IllegalAccessException e)
+        } catch (IllegalAccessException e)
         {
             logException("IllegalAccessException while accessing: " + specialName);
         }

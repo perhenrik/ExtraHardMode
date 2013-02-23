@@ -1,5 +1,21 @@
+/*
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.ryanhamshire.ExtraHardMode.module;
 
+import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -8,9 +24,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Wither;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 
 /**
  * Module that contains logic dealing with entities.
@@ -70,14 +83,7 @@ public class EntityModule extends EHMModule
         {
             int totalDamage = entity.getMetadata("extrahard_environmentalDamage").get(0).asInt();
             // wither is exempt. he can't be farmed because creating him requires combining not-farmable components
-            if (!(entity instanceof Wither))
-            {
-                return (totalDamage > entity.getMaxHealth() / 2);
-            }
-            else
-            {
-                return false;
-            }
+            return !(entity instanceof Wither) && (totalDamage > entity.getMaxHealth() / 2);
         }
 
         return false;
@@ -95,9 +101,8 @@ public class EntityModule extends EHMModule
         Block headBlock = feetBlock.getRelative(BlockFace.UP);
 
         Block[] blocks = {feetBlock, headBlock};
-        for (int i = 0; i < blocks.length; i++)
+        for (Block block : blocks)
         {
-            Block block = blocks[i];
             if (block.getType() == Material.WEB)
             {
                 block.setType(Material.AIR);
@@ -108,7 +113,7 @@ public class EntityModule extends EHMModule
     /**
      * Adds 1 to the times an Entity has taken firedamage.
      *
-     * @param entity
+     * @param entity to track firedmg for
      */
     public void addFireDamage(Entity entity)
     {
@@ -124,10 +129,10 @@ public class EntityModule extends EHMModule
     }
 
     /**
-     * Returns the times an entity has taken firedamge
-     *
-     * @param entity
-     * @return
+     * Returns the times an entity has taken firedamage
+     * //TODO track damage and launch just before dead
+     * @param entity to get dmg of entity
+     * @return the damage the entity has taken
      */
     public int getFireDamage(Entity entity)
     {
@@ -140,9 +145,13 @@ public class EntityModule extends EHMModule
     }
 
     @Override
-    public void starting(){}
+    public void starting()
+    {
+    }
 
     @Override
-    public void closing(){}
+    public void closing()
+    {
+    }
 
 }
