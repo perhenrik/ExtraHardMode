@@ -40,7 +40,8 @@ import org.bukkit.entity.Player;
 /**
  * Task to spawn more monsters.
  */
-public class MoreMonstersTask implements Runnable {
+public class
+    MoreMonstersTask implements Runnable {
     //TODO Fix weird bug
     //TODO if block not valid check random block nearby
     //TODO check for nearby players, test the distance
@@ -76,6 +77,7 @@ public class MoreMonstersTask implements Runnable {
             {
                 // chunk must be loaded, player must not be close, and there must be
                 // no other players in the chunk
+                //TODO CHECK DISTANCE
                 if (location.getChunk().isLoaded() && player.isOnline() && location.distanceSquared(player.getLocation()) > 150)
                 {
                     boolean playerInChunk = false;
@@ -93,33 +95,35 @@ public class MoreMonstersTask implements Runnable {
                         // spawn random monster(s)
                         if (world.getEnvironment() == Environment.NORMAL)
                         {
-                            int random = plugin.getRandom().nextInt();
+                            int randomMonster = plugin.getRandom().nextInt(95);
                             EntityType monsterType;
                             int typeMultiplier = 1;
 
+                            //Higher chance of more monsters when deeper down
+                            if (Config.General_Monster_Rules__Monsters_Spawn_In_Light__More_Monsters_When_Y_Lower__Enable)
+                                typeMultiplier = dynamicMonsterCount((int)location.getY(), Config.General_Monster_Rules__More_Monsters__Max_Y, Config.General_Monster_Rules__Monsters_Spawn_In_Light__More_Monsters_When_Y_Lower__Min_Multiplier, Config.General_Monster_Rules__Monsters_Spawn_In_Light__More_Monsters_When_Y_Lower__Max_Multiplier);
+
                             // decide which kind and how many
-                            // silverfish are most common
-                            if (random < 30)
+                            // monsters are more or less evenly distributed
+                            if (randomMonster < 10)
                             {
-                                monsterType = EntityType.SILVERFISH;
-                                // twice as many if silverfish
-                                typeMultiplier = 2;
+                                monsterType = EntityType.SILVERFISH; /*10%*/
                             }
-                            else if (random < 47)
+                            else if (randomMonster < 30)
                             {
-                                monsterType = EntityType.SKELETON;
+                                monsterType = EntityType.SKELETON;   /*20%*/
                             }
-                            else if (random < 64)
+                            else if (randomMonster < 50)
                             {
-                                monsterType = EntityType.ZOMBIE;
+                                monsterType = EntityType.ZOMBIE;     /*20%*/
                             }
-                            else if (random < 81)
+                            else if (randomMonster < 70)
                             {
-                                monsterType = EntityType.CREEPER;
+                                monsterType = EntityType.CREEPER;    /*20%*/
                             }
                             else
                             {
-                                monsterType = EntityType.SPIDER;
+                                monsterType = EntityType.SPIDER;     /*25%*/
                             }
 
                             int totalToSpawn = typeMultiplier;
@@ -152,6 +156,7 @@ public class MoreMonstersTask implements Runnable {
         dataStore.getPreviousLocations().clear();
         for (Player player : plugin.getServer().getOnlinePlayers())
         {
+            test_dynamicMonsterCount();
             /*TODO uncomment
             Location testLoc = player.getLocation();
             testLoc.setX(936);testLoc.setY(4);testLoc.setZ(-1344);
@@ -184,7 +189,7 @@ public class MoreMonstersTask implements Runnable {
             // and nether is too extreme anyway, add config later
             int lightLvl = location.getBlock().getLightFromSky();
             if (world.getEnvironment() == Environment.NORMAL
-                    && ( location.getY() < Config.General_Monster_Rules__Monsters_Spawn_In_Light_Max_Y && lightLvl < 3 ))
+                    && ( location.getY() < Config.General_Monster_Rules__Monsters_Spawn_In_Light__Max_Y && lightLvl < 3 ))
             {
                 // the playerBlock should always be air, but if the player stands
                 // on a slab he actually is in the slab, checking a few blocks under because player could have jumped etc..
@@ -221,6 +226,7 @@ public class MoreMonstersTask implements Runnable {
                    [(j=-1|k=-1)][(j=-1|k=0)][(j=-1|k=1)] */
                 boolean isClear = true; // if there is a single block which obstructs the spawn we will abort
                 Location checkCube = location;
+                cube_loop:
                 for (int i = 0; i <= 2; i++)
                 {
                     for (int j = -1; j <= 1; j++)
@@ -238,11 +244,9 @@ public class MoreMonstersTask implements Runnable {
                                 isClear = false;
                             }
                             checkCube.subtract(j ,i, k);
-                            if (!isClear)break;
+                            break cube_loop;
                         }
-                        if (!isClear) break;
                     }
-                    if (!isClear) break; //don't check further, one obstructing block is enough
                 }
                 //Once we get here the block should be eligible, just check if area above is clear
                 if (isClear)
@@ -257,6 +261,103 @@ public class MoreMonstersTask implements Runnable {
 
         }
         return null;
+    }
+
+    /**
+     * Checks a few random locations if they are valid, when the locations before where invalid.
+     */
+    private void searchValidLocations (Location location)
+    {
+        //search for 3-5 locations before letting the spawn fail completely
+        for (int i = 0; i < 5; i++)
+        {
+            int offsetX = plugin.getRandom().nextInt(11)+5; //5-15 +/- boolean
+            int offsetY = plugin.getRandom().nextInt(9)-3; //-3 to +5
+            int offsetZ = plugin.getRandom().nextInt(11)+5; //5-15 +/- boolean
+            int pmX = (plugin.getRandom().nextInt(4)-1); //even number so same chance
+            pmX = pmX == 0 ? -1 :pmX; //we want to either have -1 or 1, so we have am even number so its equal
+            pmX = pmX == 3 ? 1 :pmX;
+            int pmZ = plugin.getRandom().nextInt(3)-1;
+            pmZ = pmZ == 0 ? -1 : pmZ;
+            pmZ = pmZ ==3 ? 1 :pmZ;
+            Location randomLoc = location.add(offsetX*pmX, offsetY, offsetZ*pmZ);
+            if (quickVerify(randomLoc))
+            {
+                Location verifiedLoc = verifyLocation(randomLoc);
+                if (verifiedLoc != null)
+                    break;
+            }
+        }
+    }
+
+    private boolean quickVerify (Location loc)
+    {
+        //quickly check if 2 blocks above this is clear
+        Block oneAbove = loc.getBlock();
+        Block twoAbove = oneAbove.getRelative(BlockFace.UP, 1);
+        if (oneAbove.getType().equals(Material.AIR) && twoAbove.getType().equals(Material.AIR))
+            return true;
+        return false;
+    }
+
+    /**
+     * Returns the amount of monsters to spawn. ranges from 25% to 75% at the lowest value.
+     * @param yLevel current y-level
+     * @param maxY maximum y for the feature
+     * @param minCount minimum number of monsters
+     * @param maxCount maximum number of monsters
+     * @return
+     */
+    private int dynamicMonsterCount (int yLevel, int maxY,  int minCount, int maxCount)
+    {
+        if (maxY < 1 || yLevel < 1 || maxY < yLevel || minCount > maxCount)
+            return minCount;
+        /**The ratio that determines how deep a player is in a cave depending on the max worldheight**/
+        float ratio = (((float)yLevel/(float)maxY - 1) * -1)*100;
+        /**The higher the difference is between these two the lower the chance is that a number will be choosen at the first try**/
+        float countRatio = (float)minCount/(float)maxCount;
+        float counter = 0;
+        float percent = 0;
+        for (int mobCount = minCount; mobCount <= maxCount; mobCount++)
+        {
+            counter += countRatio; //the further we progress the more likely it is to succeed
+            percent = counter * ratio;
+            int rdmPercent = plugin.getRandom().nextInt(101);
+            if (rdmPercent < percent)
+            {
+                //success!
+                return mobCount;
+            }
+
+        }
+        return minCount;
+    }
+
+    /**
+     * Tests the logic of the method by using random input
+     */
+    public void test_dynamicMonsterCount ()
+    {
+        for (int i = 0; i < 2000; i++)
+        {
+            int typeOfTest = 1;
+            switch (typeOfTest)
+            {
+            //Completely Random
+                case 0:
+                    int dyn1 = plugin.getRandom().nextInt(255);
+                    int dyn2 = plugin.getRandom().nextInt(255);
+                    int countMin = plugin.getRandom().nextInt(10);
+                    int countMax = plugin.getRandom().nextInt(15);
+                    dynamicMonsterCount(dyn1, dyn2, countMin, countMax);
+                    break;
+            //Fixed Settings, height random
+                case 1:
+                    int rdmHeight = plugin.getRandom().nextInt(50);
+                    dynamicMonsterCount(rdmHeight, 50, 1, 6);
+                    break;
+            }
+        }
     }
 
     /**
