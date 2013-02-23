@@ -30,10 +30,7 @@ import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import me.ryanhamshire.ExtraHardMode.task.EvaporateWaterTask;
 import me.ryanhamshire.ExtraHardMode.task.RemoveExposedTorchesTask;
 
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -93,7 +90,7 @@ public class BlockEventHandler implements Listener {
 
       MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
-      if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission("extrahardmode.bypass"))
+      if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
          return;
 
       // FEATURE: very limited building in the end
@@ -120,17 +117,18 @@ public class BlockEventHandler implements Listener {
       }
 
       // FEATURE: stone breaks tools much more quickly
-      if(Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration) {
+      if(Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration &! player.getGameMode().equals(GameMode.CREATIVE)) {
          ItemStack inHandStack = player.getItemInHand();
 
          // if breaking stone with an item in hand and the player does NOT have
          // the bypass permission
+         //TODO Config for endstone
          if((block.getType() == Material.STONE || block.getType() == Material.ENDER_STONE) && inHandStack != null) {
             // if not using an iron or diamond pickaxe, don't allow breakage and
             // explain to the player
             Material tool = inHandStack.getType();
             if(tool != Material.IRON_PICKAXE && tool != Material.DIAMOND_PICKAXE) {
-               notifyPlayer(player, MessageNode.STONE_MINING_HELP, PermissionNode.SILENT_STONE_MINING_HELP, Sound.CAT_HISS, 10);
+               notifyPlayer(player, MessageNode.STONE_MINING_HELP, PermissionNode.SILENT_STONE_MINING_HELP);
                breakEvent.setCancelled(true);
                return;
             }
@@ -159,7 +157,7 @@ public class BlockEventHandler implements Listener {
          }
       }
 
-      BlockModule module = plugin.getModuleForClass(BlockModule.class);
+      BlockModule blockModule = plugin.getModuleForClass(BlockModule.class);
 
       // FEATURE: trees chop more naturally
       if(block.getType() == Material.LOG && Config.World__Better_Tree_Chopping) {
@@ -171,14 +169,14 @@ public class BlockEventHandler implements Listener {
          if(rootBlock.getType() == Material.DIRT || rootBlock.getType() == Material.GRASS) {
             Block aboveLog = block.getRelative(BlockFace.UP);
             while(aboveLog.getType() == Material.LOG) {
-               module.applyPhysics(aboveLog);
+               blockModule.applyPhysics(aboveLog);
                aboveLog = aboveLog.getRelative(BlockFace.UP);
             }
          }
       }
 
       // FEATURE: more falling blocks
-      module.physicsCheck(block, 0, true);
+      blockModule.physicsCheck(block, 0, true);
 
       // FEATURE: no nether wart farming (always drops exactly 1 nether wart
       // when broken)
@@ -213,7 +211,7 @@ public class BlockEventHandler implements Listener {
 
       MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
-      if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission("extrahardmode.bypass"))
+      if(!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
          return;
 
       // FEATURE: very limited building in the end
@@ -229,6 +227,7 @@ public class BlockEventHandler implements Listener {
       // hardened stone rule
       // ORES for redpower
       if(Config.World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration
+            &! player.getGameMode().equals(GameMode.CREATIVE)
             && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES"))) {
          ArrayList<Block> adjacentBlocks = new ArrayList<Block>();
          for(BlockFace face : blockFaces) {
@@ -257,7 +256,7 @@ public class BlockEventHandler implements Listener {
       // FEATURE: no standard torches, jack o lanterns, or fire on top of
       // netherrack near diamond level
       final int minY = Config.World__Torches__Torch_Max_Y;
-      if(minY > 0) {
+      if(minY > 0 &! player.getGameMode().equals(GameMode.CREATIVE)) {
          if(world.getEnvironment() == Environment.NORMAL
                && block.getY() < minY
                && (block.getType() == Material.TORCH || block.getType() == Material.JACK_O_LANTERN || (block.getType() == Material.FIRE && block
@@ -271,10 +270,10 @@ public class BlockEventHandler implements Listener {
       // FEATURE: players can't place blocks from weird angles (using shift to
       // hover over in the air beyond the edge of solid ground)
       // or directly beneath themselves, for that matter
-      if(Config.World__Limited_Block_Placement) {
+      if(Config.World__Limited_Block_Placement &! player.getGameMode().equals(GameMode.CREATIVE)) {
          if(block.getX() == player.getLocation().getBlockX() && block.getZ() == player.getLocation().getBlockZ()
                && block.getY() < player.getLocation().getBlockY()) {
-            notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING, Sound.NOTE_STICKS, 1);
+            notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
             placeEvent.setCancelled(true);
             return;
          }
@@ -283,7 +282,7 @@ public class BlockEventHandler implements Listener {
 
          // if standing directly over lava, prevent placement
          if(underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA) {
-            notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING, Sound.NOTE_STICKS, 1);
+            notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
             placeEvent.setCancelled(true);
             return;
          }
@@ -294,7 +293,7 @@ public class BlockEventHandler implements Listener {
 
             // if over lava or more air, prevent placement
             if(underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA) {
-               notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING, Sound.NOTE_STICKS, 1);
+               notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                placeEvent.setCancelled(true);
                return;
             }
@@ -302,7 +301,7 @@ public class BlockEventHandler implements Listener {
       }
 
       // FEATURE: players can't attach torches to common "soft" blocks
-      if(Config.World__Torches__Limited_Torch_Placement && block.getType() == Material.TORCH) {
+      if(Config.World__Torches__Limited_Torch_Placement && block.getType() == Material.TORCH &! player.getGameMode().equals(GameMode.CREATIVE)) {
          Torch torch = new Torch(Material.TORCH, block.getData());
          Material attachmentMaterial = block.getRelative(torch.getAttachedFace()).getType();
 
@@ -323,7 +322,7 @@ public class BlockEventHandler implements Listener {
     * @param event
     *           - Event that occurred.
     */
-   @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+   @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
    void onBlockDispense(BlockDispenseEvent event) {
       // FEATURE: can't move water source blocks
 
@@ -416,7 +415,7 @@ public class BlockEventHandler implements Listener {
     * @param event
     *           - Event that occurred.
     */
-   @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+   @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
    public void onWeatherChange(WeatherChangeEvent event) {
       // FEATURE: rainfall breaks exposed torches (exposed to the sky)
       World world = event.getWorld();
@@ -451,8 +450,7 @@ public class BlockEventHandler implements Listener {
     */
    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
    public void onBlockGrow(BlockGrowEvent event) {
-      // FEATURE: fewer seeds = shrinking crops. when a plant grows to its full
-      // size, it may be replaced by a dead shrub
+      // FEATURE: fewer seeds = shrinking crops. when a plant grows to its full size, it may be replaced by a dead shrub
       if(plugin.getModuleForClass(BlockModule.class).plantDies(event.getBlock(), event.getNewState().getData().getData())) {
          event.setCancelled(true);
          event.getBlock().setType(Material.LONG_GRASS); // dead shrub
@@ -470,7 +468,7 @@ public class BlockEventHandler implements Listener {
       World world = event.getWorld();
       Block block = event.getLocation().getBlock();
 
-      if(!Config.Enabled_Worlds.contains(world.getName()) || (event.getPlayer() != null && event.getPlayer().hasPermission("extrahardmode.bypass")))
+      if(!Config.Enabled_Worlds.contains(world.getName()) || (event.getPlayer() != null && event.getPlayer().hasPermission(PermissionNode.BYPASS.getNode())))
          return;
 
       // FEATURE: no big plant growth in deserts
@@ -519,24 +517,29 @@ public class BlockEventHandler implements Listener {
     * Send the player an informative message to explain what he's doing wrong.
     * After that play error sounds instead of spamming the chat window. Uses the
     * permission to temporarily store which message has been shown already.
-    * 
-    * TODO might want to move this out to a module.
-    * 
-    * @author diemex
+    *
+    * TODO might want to move this out to a module. Yes indeed and move all logging methods and ways to send messages in there.
+    *
     * @param player
-    * @param permissionName
-    *           name of the temporary permission
+    * @param perm
+    *           permission to silence the message
     * @param sound
     *           errorsound to play after the event got cancelled
     * @param soundPitch
     */
-   public void notifyPlayer(Player player, MessageNode node, PermissionNode perm, Sound sound, float soundPitch) {
-      if(!player.hasPermission(perm.getNode())) {
-         MessageConfig config = plugin.getModuleForClass(MessageConfig.class);
-         plugin.sendMessage(player, config.getString(node));
-         player.playSound(player.getLocation(), sound, 1, soundPitch);
-      }
-
+   public void notifyPlayer(Player player, MessageNode node, PermissionNode perm, Sound sound, float soundPitch)
+   {
+       if (!player.hasPermission(perm.getNode()))
+       {
+           MessageConfig config = plugin.getModuleForClass(MessageConfig.class);
+           plugin.sendMessage(player, config.getString(node));
+           if (sound != null)
+           player.playSound(player.getLocation(), sound, 1, soundPitch);
+       }
    }
 
+    public void notifyPlayer (Player player, MessageNode node, PermissionNode perm)
+    {
+        notifyPlayer(player, node, perm, null, 0);
+    }
 }

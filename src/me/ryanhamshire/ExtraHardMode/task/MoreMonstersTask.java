@@ -41,6 +41,9 @@ import org.bukkit.entity.Player;
  * Task to spawn more monsters.
  */
 public class MoreMonstersTask implements Runnable {
+    //TODO Fix weird bug
+    //TODO if block not valid check random block nearby
+    //TODO check for nearby players, test the distance
 
    /**
     * Plugin instance.

@@ -38,7 +38,7 @@ public class Config {
     private static transient boolean logVerbose = false;
 
     private static transient FileConfiguration config;
-    private static transient String configPath = dataLayerFolderPath + File.separator + "old_config.yml";
+    private static transient String configPath = dataLayerFolderPath + File.separator + "config.yml";
     private static transient File configFile = new File (configPath);
 
     /**This saves the defaults and restores them on a reload, static variables don't get cleared on a reload**/
@@ -61,8 +61,12 @@ public class Config {
     /**Plugin General Stuff**/
     public static boolean
             //Plugin__Ops_Bypass_By_Default = true,
-		    Plugin__Creative_Mode_Bypasses_Most_Limitations = true;
-		    //Plugin__Enable_Advanced_Support_For_Vanilla_Mods = false;
+		    //Plugin__Creative_Mode_Bypasses_Building_Restrictions = true,
+		    /*Plugin__Enable_Advanced_Support_For_Vanilla_Mods = false;*/ /**explosions disable option, needed to dodge bugs in popular plugins**/
+            Plugin__Disable_Explosions = false;
+
+
+
 
 
     /**world rules**/
@@ -73,7 +77,8 @@ public class Config {
 			World__Mining__Breaking_Ores_Softens_Surrounding_Stone = true,         /**whether players may place blocks directly underneath themselves**/
             World__Mining__Prevent_Tunneling_To_Encourage_Cave_Exploration = true, /**whether TNT should be more powerful and plentiful**/
 	        World__Limited_Block_Placement = true,				                   /**whether players are limited to placing torches against specific materials**/
-            World__Better_Tnt = true,							                   /**whether rain should break torches**/
+            World__Better_Tnt__Enable = true,							           /**whether rain should break torches**/
+            World__Better_Tnt__More_Tnt = true,
             World__Torches__Limited_Torch_Placement = true,				           /**which materials beyond sand and gravel should be subject to gravity**/
             World__Torches__Rain_Breaks_Torches = true,					           /**Play Fizzing Sound when Torches get put out**/
             World__Play_Sounds__Torch_Fizzing = true,                              /**Play Ghast Sound when Creeper drops Tnt**/
@@ -111,6 +116,8 @@ public class Config {
 	        Skeletons__Shoot_Silverfish_Percent = 30,		/**whether or not arrows will pass harmlessly through skeletons**/
             Skeletons__Deflect_Arrows_Percent = 100;
 
+    public static boolean
+            Silverfish__Cant_Enter_Blocks = true;
 
     /**creeper rules**/
     public static int                                       /**percentage of creepers which will spawn charged**/
@@ -176,11 +183,13 @@ public class Config {
 	/**Farming**/
     public static boolean                                   /**whether food crops die more easily**/
 			Farming__Weak_Food_Crops__Enable = true,        /**plants don't grow in desserts**/
-			Farming__Weak_Food_Crops__Arid_Infertile_Desserts= true, /**whether bonemeal may be used on mushrooms**/
+			Farming__Weak_Food_Crops__Arid_Infertile_Desserts = true, /**whether bonemeal may be used on mushrooms**/
+            Farming__Weak_Food_Crops__Snow_Breaks_Crops = true,
             Farming__No_Bonemeal_On_Mushrooms = true,		/**whether nether wart will ever drop more than 1 wart when broken**/
             Farming__No_Farming_Nether_Wart = true,			/**whether sheep will always regrow white wool**/
             Farming__Sheep_Only_Regrow_White_Wool = true,   /**whether crafting melonsseeds from melonds should be blocked**/
-			Farming__No_Crafting_Melon_Seeds = true;
+			Farming__No_Crafting_Melon_Seeds = true,
+            Farming__Animal_Exp_Nerf = true;
 	public static int
 			Farming__Weak_Food_Crops__Vegetation_Loss_Percentage = 25;
 
@@ -211,9 +220,6 @@ public class Config {
             Material.GRASS,
             Material.MYCEL,
             Material.JACK_O_LANTERN };
-
-    /**explosions disable option, needed to dodge bugs in popular plugins**/
-    public static boolean 	Work_Around_Explosions_Bugs = false;
 
 
     /**

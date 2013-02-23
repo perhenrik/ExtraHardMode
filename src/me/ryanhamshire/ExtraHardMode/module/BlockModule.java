@@ -95,34 +95,42 @@ public class BlockModule extends EHMModule {
       }
 
       Material material = block.getType();
-      if(material == Material.CROPS || material == Material.MELON_STEM || material == Material.CARROT || material == Material.PUMPKIN_STEM
-            || material == Material.POTATO) {
-         int deathProbability = 25;
+      if(material == Material.CROPS || material == Material.CARROT || material == Material.POTATO)
+      {
+         int deathProbability = Config.Farming__Weak_Food_Crops__Vegetation_Loss_Percentage;
 
          // plants in the dark always die
-         if(block.getLightFromSky() < 10) {
+         if(block.getLightFromSky() < 10)
+         {
             deathProbability = 100;
-         } else {
+         }
+         else
+         {
             Biome biome = block.getBiome();
 
             // the desert environment is very rough on crops
-            if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS) {
+            if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS
+                    && Config.Farming__Weak_Food_Crops__Arid_Infertile_Desserts)
+            {
                deathProbability += 50;
             }
 
             // unwatered crops are more likely to die
             Block belowBlock = block.getRelative(BlockFace.DOWN);
             byte moistureLevel = 0;
-            if(belowBlock.getType() == Material.SOIL) {
+            if(belowBlock.getType() == Material.SOIL)
+            {
                moistureLevel = belowBlock.getData();
             }
 
-            if(moistureLevel == 0) {
+            if(moistureLevel == 0)
+            {
                deathProbability += 25;
             }
          }
 
-         if(plugin.random(deathProbability)) {
+         if(plugin.random(deathProbability))
+         {
             return true;
          }
       }

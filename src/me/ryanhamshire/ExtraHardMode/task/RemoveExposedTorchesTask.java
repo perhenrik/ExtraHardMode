@@ -60,38 +60,50 @@ public class RemoveExposedTorchesTask implements Runnable {
       if(!this.chunk.getWorld().hasStorm())
          return;
 
-      for(int x = 0; x < 16; x++) {
-         for(int z = 0; z < 16; z++) {
-            for(int y = chunk.getWorld().getMaxHeight() - 1; y > 0; y--) {
+      for(int x = 0; x < 16; x++)
+      {
+         for(int z = 0; z < 16; z++)
+         {
+            for(int y = chunk.getWorld().getMaxHeight() - 1; y > 0; y--)
+            {
                Block block = chunk.getBlock(x, y, z);
                Material blockType = block.getType();
 
-               if(blockType == Material.AIR) {
+               if(blockType == Material.AIR)
+               {
                   continue;
                }
 
-               if(Config.World__Torches__Rain_Breaks_Torches && blockType == Material.TORCH) {
+               if(Config.World__Torches__Rain_Breaks_Torches && blockType == Material.TORCH)
+               {
                   Biome biome = block.getBiome();
                   if(biome == Biome.DESERT || biome == Biome.DESERT_HILLS)
                      break;
 
                   block.setType(Material.AIR);
                   chunk.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.TORCH, 1));
-               } else if(Config.Farming__Weak_Food_Crops__Enable
-                     && (blockType == Material.CROPS || blockType == Material.MELON_STEM || blockType == Material.CARROT
+               }
+               else if(Config.Farming__Weak_Food_Crops__Snow_Breaks_Crops && (blockType == Material.CROPS || blockType == Material.MELON_STEM || blockType == Material.CARROT
                            || blockType == Material.PUMPKIN_STEM || blockType == Material.POTATO || blockType == Material.RED_ROSE
-                           || blockType == Material.YELLOW_FLOWER || blockType == Material.LONG_GRASS)) {
+                           || blockType == Material.YELLOW_FLOWER || blockType == Material.LONG_GRASS))
+               {
                   Biome biome = block.getBiome();
                   if(biome == Biome.FROZEN_OCEAN || biome == Biome.FROZEN_RIVER || biome == Biome.ICE_MOUNTAINS || biome == Biome.ICE_PLAINS
-                        || biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS) {
+                        || biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS)
+                  {
                      block.setType(Material.SNOW);
-                     if(plugin.getRandom().nextBoolean()) {
+                     if(plugin.getRandom().nextBoolean())
+                     {
                         block.setData((byte) 1);
-                     } else {
+                     }
+                     else
+                     {
                         block.setData((byte) 2);
                      }
                   }
-               } else {
+               }
+               else
+               {
                   break;
                }
             }

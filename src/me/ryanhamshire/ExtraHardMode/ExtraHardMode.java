@@ -18,6 +18,7 @@
 
 package me.ryanhamshire.ExtraHardMode;
 
+import java.rmi.activation.Activatable;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,7 @@ import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule.PlayerData;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
+import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
 import me.ryanhamshire.ExtraHardMode.service.IModule;
 import me.ryanhamshire.ExtraHardMode.task.MoreMonstersTask;
 
@@ -75,6 +77,7 @@ public class ExtraHardMode extends JavaPlugin {
        registerModule(DataStoreModule.class, new DataStoreModule(this));
        registerModule(EntityModule.class, new EntityModule(this));
        registerModule(BlockModule.class, new BlockModule(this));
+       registerModule(UtilityModule.class, new UtilityModule(this));
 
        //Register command
        getCommand("ehm").setExecutor(new Commander(this));
