@@ -157,22 +157,18 @@ World__Water__No_Swimming_In_Armor = true;
      * max y-level for extra monster spawns*
      */
     public static int
-            General_Monster_Rules__More_Monsters__Max_Y = 55, /**
- * what to multiply monster spawns by*
- */
-General_Monster_Rules__More_Monsters__Multiplier = 2;
+            General_Monster_Rules__More_Monsters__Max_Y = 55,
+    /**
+     * what to multiply monster spawns by*
+     */
+    General_Monster_Rules__More_Monsters__Multiplier = 2;
+    private final static int
+            MAX_General_Monster_Rules__More_Monsters__Multiplier = 25;
     /**
      * max y-level for monsters to spawn in the light*
      */
-    public static boolean
-            General_Monster_Rules__Monsters_Spawn_In_Light__More_Monsters_When_Y_Lower__Enable = true;
     public static int
-            General_Monster_Rules__Monsters_Spawn_In_Light__Max_Y = 50,
-            General_Monster_Rules__Monsters_Spawn_In_Light__More_Monsters_When_Y_Lower__Min_Multiplier = 1,
-            General_Monster_Rules__Monsters_Spawn_In_Light__More_Monsters_When_Y_Lower__Max_Multiplier = 3,
-            General_Monster_Rules__Monsters_Spawn_In_Light__More_Monsters_Seconds_In_Between_Spawns = 60;
-    private final static int
-            MAX_General_Monster_Rules__More_Monsters__Multiplier = 25;
+            General_Monster_Rules__Monsters_Spawn_In_Light__Max_Y = 50;
 
 
     /**monster grinder fix rules**/

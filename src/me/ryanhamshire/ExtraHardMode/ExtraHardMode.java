@@ -95,9 +95,8 @@ public class ExtraHardMode extends JavaPlugin
 
         // FEATURE: monsters spawn in the light under a configurable Y level
         MoreMonstersTask task = new MoreMonstersTask(this);
-        // TODO Config: Every x seconds revert to 1200L
-        final long timeBetweenSpawns = Config.General_Monster_Rules__Monsters_Spawn_In_Light__More_Monsters_Seconds_In_Between_Spawns;
-        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 0L, timeBetweenSpawns);
+        // TODO Once this feature is fleshed out make it customizable
+        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 1200L, 1200L);
     }
 
     /**
