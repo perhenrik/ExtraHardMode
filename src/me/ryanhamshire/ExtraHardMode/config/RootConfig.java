@@ -100,21 +100,35 @@ public class RootConfig extends ModularConfig
     {
         // Check worlds
         List<String> list = getStringList(RootNode.WORLDS);
+        List <World> worlds = null;
         if (list.isEmpty())
         {
-            plugin.getLogger().warning(plugin.getTag() + " No worlds selected!");
+            plugin.getLogger().warning(plugin.getTag() + " No worlds selected, enabling for default worlds!");
+            worlds = plugin.getServer().getWorlds();
         }
-        List<World> worlds = new ArrayList<World>();
-        for (String name : list)
+
+        //Only verify worlds from the config file when there are actually worlds there, otherwise use default worlds
+        if (worlds == null)
         {
-            World world = plugin.getServer().getWorld(name);
-            if (world != null)
+            worlds = new ArrayList<World>();
+            for (String name : list)
             {
-                // Not going to notify on missing world as that will occur in the
-                // main plugin execution.
-                worlds.add(world);
+                World world = plugin.getServer().getWorld(name);
+                if (world != null)
+                {
+                    // Not going to notify on missing world as that will occur in the
+                    // main plugin execution.
+                    worlds.add(world);
+                }
             }
         }
+        //write back to file, could potentially also move into Rootnode, but we need a reference to the plugin
+        list = new ArrayList <String> ();
+        for (World world : worlds)
+        list.add(world.getName());
+        set(RootNode.WORLDS, list);
+        updateOption(RootNode.WORLDS);
+
         // Check y coordinates
         validateYCoordinate(RootNode.STANDARD_TORCH_MIN_Y, worlds);
         validateYCoordinate(RootNode.MORE_MONSTERS_MAX_Y, worlds);
@@ -154,7 +168,6 @@ public class RootConfig extends ModularConfig
         boolean changed = false;
         if (value < 0)
         {
-            //TODO create method in Main to call "getLogger().warning(plugin.getTag()"
             plugin.getLogger().warning(plugin.getTag() + " Y coordinate for " + node.getPath() + " cannot be less than 0.");
             set(node, 0);
             changed = true;

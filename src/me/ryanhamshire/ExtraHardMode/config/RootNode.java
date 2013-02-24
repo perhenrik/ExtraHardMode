@@ -97,7 +97,8 @@ public enum RootNode implements ConfigNode
     /**
      * whether tree logs respect gravity
      */
-    BETTER_TREE_CHOPPING("ExtraHardMode.Better Tree Felling", VarType.BOOLEAN, true),
+    BETTER_TREE_CHOPPING
+            ("ExtraHardMode.World Rules.Better Tree Felling", VarType.BOOLEAN, true),
     /**
      * whether players take additional damage and/or debuffs from environmental injuries
      */
@@ -198,7 +199,7 @@ public enum RootNode implements ConfigNode
      * percentage of creepers which will spawn charged
      */
     CHARGED_CREEPER_SPAWN_PERCENT
-            ("ExtraHardMode.Creepers.Charged Creeper Spawn Percent", VarType.INTEGER, 5),
+            ("ExtraHardMode.Creepers.Charged Creeper Spawn Percent", VarType.INTEGER, 10),
     /**
      * percentage of creepers which spawn activated TNT on death
      */
@@ -388,7 +389,7 @@ public enum RootNode implements ConfigNode
      * which materials beyond sand and gravel should be subject to gravity
      */
     MORE_FALLING_BLOCKS
-            ("ExtraHardMode.AdditionalFallingBlocks.Enabled Blocks", VarType.LIST, new DefaultFallingBlocks());
+            ("ExtraHardMode.Additional Falling Blocks.Enabled Blocks", VarType.LIST, new DefaultFallingBlocks());
 
 
     /**

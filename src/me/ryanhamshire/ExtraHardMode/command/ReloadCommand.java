@@ -38,7 +38,8 @@ public class ReloadCommand implements ICommand
         if (sender.hasPermission(PermissionNode.ADMIN.getNode()))
         {
             RootConfig root = plugin.getModuleForClass(RootConfig.class);
-            root.reload();
+            root.closing();
+            root.starting();
             plugin.getModuleForClass(MessageConfig.class).reload();
             // Restart data store.
             DataStoreModule dataStore = plugin.getModuleForClass(DataStoreModule.class);
