@@ -1,4 +1,7 @@
 /*
+    ExtraHardMode Server Plugin for Minecraft
+    Copyright (C) 2012 Ryan Hamshire
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,7 +20,7 @@
 package me.ryanhamshire.ExtraHardMode;
 
 import me.ryanhamshire.ExtraHardMode.command.Commander;
-import me.ryanhamshire.ExtraHardMode.config.Config;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.event.BlockEventHandler;
 import me.ryanhamshire.ExtraHardMode.event.EntityEventHandler;
@@ -65,10 +68,8 @@ public class ExtraHardMode extends JavaPlugin
     @Override
     public void onEnable()
     {
-        Config.load(this);
         // Register modules
-        //TODO change to RootConfig
-        //registerModule(RootConfig.class, new RootConfig(this));
+        registerModule(RootConfig.class, new RootConfig(this));
         registerModule(MessageConfig.class, new MessageConfig(this));
         registerModule(DataStoreModule.class, new DataStoreModule(this));
         registerModule(EntityModule.class, new EntityModule(this));
@@ -96,7 +97,7 @@ public class ExtraHardMode extends JavaPlugin
         // FEATURE: monsters spawn in the light under a configurable Y level
         MoreMonstersTask task = new MoreMonstersTask(this);
         // TODO Once this feature is fleshed out make it customizable
-        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 0L, 120L);
+        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 120L, 120L);
     }
 
     /**

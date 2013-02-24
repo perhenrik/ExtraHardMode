@@ -1,4 +1,7 @@
 /*
+    ExtraHardMode Server Plugin for Minecraft
+    Copyright (C) 2012 Ryan Hamshire
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,7 +19,8 @@
 package me.ryanhamshire.ExtraHardMode.event;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.Config;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
@@ -52,8 +56,14 @@ public class PlayerEventHandler implements Listener
      * Plugin instance.
      */
     private ExtraHardMode plugin;
+    /**
+     * General helpful stuff
+     */
     private UtilityModule utils;
-
+    /**
+     * Config
+     */
+    RootConfig rootC;
     /**
      * Constructor.
      *
@@ -63,6 +73,7 @@ public class PlayerEventHandler implements Listener
     {
         this.plugin = plugin;
         utils = plugin.getModuleForClass(UtilityModule.class);
+        rootC = plugin.getModuleForClass(RootConfig.class);
     }
 
     /**
@@ -75,11 +86,11 @@ public class PlayerEventHandler implements Listener
     {
         Player player = respawnEvent.getPlayer();
         World world = respawnEvent.getPlayer().getWorld();
-        if (!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
+        if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
         {
             return;
         }
-        SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, Config.Player__Respawn_Health, Config.Player__Respawn_Food_Level);
+        SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, rootC.getInt(RootNode.PLAYER_RESPAWN_HEALTH), rootC.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL));
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L); // half-second
         // delay
         // FEATURE: players can't swim when they're carrying a lot of weight
@@ -97,12 +108,12 @@ public class PlayerEventHandler implements Listener
     {
         Player player = event.getPlayer();
         World world = event.getPlayer().getWorld();
-        if (!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
+        if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
             return;
         Action action = event.getAction();
 
         // FEATURE: bonemeal doesn't work on mushrooms
-        if (Config.Farming__No_Bonemeal_On_Mushrooms && action == Action.RIGHT_CLICK_BLOCK)
+        if (rootC.getBoolean(RootNode.NO_BONEMEAL_ON_MUSHROOMS) && action == Action.RIGHT_CLICK_BLOCK)
         {
             Block block = event.getClickedBlock();
             if (block.getType() == Material.RED_MUSHROOM || block.getType() == Material.BROWN_MUSHROOM)
@@ -121,7 +132,7 @@ public class PlayerEventHandler implements Listener
         // FEATURE: seed reduction. some plants die even when a player uses
         // bonemeal.
         //TODO FIX!
-        if (Config.Farming__Weak_Food_Crops__Enable && action.equals(Action.RIGHT_CLICK_BLOCK))
+        if (rootC.getBoolean(RootNode.WEAK_FOOD_CROPS) && action.equals(Action.RIGHT_CLICK_BLOCK))
         {
             Block block = event.getClickedBlock();
             if (utils.isPlant(block.getType()))
@@ -137,7 +148,7 @@ public class PlayerEventHandler implements Listener
 
         // FEATURE: putting out fire up close catches the player on fire
         Block block = event.getClickedBlock();
-        if (Config.Player__Extinguishing_Fire_Ignites_Players && block != null && block.getType() != Material.AIR)
+        if (rootC.getBoolean(RootNode.EXTINGUISHING_FIRE_IGNITES_PLAYERS) && block != null && block.getType() != Material.AIR)
         {
             if (block.getRelative(event.getBlockFace()).getType() == Material.FIRE)
             {
@@ -155,11 +166,11 @@ public class PlayerEventHandler implements Listener
     void onPlayerFillBucket(PlayerBucketFillEvent event)
     {
         // FEATURE: can't move water source blocks
-        if (Config.World__Water__Dont_Move_Source_Blocks)
+        if (rootC.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS))
         {
             Player player = event.getPlayer();
             World world = event.getPlayer().getWorld();
-            if (!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
+            if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
                 return;
 
             // only care about stationary (source) water
@@ -196,11 +207,11 @@ public class PlayerEventHandler implements Listener
     void onPlayerEmptyBucket(PlayerBucketEmptyEvent event)
     {
         // FEATURE: can't move water source blocks
-        if (Config.World__Water__Dont_Move_Source_Blocks & !event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
+        if (rootC.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS) & !event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
         {
             Player player = event.getPlayer();
             World world = event.getPlayer().getWorld();
-            if (!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
+            if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
             {
                 return;
             }
@@ -228,7 +239,7 @@ public class PlayerEventHandler implements Listener
     {
         World world = event.getFrom();
 
-        if (!Config.Enabled_Worlds.contains(world.getName()))
+        if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()))
             return;
 
         // FEATURE: respawn the ender dragon when the last player leaves the end
@@ -293,7 +304,7 @@ public class PlayerEventHandler implements Listener
     void onPlayerMove(PlayerMoveEvent event)
     {
         // FEATURE: no swimming while heavy
-        if (!Config.World__Water__No_Swimming_In_Armor)
+        if (!rootC.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR))
             return;
 
         // only care about moving up
@@ -319,7 +330,7 @@ public class PlayerEventHandler implements Listener
         // only enabled worlds, and players without bypass permission
         Player player = event.getPlayer();
         World world = player.getWorld();
-        if (!Config.Enabled_Worlds.contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
+        if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
             return;
 
         PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());

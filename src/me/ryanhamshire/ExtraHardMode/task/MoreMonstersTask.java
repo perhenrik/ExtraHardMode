@@ -1,4 +1,7 @@
 /*
+    ExtraHardMode Server Plugin for Minecraft
+    Copyright (C) 2012 Ryan Hamshire
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,7 +19,8 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.Config;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import org.bukkit.*;
@@ -43,7 +47,10 @@ public class MoreMonstersTask implements Runnable
      * Plugin instance.
      */
     private ExtraHardMode plugin;
-
+    /**
+     * Config instanz
+     */
+    private RootConfig rootC;
     /**
      * Constructor.
      *
@@ -52,6 +59,7 @@ public class MoreMonstersTask implements Runnable
     public MoreMonstersTask(ExtraHardMode plugin)
     {
         this.plugin = plugin;
+        rootC = plugin.getModuleForClass(RootConfig.class);
     }
 
     @Override
@@ -71,7 +79,7 @@ public class MoreMonstersTask implements Runnable
                 // chunk must be loaded, player must not be close, and there must be
                 // no other players in the chunk
                 //TODO CHECK DISTANCE
-                if (location.getChunk().isLoaded() && player.isOnline() && location.distanceSquared(player.getLocation()) > 150)
+                if (location.getChunk().isLoaded() && player.isOnline() && location.distanceSquared(player.getLocation()) > 256)
                 {
                     boolean playerInChunk = false;
                     for (Entity entity : chunk.getEntities())
@@ -166,13 +174,13 @@ public class MoreMonstersTask implements Runnable
         Block playerBlock = location.getBlock();
         World world = location.getWorld();
 
-        if (Config.Enabled_Worlds.contains(world.getName()))
+        if (rootC.getStringList(RootNode.WORLDS).contains(world.getName()))
         {
             // Only spawn monsters in normal world. End is crowded with endermen
             // and nether is too extreme anyway, add config later
             int lightLvl = location.getBlock().getLightFromSky();
             if (world.getEnvironment() == Environment.NORMAL
-                    && (location.getY() < Config.General_Monster_Rules__Monsters_Spawn_In_Light__Max_Y && lightLvl < 3))
+                    && (location.getY() < rootC.getInt(RootNode.MORE_MONSTERS_MAX_Y) && lightLvl < 3))
             {
                 // the playerBlock should always be air, but if the player stands
                 // on a slab he actually is in the slab, checking a few blocks under because player could have jumped etc..

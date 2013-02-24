@@ -15,7 +15,7 @@
 package me.ryanhamshire.ExtraHardMode.command;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.Config;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
@@ -37,10 +37,8 @@ public class ReloadCommand implements ICommand
     {
         if (sender.hasPermission(PermissionNode.ADMIN.getNode()))
         {
-            // TODO move to RootConfig root =
-            // plugin.getModuleForClass(RootConfig.class);
-            // root.reload();
-            Config.load(plugin);
+            RootConfig root = plugin.getModuleForClass(RootConfig.class);
+            root.reload();
             plugin.getModuleForClass(MessageConfig.class).reload();
             // Restart data store.
             DataStoreModule dataStore = plugin.getModuleForClass(DataStoreModule.class);

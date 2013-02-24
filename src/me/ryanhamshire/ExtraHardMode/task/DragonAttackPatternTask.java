@@ -1,4 +1,7 @@
 /*
+    ExtraHardMode Server Plugin for Minecraft
+    Copyright (C) 2012 Ryan Hamshire
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,7 +20,8 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.Config;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -34,6 +38,10 @@ public class DragonAttackPatternTask implements Runnable
      * Plugin instance.
      */
     private ExtraHardMode plugin;
+    /**
+     * Config instance
+     */
+    private RootConfig rootC;
     /**
      * Target player.
      */
@@ -58,6 +66,7 @@ public class DragonAttackPatternTask implements Runnable
     public DragonAttackPatternTask(ExtraHardMode plugin, LivingEntity dragon, Player player, List<Player> playersFightingDragon)
     {
         this.plugin = plugin;
+        rootC = plugin.getModuleForClass(RootConfig.class);
         this.dragon = dragon;
         this.player = player;
         this.playersFightingDragon.addAll(playersFightingDragon);
@@ -76,7 +85,7 @@ public class DragonAttackPatternTask implements Runnable
         {
             // announce the combat result
             this.playersFightingDragon.remove(this.player);
-            if (Config.Enderdragon__Combat_Announcements && !this.player.isDead())
+            if (rootC.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS) && !this.player.isDead())
             {
                 plugin.getServer().broadcastMessage(this.player.getName() + " has been defeated by the dragon!");
             }

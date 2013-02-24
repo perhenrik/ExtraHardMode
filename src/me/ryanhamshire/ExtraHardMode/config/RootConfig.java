@@ -30,8 +30,6 @@ public class RootConfig extends ModularConfig
 {
 
     /**
-     * Constructor. You no say?
-     *
      * @param plugin - plugin instance.
      */
     public RootConfig(ExtraHardMode plugin)
@@ -103,7 +101,7 @@ public class RootConfig extends ModularConfig
         // Check worlds
         List<String> list = getStringList(RootNode.WORLDS);
         if (list.isEmpty())
-        { //TODO doesn't validate when /ehm reload
+        {
             plugin.getLogger().warning(plugin.getTag() + " No worlds selected!");
         }
         List<World> worlds = new ArrayList<World>();
@@ -123,7 +121,6 @@ public class RootConfig extends ModularConfig
         validateYCoordinate(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y, worlds);
         // Check percentages
         validatePercentage(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT);
-        // TODO iterate through the names, reflection hacking, or add maxValue to Nodes, maybe just for integers
         validatePercentage(RootNode.MORE_MONSTERS_MULTIPLIER);
         validatePercentage(RootNode.ZOMBIES_REANIMATE_PERCENT);
         validatePercentage(RootNode.SKELETONS_KNOCK_BACK_PERCENT);
@@ -135,11 +132,13 @@ public class RootConfig extends ModularConfig
         validatePercentage(RootNode.CREEPERS_DROP_TNT_ON_DEATH_PERCENT);
         validatePercentage(RootNode.NEAR_BEDROCK_BLAZE_SPAWN_PERCENT);
         validatePercentage(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT);
-        validatePercentage(RootNode.FLAME_SLIMES_SPAWN_WITH_NETHER_BLAZE_PRESENT);
+        validatePercentage(RootNode.FLAME_SLIMES_SPAWN_WITH_NETHER_BLAZE_PERCENT);
         validatePercentage(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT);
         validatePercentage(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT);
-        validatePercentage(RootNode.PLAYER_RESPAWN_HEALTH);
-        validatePercentage(RootNode.PLAYER_RESPAWN_FOOD_LEVEL);
+        validatePercentage(RootNode.WEAK_FOOD_CROPS_LOSS_RATE);
+        //Custom Checking
+        validateCustom(RootNode.PLAYER_RESPAWN_HEALTH, 0, 20);
+        validateCustom(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, 0, 20);
     }
 
     /**
@@ -204,4 +203,28 @@ public class RootConfig extends ModularConfig
         }
     }
 
+    /**
+     * Validates a configOption with custom bounds
+     */
+    private void validateCustom (RootNode node, int minVal, int maxVal)
+    {
+        boolean changed = false;
+        int value = getInt(node);
+        if (value < minVal)
+        {
+            plugin.getLogger().warning(plugin.getTag() + " Value for " + node.getPath() + "cannot be smaller than 0.");
+            set(node, 0);
+            changed = true;
+        }
+        else if (value > maxVal)
+        {
+            plugin.getLogger().warning(plugin.getTag() + " Value for " + node.getPath() + "cannot be greater than " + maxVal);
+            set(node, maxVal);
+            changed = true;
+        }
+        if (changed)
+        {
+            updateOption(node);
+        }
+    }
 }

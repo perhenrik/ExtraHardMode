@@ -30,6 +30,15 @@ public enum RootNode implements ConfigNode
      */
     WORLDS
             ("ExtraHardMode.Enabled Worlds", VarType.LIST, new ArrayList<String>()),
+
+
+    /**
+     * Should explosions be disabled? They don't get recognized by a lot of plugins
+     */
+    DISABLE_EXPLOSIONS
+            ("ExtraHardMode.Plugin.Disable Explosions", VarType.BOOLEAN, false),
+
+
     /**
      * whether stone is hardened to encourage cave exploration over tunneling
      */
@@ -56,23 +65,44 @@ public enum RootNode implements ConfigNode
     RAIN_BREAKS_TORCHES
             ("ExtraHardMode.World Rules.Torches.Rain Breaks Torches", VarType.BOOLEAN, true),
     /**
-     * whether players may place blocks directly underneath themselves
+     * whether TNT should be more powerful and plentiful
      */
-    LIMITED_BLOCK_PLACEMENT
-            ("ExtraHardMode.Limited Block Placement", VarType.BOOLEAN, true),
+    BETTER_TNT
+            ("ExtraHardMode.World Rules.Better Tnt.Bigger Explosions", VarType.BOOLEAN, true),
+    /**
+     * wheter the crafting recipe should give more tnt
+     */
+    MORE_TNT_NUMBER
+            ("ExtraHardMode.World Rules.Better Tnt.More Tnt Per Recipe", VarType.INTEGER, 3),
+    /**
+     * Sound when torch placing fails
+     */
+    SOUNDS_TORCH_FIZZ
+            ("ExtraHardMode.World Rules.Play Sounds.Torch Fizzing", VarType.BOOLEAN, true),
+    /**
+     * Warning Sound when a creeper drops tnt
+     */
+    SOUND_CREEPER_TNT
+            ("ExtraHardMode.World Rules.Play Sounds.Creeper Tnt Warning", VarType.BOOLEAN, true),
     /**
      * percent chance for broken netherrack to start a fire
      */
     BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT
-            ("ExtraHardMode.Breaking Netherrack Starts Fire Percent", VarType.INTEGER, 20),
+            ("ExtraHardMode.World Rules.Breaking Netherrack Starts Fire Percent", VarType.INTEGER, 20),
     /**
-     * whether TNT should be more powerful and plentiful
+     * whether players may place blocks directly underneath themselves
      */
-    BETTER_TNT
-            ("ExtraHardMode.BetterTNT", VarType.BOOLEAN, true),
+    LIMITED_BLOCK_PLACEMENT
+            ("ExtraHardMode.World Rules.Limited Block Placement", VarType.BOOLEAN, true),
+    /**
+     * whether tree logs respect gravity
+     */
+    BETTER_TREE_CHOPPING("ExtraHardMode.Better Tree Felling", VarType.BOOLEAN, true),
     /**
      * whether players take additional damage and/or debuffs from environmental injuries
      */
+
+
     ENHANCED_ENVIRONMENTAL_DAMAGE
             ("ExtraHardMode.Player.Enhanced Environmental Injuries", VarType.BOOLEAN, true),
     /**
@@ -80,6 +110,26 @@ public enum RootNode implements ConfigNode
      */
     EXTINGUISHING_FIRE_IGNITES_PLAYERS
             ("ExtraHardMode.Player.Extinguishing Fires Ignites Player", VarType.BOOLEAN, true),
+    /**
+     * percentage of item stacks lost on death
+     */
+    PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT
+            ("ExtraHardMode.Player.Death.Item Stacks Forfeit Percent", VarType.INTEGER, 10),
+    /**
+     * how much health after respawn
+     */
+    PLAYER_RESPAWN_HEALTH
+            ("ExtraHardMode.Player.Death.Respawn Health", VarType.INTEGER, 15),
+    /**
+     * how much food bar after respawn
+     */
+    PLAYER_RESPAWN_FOOD_LEVEL
+            ("ExtraHardMode.Player.Death.Respawn Foodlevel", VarType.INTEGER, 15),
+    /**
+     * whether players may swim while wearing armor
+     */
+    NO_SWIMMING_IN_ARMOR("ExtraHardMode.Player.No Swimming When Too Heavy", VarType.BOOLEAN, true),
+
     /**
      * whether monster grinders (or "farms") should be inhibited
      */
@@ -100,6 +150,7 @@ public enum RootNode implements ConfigNode
      */
     MONSTER_SPAWNS_IN_LIGHT_MAX_Y
             ("ExtraHardMode.General Monster Rules.Monsters Spawn In Light Max Y", VarType.INTEGER, 50),
+
     /**
      * whether zombies apply a debuff to players on hit
      */
@@ -110,6 +161,7 @@ public enum RootNode implements ConfigNode
      */
     ZOMBIES_REANIMATE_PERCENT
             ("ExtraHardMode.Zombies.Reanimate Percent", VarType.INTEGER, 50),
+
     /**
      * percent chance skeletons have a chance to knock back targets with arrows
      */
@@ -126,6 +178,12 @@ public enum RootNode implements ConfigNode
     SKELETONS_DEFLECT_ARROWS
             ("ExtraHardMode.Skeletons.Deflect Arrows Percent", VarType.INTEGER, 100),
     /**
+     * If Silverfish cant enter stone etc and turn it into a silverfish block
+     */
+    SILVERFISH_CANT_ENTER_BLOCKS
+            ("ExtraHardMode.Silverfish.Can't enter blocks", VarType.BOOLEAN, true),
+
+    /**
      * percentage of zombies which will be replaced with spiders under sea level
      */
     BONUS_UNDERGROUND_SPIDER_SPAWN_PERCENT
@@ -135,11 +193,7 @@ public enum RootNode implements ConfigNode
      */
     SPIDERS_DROP_WEB_ON_DEATH
             ("ExtraHardMode.Spiders.Drop Web On Death", VarType.BOOLEAN, true),
-    /**
-     * percentage of surface zombies which spawn as witches
-     */
-    BONUS_WITCH_SPAWN_PERCENT
-            ("ExtraHardMode.Witches.Bonus Spawn Percent", VarType.INTEGER, 5),
+
     /**
      * percentage of creepers which will spawn charged
      */
@@ -165,130 +219,177 @@ public enum RootNode implements ConfigNode
      */
     FLAMING_CREEPERS_EXPLODE
             ("ExtraHardMode.Creepers.Fire Triggers Explosion", VarType.BOOLEAN, true),
+
     /**
      * percentage of skeletons near bedrock which will be replaced with blazes
      */
     NEAR_BEDROCK_BLAZE_SPAWN_PERCENT
-            ("ExtraHardMode.Blazes.NearBedrockSpawnPercent", VarType.INTEGER, 50),
+            ("ExtraHardMode.Blazes.Near Bedrock Spawn Percent", VarType.INTEGER, 50),
     /**
      * percentage of pig zombies which will be replaced with blazes
      */
-    BONUS_NETHER_BLAZE_SPAWN_PERCENT("ExtraHardMode.Blazes.BonusNetherSpawnPercent", VarType.INTEGER, 20),
-    /**
-     * percentage chance that a blaze spawn will trigger a flame slime spawn as
-     * well
-     */
-    FLAME_SLIMES_SPAWN_WITH_NETHER_BLAZE_PRESENT("ExtraHardMode.MagmaCubes.SpawnWithNetherBlazePercent", VarType.INTEGER, 100),
-    /**
-     * whether damaging a magma cube turns it into a blaze
-     */
-    MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE("ExtraHardMode.MagmaCubes.GrowIntoBlazesOnDamage", VarType.BOOLEAN, true),
+    BONUS_NETHER_BLAZE_SPAWN_PERCENT
+            ("ExtraHardMode.Blazes.Bonus Nether Spawn Percent", VarType.INTEGER, 20),
     /**
      * whether blazes explode and spread fire when they die
      */
-    BLAZES_EXPLODE_ON_DEATH("ExtraHardMode.Blazes.ExplodeOnDeath", VarType.BOOLEAN, true),
+    BLAZES_EXPLODE_ON_DEATH
+            ("ExtraHardMode.Blazes.Explode On Death", VarType.BOOLEAN, true),
     /**
      * whether blazes drop fire when damaged
      */
-    BLAZES_DROP_FIRE_ON_DAMAGE("ExtraHardMode.Blazes.DropFireOnDamage", VarType.BOOLEAN, true),
+    BLAZES_DROP_FIRE_ON_DAMAGE
+            ("ExtraHardMode.Blazes.Drop Fire On Damage", VarType.BOOLEAN, true),
     /**
      * whether blazes drop extra loot
      */
-    BLAZES_DROP_BONUS_LOOT("ExtraHardMode.Blazes.BonusLoot", VarType.BOOLEAN, true),
+    BLAZES_DROP_BONUS_LOOT
+            ("ExtraHardMode.Blazes.Bonus Loot", VarType.BOOLEAN, true),
     /**
      * percentage chance that a blaze slain in the nether will split into two
      * blazes
      */
-    NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT("ExtraHardMode.Blazes.NetherSplitOnDeathPercent", VarType.INTEGER, 25),
+    NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT
+            ("ExtraHardMode.Blazes.Nether Split On Death Percent", VarType.INTEGER, 25),
+
+    /**
+     * percentage chance that a blaze spawn will trigger a flame slime spawn as
+     * well
+     */
+    FLAME_SLIMES_SPAWN_WITH_NETHER_BLAZE_PERCENT
+            ("ExtraHardMode.MagmaCubes.Spawn With Nether Blaze Percent", VarType.INTEGER, 100),
+    /**
+     * whether damaging a magma cube turns it into a blaze
+     */
+    MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE
+            ("ExtraHardMode.MagmaCubes.Grow Into Blazes On Damage", VarType.BOOLEAN, true),
+
+
     /**
      * whether pig zombies are always hostile
      */
-    ALWAYS_ANGRY_PIG_ZOMBIES("ExtraHardMode.PigZombies.AlwaysAngry", VarType.BOOLEAN, true),
+    ALWAYS_ANGRY_PIG_ZOMBIES
+            ("ExtraHardMode.PigZombies.Always Angry", VarType.BOOLEAN, true),
     /**
      * whether pig zombies drop nether wart in nether fortresses
      */
-    FORTRESS_PIGS_DROP_WART("ExtraHardMode.PigZombies.DropWartInFortresses", VarType.BOOLEAN, true),
+    FORTRESS_PIGS_DROP_WART
+            ("ExtraHardMode.PigZombies.Drop Netherwart In Fortresses", VarType.BOOLEAN, true),
+
     /**
-     * whether ghasts should deflect arrows and drop extra loot TODO make this a
+     * whether ghasts should deflect arrows and drop extra loot
      * percentage like skeleton deflect
      */
-    GHASTS_DEFLECT_ARROWS("ExtraHardMode.Ghasts.DeflectArrows", VarType.BOOLEAN, true),
+    GHASTS_DEFLECT_ARROWS
+            ("ExtraHardMode.Ghasts.Immune To Arrows", VarType.BOOLEAN, true),
     /**
      * whether endermen may teleport players
      */
-    IMPROVED_ENDERMAN_TELEPORTATION("ExtraHardMode.Endermen.MayTeleportPlayers", VarType.BOOLEAN, true),
+    IMPROVED_ENDERMAN_TELEPORTATION
+            ("ExtraHardMode.Endermen.May Teleport Players", VarType.BOOLEAN, true),
+    /**
+     * percentage of surface zombies which spawn as witches
+     */
+    BONUS_WITCH_SPAWN_PERCENT
+            ("ExtraHardMode.Witches.Bonus Spawn Percent", VarType.INTEGER, 5),
+
     /**
      * whether the ender dragon respawns
      */
-    RESPAWN_ENDER_DRAGON("ExtraHardMode.EnderDragon.Respawns", VarType.BOOLEAN, true),
+    RESPAWN_ENDER_DRAGON
+            ("ExtraHardMode.EnderDragon.Respawns", VarType.BOOLEAN, true),
     /**
      * whether it drops an egg when slain
      */
-    ENDER_DRAGON_DROPS_EGG("ExtraHardMode.EnderDragon.DropsEgg", VarType.BOOLEAN, true),
+    ENDER_DRAGON_DROPS_EGG
+            ("ExtraHardMode.EnderDragon.Drops Dragonegg", VarType.BOOLEAN, true),
     /**
      * whether it drops a pair of villager eggs when slain
      */
-    ENDER_DRAGON_DROPS_VILLAGER_EGGS("ExtraHardMode.EnderDragon.DropsVillagerEggs", VarType.BOOLEAN, true),
+    ENDER_DRAGON_DROPS_VILLAGER_EGGS
+            ("ExtraHardMode.EnderDragon.Drops 2 Villager Eggs", VarType.BOOLEAN, true),
     /**
      * whether the dragon spits fireballs and summons minions
      */
-    ENDER_DRAGON_ADDITIONAL_ATTACKS("ExtraHardMode.EnderDragon.HarderBattle", VarType.BOOLEAN, true),
+    ENDER_DRAGON_ADDITIONAL_ATTACKS
+            ("ExtraHardMode.EnderDragon.Harder Battle", VarType.BOOLEAN, true),
     /**
      * whether server wide messages will broadcast player victories and defeats
      */
-    ENDER_DRAGON_COMBAT_ANNOUNCEMENTS("ExtraHardMode.EnderDragon.BattleAnnouncements", VarType.BOOLEAN, true),
+    ENDER_DRAGON_COMBAT_ANNOUNCEMENTS
+            ("ExtraHardMode.EnderDragon.Battle Announcements", VarType.BOOLEAN, true),
     /**
      * whether players will be allowed to build in the end
      */
-    ENDER_DRAGON_NO_BUILDING("ExtraHardMode.EnderDragon.NoBuildingAllowed", VarType.BOOLEAN, true),
+    ENDER_DRAGON_NO_BUILDING
+            ("ExtraHardMode.EnderDragon.No Building Allowed", VarType.BOOLEAN, true),
+
     /**
      * whether food crops die more easily
      */
-    WEAK_FOOD_CROPS("ExtraHardMode.Farming.WeakCrops", VarType.BOOLEAN, true),
+    WEAK_FOOD_CROPS
+            ("ExtraHardMode.Farming.Weak Crops.Enable", VarType.BOOLEAN, true),
+    /**
+     * How much percent of plants you loose
+     */
+    WEAK_FOOD_CROPS_LOSS_RATE
+            ("ExtraHardMode.Farming.Weak Crops.Loss Rate", VarType.INTEGER, 25),
+    /**
+     * Should desserts be really empty and hostile towards plants
+     */
+    ARID_DESSERTS
+            ("ExtraHardMode.Farming.Weak Crops.Arid Infertile Desserts", VarType.BOOLEAN, true),
+    /**
+     * Weather Snow should break crops
+     */
+    SNOW_BREAKS_CROPS
+            ("ExtraHardMode.Farming.Weak Crops.Snow Breaks Crops", VarType.BOOLEAN, true),
+    /**
+     * Should you be able to craft melonseeds
+     */
+    CANT_CRAFT_MELONSEEDS
+            ("ExtraHardMode.Farming.Cant Craft Melonsseeds", VarType.BOOLEAN, true),
     /**
      * whether bonemeal may be used on mushrooms
      */
-    NO_BONEMEAL_ON_MUSHROOMS("ExtraHardMode.Farming.NoBonemealOnMushrooms", VarType.BOOLEAN, true),
+    NO_BONEMEAL_ON_MUSHROOMS
+            ("ExtraHardMode.Farming.No Bonemeal On Mushrooms", VarType.BOOLEAN, true),
     /**
      * whether nether wart will ever drop more than 1 wart when broken
      */
-    NO_FARMING_NETHER_WART("ExtraHardMode.Farming.NoFarmingNetherWart", VarType.BOOLEAN, true),
+    NO_FARMING_NETHER_WART
+            ("ExtraHardMode.Farming.No Farming Nether Wart", VarType.BOOLEAN, true),
     /**
      * whether sheep will always regrow white wool
      */
-    SHEEP_REGROW_WHITE_WOOL("ExtraHardMode.Farming.SheepGrowOnlyWhiteWool", VarType.BOOLEAN, true),
+    SHEEP_REGROW_WHITE_WOOL
+            ("ExtraHardMode.Farming.Sheep Grow Only White Wool", VarType.BOOLEAN, true),
     /**
      * whether players may move water source blocks
      */
-    DONT_MOVE_WATER_SOURCE_BLOCKS("ExtraHardMode.Farming.BucketsDontMoveWaterSources", VarType.BOOLEAN, true),
+    DONT_MOVE_WATER_SOURCE_BLOCKS
+            ("ExtraHardMode.Farming.Buckets Dont Move Water Sources", VarType.BOOLEAN, true),
     /**
-     * whether players may swim while wearing armor
+     * wheter animals should drop exp
      */
-    NO_SWIMMING_IN_ARMOR("ExtraHardMode.NoSwimmingWhenHeavy", VarType.BOOLEAN, true),
+    ANIMAL_EXP_NERF
+            ("ExtraHardMode.Farming.Animal Experience Nerf", VarType.BOOLEAN, true),
     /**
-     * percentage of item stacks lost on death
+     * Wheter More Falling blocks should be enabled
      */
-    PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("ExtraHardMode.PlayerDeath.ItemStacksForfeitPercent", VarType.INTEGER, 10),
+    MORE_FALLING_BLOCKS_ENABLE
+            ("ExtraHardMode.Additional Falling Blocks.Enable", VarType.BOOLEAN, true),
     /**
-     * how much health after respawn
+     * wheter falling grass/mycel turns into dirt
      */
-    PLAYER_RESPAWN_HEALTH("ExtraHardMode.PlayerDeath.RespawnHealth", VarType.INTEGER, 15),
-    /**
-     * how much food bar after respawn
-     */
-    PLAYER_RESPAWN_FOOD_LEVEL("ExtraHardMode.PlayerDeath.RespawnFoodLevel", VarType.INTEGER, 15),
-    /**
-     * whether tree logs respect gravity
-     */
-    BETTER_TREE_CHOPPING("ExtraHardMode.BetterTreeFelling", VarType.BOOLEAN, true),
-    /**
-     * explosions disable option, needed to dodge bugs in popular plugins
-     */
-    WORK_AROUND_EXPLOSION_BUGS("ExtraHardMode.WorkAroundOtherPluginsExplosionBugs", VarType.BOOLEAN, false),
+    MORE_FALLING_BLOCKS_TURN_TO_DIRT
+            ("ExtraHardMode.Additional Falling Blocks.Turn Mycel/Grass To Dirt", VarType.BOOLEAN, true),
     /**
      * which materials beyond sand and gravel should be subject to gravity
      */
-    MORE_FALLING_BLOCKS("ExtraHardMode.AdditionalFallingBlocks", VarType.LIST, new DefaultFallingBlocks());
+    MORE_FALLING_BLOCKS
+            ("ExtraHardMode.AdditionalFallingBlocks.Enabled Blocks", VarType.LIST, new DefaultFallingBlocks());
+
 
     /**
      * Path.

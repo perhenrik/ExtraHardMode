@@ -1,4 +1,7 @@
 /*
+    ExtraHardMode Server Plugin for Minecraft
+    Copyright (C) 2012 Ryan Hamshire
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -16,7 +19,8 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.Config;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -37,6 +41,10 @@ public class RemoveExposedTorchesTask implements Runnable
      * Chunk to iterate over.
      */
     private Chunk chunk;
+    /**
+     * Config instance
+     */
+    private RootConfig rootC;
 
     /**
      * Constructor.
@@ -48,6 +56,7 @@ public class RemoveExposedTorchesTask implements Runnable
     {
         this.plugin = plugin;
         this.chunk = chunk;
+        rootC = this.plugin.getModuleForClass(RootConfig.class);
     }
 
     @Override
@@ -71,7 +80,7 @@ public class RemoveExposedTorchesTask implements Runnable
                         continue;
                     }
 
-                    if (Config.World__Torches__Rain_Breaks_Torches && blockType == Material.TORCH)
+                    if (rootC.getBoolean(RootNode.RAIN_BREAKS_TORCHES) && blockType == Material.TORCH)
                     {
                         Biome biome = block.getBiome();
                         if (biome == Biome.DESERT || biome == Biome.DESERT_HILLS)
@@ -80,7 +89,7 @@ public class RemoveExposedTorchesTask implements Runnable
                         block.setType(Material.AIR);
                         chunk.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.TORCH, 1));
                     }
-                    else if (Config.Farming__Weak_Food_Crops__Snow_Breaks_Crops && (blockType == Material.CROPS || blockType == Material.MELON_STEM || blockType == Material.CARROT
+                    else if (rootC.getBoolean(RootNode.SNOW_BREAKS_CROPS) && (blockType == Material.CROPS || blockType == Material.MELON_STEM || blockType == Material.CARROT
                             || blockType == Material.PUMPKIN_STEM || blockType == Material.POTATO || blockType == Material.RED_ROSE
                             || blockType == Material.YELLOW_FLOWER || blockType == Material.LONG_GRASS))
                     {

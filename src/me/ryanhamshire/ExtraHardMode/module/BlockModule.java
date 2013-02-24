@@ -15,7 +15,8 @@
 package me.ryanhamshire.ExtraHardMode.module;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.Config;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 import me.ryanhamshire.ExtraHardMode.task.BlockPhysicsCheckTask;
 import org.bukkit.Material;
@@ -39,6 +40,8 @@ public class BlockModule extends EHMModule
      */
     private final List<Material> fallingBlocks = new ArrayList<Material>();
 
+    private RootConfig rootC;
+
     /**
      * Constructor.
      *
@@ -47,6 +50,7 @@ public class BlockModule extends EHMModule
     public BlockModule(ExtraHardMode plugin)
     {
         super(plugin);
+        rootC = plugin.getModuleForClass(RootConfig.class);
     }
 
     /**
@@ -73,9 +77,8 @@ public class BlockModule extends EHMModule
      */
     public void applyPhysics(Block block)
     {
-        // TODO make this optional
         // grass and mycel become dirt when they fall
-        if (block.getType() == Material.GRASS || block.getType() == Material.MYCEL)
+        if ((block.getType() == Material.GRASS || block.getType() == Material.MYCEL) && rootC.getBoolean(RootNode.MORE_FALLING_BLOCKS_TURN_TO_DIRT))
         {
             block.setType(Material.DIRT);
         }
@@ -98,7 +101,7 @@ public class BlockModule extends EHMModule
     public boolean plantDies(Block block, byte newDataValue)
     {
         World world = block.getWorld();
-        if (!Config.Enabled_Worlds.contains(world.getName()) || !Config.Farming__Weak_Food_Crops__Enable)
+        if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || !rootC.getBoolean(RootNode.WEAK_FOOD_CROPS))
         {
             return false;
         }
@@ -112,7 +115,7 @@ public class BlockModule extends EHMModule
         Material material = block.getType();
         if (material == Material.CROPS || material == Material.CARROT || material == Material.POTATO)
         {
-            int deathProbability = Config.Farming__Weak_Food_Crops__Vegetation_Loss_Percentage;
+            int deathProbability = rootC.getInt(RootNode.WEAK_FOOD_CROPS_LOSS_RATE);
 
             // plants in the dark always die
             if (block.getLightFromSky() < 10)
@@ -125,7 +128,7 @@ public class BlockModule extends EHMModule
 
                 // the desert environment is very rough on crops
                 if (biome == Biome.DESERT || biome == Biome.DESERT_HILLS
-                        && Config.Farming__Weak_Food_Crops__Arid_Infertile_Desserts)
+                        && rootC.getBoolean(RootNode.ARID_DESSERTS))
                 {
                     deathProbability += 50;
                 }
@@ -167,7 +170,7 @@ public class BlockModule extends EHMModule
     public void starting()
     {
         // parse this final list of additional falling blocks
-        for (String materialName : Config.More_Falling_Blocks)
+        for (String materialName : rootC.getStringList(RootNode.MORE_FALLING_BLOCKS))
         {
             Material material = Material.getMaterial(materialName);
             if (material == null)
