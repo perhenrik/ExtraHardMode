@@ -699,8 +699,7 @@ public class EntityEventHandler implements Listener
             if (entity.getType().equals(EntityType.CREEPER))
                 if (entity.getLastDamageCause().getCause().equals(DamageCause.FIRE)
                         || entity.getLastDamageCause().getCause().equals(DamageCause.FIRE_TICK)
-                        || entity.getLastDamageCause().getCause().equals(DamageCause.LAVA)
-                        || entity.getFireTicks() > 0)
+                        || entity.getLastDamageCause().getCause().equals(DamageCause.LAVA))
                 {
                     Creeper creeper = (Creeper) entity;
                     CoolCreeperExplosion bigBoom = new CoolCreeperExplosion(creeper, plugin);
