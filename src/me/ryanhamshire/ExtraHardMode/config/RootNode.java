@@ -182,7 +182,7 @@ public enum RootNode implements ConfigNode
      * If Silverfish cant enter stone etc and turn it into a silverfish block
      */
     SILVERFISH_CANT_ENTER_BLOCKS
-            ("ExtraHardMode.Silverfish.Can't enter blocks", VarType.BOOLEAN, true),
+            ("ExtraHardMode.Silverfish.Cant enter blocks", VarType.BOOLEAN, true),
 
     /**
      * percentage of zombies which will be replaced with spiders under sea level

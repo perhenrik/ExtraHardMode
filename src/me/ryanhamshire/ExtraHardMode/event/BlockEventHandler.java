@@ -278,7 +278,7 @@ public class BlockEventHandler implements Listener
 
         BlockModule module = plugin.getModuleForClass(BlockModule.class);
         // FEATURE: more falling blocks
-        module.physicsCheck(block, 0, true);
+        if (!player.getGameMode().equals(GameMode.CREATIVE))module.physicsCheck(block, 0, true);
 
         // FEATURE: no standard torches, jack o lanterns, or fire on top of
         // netherrack near diamond level
