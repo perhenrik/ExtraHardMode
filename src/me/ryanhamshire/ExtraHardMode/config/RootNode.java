@@ -376,6 +376,11 @@ public enum RootNode implements ConfigNode
     SHEEP_REGROW_WHITE_WOOL
             ("ExtraHardMode.Farming.Sheep Grow Only White Wool", VarType.BOOLEAN, true),
     /**
+     * wheter some sheep should hae random colors when spawned
+     */
+    SHEEP_RANDOM_COLOR
+            ("ExtraHardMode.Farming.Sheep Natural Spawn Random Color Percent", VarType.INTEGER, 20),
+    /**
      * whether players may move water source blocks
      */
     DONT_MOVE_WATER_SOURCE_BLOCKS

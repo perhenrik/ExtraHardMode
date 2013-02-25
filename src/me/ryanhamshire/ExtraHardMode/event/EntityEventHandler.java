@@ -380,6 +380,8 @@ public class EntityEventHandler implements Listener
 
         EntityType entityType = entity.getType();
 
+        SpawnReason reason = event.getSpawnReason();
+
         //We don't know how to handle ghosts. (Mo Creatures)
         if (entityType.equals(EntityType.UNKNOWN))
             return;
@@ -387,7 +389,6 @@ public class EntityEventHandler implements Listener
         // FEATURE: inhibited monster grinders/farms
         if (rootC.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS))
         {
-            SpawnReason reason = event.getSpawnReason();
 
             // spawners and spawn eggs always spawn a monster, but the monster
             // doesn't drop any loot
@@ -434,6 +435,33 @@ public class EntityEventHandler implements Listener
                         return;
                     }
                 }
+            }
+        }
+
+        //Breed Sheep spawn white, natural sheep are more likely to have a random color
+        if (rootC.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL) && entityType == EntityType.SHEEP)
+        {
+            Sheep sheep = (Sheep) entity;
+            if (reason.equals(SpawnReason.BREEDING))
+            {
+                sheep.setColor(DyeColor.WHITE);
+                return;
+            }
+            else
+            {
+                int myColors = DyeColor.values().length;
+                /*calculate the multiplier from a percentage
+                  10 %: 16Colors * 100percent / 10 -> 16/160 = 10%*/
+                float mult = rootC.getInt(RootNode.SHEEP_RANDOM_COLOR);
+                if (mult == 0) return;
+                mult = myColors * 100 / mult;
+                int rdmColor = plugin.getRandom().nextInt((int)(mult));
+                if (myColors > rdmColor)
+                {
+                    if (DyeColor.getByDyeData((byte)rdmColor) != null)
+                        sheep.setColor(DyeColor.getByDyeData((byte)rdmColor));
+                }
+                return;
             }
         }
 
@@ -1363,6 +1391,7 @@ public class EntityEventHandler implements Listener
         if (rootC.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL))
         {
             Sheep sheep = event.getEntity();
+            if (sheep.isSheared())
             sheep.setColor(DyeColor.WHITE);
         }
     }
