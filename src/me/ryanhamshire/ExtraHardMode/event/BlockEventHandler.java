@@ -192,7 +192,7 @@ public class BlockEventHandler implements Listener
         }
 
         // FEATURE: more falling blocks
-        if (rootC.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE))
+        if (rootC.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE) &! player.getGameMode().equals(GameMode.CREATIVE))
         blockModule.physicsCheck(block, 0, true);
 
         // FEATURE: no nether wart farming (always drops exactly 1 nether wart
