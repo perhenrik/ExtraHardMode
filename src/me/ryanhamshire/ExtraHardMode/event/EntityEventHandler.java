@@ -691,11 +691,11 @@ public class EntityEventHandler implements Listener
         if (creeperDropTNTPercent > 0)
         {
             if (entity.getType() == EntityType.CREEPER && plugin.random(creeperDropTNTPercent)
-                    && creeperDropTntMaxY < entity.getLocation().getBlockY())
+                    && creeperDropTntMaxY > entity.getLocation().getBlockY())
             {
                 world.spawnEntity(entity.getLocation(), EntityType.PRIMED_TNT);
                 if (rootC.getBoolean(RootNode.SOUND_CREEPER_TNT))
-                    world.playSound(entity.getLocation(), Sound.GHAST_SCREAM, 1, 35);
+                    world.playEffect(entity.getLocation(), Effect.GHAST_SHRIEK, 1, 35);
             }
         }
 
