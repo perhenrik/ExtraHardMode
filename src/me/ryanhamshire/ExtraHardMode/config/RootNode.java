@@ -219,7 +219,17 @@ public enum RootNode implements ConfigNode
      * whether creepers explode when caught on fire
      */
     FLAMING_CREEPERS_EXPLODE
-            ("ExtraHardMode.Creepers.Fire Triggers Explosion", VarType.BOOLEAN, true),
+            ("ExtraHardMode.Creepers.Fire Triggers Explosion.Enable", VarType.BOOLEAN, true),
+    /**
+     * Number of Fireworks to show when creeper launches
+     */
+    FLAMING_CREEPERS_FIREWORK
+            ("ExtraHardMode.Creepers.Fire Triggers Explosion.Firework Count", VarType.INTEGER, 3),
+    /**
+     * Speed at which a creeper ascends
+     */
+    FLAMING_CREEPERS_ROCKET
+            ("ExtraHardMode.Creepers.Fire Triggers Explosion.Launch In Air Speed", VarType.DOUBLE, 0.5),
 
     /**
      * percentage of skeletons near bedrock which will be replaced with blazes

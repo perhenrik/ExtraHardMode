@@ -19,10 +19,11 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Creeper;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
@@ -32,24 +33,30 @@ import org.bukkit.util.Vector;
  */
 public class CoolCreeperExplosion implements Runnable
 {
-    private Creeper deadBomber;
-    private Creeper suicideBomber;
+    private Creeper creeper;
+    private Location loc;
     private ExtraHardMode plugin;
     private UtilityModule utils;
     private BukkitScheduler scheduler;
+    private RootConfig rootC;
 
-    private final int numOfExplosions = 5;
-    private final int ticksBetweenExplosions = 4;
+    private int numOfFireworks = 3;
+    private final int ticksBetweenFireworks = 5;
     private final int ticksBeforeCatapult = 3;
     private final int ticksBeforeSuicide = 8;
-    private int mainDelay = 0;
+    private long mainDelay = 0;
+    private double creeperAscendSpeed = 0.5;
 
     public CoolCreeperExplosion(Creeper entity, ExtraHardMode plugin)
     {
-        deadBomber = entity;
         this.plugin = plugin;
+        rootC = plugin.getModuleForClass(RootConfig.class);
+        creeper = entity;
+        loc = creeper.getLocation();
         utils = plugin.getModuleForClass(UtilityModule.class);
         scheduler = plugin.getServer().getScheduler();
+        numOfFireworks = rootC.getInt(RootNode.FLAMING_CREEPERS_FIREWORK);
+        creeperAscendSpeed = rootC.getDouble(RootNode.FLAMING_CREEPERS_ROCKET);
     }
 
     /**
@@ -61,26 +68,15 @@ public class CoolCreeperExplosion implements Runnable
         /*
             Using Runnables and Asyncs seems to be the only way to introduce delays between actions without blocking the main thread
          */
-
-        //For simplicity we let the creeper die and spawn a new one at the same location
-        World world = deadBomber.getWorld();
-        Location location = deadBomber.getLocation();
-        suicideBomber = world.spawn(location, Creeper.class);
-        if (suicideBomber instanceof Creeper)
-        {
-            if (deadBomber.isPowered())
-                suicideBomber.setPowered(true);
-        }
         //Everyone loves fireworks
-        for (int i = 0; i < numOfExplosions; i++)
+        for (int i = 0; i < numOfFireworks; i++)
         {
-            //TODO Method is deprecated but it doesn't suggest the new name in jdocs
-            mainDelay += ticksBetweenExplosions;
-            scheduler.scheduleAsyncDelayedTask(plugin, new Firework(), mainDelay);
+            mainDelay += ticksBetweenFireworks;
+            scheduler.runTaskLater(plugin, new Firework(), mainDelay);
         }
         //Catapult into air and explode midair
         mainDelay += ticksBeforeCatapult;
-        scheduler.scheduleAsyncDelayedTask(plugin, new AscendToHeaven(), mainDelay);
+        scheduler.runTaskLater(plugin, new AscendToHeaven(), mainDelay) ;
     }
 
     private class Firework implements Runnable
@@ -88,12 +84,12 @@ public class CoolCreeperExplosion implements Runnable
         @Override
         public void run()
         {
-            utils.fireWorkRandomColors(FireworkEffect.Type.CREEPER, deadBomber.getLocation());
+            utils.fireWorkRandomColors(FireworkEffect.Type.CREEPER, loc);
         }
     }
 
     /**
-     * Give creeper helium and let hom slowly float upwards, toss a cigarette at him when he's at his highest and watch him go boom
+     * Schedules multiple tasks to slowly let a creeper float upwards
      */
     private class AscendToHeaven implements Runnable
     {//Catapult Creeper into sky, afterwards explode in midair
@@ -101,49 +97,51 @@ public class CoolCreeperExplosion implements Runnable
         @Override
         public void run()
         {
-            if (suicideBomber != null)
+            if (creeper != null)
             {
                 int ticksInbetween = 1;
-                suicideBomber.setTarget(null);
+                creeper.setTarget(null);
                 for (int i = 0; i < 10; i++)
                 {
-                    scheduler.scheduleAsyncDelayedTask(plugin, new RiseToGlory(), ticksInbetween);
+                    scheduler.runTaskLater(plugin, new RiseToGlory(), ticksInbetween);
                     ticksInbetween += ticksInbetween;
                 }
-                scheduler.scheduleAsyncDelayedTask(plugin, new Suicide(), ticksBeforeSuicide);
+                scheduler.runTaskLater(plugin, new Suicide(), ticksBeforeSuicide);
             }
         }
     }
 
     /**
-     * Creeper slowly rises to the sky and will be delivered from his sins with a big bang
+     * This task slowly lets a creeper float upwards, it has to be called multiple times
      */
     private class RiseToGlory implements Runnable
     {
         @Override
         public void run()
         {
-            if (suicideBomber != null)
+            if (creeper != null)
             {
-                Vector holyGrail = suicideBomber.getVelocity().setY(0.5);
-                suicideBomber.setVelocity(holyGrail);
+                Vector holyGrail = creeper.getVelocity().setY(creeperAscendSpeed);
+                creeper.setVelocity(holyGrail);
             }
         }
     }
 
     /**
-     * Creepers prize to pay is death! Kill him with a big bang.
+     * Creeper explodes in midair
      */
     private class Suicide implements Runnable
     {
         @Override
         public void run()
         {
-            CreateExplosionTask boomBoom = new CreateExplosionTask(suicideBomber.getLocation(), 4F); //equal to tnt
-            boomBoom.run();
-            if (suicideBomber != null)
-                suicideBomber.remove();
+            if (creeper != null &! creeper.isDead())
+            {
+                CreateExplosionTask boomBoom = new CreateExplosionTask(creeper.getLocation(), 3F);
+                boomBoom.run();
+            }
+            if (creeper != null)
+                creeper.remove();
         }
     }
-
 }

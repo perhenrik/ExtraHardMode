@@ -66,6 +66,11 @@ public class EntityEventHandler implements Listener
      */
     private RootConfig rootC;
     /**
+     * Awesome modules
+     */
+    EntityModule entityModule;
+    UtilityModule utils;
+    /**
      * List of players fighting a dragon.
      */
     private final List<Player> playersFightingDragon = new ArrayList<Player>();
@@ -79,6 +84,8 @@ public class EntityEventHandler implements Listener
     {
         this.plugin = plugin;
         rootC = plugin.getModuleForClass(RootConfig.class);
+        entityModule = plugin.getModuleForClass(EntityModule.class);
+        utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
     /**
@@ -692,21 +699,6 @@ public class EntityEventHandler implements Listener
             }
         }
 
-        //FEATURE: a burning creeper will create a nice explosion + fireworks and will fly in the air
-        //Will only trigger if creeper died from fire not from a sword with fireaspect or bow
-        if (rootC.getBoolean(RootNode.FLAMING_CREEPERS_EXPLODE))
-        {
-            if (entity.getType().equals(EntityType.CREEPER))
-                if (entity.getLastDamageCause().getCause().equals(DamageCause.FIRE)
-                        || entity.getLastDamageCause().getCause().equals(DamageCause.FIRE_TICK)
-                        || entity.getLastDamageCause().getCause().equals(DamageCause.LAVA))
-                {
-                    Creeper creeper = (Creeper) entity;
-                    CoolCreeperExplosion bigBoom = new CoolCreeperExplosion(creeper, plugin);
-                    bigBoom.run();
-                }
-        }
-
         // FEATURE: pig zombies drop nether wart when slain in nether fortresses
         if (rootC.getBoolean(RootNode.FORTRESS_PIGS_DROP_WART) && world.getEnvironment().equals(Environment.NETHER) && entity instanceof PigZombie)
         {
@@ -1019,9 +1011,6 @@ public class EntityEventHandler implements Listener
         if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()))
             return;
 
-        EntityModule entityModule = plugin.getModuleForClass(EntityModule.class);
-        UtilityModule utils = plugin.getModuleForClass(UtilityModule.class);
-
         // is this an entity damaged by entity event?
         EntityDamageByEntityEvent damageByEntityEvent = null;
         if (event instanceof EntityDamageByEntityEvent)
@@ -1263,6 +1252,29 @@ public class EntityEventHandler implements Listener
                     entityModule.markLootLess((LivingEntity) entity);
                     entity.remove();
                     world.createExplosion(entity.getLocation(), 4F); // equal to a TNT blast
+                }
+            }
+        }
+
+
+
+        //FEATURE: a burning creeper will create a nice explosion + fireworks and will fly in the air
+        //Will only trigger if creeper died from fire not from a sword with fireaspect or bow
+        if (rootC.getBoolean(RootNode.FLAMING_CREEPERS_EXPLODE))
+        {
+            if (event != null && entity != null && entityType.equals(EntityType.CREEPER))
+            {
+                if (!entityModule.hasFlagIgnore(entity))
+                {
+                    if (event.getCause().equals(DamageCause.FIRE)
+                            || event.getCause().equals(DamageCause.FIRE_TICK)
+                            || event.getCause().equals(DamageCause.LAVA))
+                    {
+                        Creeper creeper = (Creeper) entity;
+                        entityModule.flagIgnore(entity);
+                        CoolCreeperExplosion bigBoom = new CoolCreeperExplosion(creeper, plugin);
+                        bigBoom.run();
+                    }
                 }
             }
         }

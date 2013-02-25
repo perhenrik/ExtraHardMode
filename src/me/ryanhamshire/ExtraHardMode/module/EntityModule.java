@@ -111,37 +111,32 @@ public class EntityModule extends EHMModule
     }
 
     /**
-     * Adds 1 to the times an Entity has taken firedamage.
-     *
-     * @param entity to track firedmg for
+     * Flag an entity to be ignored in further processing. E.g if an event could be called multiple times
+     * @param entity
      */
-    public void addFireDamage(Entity entity)
+    public void flagIgnore(Entity entity)
     {
-        if (!entity.hasMetadata("extrahardmode_firedamage_counter"))
+        if (entity instanceof LivingEntity)
         {
-            entity.setMetadata("extrahardmode_firedamage_counter", new FixedMetadataValue(plugin, 0));
-        }
-        else
-        {
-            int currentDmg = entity.getMetadata("extrahardmode_firedamage_counter").get(0).asInt();
-            entity.setMetadata("extrahardmode_firedamage_counter", new FixedMetadataValue(plugin, ++currentDmg));
+            entity.setMetadata("extrahardmode.ignore.me", new FixedMetadataValue(plugin, true));
         }
     }
 
     /**
-     * Returns the times an entity has taken firedamage
-     * //TODO track damage and launch just before dead
-     * @param entity to get dmg of entity
-     * @return the damage the entity has taken
+     * Check if an entity has been flagged to be ignored
+     * @param entity
+     * @return
      */
-    public int getFireDamage(Entity entity)
+    public boolean hasFlagIgnore(Entity entity)
     {
-        if (entity.hasMetadata("extrahardmode_firedamage_counter"))
+        if (entity instanceof LivingEntity)
         {
-            int dmg = entity.getMetadata("extrahardmode_firedamage_counter").get(0).asInt();
-            return dmg;
+            if (entity.hasMetadata("extrahardmode.ignore.me"))
+            {
+                return true;
+            }
         }
-        return 0;
+        return false;
     }
 
     @Override
