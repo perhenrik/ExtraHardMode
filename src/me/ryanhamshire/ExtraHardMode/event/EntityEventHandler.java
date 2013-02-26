@@ -1256,24 +1256,25 @@ public class EntityEventHandler implements Listener
                 Creeper creeper = (Creeper) entity;
                 if (creeper.isPowered())
                 {
+                    Player damager = null;
                     //Always explode when damaged by a player
                     if (damageByEntityEvent != null)
                     {
                         if (damageByEntityEvent.getDamager() != null && damageByEntityEvent.getDamager() instanceof Player)
                         {   //Normal Damage from a player
-                            Player damager = (Player) damageByEntityEvent.getDamager();
+                            damager = (Player) damageByEntityEvent.getDamager();
                             if (damager != null && damager.hasPermission(PermissionNode.BYPASS_CREEPERS.getNode()))
                                 return;
                         }
                         else if (damageByEntityEvent.getDamager() != null && damageByEntityEvent.getDamager() instanceof Arrow)
                         {   //Damaged by an arrow shot by a player
                             Arrow arrow = (Arrow) damageByEntityEvent.getDamager();
-                            Player damager = (Player) arrow.getShooter();
+                            damager = (Player) arrow.getShooter();
                             if (damager != null && damager.hasPermission(PermissionNode.BYPASS_CREEPERS.getNode()))
                                 return;
                         }
                     }
-                    if (event != null && creeper.getTarget() == null)
+                    if (event != null && creeper.getTarget() == null && damager == null)
                     {   //If not targetting a player this is an explosion we don't need. Trying to prevent unecessary world damage
                         return;
                     }
