@@ -73,7 +73,7 @@ public enum RootNode implements ConfigNode
      * wheter the crafting recipe should give more tnt
      */
     MORE_TNT_NUMBER
-            ("ExtraHardMode.World Rules.Better Tnt.More Tnt Per Recipe", VarType.INTEGER, 3),
+            ("ExtraHardMode.World Rules.Better Tnt.Tnt Per Recipe", VarType.INTEGER, 3),
     /**
      * Sound when torch placing fails
      */
@@ -349,7 +349,7 @@ public enum RootNode implements ConfigNode
      * Should desserts be really empty and hostile towards plants
      */
     ARID_DESSERTS
-            ("ExtraHardMode.Farming.Weak Crops.Arid Infertile Desserts", VarType.BOOLEAN, true),
+            ("ExtraHardMode.Farming.Weak Crops.Infertile Deserts", VarType.BOOLEAN, true),
     /**
      * Weather Snow should break crops
      */
