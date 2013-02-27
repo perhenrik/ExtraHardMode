@@ -585,7 +585,7 @@ public class EntityEventHandler implements Listener
         Arrow arrow = (Arrow) event.getEntity();
 
         LivingEntity shooter = arrow.getShooter();
-        if (shooter != null && shooter.getType() == EntityType.SKELETON && plugin.random(rootC.getInt(RootNode.SKELETONS_DEFLECT_ARROWS)))
+        if (shooter != null && shooter.getType() == EntityType.SKELETON && plugin.random(rootC.getInt(RootNode.SKELETONS_RELEASE_SILVERFISH)))
         {
             Skeleton skeleton = (Skeleton) shooter;
             EntityModule module = plugin.getModuleForClass(EntityModule.class);
