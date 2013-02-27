@@ -290,7 +290,10 @@ public class BlockEventHandler implements Listener
                     && (block.getType() == Material.TORCH || block.getType() == Material.JACK_O_LANTERN || (block.getType() == Material.FIRE && block
                     .getRelative(BlockFace.DOWN).getType() == Material.NETHERRACK)))
             {
-                notifyPlayer(player, MessageNode.NO_TORCHES_HERE, PermissionNode.SILENT_NO_TORCHES_HERE, Sound.FIZZ, 20);
+                if (rootC.getBoolean(RootNode.SOUNDS_TORCH_FIZZ))
+                    notifyPlayer(player, MessageNode.NO_TORCHES_HERE, PermissionNode.SILENT_NO_TORCHES_HERE, Sound.FIZZ, 20);
+                else
+                    notifyPlayer(player, MessageNode.NO_TORCHES_HERE, PermissionNode.SILENT_NO_TORCHES_HERE);
                 placeEvent.setCancelled(true);
                 return;
             }
@@ -348,6 +351,8 @@ public class BlockEventHandler implements Listener
                 if (rootC.getBoolean(RootNode.SOUNDS_TORCH_FIZZ))
                 {
                     notifyPlayer(player, MessageNode.LIMITED_TORCH_PLACEMENTS, PermissionNode.SILENT_LIMITED_TORCH_PLACEMENT, Sound.FIZZ, 20);
+                } else {
+                    notifyPlayer(player, MessageNode.LIMITED_TORCH_PLACEMENTS, PermissionNode.SILENT_LIMITED_TORCH_PLACEMENT);
                 }
                 placeEvent.setCancelled(true);
             }

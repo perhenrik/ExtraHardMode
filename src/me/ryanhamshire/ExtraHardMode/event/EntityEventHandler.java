@@ -19,6 +19,7 @@
 package me.ryanhamshire.ExtraHardMode.event;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
@@ -130,7 +131,7 @@ public class EntityEventHandler implements Listener
 
                 for (int i = 0; i < locations.length; i++)
                 {
-                    CreateExplosionTask task = new CreateExplosionTask(locations[i], 6F);
+                    CreateExplosionTask task = new CreateExplosionTask(locations[i], ExplosionType.TNT);
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 3L * (i + 1));
                 }
             }
@@ -233,7 +234,8 @@ public class EntityEventHandler implements Listener
             {
                 event.setCancelled(true);
                 // same as vanilla TNT, plus fire
-                entity.getWorld().createExplosion(entity.getLocation(), 4F, true);
+                CreateExplosionTask boom = new CreateExplosionTask(entity.getLocation(), ExplosionType.GHAST_FIREBALL);
+                boom.run();
             }
         }
 
@@ -242,7 +244,8 @@ public class EntityEventHandler implements Listener
         {
             event.setCancelled(true);
             // same as vanilla TNT
-            entity.getWorld().createExplosion(entity.getLocation(), 3F, false);
+            CreateExplosionTask boom = new CreateExplosionTask(entity.getLocation(), ExplosionType.CREEPER_CHARGED);
+            boom.run();
         }
     }
 
@@ -921,9 +924,7 @@ public class EntityEventHandler implements Listener
                 && !rootC.getBoolean(RootNode.DISABLE_EXPLOSIONS))
         {
             // create explosion
-            world.createExplosion(entity.getLocation(), 2F, true); // equal to a
-            // TNT blast,
-            // sets fires
+            CreateExplosionTask boom = new CreateExplosionTask (entity.getLocation(), ExplosionType.BLAZE);
 
             // fire a fireball straight up in normal worlds
             Fireball fireball = (Fireball) world.spawnEntity(entity.getLocation(), EntityType.FIREBALL);
@@ -1125,7 +1126,8 @@ public class EntityEventHandler implements Listener
         {
             entity.remove(); // remove magma cube
             entity.getWorld().spawnEntity(entity.getLocation().add(0, 2, 0), EntityType.BLAZE); // replace with blaze
-            entity.getWorld().createExplosion(entity.getLocation(), 2F, true); // fiery explosion for effect
+            CreateExplosionTask boom = new CreateExplosionTask(entity.getLocation(), ExplosionType.TNT.MAGMACUBE_FIRE);
+            boom.run();
         }
 
         // FEATURE: arrows pass through skeletons
@@ -1280,7 +1282,8 @@ public class EntityEventHandler implements Listener
                     }
                     entityModule.markLootLess((LivingEntity) entity);
                     entity.remove();
-                    world.createExplosion(entity.getLocation(), 4F); // equal to a TNT blast
+                    CreateExplosionTask boom = new CreateExplosionTask(entity.getLocation(), ExplosionType.CREEPER_CHARGED);
+                    boom.run();
                 }
             }
         }
@@ -1307,32 +1310,6 @@ public class EntityEventHandler implements Listener
                 }
             }
         }
-
-        // FEATURE: flaming creepers explode
-        /*if (rootC.getInt(RootNode.FLAMING_CREEPERS_EXPLODE) && !rootC.getBoolean(RootNode.DISABLE_EXPLOSIONS))
-        {
-            if (entityType == EntityType.CREEPER && !entity.isDead())
-            {
-                Creeper creeper = (Creeper) entity;
-                entityModule.addFireDamage(entity);
-                if (entityModule.getFireDamage(entity) >= 1 && 2 >= entityModule.getFireDamage(entity))
-                {
-                    Vector vec = creeper.getVelocity();
-                    vec.setY(0.5);
-                    creeper.setVelocity(vec);
-                }
-                else if (entityModule.getFireDamage(entity) > 3)
-                {
-                    utils.fireWorkRandomColors(FireworkEffect.Type.CREEPER, creeper.getLocation());
-                }
-                else if (entityModule.getFireDamage(entity) < 0)
-                {
-                    entityModule.markLootLess((LivingEntity) entity);
-                    entity.remove();
-                    world.createExplosion(entity.getLocation(), 4F); // equal to a TNT blast
-                }
-            }
-        }*/
 
         // FEATURE: ghasts deflect arrows and drop extra loot
         if (rootC.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS))
@@ -1579,7 +1556,7 @@ public class EntityEventHandler implements Listener
 
     /**
      * when an entity tries to change a block (does not include player block
-     * changes) don't allow endermen to change blocks
+     * changes) don't silverfish to change blocks
      *
      * @param event - Event that occurred.
      */
