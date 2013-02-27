@@ -229,8 +229,6 @@ public class PlayerEventHandler implements Listener
 
     /**
      * when a player changes worlds...
-     * TODO Make End resettable, add healers and remove portals. Autobuild a bridge if spawn platform is in the air, which it often is... RoadMap: 3.2
-     * TODO Implement Price for entering end Roadmap: 3.2
      *
      * @param event - Event that occurred.
      */

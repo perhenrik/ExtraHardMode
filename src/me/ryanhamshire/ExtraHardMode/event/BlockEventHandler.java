@@ -309,10 +309,12 @@ public class BlockEventHandler implements Listener
                 return;
             }
 
-            Block underBlock = player.getLocation().getBlock().getRelative(BlockFace.DOWN);
+            Block playerBlock = player.getLocation().getBlock();
+            Block underBlock = playerBlock.getRelative(BlockFace.DOWN);
 
             // if standing directly over lava, prevent placement
-            if (underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
+            if((underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
+                && (!playerBlock.getType().name().contains("STEP") && !playerBlock.getType().name().contains("STAIRS")))
             {
                 notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
