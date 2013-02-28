@@ -447,22 +447,6 @@ public class EntityEventHandler implements Listener
                 sheep.setColor(DyeColor.WHITE);
                 return;
             }
-            else
-            {
-                int myColors = DyeColor.values().length;
-                /*calculate the multiplier from a percentage
-                  10 %: 16Colors * 100percent / 10 -> 16/160 = 10%*/
-                float mult = rootC.getInt(RootNode.SHEEP_RANDOM_COLOR);
-                if (mult == 0) return;
-                mult = myColors * 100 / mult;
-                int rdmColor = plugin.getRandom().nextInt((int)(mult));
-                if (myColors > rdmColor)
-                {
-                    if (DyeColor.getByDyeData((byte)rdmColor) != null)
-                        sheep.setColor(DyeColor.getByDyeData((byte)rdmColor));
-                }
-                return;
-            }
         }
 
         // FEATURE: charged creeper spawns

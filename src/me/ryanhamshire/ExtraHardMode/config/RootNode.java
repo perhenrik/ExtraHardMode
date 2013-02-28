@@ -359,7 +359,7 @@ public enum RootNode implements ConfigNode
      * Should you be able to craft melonseeds
      */
     CANT_CRAFT_MELONSEEDS
-            ("ExtraHardMode.Farming.Cant Craft Melonsseeds", VarType.BOOLEAN, true),
+            ("ExtraHardMode.Farming.Cant Craft Melonseeds", VarType.BOOLEAN, true),
     /**
      * whether bonemeal may be used on mushrooms
      */
