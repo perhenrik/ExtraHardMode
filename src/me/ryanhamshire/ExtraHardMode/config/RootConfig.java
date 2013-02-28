@@ -205,7 +205,6 @@ public class RootConfig extends ModularConfig
         validatePercentage(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT);
         validatePercentage(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT);
         validatePercentage(RootNode.WEAK_FOOD_CROPS_LOSS_RATE);
-        validatePercentage(RootNode.SHEEP_RANDOM_COLOR);
         //Custom Checking
         validateCustom(RootNode.PLAYER_RESPAWN_HEALTH, 0, 20);
         validateCustom(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, 0, 20);
