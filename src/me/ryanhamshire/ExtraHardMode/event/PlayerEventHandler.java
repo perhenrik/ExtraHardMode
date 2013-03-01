@@ -280,20 +280,6 @@ public class PlayerEventHandler implements Listener
     }
 
     /**
-     * Bypass permission can be set to not default to ops
-     *
-     * @param event
-     *           - Event that occurred.
-     */
-    //TODO remove or enhance
-   /*@EventHandler(priority = EventPriority.LOW)
-   public void onPlayerLogin(PlayerLoginEvent event) {
-      if(event.getPlayer().isOp() && Config.Plugin__Ops_Bypass_By_Default) {
-         event.getPlayer().addAttachment(plugin, PermissionNode.BYPASS.getNode(), true);
-      }
-   }*/
-
-    /**
      * when a player moves...
      *
      * @param event - Event that occurred.

@@ -1519,7 +1519,7 @@ public class EntityEventHandler implements Listener
         // FEATURE: extra TNT from the TNT recipe
         if (rootC.getInt(RootNode.MORE_TNT_NUMBER) > 1 && event.getRecipe().getResult().getType() == Material.TNT)
         {
-            player.getInventory().addItem(new ItemStack(Material.TNT, rootC.getInt(RootNode.MORE_TNT_NUMBER)));
+            player.getInventory().addItem(new ItemStack(Material.TNT, rootC.getInt(RootNode.MORE_TNT_NUMBER)-1));
         }
     }
 
