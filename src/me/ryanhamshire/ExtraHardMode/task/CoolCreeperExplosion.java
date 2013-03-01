@@ -19,7 +19,7 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
+import me.ryanhamshire.ExtraHardMode.config.explosions.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
@@ -138,8 +138,7 @@ public class CoolCreeperExplosion implements Runnable
         {
             if (creeper != null &! creeper.isDead())
             {
-                CreateExplosionTask boomBoom = new CreateExplosionTask(creeper.getLocation(), ExplosionType.CREEPER);
-                boomBoom.run();
+                ExplosionType.CREEPER.createExplosion(creeper.getLocation());
             }
             if (creeper != null)
                 creeper.remove();

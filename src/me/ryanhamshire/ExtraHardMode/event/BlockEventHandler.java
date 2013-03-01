@@ -94,7 +94,7 @@ public class BlockEventHandler implements Listener
             return;
 
         // FEATURE: very limited building in the end
-        // players are allowed to break only end stone, and only to create a stair
+        // players are allowed to break only end stone, and only to createExplosion a stair
         // up to ground level
         if (rootC.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING) && world.getEnvironment() == Environment.THE_END)
         {
@@ -236,7 +236,7 @@ public class BlockEventHandler implements Listener
             return;
 
         // FEATURE: very limited building in the end
-        // players are allowed to break only end stone, and only to create a stair
+        // players are allowed to break only end stone, and only to createExplosion a stair
         // up to ground level
         if (rootC.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING) && world.getEnvironment() == Environment.THE_END)
         {

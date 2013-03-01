@@ -63,7 +63,7 @@ public class DataStoreModule extends EHMModule
         // first, look in memory
         PlayerData playerData = this.playerNameToPlayerDataMap.get(playerName);
 
-        // if not there, create a fresh entry
+        // if not there, createExplosion a fresh entry
         if (playerData == null)
         {
             playerData = new PlayerData();

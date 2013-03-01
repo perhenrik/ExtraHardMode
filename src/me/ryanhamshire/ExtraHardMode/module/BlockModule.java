@@ -83,7 +83,7 @@ public class BlockModule extends EHMModule
             block.setType(Material.DIRT);
         }
 
-        // create falling block
+        // createExplosion falling block
         FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
         fallingBlock.setDropItem(true);
 

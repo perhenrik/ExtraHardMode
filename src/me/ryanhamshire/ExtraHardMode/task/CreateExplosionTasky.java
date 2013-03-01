@@ -19,14 +19,14 @@
 
 package me.ryanhamshire.ExtraHardMode.task;
 
-import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
+import me.ryanhamshire.ExtraHardMode.config.explosions.ExplosionType;
 import org.bukkit.Location;
 
 /**
  * Creates Explosions. The type determines the power, if there should be fire and the blockDmg. The size of the explosion
  * is determined by the y-level. There are basically 2 settings for every explosion, below and above the specified y-level.
  */
-public class CreateExplosionTask implements Runnable
+public class CreateExplosionTasky implements Runnable
 {
     /**
      * Location of explosion.
@@ -43,7 +43,7 @@ public class CreateExplosionTask implements Runnable
      * @param location - Location to make explosion occur.
      * @param type Type that determines size and possible blockdamage or fire of explosion.
      */
-    public CreateExplosionTask(Location location, ExplosionType type)
+    public CreateExplosionTasky(Location location, ExplosionType type)
     {
         this.location = location;
         this.type = type;
@@ -57,19 +57,19 @@ public class CreateExplosionTask implements Runnable
         final int yLevel = type.getYLevel();
         final int powerBelowY = type.getPowerBelowY();
         final int powerAboveY = type.getPowerAboveY();
-        final boolean fireBelowY = type.isFireBelowY();
-        final boolean fireAboveY = type.isFireAboveY();
-        final boolean noBlockDamageBelowY = type.isNoBlockDamageBelowY();
-        final boolean noBlockDamageAboveY = type.isNoBlockDamageAboveY();
+        final boolean fireBelowY = type.getIsFireBelowY();
+        final boolean fireAboveY = type.getIsFireAboveY();
+        final boolean allowBlockDamageBelowY = type.getAllowBlockDamageBelowY();
+        final boolean allowBlockDamageAboveY = type.getAllowBlockDamageAboveY();
         //TODO FINALIZE
         //Below Y
         if (currentY < yLevel)
         {
-            location.getWorld().createExplosion(location.getX(), location.getY(), location.getZ(), powerBelowY, fireBelowY,noBlockDamageBelowY);
+            location.getWorld().createExplosion(location.getX(), location.getY(), location.getZ(), powerBelowY, fireBelowY, allowBlockDamageBelowY);
         }
         else if (currentY >= yLevel)
         {
-            location.getWorld().createExplosion(location.getX(), location.getY(), location.getZ(), powerAboveY, fireAboveY, noBlockDamageAboveY);
+            location.getWorld().createExplosion(location.getX(), location.getY(), location.getZ(), powerAboveY, fireAboveY, allowBlockDamageAboveY);
         }
 
     }

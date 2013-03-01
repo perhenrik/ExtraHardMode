@@ -19,7 +19,7 @@
 package me.ryanhamshire.ExtraHardMode.event;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
+import me.ryanhamshire.ExtraHardMode.config.explosions.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
@@ -52,7 +52,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO create variables that hold all the materials, like an array for all natural blocks, etc. Makes it easy if a new block is introduced.
+//TODO createExplosion variables that hold all the materials, like an array for all natural blocks, etc. Makes it easy if a new block is introduced.
 /**
  * Handles events related to entities.
  */
@@ -115,9 +115,9 @@ public class EntityEventHandler implements Listener
         {
             event.setYield(1);
 
-            if (entity != null && entity.getType() == EntityType.PRIMED_TNT && !rootC.getBoolean(RootNode.DISABLE_EXPLOSIONS))
+            if (entity != null && entity.getType() == EntityType.PRIMED_TNT)
             {
-                // create more explosions nearby
+                // createExplosion more explosions nearby
                 long serverTime = world.getFullTime();
                 int random1 = (int) (serverTime + entity.getLocation().getBlockZ()) % 8;
                 int random2 = (int) (serverTime + entity.getLocation().getBlockX()) % 8;
@@ -131,8 +131,7 @@ public class EntityEventHandler implements Listener
 
                 for (int i = 0; i < locations.length; i++)
                 {
-                    CreateExplosionTask task = new CreateExplosionTask(locations[i], ExplosionType.TNT);
-                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 3L * (i + 1));
+                    ExplosionType.TNT.createExplosion(locations[i]);
                 }
             }
         }
@@ -227,25 +226,22 @@ public class EntityEventHandler implements Listener
         }
 
         // FEATURE: more powerful ghast fireballs
-        if (entity != null && entity instanceof Fireball && !rootC.getBoolean(RootNode.DISABLE_EXPLOSIONS))
+        if (entity != null && entity instanceof Fireball)
         {
             Fireball fireball = (Fireball) entity;
             if (fireball.getShooter() != null && fireball.getShooter().getType() == EntityType.GHAST)
             {
                 event.setCancelled(true);
                 // same as vanilla TNT, plus fire
-                CreateExplosionTask boom = new CreateExplosionTask(entity.getLocation(), ExplosionType.GHAST_FIREBALL);
-                boom.run();
+                ExplosionType.GHAST_FIREBALL.createExplosion(entity.getLocation());
             }
         }
 
         // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
-        if (entity != null && entity instanceof Creeper && !rootC.getBoolean(RootNode.DISABLE_EXPLOSIONS))
+        if (entity != null && entity instanceof Creeper)
         {
             event.setCancelled(true);
-            // same as vanilla TNT
-            CreateExplosionTask boom = new CreateExplosionTask(entity.getLocation(), ExplosionType.CREEPER_CHARGED);
-            boom.run();
+            ExplosionType.CREEPER.createExplosion(entity.getLocation());
         }
     }
 
@@ -920,11 +916,10 @@ public class EntityEventHandler implements Listener
         }
 
         // FEATURE: blazes explode on death in normal world
-        if (rootC.getBoolean(RootNode.BLAZES_EXPLODE_ON_DEATH) && entity instanceof Blaze && world.getEnvironment() == Environment.NORMAL
-                && !rootC.getBoolean(RootNode.DISABLE_EXPLOSIONS))
+        if (rootC.getBoolean(RootNode.BLAZES_EXPLODE_ON_DEATH) && entity instanceof Blaze && world.getEnvironment() == Environment.NORMAL)
         {
-            // create explosion
-            CreateExplosionTask boom = new CreateExplosionTask (entity.getLocation(), ExplosionType.BLAZE);
+            // createExplosion explosion
+            ExplosionType.BLAZE.createExplosion(entity.getLocation());
 
             // fire a fireball straight up in normal worlds
             Fireball fireball = (Fireball) world.spawnEntity(entity.getLocation(), EntityType.FIREBALL);
@@ -1122,12 +1117,11 @@ public class EntityEventHandler implements Listener
         }
 
         // FEATURE: magma cubes become blazes when they take damage
-        if (entityType == EntityType.MAGMA_CUBE && rootC.getBoolean(RootNode.MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE) && !entity.isDead() && !rootC.getBoolean(RootNode.DISABLE_EXPLOSIONS))
+        if (entityType == EntityType.MAGMA_CUBE && rootC.getBoolean(RootNode.MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE) && !entity.isDead())
         {
             entity.remove(); // remove magma cube
             entity.getWorld().spawnEntity(entity.getLocation().add(0, 2, 0), EntityType.BLAZE); // replace with blaze
-            CreateExplosionTask boom = new CreateExplosionTask(entity.getLocation(), ExplosionType.TNT.MAGMACUBE_FIRE);
-            boom.run();
+            ExplosionType.TNT.MAGMACUBE_FIRE.createExplosion(entity.getLocation());
         }
 
         // FEATURE: arrows pass through skeletons
@@ -1251,7 +1245,7 @@ public class EntityEventHandler implements Listener
         }
 
         // FEATURE: charged creepers explode on hit
-        if (rootC.getBoolean(RootNode.CHARGED_CREEPERS_EXPLODE_ON_HIT) && !rootC.getBoolean(RootNode.DISABLE_EXPLOSIONS))
+        if (rootC.getBoolean(RootNode.CHARGED_CREEPERS_EXPLODE_ON_HIT))
         {
             if (entityType == EntityType.CREEPER && !entity.isDead())
             {
@@ -1282,15 +1276,14 @@ public class EntityEventHandler implements Listener
                     }
                     entityModule.markLootLess((LivingEntity) entity);
                     entity.remove();
-                    CreateExplosionTask boom = new CreateExplosionTask(entity.getLocation(), ExplosionType.CREEPER_CHARGED);
-                    boom.run();
+                    ExplosionType.CREEPER_CHARGED.createExplosion(entity.getLocation());
                 }
             }
         }
 
 
 
-        //FEATURE: a burning creeper will create a nice explosion + fireworks and will fly in the air
+        //FEATURE: a burning creeper will createExplosion a nice explosion + fireworks and will fly in the air
         //Will only trigger if creeper died from fire not from a sword with fireaspect or bow
         if (rootC.getBoolean(RootNode.FLAMING_CREEPERS_EXPLODE))
         {
