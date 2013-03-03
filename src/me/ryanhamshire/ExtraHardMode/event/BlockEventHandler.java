@@ -159,7 +159,7 @@ public class BlockEventHandler implements Listener
 
         // when ore is broken, it softens adjacent stone
         // important to ensure players can reach the ore they break
-        if (rootC.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS) && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES")))
+        if (rootC.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS) && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES") || block.getType().name().equalsIgnoreCase("STONE")))
         {
             for (BlockFace face : blockFaces)
             {
