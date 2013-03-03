@@ -55,7 +55,12 @@ public enum RootNode implements ConfigNode
      * Breaking an ore will cause surrounding stone to turn to cobble and fall
      */
     SUPER_HARD_STONE_PHYSICS
-            ("ExtraHardMode.World Rules.Mining.Breaking Ore Softens Stone", VarType.BOOLEAN, true),
+            ("ExtraHardMode.World Rules.Mining.Breaking Ore Softens Adjacent Stone", VarType.BOOLEAN, true),
+    /**
+     * When true, and when used with SUPER_HARD_STONE, mining stone will cause adjacent stone to turn to cobble, as if mining ore
+     */
+    STONE_LIKE_ORE
+            ("ExtraHardMode.World Rules.Mining.If Breaking Ore Softens Stone.Breaking Stone Also Softens Adjacent Stone", VarType.BOOLEAN, true),
     /**
      * maximum y for placing standard torches
      */
