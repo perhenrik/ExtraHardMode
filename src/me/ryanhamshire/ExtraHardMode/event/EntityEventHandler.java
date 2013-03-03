@@ -651,7 +651,7 @@ public class EntityEventHandler implements Listener
         if (entity instanceof Player)
         {
             Player player = (Player) entity;
-            if (!player.hasPermission(PermissionNode.BYPASS.getNode()))
+            if (!player.hasPermission(PermissionNode.BYPASS_INVENTORY.getNode()))
             {
                 List<ItemStack> drops = event.getDrops();
                 int numberOfStacksToRemove = (int) (drops.size() * (rootC.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT) / 100f));

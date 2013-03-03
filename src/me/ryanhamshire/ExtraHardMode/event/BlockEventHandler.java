@@ -145,12 +145,12 @@ public class BlockEventHandler implements Listener
                 // otherwise, drastically reduce tool durability when breaking stone
                 else
                 {
-                    short amount;
+                    int amount;
 
                     if (tool == Material.IRON_PICKAXE)
-                        amount = 8;
+                        amount = rootC.getInt(RootNode.IRON_DURABILITY_PENALTY);
                     else
-                        amount = 22;
+                        amount = rootC.getInt(RootNode.DIAMOND_DURABILITY_PENALTY);
 
                     inHandStack.setDurability((short) (inHandStack.getDurability() + amount));
                 }

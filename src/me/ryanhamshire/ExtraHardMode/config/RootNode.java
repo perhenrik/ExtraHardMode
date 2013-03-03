@@ -45,6 +45,13 @@ public enum RootNode implements ConfigNode
     SUPER_HARD_STONE
             ("ExtraHardMode.World Rules.Mining.Inhibit Tunneling", VarType.BOOLEAN, true),
     /**
+     * The next two entries configure how much extra durability loss iron and diamond picks take when SUPER_HARD_STONE is TRUE
+     */
+    IRON_DURABILITY_PENALTY
+            ("ExtraHardMode.World Rules.Mining.Inhibit Tunneling.Iron Pickaxe Durability Penalty", VarType.INTEGER, 8),
+    DIAMOND_DURABILITY_PENALTY
+            ("ExtraHardMode.World Rules.Mining.Inhibit Tunneling.Diamond Pickaxe Durability Penalty", VarType.INTEGER, 22),
+    /**
      * Breaking an ore will cause surrounding stone to turn to cobble and fall
      */
     SUPER_HARD_STONE_PHYSICS
