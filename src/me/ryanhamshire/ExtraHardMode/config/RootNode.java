@@ -294,11 +294,16 @@ public enum RootNode implements ConfigNode
     ALWAYS_ANGRY_PIG_ZOMBIES
             ("ExtraHardMode.PigZombies.Always Angry", VarType.BOOLEAN, true),
     /**
-     * whether pig zombies drop nether wart in nether fortresses
+     * whether pig zombies always drop nether wart in nether fortresses
      */
     FORTRESS_PIGS_DROP_WART
-            ("ExtraHardMode.PigZombies.Drop Netherwart In Fortresses", VarType.BOOLEAN, true),
-
+            ("ExtraHardMode.PigZombies.Always Drop Netherwart In Fortresses", VarType.BOOLEAN, true),
+    /**
+     * Whether pig zombies should drop netherwart occasionally elsewhere in Nether
+     */
+    NETHER_PIGS_DROP_WART
+            ("ExtraHardMode.PigZombies.Percent Chance to Drop Netherwart Elsewhere In Nether", VarType.INTEGER, 0),
+    
     /**
      * whether ghasts should deflect arrows and drop extra loot
      * percentage like skeleton deflect
