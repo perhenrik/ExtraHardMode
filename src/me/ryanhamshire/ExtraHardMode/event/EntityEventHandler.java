@@ -34,6 +34,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Skeleton.SkeletonType;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -41,9 +42,11 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -1494,32 +1497,71 @@ public class EntityEventHandler implements Listener
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onItemCrafted(CraftItemEvent event)
     {
-        HumanEntity entity = event.getWhoClicked();
-        if (entity == null || !(entity instanceof Player))
-            return;
-
-        Player player = (Player) entity;
-        World world = player.getWorld();
-
+        List <String> worlds = rootC.getStringList(RootNode.WORLDS);
+        int multiplier = rootC.getInt(RootNode.MORE_TNT_NUMBER);
+        boolean cantCraftMelons = rootC.getBoolean(RootNode.CANT_CRAFT_MELONSEEDS);
         MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
-        if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
-            return;
-
         Material result = event.getRecipe().getResult().getType();
+        InventoryHolder human = event.getInventory().getHolder();
+        Player player = null;
+        if (human instanceof Player) player = (Player)human;
+        World world = player.getWorld();
 
-        // FEATURE: no crafting melon seeds
-        if (rootC.getBoolean(RootNode.CANT_CRAFT_MELONSEEDS) && result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS)
+        if (worlds.contains(world.getName()) &! player.hasPermission(PermissionNode.BYPASS.getNode()))
         {
-            event.setCancelled(true);
-            plugin.sendMessage(player, messages.getString(MessageNode.NO_CRAFTING_MELON_SEEDS));
-            return;
+            // FEATURE: no crafting melon seeds
+            if (cantCraftMelons && (result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS))
+            {
+                event.setCancelled(true);
+                plugin.sendMessage(player, messages.getString(MessageNode.NO_CRAFTING_MELON_SEEDS));
+                return;
+            }
+
+            //Are we crafting tnt and is more tnt enabled, from BeforeCraftEvent
+            if (event.getRecipe().getResult().equals(new ItemStack (Material.TNT, multiplier)) && player != null)
+            {
+                if (multiplier == 0) event.setCancelled(true);//Feature disable tnt crafting
+                if (multiplier > 1)
+                {
+                    PlayerInventory inv = player.getInventory();
+                    //ShiftClick only causes this event to be called once
+                    if (event.isShiftClick())
+                    {
+                        int amountBefore = utils.countInvItem(inv, Material.TNT);
+                        //Add the missing tnt 1 tick later, we count what has been added by shiftclicking and multiply it
+                        UtilityModule.addExtraItemsLater task = new UtilityModule.addExtraItemsLater(inv, amountBefore, Material.TNT, multiplier -1);
+                        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);
+                    }
+                }
+            }
         }
+    }
 
-        // FEATURE: extra TNT from the TNT recipe
-        if (rootC.getInt(RootNode.MORE_TNT_NUMBER) > 1 && event.getRecipe().getResult().getType() == Material.TNT)
+    @EventHandler
+    public void beforeCraft (PrepareItemCraftEvent event)
+    {
+        List <String> worlds = rootC.getStringList(RootNode.WORLDS);
+        int multiplier = rootC.getInt(RootNode.MORE_TNT_NUMBER);
+
+        InventoryHolder human = event.getInventory().getHolder();
+        Player player = null;
+        if (human instanceof Player) player = (Player)human;
+
+        if (event.getRecipe().getResult().getType().equals(Material.TNT) && player != null)
         {
-            player.getInventory().addItem(new ItemStack(Material.TNT, rootC.getInt(RootNode.MORE_TNT_NUMBER)-1));
+            //Recipe in CraftingGrid
+            ShapedRecipe craftRecipe = (ShapedRecipe) event.getRecipe();
+            CraftingInventory craftInv = event.getInventory();
+
+            //The vanilla tnt recipe
+            ShapedRecipe vanillaTnt = new ShapedRecipe(new ItemStack(Material.TNT)).shape("gsg", "sgs", "gsg").setIngredient('g', Material.SULPHUR).setIngredient('s', Material.SAND);
+
+            //Multiply the amount of tnt in enabled worlds
+            if (worlds.contains(player.getWorld().getName()) && utils.isSameRecipe(craftRecipe, vanillaTnt))
+            {
+                craftInv.setResult(new ItemStack(Material.TNT, multiplier));
+            }
         }
     }
 
