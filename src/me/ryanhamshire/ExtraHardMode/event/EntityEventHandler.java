@@ -1605,7 +1605,7 @@ public class EntityEventHandler implements Listener
 
     /**
      * when an entity tries to change a block (does not include player block
-     * changes) don't allow endermen to change blocks
+     * changes) don't allow silverfish to change blocks
      *
      * @param event - Event that occurred.
      */

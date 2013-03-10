@@ -20,10 +20,7 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -88,19 +85,83 @@ public class UtilityModule extends EHMModule
     }
 
     /**
-     * Verifies if we are in a CraftingGrid and not in a furnace or similar
-     * @param event
+     * Is the given material a tool, e.g. doesn't stack
+     */
+    public boolean isTool (Material material)
+    {
+        return     material.name().endsWith("AXE") //axe & pickaxe
+                || material.name().endsWith("SPADE")
+                || material.name().endsWith("SWORD")
+                || material.name().endsWith("HOE")
+                || material.name().endsWith("BUCKET") //water, milk, lava,..
+                || material.equals(Material.BOW)
+                || material.equals(Material.FISHING_ROD)
+                || material.equals(Material.WATCH)
+                || material.equals(Material.COMPASS);
+    }
+
+    /**
+     * is the given material armor
+     */
+    public boolean isArmor (Material material)
+    {
+        return     material.name().endsWith("HELMET")
+                || material.name().endsWith("CHESTPLATE")
+                || material.name().endsWith("LEGGINGS")
+                || material.name().endsWith("BOOTS");
+    }
+
+    /**
+     * Is the player currently on a ladder?
+     * @param player
      * @return
      */
-    public boolean isCraftInv (CraftItemEvent event)
+    public boolean isPlayerOnLadder(Player player)
     {
-        if (event.getInventory() != null && event.getSlotType().equals(InventoryType.SlotType.RESULT))
+        return player.getLocation().getBlock().getType().equals(Material.LADDER);
+    }
+
+    /**
+     * Calculates the weight of the players inventory with the given amount of weight per item
+     * @param player
+     * @param armorPoints Points per piece of worn armor
+     * @param inventoryPoints Points per full stack of one item
+     * @param toolPoints Points per tool which doesn't stack
+     * @return
+     */
+    public float inventoryWeight (Player player, float armorPoints, float inventoryPoints, float toolPoints)
+    {
+        // count worn clothing
+        PlayerInventory inventory = player.getInventory();
+        float weight = 0F;
+        ItemStack[] armor = inventory.getArmorContents();
+        for (ItemStack armorPiece : armor)
         {
-            //Only care about workbenches and the built in crafting
-            return (event.getInventory().getType().equals(InventoryType.WORKBENCH) ||
-                    event.getInventory().getType().equals(InventoryType.CRAFTING));
+            if (armorPiece != null && armorPiece.getType() != Material.AIR)
+            {
+                weight += armorPoints;
+            }
         }
-        return false;
+
+        // count contents
+        for (ItemStack itemStack : inventory.getContents())
+        {
+            if (itemStack != null && itemStack.getType() != Material.AIR)
+            {
+                float addWeight = 0.0F;
+                if (isTool(itemStack.getType()))
+                {
+                    addWeight += toolPoints;
+                }
+                else
+                {
+                    //take stackSize into consideration
+                    addWeight = inventoryPoints * itemStack.getAmount() / itemStack.getMaxStackSize();
+                }
+                weight += addWeight;
+            }
+        }
+        return weight;
     }
 
     /**

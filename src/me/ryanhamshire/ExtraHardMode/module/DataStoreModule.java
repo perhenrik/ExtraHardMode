@@ -110,9 +110,8 @@ public class DataStoreModule extends EHMModule
          */
         public long lastMessageTimestamp = 0;
         /**
-         * Cached weight status.
-         * TODO need to check and see that I didn't just break this.
+         * Cached weight
          */
-        public boolean cachedWeightStatus = false;
+        public float cachedWeightStatus = -1.0F; //player can't have negative invetory....
     }
 }

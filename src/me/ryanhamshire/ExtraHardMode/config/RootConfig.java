@@ -155,39 +155,21 @@ public class RootConfig extends ModularConfig
     {
         // Check worlds
         List<String> list = getStringList(RootNode.WORLDS);
-        List <World> worlds = null;
+        List<World> worlds = null;
         if (list.isEmpty())
         {
             plugin.getLogger().warning(plugin.getTag() + " No worlds selected, enabling for default worlds!");
             worlds = plugin.getServer().getWorlds();
+            for (World world : worlds)
+                list.add(world.getName());
         }
-
-        //Only verify worlds from the config file when there are actually worlds there, otherwise use default worlds
-        if (worlds == null)
-        {
-            worlds = new ArrayList<World>();
-            for (String name : list)
-            {
-                World world = plugin.getServer().getWorld(name);
-                if (world != null)
-                {
-                    // Not going to notify on missing world as that will occur in the
-                    // main plugin execution.
-                    worlds.add(world);
-                }
-            }
-        }
-        //write back to file, could potentially also move into Rootnode, but we need a reference to the plugin
-        list = new ArrayList <String> ();
-        for (World world : worlds)
-        list.add(world.getName());
         set(RootNode.WORLDS, list);
         updateOption(RootNode.WORLDS);
 
         // Check y coordinates
-        validateYCoordinate(RootNode.STANDARD_TORCH_MIN_Y, worlds);
-        validateYCoordinate(RootNode.MORE_MONSTERS_MAX_Y, worlds);
-        validateYCoordinate(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y, worlds);
+        validateYCoordinate(RootNode.STANDARD_TORCH_MIN_Y, list);
+        validateYCoordinate(RootNode.MORE_MONSTERS_MAX_Y, list);
+        validateYCoordinate(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y, list);
         // Check percentages
         validatePercentage(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT);
         validatePercentage(RootNode.MORE_MONSTERS_MULTIPLIER);
@@ -217,9 +199,10 @@ public class RootConfig extends ModularConfig
      * @param node   - Root node to validate.
      * @param worlds - List of worlds to check against.
      */
-    private void validateYCoordinate(RootNode node, List<World> worlds)
+    private void validateYCoordinate(RootNode node, List<String> worlds)
     {
         int value = getInt(node);
+        int maxHeight = 255;
         boolean changed = false;
         if (value < 0)
         {
@@ -227,14 +210,17 @@ public class RootConfig extends ModularConfig
             set(node, 0);
             changed = true;
         }
-        for (World world : worlds)
+        for (String worldName : worlds)
         {
-            if (value > world.getMaxHeight())
+            World world = plugin.getServer().getWorld(worldName);
+            //What if world is not loaded yet?
+            if (world != null) maxHeight = world.getMaxHeight();
+            if (value > maxHeight)
             {
                 plugin.getLogger().warning(
-                        plugin.getTag() + " Y coordinate for " + node.getPath() + " is greater than the max height for world " + world.getName());
-                set(node, world.getMaxHeight());
-                value = world.getMaxHeight();
+                        plugin.getTag() + " Y coordinate for " + node.getPath() + " is greater than the max height for world " + worldName);
+                set(node, maxHeight);
+                value = maxHeight;
                 changed = true;
             }
         }

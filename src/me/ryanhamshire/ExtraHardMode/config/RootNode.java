@@ -129,7 +129,35 @@ public enum RootNode implements ConfigNode
     /**
      * whether players may swim while wearing armor
      */
-    NO_SWIMMING_IN_ARMOR("ExtraHardMode.Player.No Swimming When Too Heavy", VarType.BOOLEAN, true),
+    NO_SWIMMING_IN_ARMOR("ExtraHardMode.Player.No Swimming When Too Heavy.Enable", VarType.BOOLEAN, true),
+    /**
+     * Block Swimming Up WaterFalls/WaterElevators
+     */
+    NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS("ExtraHardMode.Player.No Swimming When Too Heavy.Block Elevators/Waterfalls", VarType.BOOLEAN, true),
+    /**
+     * The maximum amount of points you can have before being too heavy
+     */
+    NO_SWIMMING_IN_ARMOR_MAX_POINTS("ExtraHardMode.Player.No Swimming When Too Heavy.Max Points", VarType.DOUBLE, 18.0),
+    /**
+     * The amount of points a piece of armor adds to the max
+     */
+    NO_SWIMMING_IN_ARMOR_ARMOR_POINTS("ExtraHardMode.Player.No Swimming When Too Heavy.One Piece Of Worn Armor Adds", VarType.DOUBLE, 2.0),
+    /**
+     * The amount of points that stuff in your inventory adds to the max
+     */
+    NO_SWIMMING_IN_ARMOR_INV_POINTS("ExtraHardMode.Player.No Swimming When Too Heavy.One Stack Adds", VarType.DOUBLE, 1.0),
+    /**
+     * How much a tool or item which doesn't stack adds to the max
+     */
+    NO_SWIMMING_IN_ARMOR_TOOL_POINTS("ExtraHardMode.Player.No Swimming When Too Heavy.One Tool Adds", VarType.DOUBLE, 0.5),
+    /**
+     * How fast do you drown, 100 (percent) = you drown no chance, 25 there is a chance you'll drown
+     */
+    NO_SWIMMING_IN_ARMOR_DROWN_RATE("ExtraHardMode.Player.No Swimming When Too Heavy.Drown Rate", VarType.INTEGER, 25),
+    /**
+     * How much do you drown faster per weight over the max
+     */
+    NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA("ExtraHardMode.Player.No Swimming When Too Heavy.Overencumbrance Adds To Drown Rate", VarType.INTEGER, 2),
 
     /**
      * whether monster grinders (or "farms") should be inhibited

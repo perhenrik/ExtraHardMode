@@ -45,7 +45,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
+
+import java.util.List;
 
 /**
  * Event handler for player events.
@@ -84,6 +86,7 @@ public class PlayerEventHandler implements Listener
     @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawn(PlayerRespawnEvent respawnEvent)
     {
+        //TODO Fix this up
         Player player = respawnEvent.getPlayer();
         World world = respawnEvent.getPlayer().getWorld();
         if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
@@ -95,7 +98,7 @@ public class PlayerEventHandler implements Listener
         // delay
         // FEATURE: players can't swim when they're carrying a lot of weight
         PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-        playerData.cachedWeightStatus = false;
+        playerData.cachedWeightStatus = -1F;
     }
 
     /**
@@ -129,9 +132,7 @@ public class PlayerEventHandler implements Listener
             }
         }
 
-        // FEATURE: seed reduction. some plants die even when a player uses
-        // bonemeal.
-        //TODO FIX!
+        // FEATURE: seed reduction. some plants die even when a player uses bonemeal.
         if (rootC.getBoolean(RootNode.WEAK_FOOD_CROPS) && action.equals(Action.RIGHT_CLICK_BLOCK))
         {
             Block block = event.getClickedBlock();
@@ -287,74 +288,116 @@ public class PlayerEventHandler implements Listener
     @EventHandler(priority = EventPriority.NORMAL)
     void onPlayerMove(PlayerMoveEvent event)
     {
-        // FEATURE: no swimming while heavy
-        if (!rootC.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR))
-            return;
-
-        // only care about moving up
-        Location from = event.getFrom();
-        Location to = event.getTo();
-        if (to.getY() <= from.getY())
-            return;
-
-        // only when in water
-        Block fromBlock = from.getBlock();
-        if (!fromBlock.isLiquid())
-            return;
-
-        Block toBlock = to.getBlock();
-        if (!toBlock.isLiquid())
-            return;
-
-        // only when in deep water
-        Block underFromBlock = fromBlock.getRelative(BlockFace.DOWN, 2);
-        if (!underFromBlock.isLiquid())
-            return;
-
-        // only enabled worlds, and players without bypass permission
         Player player = event.getPlayer();
         World world = player.getWorld();
-        if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || player.hasPermission(PermissionNode.BYPASS.getNode()))
-            return;
+        Location from = event.getFrom();
+        Location to = event.getTo();
+        Block fromBlock = from.getBlock();
+        Block toBlock = to.getBlock();
 
-        PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-        MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
-        // if no cached value, calculate
-        if (!playerData.cachedWeightStatus)
+        List<String> worlds = rootC.getStringList(RootNode.WORLDS);
+
+        float maxWeight = (float)rootC.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS);
+        float armorPoints = (float)rootC.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS);
+        float inventoryPoints = (float)rootC.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS);
+        float toolPoints = (float)rootC.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS);
+
+        int drowningRate = rootC.getInt(RootNode.NO_SWIMMING_IN_ARMOR_DROWN_RATE);
+        int overEncumbranceExtra = rootC.getInt(RootNode.NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA);
+
+        float normalDrownVel = -.5F;
+        float overwaterDrownVel = -.7F;
+
+        // FEATURE: no swimming while heavy, only enabled worlds, players without bypass permission and not in creative
+        if (rootC.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR) && worlds.contains(world.getName())
+                &! player.hasPermission(PermissionNode.BYPASS.getNode()) &! player.getGameMode().equals(GameMode.CREATIVE))
         {
-            // count worn clothing (counts double)
-            PlayerInventory inventory = player.getInventory();
-            int weight = 0;
-            ItemStack[] armor = inventory.getArmorContents();
-            for (ItemStack armorPiece : armor)
+            // only care about moving up
+            if (to.getY() > from.getY())
             {
-                if (armorPiece != null && armorPiece.getType() != Material.AIR)
+                PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+                // only when in water
+                if (fromBlock.isLiquid() && toBlock.isLiquid() &&
+                        //Water Elevators, there is usually one wide and dont have water on the sides
+                        (      toBlock.getRelative(BlockFace.WEST).getType().equals(Material.WATER)
+                            && toBlock.getRelative(BlockFace.NORTH).getType().equals(Material.WATER)
+                            && toBlock.getRelative(BlockFace.EAST).getType().equals(Material.WATER)
+                            && toBlock.getRelative(BlockFace.SOUTH).getType().equals(Material.WATER) ) )
                 {
-                    weight += 2;
-                }
-            }
-
-            // count contents
-            for (ItemStack itemStack : inventory.getContents())
-            {
-                if (itemStack != null && itemStack.getType() != Material.AIR)
-                {
-                    weight++;
-                    if (weight > 18)
+                    // only when in 1 deep water
+                    Block underFromBlock = fromBlock.getRelative(BlockFace.DOWN);
+                    if (underFromBlock.isLiquid())
                     {
-                        break;
+                        // if no cached value, calculate
+                        if (playerData.cachedWeightStatus <= 0)
+                        {
+                            playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
+                        }
+                        // if too heavy let player feel the weight by pulling them down, if in boat can always swim
+                        if (playerData.cachedWeightStatus > maxWeight &! player.isInsideVehicle())
+                        {
+                            drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel, overwaterDrownVel);
+                        }
+                    }
+                }
+                //when you swim up waterfalls and basically are flying with only a tip of your body in water
+                else if (rootC.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS) &!
+                        utils.isPlayerOnLadder(player) &! player.isInsideVehicle())
+                {
+                    if (playerData.cachedWeightStatus <= 0)
+                    {
+                        playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
+                    }
+                    else if (playerData.cachedWeightStatus > maxWeight)
+                    {
+                        //Detect waterfalls
+                        BlockFace[] faces = {
+                                BlockFace.WEST,
+                                BlockFace.NORTH_WEST,
+                                BlockFace.NORTH,
+                                BlockFace.NORTH_EAST,
+                                BlockFace.EAST,
+                                BlockFace.SOUTH_EAST,
+                                BlockFace.SOUTH,
+                                BlockFace.SOUTH_WEST };
+                        Location loc = player.getLocation();
+                        boolean isWaterNear = false;
+                        for (BlockFace face : faces)
+                        {
+                            Material nearType = loc.getBlock().getRelative(face).getType();
+                            if (nearType.equals(Material.STATIONARY_WATER))
+                                isWaterNear = true;
+                        }
+                        if (isWaterNear) drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel + 0.3F, normalDrownVel + 0.3F); //the water flowing down pulls you down
                     }
                 }
             }
-
-            playerData.cachedWeightStatus = weight > 18;
         }
+    }
 
-        // if too heavy, not allowed to swim, if in boat can always swim
-        if (playerData.cachedWeightStatus == true & !player.getGameMode().equals(GameMode.CREATIVE) & !player.isInsideVehicle())
+    /**
+     * Drowns the player at the given rate
+     */
+    public void drown (Player player, int drowningRate, int overEncumbranceExtra, float cachedWeightStatus, float maxWeight, float normalDrownVel, float overwaterDrownVel)
+    {
+        if (cachedWeightStatus > maxWeight)
         {
-            event.setCancelled(true);
-            plugin.sendMessage(player, messages.getString(MessageNode.NO_SWIMMING_IN_ARMOR));
+            MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
+            float rdm = plugin.getRandom().nextFloat(); //how expensive is this
+            //drownrate + extra when overencumbered
+            float drownPercent = ((float)drowningRate / 500F) + ((cachedWeightStatus - maxWeight) * overEncumbranceExtra) / 500F;
+            if (rdm < drownPercent)
+            {
+                Vector vec = player.getVelocity();
+                //when floating on top of water pull down more
+                Material material = player.getLocation().getBlock().getRelative((BlockFace.UP)).getType();
+                if (material.equals(Material.AIR))
+                    vec.setY(overwaterDrownVel);
+                else  //when under water
+                    vec.setY(normalDrownVel);
+                player.setVelocity(vec);
+                plugin.sendMessage(player, messages.getString(MessageNode.NO_SWIMMING_IN_ARMOR));
+        }
         }
     }
 
@@ -369,7 +412,7 @@ public class PlayerEventHandler implements Listener
         // FEATURE: players can't swim when they're carrying a lot of weight
         Player player = event.getPlayer();
         PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-        playerData.cachedWeightStatus = false;
+        playerData.cachedWeightStatus = -1F;
     }
 
     /**
@@ -383,7 +426,7 @@ public class PlayerEventHandler implements Listener
         // FEATURE: players can't swim when they're carrying a lot of weight
         Player player = event.getPlayer();
         PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-        playerData.cachedWeightStatus = false;
+        playerData.cachedWeightStatus = -1F;
     }
 
     /**
@@ -400,7 +443,7 @@ public class PlayerEventHandler implements Listener
         {
             Player player = (Player) humanEntity;
             PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-            playerData.cachedWeightStatus = false;
+            playerData.cachedWeightStatus = -1F;
         }
     }
 }
