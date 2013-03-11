@@ -156,7 +156,7 @@ public class BlockEventHandler implements Listener
                     int maxDurability = tool.getMaxDurability();
                     int damagePerBlock = maxDurability / amount;
                     
-                    inHandStack.setDurability((short) (inHandStack.getDurability() + amount));
+                    inHandStack.setDurability((short) (inHandStack.getDurability() + damagePerBlock));
               
                     // For cases where a remainder causes the tool to be viable for an extra use,
                     //   eat up the remainder of thet durability
