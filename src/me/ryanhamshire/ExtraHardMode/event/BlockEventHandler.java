@@ -41,6 +41,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Torch;
+import org.bukkit.Material;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -146,13 +147,21 @@ public class BlockEventHandler implements Listener
                 else
                 {
                     int amount;
-
+                    
                     if (tool == Material.IRON_PICKAXE)
                         amount = rootC.getInt(RootNode.IRON_DURABILITY_PENALTY);
                     else
                         amount = rootC.getInt(RootNode.DIAMOND_DURABILITY_PENALTY);
 
+                    int maxDurability = tool.getMaxDurability();
+                    int damagePerBlock = maxDurability / amount;
+                    
                     inHandStack.setDurability((short) (inHandStack.getDurability() + amount));
+              
+                    // For cases where a remainder causes the tool to be viable for an extra use,
+                    //   eat up the remainder of thet durability
+                    if ( maxDurability - inHandStack.getDurability() < tool.getMaxDurability() / amount )
+                        inHandStack.setDurability((short) maxDurability);
                 }
             }
         }
