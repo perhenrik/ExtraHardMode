@@ -441,7 +441,7 @@ public class EntityEventHandler implements Listener
             }
         }
 
-        //Breed Sheep spawn white, natural sheep are more likely to have a random color
+        //Breed Sheep spawn white
         if (rootC.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL) && entityType == EntityType.SHEEP)
         {
             Sheep sheep = (Sheep) entity;
