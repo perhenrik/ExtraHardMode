@@ -18,6 +18,8 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -43,6 +45,10 @@ public class BlockPhysicsCheckTask implements Runnable
      * Recursion count.
      */
     private int recursionCount;
+    /**
+     * Config Reference
+     */
+    RootConfig rootC;
 
     /**
      * Constructor.
@@ -56,6 +62,7 @@ public class BlockPhysicsCheckTask implements Runnable
         this.plugin = plugin;
         this.block = block;
         this.recursionCount = recursionCount;
+        rootC = plugin.getModuleForClass(RootConfig.class);
     }
 
     @Override
@@ -67,7 +74,7 @@ public class BlockPhysicsCheckTask implements Runnable
         Material material = block.getType();
         if ((block.getRelative(BlockFace.DOWN).getType() == Material.AIR || block.getRelative(BlockFace.DOWN).isLiquid() || block.getRelative(
                 BlockFace.DOWN).getType() == Material.TORCH)
-                && (material == Material.SAND || material == Material.GRAVEL || module.getFallingBlocks().contains(material)))
+                && (material == Material.SAND || material == Material.GRAVEL || module.getFallingBlocks().contains(material)) && rootC.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE))
         {
             module.applyPhysics(block);
             fall = true;

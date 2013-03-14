@@ -77,21 +77,18 @@ public class BlockModule extends EHMModule
      */
     public void applyPhysics(Block block)
     {
-        if (rootC.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE))
+        // grass and mycel become dirt when they fall
+        if ((block.getType() == Material.GRASS || block.getType() == Material.MYCEL) && rootC.getBoolean(RootNode.MORE_FALLING_BLOCKS_TURN_TO_DIRT))
         {
-            // grass and mycel become dirt when they fall
-            if ((block.getType() == Material.GRASS || block.getType() == Material.MYCEL) && rootC.getBoolean(RootNode.MORE_FALLING_BLOCKS_TURN_TO_DIRT))
-            {
-                block.setType(Material.DIRT);
-            }
-
-            // create falling block
-            FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
-            fallingBlock.setDropItem(true);
-
-            // remove original block
-            block.setType(Material.AIR);
+            block.setType(Material.DIRT);
         }
+
+        // create falling block
+        FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
+        fallingBlock.setDropItem(true);
+
+        // remove original block
+        block.setType(Material.AIR);
     }
 
     /**
