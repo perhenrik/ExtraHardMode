@@ -28,7 +28,7 @@ public enum PermissionNode
      */
     BYPASS_CREEPERS("bypass.creepers"),
     /**
-     * Inventory
+     * Inventory Loss On Death
      */
     BYPASS_INVENTORY("bypass.inventory"),
     /**
