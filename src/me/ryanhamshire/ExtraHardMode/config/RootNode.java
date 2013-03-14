@@ -43,24 +43,22 @@ public enum RootNode implements ConfigNode
      * whether stone is hardened to encourage cave exploration over tunneling
      */
     SUPER_HARD_STONE
-            ("ExtraHardMode.World Rules.Mining.Inhibit Tunneling", VarType.BOOLEAN, true),
+            ("ExtraHardMode.World Rules.Mining.Inhibit Tunneling.Enable", VarType.BOOLEAN, true),
     /**
-     * The next two entries configure how much extra durability loss iron and diamond picks take when SUPER_HARD_STONE is TRUE
+     * Number of blocks player can mine with an iron pick and hard stone enabled
      */
     IRON_DURABILITY_PENALTY
-            ("ExtraHardMode.World Rules.Mining.If Tunneling Is Inhibited.Number of Stone Iron Pickaxe Can Mine", VarType.INTEGER, 32),
+            ("ExtraHardMode.World Rules.Mining.Inhibit Tunneling.Number of Stone Iron Pickaxe Can Mine", VarType.INTEGER, 32),
+    /**
+     * Number of blocks player can mine with an diamond pick and hard stone enabled
+     */
     DIAMOND_DURABILITY_PENALTY
-            ("ExtraHardMode.World Rules.Mining.If Tunneling Is Inhibited.Number of Stone Diamond Pickaxe Can Mine", VarType.INTEGER, 71),
+            ("ExtraHardMode.World Rules.Mining.Inhibit Tunneling.Number of Stone Diamond Pickaxe Can Mine", VarType.INTEGER, 64),
     /**
      * Breaking an ore will cause surrounding stone to turn to cobble and fall
      */
     SUPER_HARD_STONE_PHYSICS
             ("ExtraHardMode.World Rules.Mining.Breaking Ore Softens Adjacent Stone", VarType.BOOLEAN, true),
-    /**
-     * When true, and when used with SUPER_HARD_STONE, mining stone will cause adjacent stone to turn to cobble, as if mining ore
-     */
-    STONE_LIKE_ORE
-            ("ExtraHardMode.World Rules.Mining.If Breaking Ore Softens Stone.Breaking Stone Also Softens Adjacent Stone", VarType.BOOLEAN, true),
     /**
      * maximum y for placing standard torches
      */

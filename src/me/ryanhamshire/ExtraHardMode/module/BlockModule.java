@@ -95,11 +95,11 @@ public class BlockModule extends EHMModule
     }
 
     /**
-     * Check if the given plant at the block dies.
+     * Check if the given plant at the block should die.
      *
      * @param block        - Block to check.
      * @param newDataValue - Data value to replace.
-     * @return True if plant died, else false.
+     * @return True if plant should die, else false.
      */
     public boolean plantDies(Block block, byte newDataValue)
     {
