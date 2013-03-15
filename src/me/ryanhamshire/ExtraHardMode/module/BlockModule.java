@@ -100,56 +100,58 @@ public class BlockModule extends EHMModule
      */
     public boolean plantDies(Block block, byte newDataValue)
     {
+        //CFG
+        List <String> enabledWorlds = rootC.getStringList(RootNode.WORLDS);
+        boolean weakFoodCropsEnabled = rootC.getBoolean(RootNode.WEAK_FOOD_CROPS);
+        int lossRate = rootC.getInt(RootNode.WEAK_FOOD_CROPS_LOSS_RATE);
+        boolean aridDesertsEnabled = rootC.getBoolean(RootNode.ARID_DESSERTS);
+
         World world = block.getWorld();
-        if (!rootC.getStringList(RootNode.WORLDS).contains(world.getName()) || !rootC.getBoolean(RootNode.WEAK_FOOD_CROPS))
+
+        if (enabledWorlds.contains(world.getName()) && weakFoodCropsEnabled)
         {
-            return false;
-        }
-
-        // not evaluated until the plant is nearly full grown
-        if (newDataValue <= (byte) 6)
-        {
-            return false;
-        }
-
-        Material material = block.getType();
-        if (material == Material.CROPS || material == Material.CARROT || material == Material.POTATO)
-        {
-            int deathProbability = rootC.getInt(RootNode.WEAK_FOOD_CROPS_LOSS_RATE);
-
-            // plants in the dark always die
-            if (block.getLightFromSky() < 10)
+            // not evaluated until the plant is nearly full grown
+            if (newDataValue > (byte) 6)
             {
-                deathProbability = 100;
-            }
-            else
-            {
-                Biome biome = block.getBiome();
-
-                // the desert environment is very rough on crops
-                if ((biome == Biome.DESERT || biome == Biome.DESERT_HILLS)
-                        && rootC.getBoolean(RootNode.ARID_DESSERTS))
+                Material material = block.getType();
+                if (material == Material.CROPS || material == Material.CARROT || material == Material.POTATO)
                 {
-                    deathProbability += 50;
-                }
+                    int deathProbability = lossRate;
 
-                // unwatered crops are more likely to die
-                Block belowBlock = block.getRelative(BlockFace.DOWN);
-                byte moistureLevel = 0;
-                if (belowBlock.getType() == Material.SOIL)
-                {
-                    moistureLevel = belowBlock.getData();
-                }
+                    // plants in the dark always die
+                    if (block.getLightFromSky() < 10)
+                    {
+                        deathProbability = 100;
+                    }
+                    else
+                    {
+                        Biome biome = block.getBiome();
 
-                if (moistureLevel == 0)
-                {
-                    deathProbability += 25;
-                }
-            }
+                        // the desert environment is very rough on crops
+                        if ((biome == Biome.DESERT || biome == Biome.DESERT_HILLS) && aridDesertsEnabled)
+                        {
+                            deathProbability += 50;
+                        }
 
-            if (plugin.random(deathProbability))
-            {
-                return true;
+                        // unwatered crops are more likely to die
+                        Block belowBlock = block.getRelative(BlockFace.DOWN);
+                        byte moistureLevel = 0;
+                        if (belowBlock.getType() == Material.SOIL)
+                        {
+                            moistureLevel = belowBlock.getData();
+                        }
+
+                        if (moistureLevel == 0)
+                        {
+                            deathProbability += 25;
+                        }
+                    }
+
+                    if (plugin.random(deathProbability))
+                    {
+                        return true;
+                    }
+                }
             }
         }
 

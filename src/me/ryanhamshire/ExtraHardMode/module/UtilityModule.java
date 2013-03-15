@@ -15,11 +15,12 @@
 package me.ryanhamshire.ExtraHardMode.module;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
+import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
+import org.bukkit.*;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -48,6 +49,12 @@ public class UtilityModule extends EHMModule
     {
         super(plugin);
     }
+
+    /**
+     * All directly adjacent blockfaces
+     */
+    public final BlockFace[] blockFaces = new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH,
+            BlockFace.WEST};
 
     /**
      * Generates a Firework with random colors/velocity and the given Firework Type
@@ -256,6 +263,33 @@ public class UtilityModule extends EHMModule
             int amountToAdd = (amountAfter - amountBefore) * (this.amountToAdd);
             inv.addItem(new ItemStack(material, amountToAdd));
         }
+    }
+
+    /**
+     * Send the player an informative message to explain what he's doing wrong.
+     * Play an optional sound aswell
+     * <p/>
+     * TODO might want to move this out to a module. Yes indeed and move all logging methods and ways to send messages in there.
+     *
+     * @param player     to send msg to
+     * @param perm       permission to silence the message
+     * @param sound      errorsound to play after the event got cancelled
+     * @param soundPitch 20-35 is good
+     */
+    public void notifyPlayer(Player player, MessageNode node, PermissionNode perm, Sound sound, float soundPitch)
+    {
+        if (!player.hasPermission(perm.getNode()))
+        {
+            MessageConfig config = plugin.getModuleForClass(MessageConfig.class);
+            plugin.sendMessage(player, config.getString(node));
+            if (sound != null)
+                player.playSound(player.getLocation(), sound, 1, soundPitch);
+        }
+    }
+
+    public void notifyPlayer(Player player, MessageNode node, PermissionNode perm)
+    {
+        notifyPlayer(player, node, perm, null, 0);
     }
 
     @Override

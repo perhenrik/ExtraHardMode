@@ -22,9 +22,8 @@ package me.ryanhamshire.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.command.Commander;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
-import me.ryanhamshire.ExtraHardMode.event.BlockEventHandler;
-import me.ryanhamshire.ExtraHardMode.event.EntityEventHandler;
-import me.ryanhamshire.ExtraHardMode.event.PlayerEventHandler;
+import me.ryanhamshire.ExtraHardMode.features.*;
+import me.ryanhamshire.ExtraHardMode.features.monsters.*;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule.PlayerData;
@@ -82,17 +81,30 @@ public class ExtraHardMode extends JavaPlugin
         // register for events
         PluginManager pluginManager = this.getServer().getPluginManager();
 
-        // player events
-        PlayerEventHandler playerEventHandler = new PlayerEventHandler(this);
-        pluginManager.registerEvents(playerEventHandler, this);
+        // EventHandlers gallore....look away, scroll down
+        pluginManager.registerEvents(new AntiFarming(this), this);
+        pluginManager.registerEvents(new Antigrinder(this), this);
+        pluginManager.registerEvents(new Explosions(this), this);
+        pluginManager.registerEvents(new HardenedStone(this), this);
+        pluginManager.registerEvents(new LimitedBuilding(this), this);
+        pluginManager.registerEvents(new Physics(this), this);
+        pluginManager.registerEvents(new Players(this), this);
+        pluginManager.registerEvents(new Torches(this), this);
+        pluginManager.registerEvents(new Water(this), this);
+        //monsters
+        pluginManager.registerEvents(new Bitches(this), this);
+        pluginManager.registerEvents(new Blazes(this), this);
+        pluginManager.registerEvents(new Creepers(this), this);
+        pluginManager.registerEvents(new EndDragon(this), this);
+        pluginManager.registerEvents(new Endermen(this), this);
+        pluginManager.registerEvents(new Ghasts(this), this);
+        pluginManager.registerEvents(new MonsterRules(this), this);
+        pluginManager.registerEvents(new Pigmen(this), this);
+        pluginManager.registerEvents(new Silverfish(this), this);
+        pluginManager.registerEvents(new Skeletons(this), this);
+        pluginManager.registerEvents(new Spiders(this), this);
+        pluginManager.registerEvents(new Zombies(this), this);
 
-        // block events
-        BlockEventHandler blockEventHandler = new BlockEventHandler(this);
-        pluginManager.registerEvents(blockEventHandler, this);
-
-        // entity events
-        EntityEventHandler entityEventHandler = new EntityEventHandler(this);
-        pluginManager.registerEvents(entityEventHandler, this);
 
         // FEATURE: monsters spawn in the light under a configurable Y level
         MoreMonstersTask task = new MoreMonstersTask(this);
