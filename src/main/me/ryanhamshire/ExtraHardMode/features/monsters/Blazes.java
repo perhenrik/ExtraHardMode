@@ -5,8 +5,10 @@ import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
+import me.ryanhamshire.ExtraHardMode.features.Explosions;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
+import me.ryanhamshire.ExtraHardMode.task.CreateExplosionTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -125,10 +127,7 @@ public class Blazes implements Listener
         if (blazesExplodeOnDeath && entity instanceof Blaze && world.getEnvironment() == World.Environment.NORMAL)
         {
             // create explosion
-            world.createExplosion(entity.getLocation(), 2F, true); // equal to a
-            // TNT blast,
-            // sets fires
-
+            new CreateExplosionTask(plugin, entity.getLocation(), Explosions.Type.BLAZE); // equal to a TNT blast, sets fires
             // fire a fireball straight up in normal worlds
             Fireball fireball = (Fireball) world.spawnEntity(entity.getLocation(), EntityType.FIREBALL);
             fireball.setDirection(new Vector(0, 10, 0));

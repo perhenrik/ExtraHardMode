@@ -150,18 +150,17 @@ public class Antigrinder implements Listener
                     //All the adjacentBlocks
                     Block[] adjacentBlocks = new Block[adjacentFaces.length * 2 + 1];
                     adjacentBlocks[0] = block;
-                    for (int i = 0; i < adjacentBlocks.length-1; i++)
+                    for (int i = 0; i < adjacentFaces.length; i++)
                     {
                         adjacentBlocks[i+1] = block.getRelative(adjacentFaces[i]);
                     }
-                    for (int i = 0; i < adjacentBlocks.length-1; i++)
+                    for (int i = 0; i < adjacentFaces.length; i++)
                     {
                         adjacentBlocks[i+adjacentFaces.length] = underBlock.getRelative(adjacentFaces[i]);
                     }
                     for (Block adjacentBlock : adjacentBlocks)
                     {
-                        block = adjacentBlock;
-                        if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER)
+                        if (adjacentBlock!=null && (adjacentBlock.getType() == Material.WATER || adjacentBlock.getType() == Material.STATIONARY_WATER))
                         {
                             noLoot = true;
                             break;

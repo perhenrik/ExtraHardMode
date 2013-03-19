@@ -3,19 +3,18 @@ package me.ryanhamshire.ExtraHardMode.features.monsters;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.features.Explosions;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import me.ryanhamshire.ExtraHardMode.task.CoolCreeperExplosion;
+import me.ryanhamshire.ExtraHardMode.task.CreateExplosionTask;
 import org.bukkit.Effect;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.*;
 
 
 public class BumBumBens implements Listener
@@ -123,7 +122,7 @@ public class BumBumBens implements Listener
                     }
                     entityModule.markLootLess((LivingEntity) entity);
                     entity.remove();
-                    world.createExplosion(entity.getLocation(), 4F); // equal to a TNT blast
+                    new CreateExplosionTask(plugin, entity.getLocation(), Explosions.Type.CREEPER_CHARGED, creeper).run(); // equal to a TNT blast
                 }
             }
         }
@@ -148,6 +147,22 @@ public class BumBumBens implements Listener
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onExplosion(EntityExplodeEvent event)
+    {
+        World world = event.getLocation().getWorld();
+        Entity entity = event.getEntity();
+
+        //TODO CONFIG
+        // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
+        if (entity != null && entity instanceof Creeper &! entityModule.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
+        {
+            event.setCancelled(true);
+            entityModule.flagIgnore(entity);//Ignore this creeper in further calls to this method
+            new CreateExplosionTask(plugin, entity.getLocation(), Explosions.Type.CREEPER, (Creeper)entity).run();
         }
     }
 }
