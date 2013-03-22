@@ -217,7 +217,7 @@ public class UtilityModule extends EHMModule
         boolean isSame = true;
         for (int i = 0; i < recipe1.size(); i++)
         {
-            if (!recipe1.get(i).equals(recipe2.get(i)))
+            if (!recipe1.get(i).getType().equals(recipe2.get(i).getType()))
                 isSame = false;
         }
         return isSame;
