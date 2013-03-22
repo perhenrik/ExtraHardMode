@@ -13,8 +13,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.mainclass>me.ryanhamshire.ExtraHardMode.ExtraHardMode</project.mainclass>
         <outputdir>${project.build.outputDirectory}</outputdir>
-        <mc-version>1.4.7</mc-version>
-        <bukkit-ver>R1.0</bukkit-ver>
+        <mc-version>1.5.1</mc-version>
+        <bukkit-ver>R0.1</bukkit-ver>
+        <snapshot>-SNAPSHOT</snapshot>
     </properties>
     <!-- Developers -->
     <developers>
@@ -51,13 +52,13 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>${mc-version}-${bukkit-ver}</version>
+            <version>${mc-version}-${bukkit-ver}${snapshot}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>${mc-version}-${bukkit-ver}</version>
+            <version>${mc-version}-${bukkit-ver}${snapshot}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
