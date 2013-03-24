@@ -3,9 +3,9 @@ package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
-import me.ryanhamshire.ExtraHardMode.features.Explosions;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
 import me.ryanhamshire.ExtraHardMode.task.CreateExplosionTask;
@@ -127,7 +127,7 @@ public class Blazes implements Listener
         if (blazesExplodeOnDeath && entity instanceof Blaze && world.getEnvironment() == World.Environment.NORMAL)
         {
             // create explosion
-            new CreateExplosionTask(plugin, entity.getLocation(), Explosions.Type.BLAZE); // equal to a TNT blast, sets fires
+            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.BLAZE); // equal to a TNT blast, sets fires
             // fire a fireball straight up in normal worlds
             Fireball fireball = (Fireball) world.spawnEntity(entity.getLocation(), EntityType.FIREBALL);
             fireball.setDirection(new Vector(0, 10, 0));
@@ -192,7 +192,7 @@ public class Blazes implements Listener
         {
             entity.remove(); // remove magma cube
             entity.getWorld().spawnEntity(entity.getLocation().add(0, 2, 0), EntityType.BLAZE); // replace with blaze
-            entity.getWorld().createExplosion(entity.getLocation(), 2F, true); // fiery explosion for effect
+            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.MAGMACUBE_FIRE).run(); // fiery explosion for effect
         }
 
         // FEATURE: blazes drop fire on hit, also in nether
@@ -208,9 +208,14 @@ public class Blazes implements Listener
                     Block block = entity.getLocation().getBlock();
 
                     Block underBlock = block.getRelative(BlockFace.DOWN);
-                    while (underBlock.getType() == Material.AIR)
-                        underBlock = underBlock.getRelative(BlockFace.DOWN);
-
+                    for (int i = 0; i < 50; i++)
+                    {
+                        if (underBlock.getType() == Material.AIR)
+                        {
+                            underBlock = underBlock.getRelative(BlockFace.DOWN);
+                        }
+                        else break;
+                    }
                     block = underBlock.getRelative(BlockFace.UP);
                     if (block.getType() == Material.AIR && underBlock.getType() != Material.AIR && !underBlock.isLiquid() && underBlock.getY() > 0)
                     {

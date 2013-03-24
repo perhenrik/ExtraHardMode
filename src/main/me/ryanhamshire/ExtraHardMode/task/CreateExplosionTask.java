@@ -20,7 +20,9 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.features.Explosions;
+import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
@@ -45,7 +47,11 @@ public class CreateExplosionTask implements Runnable
     /**
      * Type that holds information about size and things like blockDmg and Fire
      */
-    private Explosions.Type type;
+    private ExplosionType type;
+    /**
+     * Config
+     */
+    private DynamicConfig dynC;
     /**
      * Instance of a creeper that should explode, only used for custom creeper explosions
      */
@@ -57,11 +63,12 @@ public class CreateExplosionTask implements Runnable
      * @param location - Location to make explosion occur.
      * @param type Type that determines size and possible blockdamage or fire of explosion.
      */
-    public CreateExplosionTask(ExtraHardMode plugin, Location location, Explosions.Type type)
+    public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type)
     {
         this.location = location;
         this.type = type;
         this.plugin = plugin;
+        dynC = plugin.getModuleForClass(DynamicConfig.class);
     }
 
     /**
@@ -71,7 +78,7 @@ public class CreateExplosionTask implements Runnable
      * @param type      - Type that determines size and possible blockdamage or fire of explosion.
      * @param creeper   - Reference to the creeper that just exploded
      */
-    public CreateExplosionTask(ExtraHardMode plugin, Location location, Explosions.Type type, Creeper creeper)
+    public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type, Creeper creeper)
     {
         this(plugin, location, type); //Call to standard constructor to save code
         this.creeper = creeper;
@@ -86,27 +93,29 @@ public class CreateExplosionTask implements Runnable
     /**
      * Creates a Explosion, can be different above/below a certain y-level
      */
-    public void createExplosion(Location loc, Explosions.Type type)
+    public void createExplosion(Location loc, ExplosionType type)
     {
+        final int disableAboveY = dynC.getInt(RootNode.EXPLOSIONS_DISABLE_ABOVE, loc.getWorld().getName());
+
         if (validateLocationSafe(loc, type))
         {
             //Below Y - Level
-            if (location.getY() < type.getYLevel())
+            if (location.getY()< disableAboveY)
             {
                 location.getWorld().createExplosion(
                         location.getX(), location.getY(), location.getZ(),
-                        type.getPowerBelowY(),
-                        type.getIsFireBelowY(),
-                        type.getAllowBlockDamageBelowY());
+                        type.getPower(),
+                        type.isFire(),
+                        type.allowBlockDmg());
             }
             //Above Y - Level
-            else if (location.getY() >= type.getYLevel())
+            else if (location.getY() >= disableAboveY)
             {
                 location.getWorld().createExplosion(
                         location.getX(), location.getY(), location.getZ(),
-                        type.getPowerAboveY(),
-                        type.getIsFireAboveY(),
-                        type.getAllowBlockDamageAboveY());
+                        type.getPower(),
+                        type.isFire(),
+                        false);//disable blockDamage above the y-level specified
             }
         }
     }
@@ -116,11 +125,10 @@ public class CreateExplosionTask implements Runnable
      * @param loc The Location
      * @param type ExplosionType determining the size of the Explosion and size of the area to check
      */
-    public boolean validateLocationSafe(Location loc, Explosions.Type type)
+    public boolean validateLocationSafe(Location loc, ExplosionType type)
     {
         boolean isSafe = true;
-        //Different ExplosionPowers below/above Y
-        int boomSize = loc.getY() > type.getYLevel() ? type.getPowerAboveY() : type.getPowerBelowY();
+        int boomSize = type.getPower();
         boomSize *= 2;
         ArrayList<Block> boundaries = getBlockList(loc, boomSize);
 

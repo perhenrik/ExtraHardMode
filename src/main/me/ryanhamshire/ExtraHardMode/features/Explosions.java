@@ -3,19 +3,22 @@ package me.ryanhamshire.ExtraHardMode.features;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
-import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import me.ryanhamshire.ExtraHardMode.task.CreateExplosionTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -58,7 +61,7 @@ public class Explosions implements Listener
         Entity entity = event.getEntity();
 
         final boolean betterTntEnabled = dynC.getBoolean(RootNode.BETTER_TNT, world.getName());
-        final boolean hardStoneEnabled = dynC.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
+        final boolean turnStoneToCobble = dynC.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
 
         // FEATURE: bigger TNT booms, all explosions have 100% block yield
         if (betterTntEnabled)
@@ -82,7 +85,7 @@ public class Explosions implements Listener
 
                 for (int i = 0; i < locations.length; i++)
                 {
-                    CreateExplosionTask task = new CreateExplosionTask(plugin, locations[i], Type.TNT);
+                    CreateExplosionTask task = new CreateExplosionTask(plugin, locations[i], ExplosionType.TNT);
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 3L * (i + 1));
                 }
             }
@@ -91,7 +94,7 @@ public class Explosions implements Listener
 
 
         // FEATURE: in hardened stone mode, TNT only softens stone to cobble
-        if (hardStoneEnabled)
+        if (turnStoneToCobble)
         {
             List<Block> blocks = event.blockList();
             for (int i = 0; i < blocks.size(); i++)
@@ -117,7 +120,7 @@ public class Explosions implements Listener
             {
                 event.setCancelled(true);
                 // same as vanilla TNT, plus fire
-                new CreateExplosionTask(plugin, entity.getLocation(), Type.GHAST_FIREBALL).run();
+                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.GHAST_FIREBALL).run();
             }
         }
     }
@@ -211,151 +214,6 @@ public class Explosions implements Listener
                     }
                 }
             }
-        }
-    }
-    /**
-     * Holds all the information about Explosions, this class should be used to create Explosions and not to access
-     * configvalues of explosions
-     */
-    public enum Type implements ConfigNode
-    {   /**yLevel, powerBelow, powerAbove, fireBelow, fireAbove, allowBlockDamageBelow, allowBlockDamageAbove**/
-
-        /**
-         * From BetterTnt: Stronger tnt
-         */
-        TNT
-                (60, 6, false, true, 4, false, true),
-        /**
-         * When a magmacube explodes into blazeform
-         */
-        MAGMACUBE_FIRE
-                (0, 2, true, true, 2, true, true),
-        /**
-         * Just more powerful creepers
-         */
-        CREEPER
-                (60, 3, false, true, 5, false, true),
-        /**
-         * Even more powerful charged creepers
-         */
-        CREEPER_CHARGED
-                (60, 4, false, true, 6, false, true),
-        /**
-         * GhastFireball, netherrack is very soft, so this makes a big hole
-         */
-        GHAST_FIREBALL
-                (60, 3, true, true, 3, true, true),
-        /**
-         * When a blaze explodes in the overworld
-         */
-        BLAZE
-                (60, 4, true, true, 4, true, true);
-
-        private int yLevel;
-        private int powerBelowY;
-        private int powerAboveY;
-        private boolean fireBelowY;
-        private boolean fireAboveY;
-        private boolean allowBlockDamageBelowY;
-        private boolean allowBlockDamageAboveY;
-
-        Type(int yLevel, int powerBelowY, boolean fireBelowY, boolean allowBlockDamageBelowY, int powerAboveY, boolean fireAboveY, boolean allowBlockDamageAboveY)
-        {
-            this.yLevel = yLevel;
-            this.powerBelowY = powerBelowY;
-            this.powerAboveY = powerAboveY;
-            this.fireBelowY = fireBelowY;
-            this.fireAboveY = fireAboveY;
-            this.allowBlockDamageBelowY = allowBlockDamageBelowY;
-            this.allowBlockDamageAboveY = allowBlockDamageAboveY;
-        }
-
-        @Override
-        public String getPath()
-        {
-            return null;
-        }
-
-        @Override
-        public VarType getVarType()
-        {
-            return null;
-        }
-
-        @Override
-        public Object getDefaultValue()
-        {
-            return null;
-        }
-
-        public int getYLevel()
-        {
-            return yLevel;
-        }
-
-        public void setyLevel(int yLevel)
-        {
-            this.yLevel = yLevel;
-        }
-
-        public int getPowerBelowY()
-        {
-            return powerBelowY;
-        }
-
-        public void setPowerBelowY(int powerBelowY)
-        {
-            this.powerBelowY = powerBelowY;
-        }
-
-        public int getPowerAboveY()
-        {
-            return powerAboveY;
-        }
-
-        public void setPowerAboveY(int powerAboveY)
-        {
-            this.powerAboveY = powerAboveY;
-        }
-
-        public boolean getIsFireBelowY()
-        {
-            return  fireBelowY;
-        }
-
-        public void setFireBelowY(boolean fireBelowY)
-        {
-            this.fireBelowY = fireBelowY;
-        }
-
-        public boolean getIsFireAboveY()
-        {
-            return fireAboveY;
-        }
-
-        public void setFireAboveY(boolean fireAboveY)
-        {
-            this.fireAboveY = fireAboveY;
-        }
-
-        public boolean getAllowBlockDamageBelowY()
-        {
-            return allowBlockDamageBelowY;
-        }
-
-        public void setAllowBlockDamageBelowY(boolean allowBlockDamageBelowY)
-        {
-            this.allowBlockDamageBelowY = allowBlockDamageBelowY;
-        }
-
-        public boolean getAllowBlockDamageAboveY()
-        {
-            return allowBlockDamageAboveY;
-        }
-
-        public void setAllowBlockDamageAboveY(boolean allowBlockDamageAboveY)
-        {
-            this.allowBlockDamageAboveY = allowBlockDamageAboveY;
         }
     }
 }

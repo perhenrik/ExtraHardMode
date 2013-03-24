@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +33,8 @@ public class DynamicConfig extends EHMModule
     public void starting()
     {
         initTable();
-        loadIntoMem();
+        validateAndLoad(getAllConfigs(plugin.getDataFolder()));
+        //rewriteConfig(plugin.getDataFolder() + File.separator + "config.yml");
     }
 
     @Override
@@ -42,11 +44,18 @@ public class DynamicConfig extends EHMModule
         multiConfig = null;
     }
 
+    /**
+     * Initialize/clear the central Table for storing all configvalues
+     */
     public void initTable ()
     {
         multiConfig = HashBasedTable.create();
     }
 
+    /**
+     * Get/Return all worlds where ehm or parts of ehm are activated
+     * @return
+     */
     public ArrayList<String> getEnabledWorlds()
     {
         ArrayList<String> worlds = new ArrayList<String>();
@@ -54,13 +63,14 @@ public class DynamicConfig extends EHMModule
     }
 
     /**
-     * Load all FileConfigurations into memory
+     * Search the base directory for config files, check the files to be valid
+     * @param baseDir
+     * @return all validated FileConfigurations found in the plugin directory
      */
-    public void loadIntoMem ()
+    public ArrayList<FileConfiguration> getAllConfigs (File baseDir)
     {
-        //TODO move to submethods and write unit tests
         //All Filenames that are .yml files
-        String [] filePaths = plugin.getDataFolder().list(new FilenameFilter()
+        String [] filePaths = baseDir.list(new FilenameFilter()
         {
             @Override
             public boolean accept(File dir, String name)
@@ -75,7 +85,7 @@ public class DynamicConfig extends EHMModule
         configFiles.add(plugin.getConfig());
         for (String file : filePaths)
         {
-            FileConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder() + File.separator + file)); //shouldnt cause an error
+            FileConfiguration config = YamlConfiguration.loadConfiguration(new File(baseDir + File.separator + file)); //shouldnt cause an error
             configFiles.add(config);
         }
 
@@ -91,7 +101,15 @@ public class DynamicConfig extends EHMModule
             else iter.remove();
 
         }
+        return configFiles;
+    }
 
+    /**
+     *
+     * @param configFiles
+     */
+    public void validateAndLoad (ArrayList<FileConfiguration> configFiles)
+    {
         //Lexically load the FileConfigurations into memory, first always being config.yml
         for (int rowNum = 0; rowNum < configFiles.size(); rowNum++)
         {
@@ -105,13 +123,13 @@ public class DynamicConfig extends EHMModule
                     //First config contains defaults. If an option is not present, other configs don't query the defaults and only contain overrides
                     if (rowNum == 0)
                     {
-                        valueFromFile = loadFromConfig(config, node, true);
+                        valueFromFile = loadFromConfig(config, node, true /*return defaults if not present*/);
                     }else
                     {
                         valueFromFile = loadFromConfig(config, node, false);
                     }
                     //Validate Integers based on their SubType
-                    if (node.getSubType() != null)
+                    if (node.getSubType() != null && node.getVarType().equals(ConfigNode.VarType.INTEGER))
                     {
                         int val = (Integer) valueFromFile;
                         switch (node.getSubType())
@@ -135,7 +153,7 @@ public class DynamicConfig extends EHMModule
                                 throw new UnsupportedOperationException("SubType of " + node.getPath() + " hasn't got a validate method");
                         }
                     }
-                    updateOption(rowNum, node, config.get(node.getPath()));
+                    updateOption(rowNum, node, valueFromFile);
                 }
             }
         }
@@ -192,6 +210,58 @@ public class DynamicConfig extends EHMModule
     }
 
     /**
+     * Rewrite the config file to disk.
+     * @param fileName
+     */
+    public void rewriteConfig(String fileName)
+    {
+        FileConfiguration config = new YamlConfiguration();
+        RootNode[] nodes = RootNode.values();
+        for (RootNode node : nodes)
+        {
+            switch (node.getVarType())
+            {
+                case BOOLEAN:
+                {
+                    config.set(node.getPath(), getBooleanById(node, 0));
+                    break;
+                }
+                case STRING:
+                {
+                    config.set(node.getPath(), getStringById(node, 0));
+                    break;
+                }
+                case INTEGER:
+                {
+                    config.set(node.getPath(), getIntById(node, 0));
+                    break;
+                }
+                case DOUBLE:
+                {
+                    config.set(node.getPath(), getDoubleById(node, 0));
+                    break;
+                }
+                case LIST:
+                {
+                    config.set(node.getPath(), getStringListById(node, 0));
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+        }
+        try //dunno how to get the file for the cfg to overwrite...
+        {
+            config.save(new File(fileName));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Save an option to memory
      *
      * @param node - ConfigNode to update.
@@ -203,12 +273,25 @@ public class DynamicConfig extends EHMModule
     }
 
     /**
-     * Get the integer value of the node.
+     * Get the integer value of the node for the specific world
      *
      * @param node - Node to use.
+     * @param world - World for which tho get config
      * @return Value of the node. Returns -1 if unknown.
      */
     public int getInt(final ConfigNode node, String world)
+    {
+        return getIntById(node, getLastIndex(node, world));
+    }
+
+    /**
+     * Get the int value of the node by the index in the Table
+     *
+     * @param node - Node to use
+     * @param index - in the Table to get the value from
+     *
+     */
+    public int getIntById(final ConfigNode node, int index)
     {
         int i = -1;
         switch (node.getVarType())
@@ -217,8 +300,7 @@ public class DynamicConfig extends EHMModule
             {
                 try
                 {
-                    int lastIndex = getLastIndex(node, world);
-                    i = ((Integer) multiConfig.get(lastIndex, node)).intValue();
+                    i = ((Integer) multiConfig.get(index, node)).intValue();
                 } catch (NullPointerException npe)
                 {
                     i = ((Integer) node.getDefaultValue()).intValue();
@@ -241,6 +323,11 @@ public class DynamicConfig extends EHMModule
      */
     public String getString(final ConfigNode node, String world)
     {
+        return getStringById(node, getLastIndex(node, world));
+    }
+
+    public String getStringById (ConfigNode node, int index)
+    {
         String out = "";
         switch (node.getVarType())
         {
@@ -248,8 +335,7 @@ public class DynamicConfig extends EHMModule
             {
                 try
                 {
-                    int lastIndex = getLastIndex(node, world);
-                    out = (String) multiConfig.get(lastIndex, node);
+                    out = (String) multiConfig.get(index, node);
                     if (out == null)
                     {
                         out = (String) node.getDefaultValue();
@@ -274,8 +360,19 @@ public class DynamicConfig extends EHMModule
      * @param node - Node to use.
      * @return Value of the node. Returns an empty list if unknown.
      */
-    @SuppressWarnings("unchecked")
     public List<String> getStringList(final ConfigNode node, String world)
+    {
+        return getStringListById(node, getLastIndex(node, world));
+    }
+
+    /**
+     * Get the list value of the node.
+     *
+     * @param node - Node to use.
+     * @return Value of the node. Returns an empty list if unknown.
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> getStringListById(final ConfigNode node, int index)
     {
         List<String> list = new ArrayList<String>();
         switch (node.getVarType())
@@ -284,8 +381,7 @@ public class DynamicConfig extends EHMModule
             {
                 try
                 {
-                    int lastIndex = getLastIndex(node, world);
-                    list = (List<String>) multiConfig.get(lastIndex, node);
+                    list = (List<String>) multiConfig.get(index, node);
                     if (list == null)
                     {
                         list = (List<String>) node.getDefaultValue();
@@ -312,6 +408,17 @@ public class DynamicConfig extends EHMModule
      */
     public double getDouble(final ConfigNode node, String world)
     {
+        return getDoubleById(node, getLastIndex(node, world));
+    }
+
+    /**
+     * Get the double value of the node.
+     *
+     * @param node - Node to use.
+     * @return Value of the node. Returns 0 if unknown.
+     */
+    public double getDoubleById(final ConfigNode node, int index)
+    {
         double d = 0.0;
         switch (node.getVarType())
         {
@@ -319,8 +426,7 @@ public class DynamicConfig extends EHMModule
             {
                 try
                 {
-                    int lastIndex = getLastIndex(node, world);
-                    d = ((Double) multiConfig.get(lastIndex, node)).doubleValue();
+                    d = ((Double) multiConfig.get(index, node)).doubleValue();
                 } catch (NullPointerException npe)
                 {
                     d = ((Double) node.getDefaultValue()).doubleValue();
@@ -339,10 +445,22 @@ public class DynamicConfig extends EHMModule
      * Get the boolean value of the node.
      *
      * @param node - Node to use.
-     * @param world - world
+     * @param world - where this config applies
      * @return Value of the node. Returns false if unknown.
      */
     public boolean getBoolean(ConfigNode node, String world)
+    {
+        return getBooleanById(node, getLastIndex(node, world));
+    }
+
+    /**
+     * Get the boolean value of the node.
+     *
+     * @param node - Node to use.
+     * @param index - to get
+     * @return Value of the node. Returns false if unknown.
+     */
+    public boolean getBooleanById(ConfigNode node, int index)
     {
         boolean b = false;
         switch (node.getVarType())
@@ -351,8 +469,7 @@ public class DynamicConfig extends EHMModule
             {
                 try
                 {
-                    int lastIndex = getLastIndex(node, world);
-                    b = ((Boolean) multiConfig.get(lastIndex, node)).booleanValue();
+                    b = ((Boolean) multiConfig.get(index, node)).booleanValue();
                 } catch (NullPointerException e)
                 {
                     b = (Boolean) node.getDefaultValue();

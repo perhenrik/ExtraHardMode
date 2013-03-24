@@ -2,8 +2,10 @@ package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
+import me.ryanhamshire.ExtraHardMode.task.CreateExplosionTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -152,7 +154,7 @@ public class Bitches implements Listener
             if (makeExplosion)
             {
                 // explosion just for show, no damage
-                location.getWorld().createExplosion(location, 0F);
+                new CreateExplosionTask(plugin, location, ExplosionType.EFFECT).run();
 
                 for (LivingEntity target : event.getAffectedEntities())
                 {

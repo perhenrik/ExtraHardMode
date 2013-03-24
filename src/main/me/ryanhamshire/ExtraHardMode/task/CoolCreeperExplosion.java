@@ -20,8 +20,8 @@ package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
-import me.ryanhamshire.ExtraHardMode.features.Explosions;
 import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -138,7 +138,7 @@ public class CoolCreeperExplosion implements Runnable
         {
             if (creeper != null &! creeper.isDead())
             {
-                new CreateExplosionTask(plugin, creeper.getLocation(), Explosions.Type.CREEPER, creeper);
+                new CreateExplosionTask(plugin, creeper.getLocation(), ExplosionType.CREEPER, creeper);
             }
             if (creeper != null)
                 creeper.remove();

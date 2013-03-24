@@ -20,28 +20,33 @@ import org.bukkit.Material;
 import java.util.ArrayList;
 
 /**
- * Configuration options of the root config.yml file.
- */
+        * Configuration options of the root config.yml file.
+        */
 //Please keep the codestyle, it makes it easier to grasp the structure of the config
 public enum RootNode implements ConfigNode
 {
+    /**
+     * Used to identify configFiles
+     */
+    TYPE
+            ("ExtraHardMode.Plugin.Config Type", VarType.STRING, "EHM ${version}"),
+
     /**
      * list of worlds where extra hard mode rules apply
      */
     WORLDS
             ("ExtraHardMode.Enabled Worlds", VarType.LIST, new ArrayList<String>()),
 
-
     /**
      * Should explosions be disabled? They don't get recognized by a lot of plugins
      */
-    DISABLE_EXPLOSIONS
-            ("ExtraHardMode.Plugin.Disable Explosions", VarType.BOOLEAN, false),
+    EXPLOSIONS_DISABLE_ABOVE
+            ("ExtraHardMode.Explosions.No BlockDamage Above Y", VarType.INTEGER, SubType.Y_VALUE, 255),
     /**
-     * Type of config
+     * Should Stone be turned to cobblestone
      */
-    TYPE
-            ("ExtraHardMode.Plugin.Config Type", VarType.STRING, "EHM Worlds"),
+    EXPLOSIONS_TURN_STONE_TO_COBLE
+            ("ExtraHardMode.Explosions.Turn Stone To Cobble", VarType.BOOLEAN, true),
 
     /**
      * whether stone is hardened to encourage cave exploration over tunneling
@@ -471,19 +476,19 @@ public enum RootNode implements ConfigNode
     /**
      * Path.
      */
-    private final String path;
+    private String path;
     /**
      * Variable type.
      */
-    private final VarType type;
+    private VarType type;
     /**
      * Subtype like percentage, y-value, health
      */
-    private final SubType subType;
+    private SubType subType;
     /**
      * Default value.
      */
-    private final Object defaultValue;
+    private Object defaultValue;
 
     /**
      * Constructor.
@@ -529,6 +534,10 @@ public enum RootNode implements ConfigNode
     public SubType getSubType()
     {
         return subType;
+    }
+    public void setSubType (SubType subType)
+    {
+        this.subType = subType;
     }
 
     /**

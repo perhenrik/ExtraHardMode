@@ -2,8 +2,8 @@ package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
-import me.ryanhamshire.ExtraHardMode.features.Explosions;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import me.ryanhamshire.ExtraHardMode.task.CoolCreeperExplosion;
@@ -122,7 +122,7 @@ public class BumBumBens implements Listener
                     }
                     entityModule.markLootLess((LivingEntity) entity);
                     entity.remove();
-                    new CreateExplosionTask(plugin, entity.getLocation(), Explosions.Type.CREEPER_CHARGED, creeper).run(); // equal to a TNT blast
+                    new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED, creeper).run(); // equal to a TNT blast
                 }
             }
         }
@@ -162,7 +162,7 @@ public class BumBumBens implements Listener
         {
             event.setCancelled(true);
             entityModule.flagIgnore(entity);//Ignore this creeper in further calls to this method
-            new CreateExplosionTask(plugin, entity.getLocation(), Explosions.Type.CREEPER, (Creeper)entity).run();
+            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER, (Creeper)entity).run();
         }
     }
 }
