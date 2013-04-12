@@ -82,7 +82,7 @@ public class Bitches implements Listener
 
         // FEATURE: enhanced witches. they throw wolf spawner and teleport potions as well as poison potions
         LivingEntity shooter = potion.getShooter();
-        if (additionalAttacks && shooter.getType() == EntityType.WITCH)
+        if (additionalAttacks && shooter != null && shooter.getType() == EntityType.WITCH)
         {
             Witch witch = (Witch) shooter;
 
