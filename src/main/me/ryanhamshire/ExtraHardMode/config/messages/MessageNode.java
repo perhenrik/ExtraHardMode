@@ -72,6 +72,12 @@ public enum MessageNode implements ConfigNode
     }
 
     @Override
+    public SubType getSubType()
+    {/*ignored*/
+        return null;
+    }
+
+    @Override
     public Object getDefaultValue()
     {
         return defaultValue;

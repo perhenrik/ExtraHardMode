@@ -2,7 +2,7 @@ package me.ryanhamshire.ExtraHardMode.features;
 
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
@@ -30,7 +30,7 @@ import java.util.List;
 public class HardenedStone implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
     UtilityModule utils;
     MessageConfig messages;
     BlockModule blockModule;
@@ -38,7 +38,7 @@ public class HardenedStone implements Listener
     public HardenedStone (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
@@ -55,13 +55,13 @@ public class HardenedStone implements Listener
         World world = block.getWorld();
         Player player = event.getPlayer();
 
-        final boolean hardStoneEnabled = dynC.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
-        final boolean hardStonePhysix = dynC.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS, world.getName());
-        final int stoneBlocksIron = dynC.getInt(RootNode.IRON_DURABILITY_PENALTY, world.getName());
-        final int stoneBlocksDiamond = dynC.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
+        final boolean hardStoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
+        final boolean hardStonePhysix = CFG.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS, world.getName());
+        final int stoneBlocksIron = CFG.getInt(RootNode.IRON_DURABILITY_PENALTY, world.getName());
+        final int stoneBlocksDiamond = CFG.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
 
         // FEATURE: stone breaks tools much more quickly
-        if (hardStoneEnabled &! player.getGameMode().equals(GameMode.CREATIVE))
+        if (hardStoneEnabled &&! player.getGameMode().equals(GameMode.CREATIVE))
         {
             ItemStack inHandStack = player.getItemInHand();
 
@@ -88,7 +88,10 @@ public class HardenedStone implements Listener
                     else
                         amount = stoneBlocksDiamond;
 
-                    int maxDurability = tool.getMaxDurability();
+                    int maxDurability = 0;
+                    if (amount != 0)
+                        maxDurability = tool.getMaxDurability();
+                    else return;
                     int damagePerBlock = maxDurability / amount;
 
                     inHandStack.setDurability((short) (inHandStack.getDurability() + damagePerBlock));
@@ -123,8 +126,8 @@ public class HardenedStone implements Listener
         Block block = placeEvent.getBlock();
         World world = block.getWorld();
 
-        final boolean hardstoneEnabled = dynC.getBoolean(RootNode.SUPER_HARD_STONE, world.getName())
-                                         &! player.getGameMode().equals(GameMode.CREATIVE);
+        final boolean hardstoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName())
+                                         &&! player.getGameMode().equals(GameMode.CREATIVE);
 
         if (hardstoneEnabled && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES")))
         {
@@ -159,7 +162,7 @@ public class HardenedStone implements Listener
         List<Block> blocks = event.getBlocks();
         World world = event.getBlock().getWorld();
 
-        final boolean superHardStone = dynC.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
+        final boolean superHardStone = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
 
         if (superHardStone)
         {
@@ -189,7 +192,7 @@ public class HardenedStone implements Listener
         Block block = event.getRetractLocation().getBlock();
         World world = block.getWorld();
 
-        final boolean hardStoneEnabled = dynC.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
+        final boolean hardStoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
 
         // we only care about sticky pistons
         if (event.isSticky() && hardStoneEnabled)

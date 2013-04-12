@@ -20,7 +20,7 @@
 package me.ryanhamshire.ExtraHardMode;
 
 import me.ryanhamshire.ExtraHardMode.command.Commander;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.features.*;
 import me.ryanhamshire.ExtraHardMode.features.monsters.*;
@@ -68,7 +68,7 @@ public class ExtraHardMode extends JavaPlugin
     public void onEnable()
     {
         // Register modules
-        registerModule(DynamicConfig.class, new DynamicConfig(this));
+        registerModule(RootConfig.class, new RootConfig(this));
         registerModule(MessageConfig.class, new MessageConfig(this));
         registerModule(DataStoreModule.class, new DataStoreModule(this));
         registerModule(EntityModule.class, new EntityModule(this));

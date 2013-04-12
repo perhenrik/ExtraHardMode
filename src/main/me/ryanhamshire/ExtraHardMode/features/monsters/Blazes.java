@@ -2,7 +2,7 @@ package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
 public class Blazes implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
     MessageConfig messages;
     UtilityModule utils = null;
     EntityModule entityModule = null;
@@ -35,7 +35,7 @@ public class Blazes implements Listener
     public Blazes (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
@@ -51,8 +51,8 @@ public class Blazes implements Listener
         Location location = event.getLocation();
         World world = location.getWorld();
 
-        final int bonusNetherBlazeSpawnPercent = dynC.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, world.getName());
-        final int nearBedrockSpawnPercent = dynC.getInt(RootNode.NEAR_BEDROCK_BLAZE_SPAWN_PERCENT, world.getName());
+        final int bonusNetherBlazeSpawnPercent = CFG.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, world.getName());
+        final int nearBedrockSpawnPercent = CFG.getInt(RootNode.NEAR_BEDROCK_BLAZE_SPAWN_PERCENT, world.getName());
 
         LivingEntity entity = event.getEntity();
         EntityType entityType = entity.getType();
@@ -97,9 +97,9 @@ public class Blazes implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean bonusLoot = dynC.getBoolean(RootNode.BLAZES_DROP_BONUS_LOOT, world.getName());
-        final boolean blazesExplodeOnDeath = dynC.getBoolean(RootNode.BLAZES_EXPLODE_ON_DEATH, world.getName());
-        final int blazeSplitPercent = dynC.getInt(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT, world.getName());
+        final boolean bonusLoot = CFG.getBoolean(RootNode.BLAZES_DROP_BONUS_LOOT, world.getName());
+        final boolean blazesExplodeOnDeath = CFG.getBoolean(RootNode.BLAZES_EXPLODE_ON_DEATH, world.getName());
+        final int blazeSplitPercent = CFG.getInt(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT, world.getName());
 
         // FEATURE: nether blazes drop extra loot (glowstone and gunpowder)
         if (bonusLoot && entity instanceof Blaze)
@@ -184,8 +184,8 @@ public class Blazes implements Listener
         EntityType entityType = entity.getType();
         World world = entity.getWorld();
 
-        final boolean magmacubesBlazeOnDmg = dynC.getBoolean(RootNode.MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE, world.getName());
-        final boolean blazeFireOnDmg = dynC.getBoolean(RootNode.BLAZES_DROP_FIRE_ON_DAMAGE, world.getName());
+        final boolean magmacubesBlazeOnDmg = CFG.getBoolean(RootNode.MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE, world.getName());
+        final boolean blazeFireOnDmg = CFG.getBoolean(RootNode.BLAZES_DROP_FIRE_ON_DAMAGE, world.getName());
 
         // FEATURE: magma cubes become blazes when they take damage
         if (magmacubesBlazeOnDmg && entityType == EntityType.MAGMA_CUBE  && !entity.isDead())

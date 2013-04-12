@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -30,12 +30,12 @@ import org.bukkit.inventory.ItemStack;
 public class Pigies implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
 
     public Pigies(ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     @EventHandler
@@ -44,8 +44,8 @@ public class Pigies implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean pigWartFortress = dynC.getBoolean(RootNode.FORTRESS_PIGS_DROP_WART, world.getName());
-        final int  pigWartDropEveryWherePercent = dynC.getInt(RootNode.NETHER_PIGS_DROP_WART, world.getName());
+        final boolean pigWartFortress = CFG.getBoolean(RootNode.FORTRESS_PIGS_DROP_WART, world.getName());
+        final int  pigWartDropEveryWherePercent = CFG.getInt(RootNode.NETHER_PIGS_DROP_WART, world.getName());
 
         // FEATURE: pig zombies drop nether wart when slain in nether fortresses
         if (pigWartFortress && world.getEnvironment().equals(World.Environment.NETHER) && entity instanceof PigZombie)
@@ -72,7 +72,7 @@ public class Pigies implements Listener
         World world = location.getWorld();
         LivingEntity entity = event.getEntity();
 
-        final boolean pigsAlwaysAggro = dynC.getBoolean(RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, world.getName());
+        final boolean pigsAlwaysAggro = CFG.getBoolean(RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, world.getName());
 
         // FEATURE: always-angry pig zombies
         if (pigsAlwaysAggro)
@@ -96,7 +96,7 @@ public class Pigies implements Listener
         Chunk chunk = event.getChunk();
         World world = chunk.getWorld();
 
-        final boolean pigAlwaysAggro = dynC.getBoolean(RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, world.getName());
+        final boolean pigAlwaysAggro = CFG.getBoolean(RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, world.getName());
 
         // FEATURE: always-angry pig zombies
         if (pigAlwaysAggro)

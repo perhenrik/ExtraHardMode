@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
@@ -20,13 +20,13 @@ import org.bukkit.event.entity.*;
 public class BumBumBens implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
     EntityModule entityModule = null;
 
     public BumBumBens(ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
@@ -38,7 +38,7 @@ public class BumBumBens implements Listener
         EntityType entityType = entity.getType();
         World world = entity.getWorld();
 
-        final int chargedSpawnPercent = dynC.getInt(RootNode.CHARGED_CREEPER_SPAWN_PERCENT, world.getName());
+        final int chargedSpawnPercent = CFG.getInt(RootNode.CHARGED_CREEPER_SPAWN_PERCENT, world.getName());
 
         // FEATURE: charged creeper spawns
         if (entityType == EntityType.CREEPER)
@@ -56,9 +56,9 @@ public class BumBumBens implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final int creeperDropTNTPercent = dynC.getInt(RootNode.CREEPERS_DROP_TNT_ON_DEATH_PERCENT, world.getName());
-        final int creeperDropTntMaxY = dynC.getInt(RootNode.CREEPERS_DROP_TNT_ON_DEATH_MAX_Y, world.getName());
-        final boolean creeperSound = dynC.getBoolean(RootNode.SOUND_CREEPER_TNT, world.getName());
+        final int creeperDropTNTPercent = CFG.getInt(RootNode.CREEPERS_DROP_TNT_ON_DEATH_PERCENT, world.getName());
+        final int creeperDropTntMaxY = CFG.getInt(RootNode.CREEPERS_DROP_TNT_ON_DEATH_MAX_Y, world.getName());
+        final boolean creeperSound = CFG.getBoolean(RootNode.SOUND_CREEPER_TNT, world.getName());
 
         // FEATURE: creepers may drop activated TNT when they die
         if (creeperDropTNTPercent > 0)
@@ -87,8 +87,8 @@ public class BumBumBens implements Listener
             damageByEntityEvent = (EntityDamageByEntityEvent) event;
         }
 
-        final boolean chargedExplodeOnHit = dynC.getBoolean(RootNode.CHARGED_CREEPERS_EXPLODE_ON_HIT, world.getName());
-        final boolean flamingCreepersExplode = dynC.getBoolean(RootNode.FLAMING_CREEPERS_EXPLODE, world.getName());
+        final boolean chargedExplodeOnHit = CFG.getBoolean(RootNode.CHARGED_CREEPERS_EXPLODE_ON_HIT, world.getName());
+        final boolean flamingCreepersExplode = CFG.getBoolean(RootNode.FLAMING_CREEPERS_EXPLODE, world.getName());
 
         // FEATURE: charged creepers explode on hit
         if (chargedExplodeOnHit)
@@ -158,7 +158,7 @@ public class BumBumBens implements Listener
 
         //TODO CONFIG
         // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
-        if (entity != null && entity instanceof Creeper &! entityModule.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
+        if (entity != null && entity instanceof Creeper &&! entityModule.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
         {
             event.setCancelled(true);
             entityModule.flagIgnore(entity);//Ignore this creeper in further calls to this method

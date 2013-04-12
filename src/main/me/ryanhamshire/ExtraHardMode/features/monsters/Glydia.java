@@ -2,7 +2,7 @@ package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
@@ -31,7 +31,7 @@ import java.util.List;
 public class Glydia implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
     MessageConfig messages;
     EntityModule entityModule;
     List <String> playersFightingDragon;
@@ -39,7 +39,7 @@ public class Glydia implements Listener
     public Glydia(ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
     }
@@ -51,7 +51,7 @@ public class Glydia implements Listener
         World world = block.getWorld();
         Player player = breakEvent.getPlayer();
 
-        final boolean endNoBuilding = dynC.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING, world.getName());
+        final boolean endNoBuilding = CFG.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING, world.getName());
 
         // FEATURE: very limited building in the end
         // players are allowed to break only end stone, and only to create a stair
@@ -90,7 +90,7 @@ public class Glydia implements Listener
         Block block = placeEvent.getBlock();
         World world = block.getWorld();
 
-        final boolean enderDragonNoBuilding = dynC.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING, world.getName());
+        final boolean enderDragonNoBuilding = CFG.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING, world.getName());
 
         // FEATURE: very limited building in the end players are allowed to break only end stone, and only to create a stair up to ground level
         if (enderDragonNoBuilding && world.getEnvironment() == World.Environment.THE_END)
@@ -107,9 +107,9 @@ public class Glydia implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean endNoBuilding = dynC.getBoolean(RootNode.ENDER_DRAGON_DROPS_VILLAGER_EGGS, world.getName());
-        final boolean enderDragonDropsEggs = dynC.getBoolean(RootNode.ENDER_DRAGON_DROPS_EGG, world.getName());
-        final boolean announcements = dynC.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, world.getName());
+        final boolean endNoBuilding = CFG.getBoolean(RootNode.ENDER_DRAGON_DROPS_VILLAGER_EGGS, world.getName());
+        final boolean enderDragonDropsEggs = CFG.getBoolean(RootNode.ENDER_DRAGON_DROPS_EGG, world.getName());
+        final boolean announcements = CFG.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, world.getName());
 
         // FEATURE: ender dragon drops prizes on death
         if (entity instanceof EnderDragon)
@@ -166,8 +166,8 @@ public class Glydia implements Listener
             damageByEntityEvent = (EntityDamageByEntityEvent) event;
         }
 
-        final boolean dragonAdditionalAttacks =  dynC.getBoolean(RootNode.ENDER_DRAGON_ADDITIONAL_ATTACKS, world.getName());
-        final boolean dragonAnnouncements = dynC.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, world.getName());
+        final boolean dragonAdditionalAttacks =  CFG.getBoolean(RootNode.ENDER_DRAGON_ADDITIONAL_ATTACKS, world.getName());
+        final boolean dragonAnnouncements = CFG.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, world.getName());
 
         // FEATURE: the dragon has new attacks
         if (dragonAdditionalAttacks && damageByEntityEvent != null && entity.getType() == EntityType.ENDER_DRAGON)
@@ -231,7 +231,7 @@ public class Glydia implements Listener
     {
         World world = event.getFrom();
 
-        final boolean respawnDragon = dynC.getBoolean(RootNode.RESPAWN_ENDER_DRAGON, world.getName());
+        final boolean respawnDragon = CFG.getBoolean(RootNode.RESPAWN_ENDER_DRAGON, world.getName());
 
         // FEATURE: respawn the ender dragon when the last player leaves the end
         if (respawnDragon && world.getEnvironment() == World.Environment.THE_END && world.getPlayers().size() == 0) //Once everyone has left
@@ -314,7 +314,7 @@ public class Glydia implements Listener
         World world = event.getLocation().getWorld();
         Entity entity = event.getEntity();
 
-        final boolean dragonAdditionalAttacks = dynC.getBoolean(RootNode.ENDER_DRAGON_ADDITIONAL_ATTACKS, world.getName());
+        final boolean dragonAdditionalAttacks = CFG.getBoolean(RootNode.ENDER_DRAGON_ADDITIONAL_ATTACKS, world.getName());
 
         // FEATURE: ender dragon fireballs may summon minions and/or set fires
         if (dragonAdditionalAttacks && entity != null && entity.getType() == EntityType.FIREBALL)

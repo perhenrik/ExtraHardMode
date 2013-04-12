@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import me.ryanhamshire.ExtraHardMode.task.RespawnZombieTask;
@@ -26,12 +26,12 @@ import org.bukkit.potion.PotionEffectType;
 public class Zombies implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
 
     public Zombies (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     /**
@@ -44,7 +44,7 @@ public class Zombies implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final int zombiesReanimatePercent = dynC.getInt(RootNode.ZOMBIES_REANIMATE_PERCENT, world.getName());
+        final int zombiesReanimatePercent = CFG.getInt(RootNode.ZOMBIES_REANIMATE_PERCENT, world.getName());
 
         // FEATURE: zombies may reanimate if not on fire when they die
         if (zombiesReanimatePercent > 0)
@@ -87,7 +87,7 @@ public class Zombies implements Listener
             player = (Player) entity;
         }
 
-        final boolean zombiesSlowPlayers = dynC.getBoolean(RootNode.ZOMBIES_DEBILITATE_PLAYERS, world.getName());
+        final boolean zombiesSlowPlayers = CFG.getBoolean(RootNode.ZOMBIES_DEBILITATE_PLAYERS, world.getName());
         final boolean playerPerm = player != null ? !player.hasPermission(PermissionNode.BYPASS.getNode()) : false;
 
         // is this an entity damaged by entity event?
@@ -98,7 +98,7 @@ public class Zombies implements Listener
         }
 
         // FEATURE: zombies can apply a debilitating effect
-        if (zombiesSlowPlayers &! playerPerm)
+        if (zombiesSlowPlayers &&! playerPerm)
         {
             if (damageByEntityEvent != null && damageByEntityEvent.getDamager() instanceof Zombie)
             {

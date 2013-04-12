@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import org.bukkit.Location;
@@ -24,12 +24,12 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 public class Skeletors implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
 
     public Skeletors(ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
 
@@ -45,8 +45,8 @@ public class Skeletors implements Listener
         EntityType entityType = entity.getType();
         World world = entity.getWorld();
 
-        final int deflect = dynC.getInt(RootNode.SKELETONS_DEFLECT_ARROWS, world.getName());
-        final int knockBackPercent = dynC.getInt(RootNode.SKELETONS_KNOCK_BACK_PERCENT, world.getName());
+        final int deflect = CFG.getInt(RootNode.SKELETONS_DEFLECT_ARROWS, world.getName());
+        final int knockBackPercent = CFG.getInt(RootNode.SKELETONS_KNOCK_BACK_PERCENT, world.getName());
 
 
         // is this an entity damaged by entity event?
@@ -120,7 +120,7 @@ public class Skeletors implements Listener
         World world = location.getWorld();
         EntityType entityType = event.getEntityType();
 
-        final int silverfishShootPercent = dynC.getInt(RootNode.SKELETONS_RELEASE_SILVERFISH, world.getName());
+        final int silverfishShootPercent = CFG.getInt(RootNode.SKELETONS_RELEASE_SILVERFISH, world.getName());
 
         // FEATURE: skeletons sometimes release silverfish to attack their targets
         if (event.getEntity() != null && entityType == EntityType.ARROW)

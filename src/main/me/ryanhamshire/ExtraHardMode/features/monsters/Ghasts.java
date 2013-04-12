@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import org.bukkit.World;
@@ -26,12 +26,12 @@ import java.util.List;
 public class Ghasts implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
 
     public Ghasts (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     @EventHandler
@@ -40,7 +40,7 @@ public class Ghasts implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean ghastDeflectArrows = dynC.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
+        final boolean ghastDeflectArrows = CFG.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
 
         // FEATURE: ghasts deflect arrows and drop extra loot and exp
         if (ghastDeflectArrows)
@@ -64,7 +64,7 @@ public class Ghasts implements Listener
         EntityType entityType = entity.getType();
         World world = entity.getWorld();
 
-        final boolean ghastDeflectArrows = dynC.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
+        final boolean ghastDeflectArrows = CFG.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
 
         EntityDamageByEntityEvent damageByEntityEvent = null;
         if (event instanceof EntityDamageByEntityEvent)

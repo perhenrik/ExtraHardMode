@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -21,12 +21,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 public class Bobs implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
 
     public Bobs(ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     /**
@@ -40,7 +40,7 @@ public class Bobs implements Listener
         Entity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean improvedEndermanTeleportation = dynC.getBoolean(RootNode.IMPROVED_ENDERMAN_TELEPORTATION, world.getName());
+        final boolean improvedEndermanTeleportation = CFG.getBoolean(RootNode.IMPROVED_ENDERMAN_TELEPORTATION, world.getName());
 
         if (entity instanceof Enderman && improvedEndermanTeleportation && world.getEnvironment().equals(World.Environment.NORMAL))
         {

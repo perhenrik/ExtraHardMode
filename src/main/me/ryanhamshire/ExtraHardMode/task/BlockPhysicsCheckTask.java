@@ -18,14 +18,16 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Called to apply physics to a block and its neighbors if necessary.
@@ -51,7 +53,7 @@ public class BlockPhysicsCheckTask implements Runnable
     /**
      * Config Reference
      */
-    DynamicConfig dynC;
+    RootConfig CFG;
 
     /**
      * Constructor.
@@ -65,13 +67,13 @@ public class BlockPhysicsCheckTask implements Runnable
         this.plugin = plugin;
         this.block = block;
         this.recursionCount = recursionCount;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     @Override
     public void run()
     {
-        final ArrayList<String> fallingBlocks = dynC.getEnabledWorlds();
+        final List fallingBlocks = Arrays.asList(CFG.getEnabledWorlds());
 
         BlockModule module = plugin.getModuleForClass(BlockModule.class);
         block = block.getWorld().getBlockAt(block.getLocation());
@@ -83,7 +85,7 @@ public class BlockPhysicsCheckTask implements Runnable
                 && (material == Material.SAND
                 || material == Material.GRAVEL
                 || fallingBlocks.contains(material))
-                && dynC.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, block.getWorld().getName()))
+                && CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, block.getWorld().getName()))
         {
             module.applyPhysics(block);
             fall = true;

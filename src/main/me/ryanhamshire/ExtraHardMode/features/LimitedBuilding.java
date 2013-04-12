@@ -2,7 +2,7 @@ package me.ryanhamshire.ExtraHardMode.features;
 
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
@@ -20,13 +20,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class LimitedBuilding implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
     UtilityModule utils = null;
 
     public LimitedBuilding (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
@@ -43,7 +43,7 @@ public class LimitedBuilding implements Listener
         Block block = placeEvent.getBlock();
         World world = block.getWorld();
 
-        final boolean limitedBlockPlacement = dynC.getBoolean(RootNode.LIMITED_BLOCK_PLACEMENT, world.getName());
+        final boolean limitedBlockPlacement = CFG.getBoolean(RootNode.LIMITED_BLOCK_PLACEMENT, world.getName());
         final boolean permLimitedBlockPlace = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                               || player.getGameMode().equals(GameMode.CREATIVE) : true; //Player might be null if Blocks placed by other plugin
 

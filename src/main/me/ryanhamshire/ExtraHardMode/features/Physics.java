@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
@@ -20,13 +20,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class Physics implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
     BlockModule blockModule = null;
 
     public Physics (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
     }
     /**
@@ -41,9 +41,9 @@ public class Physics implements Listener
         Block block = placeEvent.getBlock();
         World world = block.getWorld();
 
-        final boolean physixEnabled = dynC.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName())
-                                      &! player.hasPermission(PermissionNode.BYPASS.getNode())
-                                      &! player.getGameMode().equals(GameMode.CREATIVE);
+        final boolean physixEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName())
+                                      &&! player.hasPermission(PermissionNode.BYPASS.getNode())
+                                      &&! player.getGameMode().equals(GameMode.CREATIVE);
 
         if (physixEnabled)
         {
@@ -63,14 +63,14 @@ public class Physics implements Listener
         World world = block.getWorld();
         Player player = breakEvent.getPlayer();
 
-        final boolean betterTreeChoppingEnabled = dynC.getBoolean(RootNode.BETTER_TREE_CHOPPING, world.getName());
-        final boolean moreFallingBlocksEnabled = dynC.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName());
-        final int netherRackFirePercent = dynC.getInt(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT, world.getName());
+        final boolean betterTreeChoppingEnabled = CFG.getBoolean(RootNode.BETTER_TREE_CHOPPING, world.getName());
+        final boolean moreFallingBlocksEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName());
+        final int netherRackFirePercent = CFG.getInt(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT, world.getName());
         final boolean playerPerm = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                    || player.getGameMode().equals(GameMode.CREATIVE) : true;
 
         // FEATURE: trees chop more naturally
-        if (block.getType() == Material.LOG && betterTreeChoppingEnabled &! playerPerm)
+        if (block.getType() == Material.LOG && betterTreeChoppingEnabled &&! playerPerm)
         {
             Block rootBlock = block;
             while (rootBlock.getType() == Material.LOG)
@@ -90,13 +90,13 @@ public class Physics implements Listener
         }
 
         // FEATURE: more falling blocks
-        if (moreFallingBlocksEnabled &! playerPerm)
+        if (moreFallingBlocksEnabled &&! playerPerm)
         {
             blockModule.physicsCheck(block, 0, true);
         }
 
         // FEATURE: breaking netherrack may start a fire
-        if (netherRackFirePercent > 0 && block.getType() == Material.NETHERRACK &! playerPerm)
+        if (netherRackFirePercent > 0 && block.getType() == Material.NETHERRACK &&! playerPerm)
         {
             Block underBlock = block.getRelative(BlockFace.DOWN);
             if (underBlock.getType() == Material.NETHERRACK && plugin.random(netherRackFirePercent))

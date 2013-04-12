@@ -2,7 +2,7 @@ package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,12 +19,12 @@ import org.bukkit.inventory.ItemStack;
 public class Silverfish implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
 
     public Silverfish (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     /**
@@ -39,7 +39,7 @@ public class Silverfish implements Listener
         Block block = event.getBlock();
         World world = block.getWorld();
 
-        final boolean silverFishCantEnter = dynC.getBoolean(RootNode.SILVERFISH_CANT_ENTER_BLOCKS, world.getName());
+        final boolean silverFishCantEnter = CFG.getBoolean(RootNode.SILVERFISH_CANT_ENTER_BLOCKS, world.getName());
 
         //Prevent Silverfish from entering blocks?
         if (silverFishCantEnter)
@@ -61,7 +61,7 @@ public class Silverfish implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean dropCobble = dynC.getBoolean(RootNode.SILVERFISH_DROP_COBBLE, world.getName());
+        final boolean dropCobble = CFG.getBoolean(RootNode.SILVERFISH_DROP_COBBLE, world.getName());
 
         // FEATURE: silverfish drop cobblestone
         if (dropCobble && entity.getType() == EntityType.SILVERFISH)

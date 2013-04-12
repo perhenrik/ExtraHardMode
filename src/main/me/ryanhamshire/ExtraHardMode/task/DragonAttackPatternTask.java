@@ -20,7 +20,7 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
@@ -42,7 +42,7 @@ public class DragonAttackPatternTask implements Runnable
     /**
      * Config instance
      */
-    private DynamicConfig dynC;
+    private RootConfig CFG;
     /**
      * Target player.
      */
@@ -67,7 +67,7 @@ public class DragonAttackPatternTask implements Runnable
     public DragonAttackPatternTask(ExtraHardMode plugin, LivingEntity dragon, Player player, List<String> playersFightingDragon)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         this.dragon = dragon;
         this.player = player;
         this.playersFightingDragon.addAll(playersFightingDragon);
@@ -81,7 +81,7 @@ public class DragonAttackPatternTask implements Runnable
 
         World world = this.dragon.getWorld();
 
-        final boolean dragonAnnouncements = dynC.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, world.getName());
+        final boolean dragonAnnouncements = CFG.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, world.getName());
 
         // if the player has been defeated
         if (!this.player.isOnline() || world != this.player.getWorld() || this.player.isDead())

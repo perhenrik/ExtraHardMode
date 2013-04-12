@@ -2,7 +2,7 @@ package me.ryanhamshire.ExtraHardMode.features;
 
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
@@ -32,7 +32,7 @@ import java.util.List;
 public class Explosions implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
     MessageConfig messages;
     UtilityModule utils;
     EntityModule entityModule;
@@ -40,7 +40,7 @@ public class Explosions implements Listener
     public Explosions (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
@@ -60,8 +60,8 @@ public class Explosions implements Listener
         World world = event.getLocation().getWorld();
         Entity entity = event.getEntity();
 
-        final boolean betterTntEnabled = dynC.getBoolean(RootNode.BETTER_TNT, world.getName());
-        final boolean turnStoneToCobble = dynC.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
+        final boolean betterTntEnabled = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
+        final boolean turnStoneToCobble = CFG.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
 
         // FEATURE: bigger TNT booms, all explosions have 100% block yield
         if (betterTntEnabled)
@@ -140,7 +140,7 @@ public class Explosions implements Listener
             player = (Player)human;
             World world = player.getWorld();
 
-            final int multiplier = dynC.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
+            final int multiplier = CFG.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
 
             switch (multiplier)
             {
@@ -187,7 +187,7 @@ public class Explosions implements Listener
 
             World world = player.getWorld();
 
-            final int multiplier = dynC.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
+            final int multiplier = CFG.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
             final boolean playerHasBypass = player.hasPermission(PermissionNode.BYPASS.getNode());
 
             if (!playerHasBypass)

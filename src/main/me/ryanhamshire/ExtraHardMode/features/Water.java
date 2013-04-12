@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
@@ -29,13 +29,13 @@ import org.bukkit.util.Vector;
 public class Water implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
     UtilityModule utils;
 
     public Water (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
     /**
@@ -53,18 +53,18 @@ public class Water implements Listener
         Block fromBlock = from.getBlock();
         Block toBlock = to.getBlock();
 
-        final boolean noSwimingInArmor = dynC.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, world.getName())
-                                         &! player.hasPermission(PermissionNode.BYPASS.getNode())
-                                         &! player.getGameMode().equals(GameMode.CREATIVE);
-        final boolean blockWaterElevators = dynC.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS, world.getName());
+        final boolean noSwimingInArmor = CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, world.getName())
+                                         &&! player.hasPermission(PermissionNode.BYPASS.getNode())
+                                         &&! player.getGameMode().equals(GameMode.CREATIVE);
+        final boolean blockWaterElevators = CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS, world.getName());
 
-        final float maxWeight = (float)dynC.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, world.getName());
-        final float armorPoints = (float)dynC.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, world.getName());
-        final float inventoryPoints = (float)dynC.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, world.getName());
-        final float toolPoints = (float)dynC.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, world.getName());
+        final float maxWeight = (float)CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, world.getName());
+        final float armorPoints = (float)CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, world.getName());
+        final float inventoryPoints = (float)CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, world.getName());
+        final float toolPoints = (float)CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, world.getName());
 
-        final int drowningRate = dynC.getInt(RootNode.NO_SWIMMING_IN_ARMOR_DROWN_RATE, world.getName());
-        final int overEncumbranceExtra = dynC.getInt(RootNode.NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA, world.getName());
+        final int drowningRate = CFG.getInt(RootNode.NO_SWIMMING_IN_ARMOR_DROWN_RATE, world.getName());
+        final int overEncumbranceExtra = CFG.getInt(RootNode.NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA, world.getName());
 
         final float normalDrownVel = -.5F;
         final float overwaterDrownVel = -.7F;
@@ -94,14 +94,14 @@ public class Water implements Listener
                             playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
                         }
                         // if too heavy let player feel the weight by pulling them down, if in boat can always swim
-                        if (playerData.cachedWeightStatus > maxWeight &! player.isInsideVehicle())
+                        if (playerData.cachedWeightStatus > maxWeight &&! player.isInsideVehicle())
                         {
                             drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel, overwaterDrownVel);
                         }
                     }
                 }
                 //when you swim up waterfalls and basically are flying with only a tip of your body in water
-                else if (blockWaterElevators &! utils.isPlayerOnLadder(player) &! player.isInsideVehicle())
+                else if (blockWaterElevators &&! utils.isPlayerOnLadder(player) &&! player.isInsideVehicle())
                 {
                     if (playerData.cachedWeightStatus <= 0)
                     {

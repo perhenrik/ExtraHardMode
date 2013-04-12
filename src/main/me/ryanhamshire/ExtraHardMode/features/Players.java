@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
@@ -14,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +33,7 @@ import java.util.List;
 public class Players implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
     MessageConfig messages;
     UtilityModule utils = null;
     EntityModule entityModule = null;
@@ -42,7 +41,7 @@ public class Players implements Listener
     public Players (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
@@ -60,9 +59,9 @@ public class Players implements Listener
         World world = respawnEvent.getPlayer().getWorld();
 
         final int respawnHealth = player.hasPermission(PermissionNode.BYPASS.getNode()) ? player.getMaxHealth()
-                                  : dynC.getInt(RootNode.PLAYER_RESPAWN_HEALTH, world.getName());
+                                  : CFG.getInt(RootNode.PLAYER_RESPAWN_HEALTH, world.getName());
         final int respawnFood = player.hasPermission(PermissionNode.BYPASS.getNode()) ? player.getMaxHealth()
-                                : dynC.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, world.getName());
+                                : CFG.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, world.getName());
 
         if (respawnFood < player.getMaxHealth() || respawnHealth < player.getMaxHealth()) //maxHealth and maxFoodLevel are both 20, but there is no method for maxFoodLevel
         {
@@ -86,7 +85,7 @@ public class Players implements Listener
         Player player = null;
         if (entity instanceof Player) player = (Player) entity;
 
-        final int deathLossPercent = dynC.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT, world.getName());
+        final int deathLossPercent = CFG.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT, world.getName());
         final boolean playerPerm = player != null ? player.hasPermission(PermissionNode.BYPASS_INVENTORY.getNode()) : true; //true: will cause the code not to run
 
         // FEATURE: some portion of player inventory is permanently lost on death
@@ -115,12 +114,12 @@ public class Players implements Listener
             player = (Player) entity;
         }
 
-        final boolean enhancedEnvironmentalDmg = dynC.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE, world.getName());
+        final boolean enhancedEnvironmentalDmg = CFG.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE, world.getName());
         final boolean playerPerm = player != null ? !player.hasPermission(PermissionNode.BYPASS.getNode())
                                    || player.getGameMode().equals(GameMode.CREATIVE) : true;
 
         // FEATURE: extra damage and effects from environmental damage
-        if (enhancedEnvironmentalDmg &! playerPerm)
+        if (enhancedEnvironmentalDmg &&! playerPerm)
         {
             EntityDamageEvent.DamageCause cause = event.getCause();
 
@@ -161,8 +160,8 @@ public class Players implements Listener
         Block block = event.getClickedBlock();
         Action action = event.getAction();
 
-        final boolean extinguishingFireIgnites = dynC.getBoolean(RootNode.EXTINGUISHING_FIRE_IGNITES_PLAYERS, world.getName())
-                                                 &! player.hasPermission(PermissionNode.BYPASS.getNode());
+        final boolean extinguishingFireIgnites = CFG.getBoolean(RootNode.EXTINGUISHING_FIRE_IGNITES_PLAYERS, world.getName())
+                                                 &&! player.hasPermission(PermissionNode.BYPASS.getNode());
 
         // FEATURE: putting out fire up close catches the player on fire
         if (extinguishingFireIgnites && block != null && block.getType() != Material.AIR &&

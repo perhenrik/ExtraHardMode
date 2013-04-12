@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
@@ -26,7 +26,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 public class Antigrinder implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
     MessageConfig messages;
     EntityModule entityModule;
     BlockModule blockModule;
@@ -35,7 +35,7 @@ public class Antigrinder implements Listener
     public Antigrinder (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
@@ -54,8 +54,8 @@ public class Antigrinder implements Listener
         LivingEntity entity = event.getEntity();
         CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
 
-        final boolean inhibitMonsterGrindersEnabled = dynC.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS, world.getName());
-        final int blazeBonusSpawnPercent = dynC.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, world.getName());
+        final boolean inhibitMonsterGrindersEnabled = CFG.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS, world.getName());
+        final int blazeBonusSpawnPercent = CFG.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, world.getName());
 
         // FEATURE: inhibited monster grinders/farms
         if (inhibitMonsterGrindersEnabled)
@@ -110,7 +110,7 @@ public class Antigrinder implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean inhibitMonsterGrindersEnabled = dynC.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS, world.getName());
+        final boolean inhibitMonsterGrindersEnabled = CFG.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS, world.getName());
 
         // FEATURE: monsters which take environmental damage or spawn from spawners don't drop loot and exp (monster grinder inhibitor)
         if (inhibitMonsterGrindersEnabled && entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.SQUID)
@@ -226,7 +226,7 @@ public class Antigrinder implements Listener
         Entity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean inhibitMonsterGrindersEnabled = dynC.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS, world.getName());
+        final boolean inhibitMonsterGrindersEnabled = CFG.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS, world.getName());
 
         // FEATURE: monsters which take environmental damage don't drop loot or experience (monster grinder inhibitor)
         if (inhibitMonsterGrindersEnabled && entity instanceof LivingEntity)

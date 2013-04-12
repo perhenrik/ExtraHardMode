@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
@@ -35,13 +35,13 @@ import org.bukkit.util.Vector;
 public class AntiFarming implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
     UtilityModule utils;
 
     public AntiFarming (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
@@ -57,10 +57,10 @@ public class AntiFarming implements Listener
         World world = event.getPlayer().getWorld();
         Action action = event.getAction();
 
-        final boolean noBonemealOnMushrooms = dynC.getBoolean(RootNode.NO_BONEMEAL_ON_MUSHROOMS, world.getName())
-                                        &! player.hasPermission(PermissionNode.BYPASS.getNode());
-        final boolean weakFoodCrops = dynC.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName())
-                                &! player.hasPermission(PermissionNode.BYPASS.getNode());
+        final boolean noBonemealOnMushrooms = CFG.getBoolean(RootNode.NO_BONEMEAL_ON_MUSHROOMS, world.getName())
+                                        &&! player.hasPermission(PermissionNode.BYPASS.getNode());
+        final boolean weakFoodCrops = CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName())
+                                &&! player.hasPermission(PermissionNode.BYPASS.getNode());
 
         // FEATURE: bonemeal doesn't work on mushrooms
         if (noBonemealOnMushrooms && action == Action.RIGHT_CLICK_BLOCK)
@@ -107,7 +107,7 @@ public class AntiFarming implements Listener
         Block block = breakEvent.getBlock();
         World world = block.getWorld();
 
-        final boolean noFarmingNetherWart = dynC.getBoolean(RootNode.NO_FARMING_NETHER_WART, world.getName());
+        final boolean noFarmingNetherWart = CFG.getBoolean(RootNode.NO_FARMING_NETHER_WART, world.getName());
         final boolean permAntiFarming = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
 
         // FEATURE: no nether wart farming (always drops exactly 1 nether wart when broken)
@@ -133,7 +133,7 @@ public class AntiFarming implements Listener
         Block block = placeEvent.getBlock();
         World world = block.getWorld();
 
-        final boolean noFarmingNetherWart = dynC.getBoolean(RootNode.NO_FARMING_NETHER_WART, world.getName());
+        final boolean noFarmingNetherWart = CFG.getBoolean(RootNode.NO_FARMING_NETHER_WART, world.getName());
         final boolean permAntiFarming = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
 
         // FEATURE: no farming/placing nether wart
@@ -155,7 +155,7 @@ public class AntiFarming implements Listener
     {
         World world = event.getBlock().getWorld();
 
-        final boolean weakCropsEnabled = dynC.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName());
+        final boolean weakCropsEnabled = CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName());
 
         // FEATURE:
         if (weakCropsEnabled && plugin.getModuleForClass(BlockModule.class).plantDies(event.getBlock(), event.getNewState().getData().getData()))
@@ -177,7 +177,7 @@ public class AntiFarming implements Listener
         World world = event.getWorld();
         Block block = event.getLocation().getBlock();
 
-        boolean aridDesertsEnabled = dynC.getBoolean(RootNode.ARID_DESSERTS, world.getName());
+        boolean aridDesertsEnabled = CFG.getBoolean(RootNode.ARID_DESSERTS, world.getName());
 
 
         if (aridDesertsEnabled)
@@ -200,7 +200,7 @@ public class AntiFarming implements Listener
     {
         World world = event.getBlock().getWorld();
 
-        final boolean dontMoveWaterEnabled = dynC.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, world.getName());
+        final boolean dontMoveWaterEnabled = CFG.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, world.getName());
 
         // FEATURE: can't move water source blocks
         if (dontMoveWaterEnabled)
@@ -244,7 +244,7 @@ public class AntiFarming implements Listener
     {
         World world = event.getEntity().getWorld();
 
-        boolean sheepRegrowWhiteEnabled = dynC.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL, world.getName());
+        boolean sheepRegrowWhiteEnabled = CFG.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL, world.getName());
 
         // FEATURE: sheep are all white, and may be dyed only temporarily
         if (sheepRegrowWhiteEnabled)
@@ -263,7 +263,7 @@ public class AntiFarming implements Listener
         EntityType entityType = entity.getType();
         World world = event.getLocation().getWorld();
 
-        final boolean sheepRegrowWhiteEnabled = dynC.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL, world.getName());
+        final boolean sheepRegrowWhiteEnabled = CFG.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL, world.getName());
 
         //Breed Sheep spawn white
         if (sheepRegrowWhiteEnabled && entityType == EntityType.SHEEP)
@@ -283,7 +283,7 @@ public class AntiFarming implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean animalExpNerfEnabled = dynC.getBoolean(RootNode.ANIMAL_EXP_NERF, world.getName());
+        final boolean animalExpNerfEnabled = CFG.getBoolean(RootNode.ANIMAL_EXP_NERF, world.getName());
 
         // FEATURE: animals don't drop experience (because they're easy to "farm")
         if (animalExpNerfEnabled && entity instanceof Animals)
@@ -310,7 +310,7 @@ public class AntiFarming implements Listener
             world = player.getWorld();
         }
 
-        final boolean cantCraftMelons = world != null && dynC.getBoolean(RootNode.CANT_CRAFT_MELONSEEDS, world.getName());
+        final boolean cantCraftMelons = world != null && CFG.getBoolean(RootNode.CANT_CRAFT_MELONSEEDS, world.getName());
         final boolean permAntiFarming = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
 
         MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
@@ -339,8 +339,8 @@ public class AntiFarming implements Listener
         World world = player.getWorld();
         Block block = event.getBlockClicked();
 
-        final boolean dontMoveWaterEnabled = dynC.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, world.getName())
-                                             &! player.hasPermission(PermissionNode.BYPASS.getNode()); //PlayerEvent so Player won't be null, right? right?....
+        final boolean dontMoveWaterEnabled = CFG.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, world.getName())
+                                             &&! player.hasPermission(PermissionNode.BYPASS.getNode()); //PlayerEvent so Player won't be null, right? right?....
 
         // FEATURE: can't move water source blocks
         if (dontMoveWaterEnabled)
@@ -380,7 +380,7 @@ public class AntiFarming implements Listener
         Player player = event.getPlayer();
         World world = player.getWorld();
 
-        final boolean dontMoveWaterEnabled = dynC.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, world.getName());
+        final boolean dontMoveWaterEnabled = CFG.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, world.getName());
         final boolean permAntiFarming = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                         || player.getGameMode().equals(GameMode.CREATIVE) : true; //true = has bypass won't run if no player
 

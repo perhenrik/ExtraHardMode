@@ -1,26 +1,7 @@
-/*
-    ExtraHardMode Server Plugin for Minecraft
-    Copyright (C) 2012 Ryan Hamshire
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.Location;
@@ -51,7 +32,7 @@ public class CreateExplosionTask implements Runnable
     /**
      * Config
      */
-    private DynamicConfig dynC;
+    private RootConfig CFG;
     /**
      * Instance of a creeper that should explode, only used for custom creeper explosions
      */
@@ -68,7 +49,7 @@ public class CreateExplosionTask implements Runnable
         this.location = location;
         this.type = type;
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     /**
@@ -95,7 +76,7 @@ public class CreateExplosionTask implements Runnable
      */
     public void createExplosion(Location loc, ExplosionType type)
     {
-        final int disableAboveY = dynC.getInt(RootNode.EXPLOSIONS_DISABLE_ABOVE, loc.getWorld().getName());
+        final int disableAboveY = CFG.getInt(RootNode.EXPLOSIONS_DISABLE_ABOVE, loc.getWorld().getName());
 
         if (validateLocationSafe(loc, type))
         {

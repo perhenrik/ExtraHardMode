@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
@@ -27,13 +27,13 @@ import org.bukkit.event.entity.PotionSplashEvent;
 public class Bitches implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
     EntityModule entityModule;
 
     public Bitches (ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
@@ -50,7 +50,7 @@ public class Bitches implements Listener
         LivingEntity entity = event.getEntity();
         EntityType entityType = entity.getType();
 
-        final int witchSpawnPercent = dynC.getInt(RootNode.BONUS_WITCH_SPAWN_PERCENT, world.getName());
+        final int witchSpawnPercent = CFG.getInt(RootNode.BONUS_WITCH_SPAWN_PERCENT, world.getName());
 
         // FEATURE: more witches above ground (on grass)
         if (entityType == EntityType.ZOMBIE && world.getEnvironment() == World.Environment.NORMAL
@@ -78,7 +78,7 @@ public class Bitches implements Listener
         Location location = potion.getLocation();
         World world = location.getWorld();
 
-        final boolean additionalAttacks = dynC.getBoolean(RootNode.WITCHES_ADDITIONAL_ATTACKS, world.getName());
+        final boolean additionalAttacks = CFG.getBoolean(RootNode.WITCHES_ADDITIONAL_ATTACKS, world.getName());
 
         // FEATURE: enhanced witches. they throw wolf spawner and teleport potions as well as poison potions
         LivingEntity shooter = potion.getShooter();

@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
@@ -22,7 +22,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 public class MonsterRules implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
     MessageConfig messages;
     UtilityModule utils = null;
     EntityModule entityModule = null;
@@ -30,7 +30,7 @@ public class MonsterRules implements Listener
     public MonsterRules(ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
@@ -42,8 +42,8 @@ public class MonsterRules implements Listener
         Location location = event.getLocation();
         World world = location.getWorld();
 
-        final int maxY = dynC.getInt(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y, world.getName());
-        final int multiplier = dynC.getInt(RootNode.MORE_MONSTERS_MULTIPLIER, world.getName());
+        final int maxY = CFG.getInt(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y, world.getName());
+        final int multiplier = CFG.getInt(RootNode.MORE_MONSTERS_MULTIPLIER, world.getName());
 
         LivingEntity entity = event.getEntity();
         EntityType entityType = entity.getType();

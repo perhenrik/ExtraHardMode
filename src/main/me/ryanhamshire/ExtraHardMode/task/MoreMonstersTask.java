@@ -19,7 +19,7 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
@@ -50,7 +50,7 @@ public class MoreMonstersTask implements Runnable
     /**
      * Config instanz
      */
-    private DynamicConfig dynC;
+    private RootConfig CFG;
     /**
      * Constructor.
      *
@@ -59,7 +59,7 @@ public class MoreMonstersTask implements Runnable
     public MoreMonstersTask(ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     @Override
@@ -162,8 +162,8 @@ public class MoreMonstersTask implements Runnable
         Block playerBlock = location.getBlock();
         World world = location.getWorld();
 
-        final boolean monstersInLightEnabled = dynC.getInt(RootNode.MORE_MONSTERS_MULTIPLIER, world.getName()) > 0;
-        final int maxY = dynC.getInt(RootNode.MORE_MONSTERS_MAX_Y, world.getName());
+        final boolean monstersInLightEnabled = CFG.getInt(RootNode.MORE_MONSTERS_MULTIPLIER, world.getName()) > 0;
+        final int maxY = CFG.getInt(RootNode.MORE_MONSTERS_MAX_Y, world.getName());
 
         if (monstersInLightEnabled)
         {

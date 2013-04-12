@@ -19,7 +19,7 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
@@ -39,7 +39,7 @@ public class CoolCreeperExplosion implements Runnable
     private ExtraHardMode plugin;
     private UtilityModule utils;
     private BukkitScheduler scheduler;
-    private DynamicConfig dynC;
+    private RootConfig CFG;
 
     private int numOfFireworks = 3;
     private final int ticksBetweenFireworks = 5;
@@ -51,13 +51,13 @@ public class CoolCreeperExplosion implements Runnable
     public CoolCreeperExplosion(Creeper entity, ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         creeper = entity;
         loc = creeper.getLocation();
         utils = plugin.getModuleForClass(UtilityModule.class);
         scheduler = plugin.getServer().getScheduler();
-        numOfFireworks = dynC.getInt(RootNode.FLAMING_CREEPERS_FIREWORK, loc.getWorld().getName());
-        creeperAscendSpeed = dynC.getDouble(RootNode.FLAMING_CREEPERS_ROCKET, loc.getWorld().getName());
+        numOfFireworks = CFG.getInt(RootNode.FLAMING_CREEPERS_FIREWORK, loc.getWorld().getName());
+        creeperAscendSpeed = CFG.getDouble(RootNode.FLAMING_CREEPERS_ROCKET, loc.getWorld().getName());
     }
 
     /**
@@ -136,7 +136,7 @@ public class CoolCreeperExplosion implements Runnable
         @Override
         public void run()
         {
-            if (creeper != null &! creeper.isDead())
+            if (creeper != null &&! creeper.isDead())
             {
                 new CreateExplosionTask(plugin, creeper.getLocation(), ExplosionType.CREEPER, creeper);
             }

@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.features.monsters;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.task.WebCleanupTask;
 import org.bukkit.Location;
@@ -31,12 +31,12 @@ import java.util.List;
 public class Spoiders implements Listener
 {
     ExtraHardMode plugin;
-    DynamicConfig dynC;
+    RootConfig CFG;
 
     public Spoiders(ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     /**
@@ -51,7 +51,7 @@ public class Spoiders implements Listener
         LivingEntity entity = event.getEntity();
         EntityType entityType = entity.getType();
 
-        final int spiderBonusSpawnPercent = dynC.getInt(RootNode.BONUS_UNDERGROUND_SPIDER_SPAWN_PERCENT, world.getName());
+        final int spiderBonusSpawnPercent = CFG.getInt(RootNode.BONUS_UNDERGROUND_SPIDER_SPAWN_PERCENT, world.getName());
 
         // FEATURE: more spiders underground
         if (entityType == EntityType.ZOMBIE && world.getEnvironment() == World.Environment.NORMAL && location.getBlockY() < world.getSeaLevel() - 5)
@@ -75,7 +75,7 @@ public class Spoiders implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean spidersDropWebOnDeath= dynC.getBoolean(RootNode.SPIDERS_DROP_WEB_ON_DEATH, world.getName());
+        final boolean spidersDropWebOnDeath= CFG.getBoolean(RootNode.SPIDERS_DROP_WEB_ON_DEATH, world.getName());
 
         // FEATURE: spiders drop web on death
         if (spidersDropWebOnDeath)

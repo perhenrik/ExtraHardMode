@@ -15,7 +15,7 @@
 package me.ryanhamshire.ExtraHardMode.module;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 import me.ryanhamshire.ExtraHardMode.task.BlockPhysicsCheckTask;
@@ -26,16 +26,13 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.FallingBlock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Module that manages blocks and physics logic.
  */
 public class BlockModule extends EHMModule
 {
 
-    private DynamicConfig dynC;
+    private RootConfig CFG;
 
     /**
      * Constructor.
@@ -45,7 +42,7 @@ public class BlockModule extends EHMModule
     public BlockModule(ExtraHardMode plugin)
     {
         super(plugin);
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
     /**
@@ -73,7 +70,7 @@ public class BlockModule extends EHMModule
     public void applyPhysics(Block block)
     {
         // grass and mycel become dirt when they fall
-        if ((block.getType() == Material.GRASS || block.getType() == Material.MYCEL) && dynC.getBoolean(RootNode.MORE_FALLING_BLOCKS_TURN_TO_DIRT, block.getWorld().getName()))
+        if ((block.getType() == Material.GRASS || block.getType() == Material.MYCEL) && CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_TURN_TO_DIRT, block.getWorld().getName()))
         {
             block.setType(Material.DIRT);
         }
@@ -97,9 +94,9 @@ public class BlockModule extends EHMModule
     {
         World world = block.getWorld();
 
-        final boolean weakFoodCropsEnabled = dynC.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName());
-        final int lossRate = dynC.getInt(RootNode.WEAK_FOOD_CROPS_LOSS_RATE, world.getName());
-        final boolean aridDesertsEnabled = dynC.getBoolean(RootNode.ARID_DESSERTS, world.getName());
+        final boolean weakFoodCropsEnabled = CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName());
+        final int lossRate = CFG.getInt(RootNode.WEAK_FOOD_CROPS_LOSS_RATE, world.getName());
+        final boolean aridDesertsEnabled = CFG.getBoolean(RootNode.ARID_DESSERTS, world.getName());
 
 
         if (weakFoodCropsEnabled)

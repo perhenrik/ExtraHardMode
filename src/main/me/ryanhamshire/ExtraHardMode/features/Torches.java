@@ -2,7 +2,7 @@ package me.ryanhamshire.ExtraHardMode.features;
 
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
 import me.ryanhamshire.ExtraHardMode.module.UtilityModule;
@@ -22,13 +22,13 @@ import org.bukkit.material.Torch;
 public class Torches implements Listener
 {
     ExtraHardMode plugin = null;
-    DynamicConfig dynC = null;
+    RootConfig CFG = null;
     UtilityModule utils = null;
 
     public Torches(ExtraHardMode plugin)
     {
         this.plugin = plugin;
-        dynC = plugin.getModuleForClass(DynamicConfig.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
@@ -39,14 +39,14 @@ public class Torches implements Listener
         Block block = placeEvent.getBlock();
         World world = block.getWorld();
 
-        final boolean limitedTorchPlacement = dynC.getBoolean(RootNode.LIMITED_TORCH_PLACEMENT, world.getName());
-        final boolean soundFizzEnabled = dynC.getBoolean(RootNode.SOUNDS_TORCH_FIZZ, world.getName());
-        final int torchMinY = dynC.getInt(RootNode.STANDARD_TORCH_MIN_Y, world.getName());
+        final boolean limitedTorchPlacement = CFG.getBoolean(RootNode.LIMITED_TORCH_PLACEMENT, world.getName());
+        final boolean soundFizzEnabled = CFG.getBoolean(RootNode.SOUNDS_TORCH_FIZZ, world.getName());
+        final int torchMinY = CFG.getInt(RootNode.STANDARD_TORCH_MIN_Y, world.getName());
         final boolean playerPerm = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                    || player.getGameMode().equals(GameMode.CREATIVE) : true;
 
         // FEATURE: players can't attach torches to common "soft" blocks
-        if (block.getType().equals(Material.TORCH) && limitedTorchPlacement &! playerPerm)
+        if (block.getType().equals(Material.TORCH) && limitedTorchPlacement &&! playerPerm)
         {
             Torch torch = new Torch(Material.TORCH, block.getData());
             Material attachmentMaterial = block.getRelative(torch.getAttachedFace()).getType();
@@ -63,7 +63,7 @@ public class Torches implements Listener
         }
 
         // FEATURE: no standard torches, jack o lanterns, or fire on top of netherrack near diamond level
-        if (torchMinY > 0 &! playerPerm)
+        if (torchMinY > 0 &&! playerPerm)
         {
             if (world.getEnvironment() == World.Environment.NORMAL
                     && block.getY() < torchMinY
@@ -87,8 +87,8 @@ public class Torches implements Listener
     {
         World world = event.getWorld();
 
-        final boolean rainBreaksTorchesEnabled = dynC.getBoolean(RootNode.RAIN_BREAKS_TORCHES, world.getName());
-        final boolean snowBreaksCrops = dynC.getBoolean(RootNode.SNOW_BREAKS_CROPS, world.getName());
+        final boolean rainBreaksTorchesEnabled = CFG.getBoolean(RootNode.RAIN_BREAKS_TORCHES, world.getName());
+        final boolean snowBreaksCrops = CFG.getBoolean(RootNode.SNOW_BREAKS_CROPS, world.getName());
 
         if (event.toWeatherState()) //is it raining
         {

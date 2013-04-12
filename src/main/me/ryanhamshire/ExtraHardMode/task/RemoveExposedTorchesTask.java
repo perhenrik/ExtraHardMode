@@ -19,7 +19,7 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.DynamicConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -44,7 +44,7 @@ public class RemoveExposedTorchesTask implements Runnable
     /**
      * Config instance
      */
-    private DynamicConfig dynC;
+    private RootConfig CFG;
 
     /**
      * Constructor.
@@ -56,14 +56,14 @@ public class RemoveExposedTorchesTask implements Runnable
     {
         this.plugin = plugin;
         this.chunk = chunk;
-        dynC = this.plugin.getModuleForClass(DynamicConfig.class);
+        CFG = this.plugin.getModuleForClass(RootConfig.class);
     }
 
     @Override
     public void run()
     {
-        final boolean rainBreaksTorches = dynC.getBoolean(RootNode.RAIN_BREAKS_TORCHES, this.chunk.getWorld().getName());
-        final boolean snowBreaksCrops = dynC.getBoolean(RootNode.SNOW_BREAKS_CROPS, this.chunk.getWorld().getName());
+        final boolean rainBreaksTorches = CFG.getBoolean(RootNode.RAIN_BREAKS_TORCHES, this.chunk.getWorld().getName());
+        final boolean snowBreaksCrops = CFG.getBoolean(RootNode.SNOW_BREAKS_CROPS, this.chunk.getWorld().getName());
 
         if (this.chunk.getWorld().hasStorm())
         {
