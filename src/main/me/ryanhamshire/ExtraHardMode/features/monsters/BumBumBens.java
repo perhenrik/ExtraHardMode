@@ -102,16 +102,17 @@ public class BumBumBens implements Listener
                     //Always explode when damaged by a player
                     if (damageByEntityEvent != null)
                     {
-                        if (damageByEntityEvent.getDamager() != null && damageByEntityEvent.getDamager() instanceof Player)
+                        if (damageByEntityEvent.getDamager() instanceof Player)
                         {   //Normal Damage from a player
                             damager = (Player) damageByEntityEvent.getDamager();
                             if (damager != null && damager.hasPermission(PermissionNode.BYPASS_CREEPERS.getNode()))
                                 return;
                         }
-                        else if (damageByEntityEvent.getDamager() != null && damageByEntityEvent.getDamager() instanceof Arrow)
+                        else if (damageByEntityEvent.getDamager() instanceof Arrow)
                         {   //Damaged by an arrow shot by a player
                             Arrow arrow = (Arrow) damageByEntityEvent.getDamager();
-                            damager = (Player) arrow.getShooter();
+                            if (arrow.getShooter() instanceof Player)//otherwise skeli/dispenser etc.
+                                damager = (Player) arrow.getShooter();
                             if (damager != null && damager.hasPermission(PermissionNode.BYPASS_CREEPERS.getNode()))
                                 return;
                         }
