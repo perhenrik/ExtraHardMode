@@ -103,7 +103,7 @@ public class Players implements Listener
 
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)//so we know if the event got cancelled
     public void onEntityDamage(EntityDamageEvent event)
     {
         Entity entity = event.getEntity();
