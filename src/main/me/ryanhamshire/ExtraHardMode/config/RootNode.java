@@ -24,17 +24,6 @@ public enum RootNode implements ConfigNode
             (baseNode()+".Enabled Worlds", VarType.LIST, new ArrayList<String>()),
 
     /**
-     * Should explosions be disabled above a certain y value to prevent world damage
-     */
-    EXPLOSIONS_DISABLE_ABOVE
-            (baseNode()+".Explosions.No BlockDamage Above Y", VarType.INTEGER, SubType.Y_VALUE, 255),
-    /**
-     * Should Stone be turned to cobblestone
-     */
-    EXPLOSIONS_TURN_STONE_TO_COBLE
-            (baseNode()+".Explosions.Turn Stone To Cobble", VarType.BOOLEAN, true),
-
-    /**
      * whether stone is hardened to encourage cave exploration over tunneling
      */
     SUPER_HARD_STONE
@@ -464,8 +453,180 @@ public enum RootNode implements ConfigNode
      * which materials beyond sand and gravel should be subject to gravity
      */
     MORE_FALLING_BLOCKS
-            (baseNode()+".Additional Falling Blocks.Enabled Blocks", VarType.LIST, new DefaultFallingBlocks());
+            (baseNode()+".Additional Falling Blocks.Enabled Blocks", VarType.LIST, new DefaultFallingBlocks()),
 
+    /**
+     * Should explosions be disabled above a certain y value to prevent world damage
+     */
+    EXPLOSIONS_DISABLE_ABOVE
+            (baseNode()+".Explosions.No BlockDamage Above Y", VarType.INTEGER, SubType.Y_VALUE, 255),
+    /**
+     * Should Stone be turned to cobblestone
+     */
+    EXPLOSIONS_TURN_STONE_TO_COBLE
+            (baseNode()+".Explosions.Turn Stone To Cobble", VarType.BOOLEAN, true),
+    /**
+     * This determines if the explosion is categorized as under or above
+     */
+    EXPLOSIONS_Y
+            (baseNode()+".Explosions.Border - Y", VarType.INTEGER, 55),
+
+    //WHEN ADDING NEW EXPLOSIONTYPES YOU HAVE TO ADD THE NODES TO EXPLOSIONTYPE AND ALSO UPDATE THE EXPLOSIONTASK
+    /** Normal CREEPER
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_CREEPERS_BELOW_POWER
+            (baseNode()+".Explosions.Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_CREEPERS_BELOW_FIRE
+            (baseNode()+".Explosions.Creeper.Below Border.Set Fire", VarType.BOOLEAN, false),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_CREEPERS_BELOW_WORLD_GRIEF
+            (baseNode()+".Explosions.Creeper.Below Border.World Damage", VarType.BOOLEAN, true),
+    /**
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_CREEPERS_ABOVE_POWER
+            (baseNode()+".Explosions.Creeper.Above Border.Explosion Power", VarType.INTEGER,SubType.NATURAL_NUMBER, 3),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_CREEPERS_ABOVE_FIRE
+            (baseNode()+".Explosions.Creeper.Above Border.Set Fire", VarType.BOOLEAN, false),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_CREEPERS_ABOVE_WORLD_GRIEF
+            (baseNode()+".Explosions.Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
+
+    /** Charged CREEPER
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_CHARGED_CREEPERS_BELOW_POWER
+            (baseNode()+".Explosions.Charged Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_CHARGED_CREEPERS_BELOW_FIRE
+            (baseNode()+".Explosions.Charged Creeper.Below Border.Set Fire", VarType.BOOLEAN, false),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_CHARGED_CREEPERS_BELOW_WORLD_GRIEF
+            (baseNode()+".Explosions.Charged Creeper.Below Border.World Damage", VarType.BOOLEAN, true),
+    /**
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_CHARGED_CREEPERS_ABOVE_POWER
+            (baseNode()+".Explosions.Charged Creeper.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_CHARGED_CREEPERS_ABOVE_FIRE
+            (baseNode()+".Explosions.Charged Creeper.Above Border.Set Fire", VarType.BOOLEAN, false),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_CHARGED_CREEPERS_ABOVE_WORLD_GRIEF
+            (baseNode()+".Explosions.Charged Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
+
+    /** TNT
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_TNT_BELOW_POWER
+            (baseNode()+".Explosions.Tnt.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_TNT_BELOW_FIRE
+            (baseNode()+".Explosions.Tnt.Below Border.Set Fire", VarType.BOOLEAN, false),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_TNT_BELOW_WORLD_GRIEF
+            (baseNode()+".Explosions.Tnt.Below Border.World Damage", VarType.BOOLEAN, true),
+    /**
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_TNT_ABOVE_POWER
+            (baseNode()+".Explosions.Tnt.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_TNT_ABOVE_FIRE
+            (baseNode()+".Explosions.Tnt.Above Border.Set Fire", VarType.BOOLEAN, false),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF
+            (baseNode()+".Explosions.Tnt.Above Border.World Damage", VarType.BOOLEAN, true),
+
+    /** Blaze
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_BLAZE_BELOW_POWER
+            (baseNode()+".Explosions.Overworld Blazes.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_BLAZE_BELOW_FIRE
+            (baseNode()+".Explosions.Overworld Blazes.Below Border.Set Fire", VarType.BOOLEAN, true),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_BLAZE_BELOW_WORLD_GRIEF
+            (baseNode()+".Explosions.Overworld Blazes.Below Border.World Damage", VarType.BOOLEAN, true),
+    /**
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_BLAZE_ABOVE_POWER
+            (baseNode()+".Explosions.Overworld Blazes.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_BLAZE_ABOVE_FIRE
+            (baseNode()+".Explosions.Overworld Blazes.Above Border.Set Fire", VarType.BOOLEAN, true),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_BLAZE_ABOVE_WORLD_GRIEF
+            (baseNode()+".Explosions.Overworld Blazes.Above Border.World Damage", VarType.BOOLEAN, true),
+
+    /** Ghast
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_GHAST_BELOW_POWER
+            (baseNode()+".Explosions.Ghasts.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_GHAST_BELOW_FIRE
+            (baseNode()+".Explosions.Ghasts.Below Border.Set Fire", VarType.BOOLEAN, true),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_GHAST_BELOW_WORLD_GRIEF
+            (baseNode()+".Explosions.Ghasts.Below Border.World Damage", VarType.BOOLEAN, true),
+    /**
+     * Size of Explosion below border
+     */
+    EXPLOSIONS_GHAST_ABOVE_POWER
+            (baseNode()+".Explosions.Ghasts.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
+    /**
+     * Set Fire on Explosion below border
+     */
+    EXPLOSIONS_GHAST_ABOVE_FIRE
+            (baseNode()+".Explosions.Ghasts.Above Border.Set Fire", VarType.BOOLEAN, true),
+    /**
+     * Damage the world below border
+     */
+    EXPLOSIONS_GHAST_ABOVE_WORLD_GRIEF
+            (baseNode()+".Explosions.Ghasts.Above Border.World Damage", VarType.BOOLEAN, true),
+    ;
 
     /**
      * Path.

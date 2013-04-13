@@ -76,28 +76,85 @@ public class CreateExplosionTask implements Runnable
      */
     public void createExplosion(Location loc, ExplosionType type)
     {
-        final int disableAboveY = CFG.getInt(RootNode.EXPLOSIONS_DISABLE_ABOVE, loc.getWorld().getName());
+        int power;
+        boolean setFire;
+        boolean damageWorld;
+        String worldName = loc.getWorld().getName();
+
+        if (loc.getY() < CFG.getInt(RootNode.EXPLOSIONS_Y, loc.getWorld().getName()))
+        {
+            switch (type)
+            {
+                case CREEPER:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_CREEPERS_BELOW_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_CREEPERS_BELOW_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_CREEPERS_BELOW_WORLD_GRIEF, worldName);
+                    break;
+                case CREEPER_CHARGED:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_CHARGED_CREEPERS_BELOW_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_CHARGED_CREEPERS_BELOW_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_CHARGED_CREEPERS_BELOW_WORLD_GRIEF, worldName);
+                    break;
+                case TNT:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_TNT_BELOW_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_BELOW_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_BELOW_WORLD_GRIEF, worldName);
+                    break;
+                case OVERWORLD_BLAZE:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_BLAZE_BELOW_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_BLAZE_BELOW_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_BLAZE_BELOW_WORLD_GRIEF, worldName);
+                    break;
+                case GHAST_FIREBALL:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_GHAST_BELOW_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_GHAST_BELOW_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_GHAST_BELOW_WORLD_GRIEF, worldName);
+                    break;
+                default:
+                    power = type.getPowerB();
+                    setFire = type.isFireB();
+                    damageWorld = type.allowBlockDmgB();
+            }
+        }
+        else
+        {
+            switch (type)
+            {
+                case CREEPER:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_CREEPERS_ABOVE_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_CREEPERS_ABOVE_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_CREEPERS_ABOVE_WORLD_GRIEF, worldName);
+                    break;
+                case CREEPER_CHARGED:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_CHARGED_CREEPERS_ABOVE_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_CHARGED_CREEPERS_ABOVE_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_CHARGED_CREEPERS_ABOVE_WORLD_GRIEF, worldName);
+                    break;
+                case TNT:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_TNT_ABOVE_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ABOVE_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF, worldName);
+                    break;
+                case OVERWORLD_BLAZE:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_BLAZE_ABOVE_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_BLAZE_ABOVE_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_BLAZE_ABOVE_WORLD_GRIEF, worldName);
+                    break;
+                case GHAST_FIREBALL:
+                    power = CFG.getInt(RootNode.EXPLOSIONS_GHAST_ABOVE_POWER, worldName);
+                    setFire = CFG.getBoolean(RootNode.EXPLOSIONS_GHAST_ABOVE_FIRE, worldName);
+                    damageWorld = CFG.getBoolean(RootNode.EXPLOSIONS_GHAST_ABOVE_WORLD_GRIEF, worldName);
+                    break;
+                default:
+                    power = type.getPowerA();
+                    setFire = type.isFireA();
+                    damageWorld = type.allowBlockDmgA();
+            }
+        }
 
         if (validateLocationSafe(loc, type))
         {
-            //Below Y - Level
-            if (location.getY()< disableAboveY)
-            {
-                location.getWorld().createExplosion(
-                        location.getX(), location.getY(), location.getZ(),
-                        type.getPower(),
-                        type.isFire(),
-                        type.allowBlockDmg());
-            }
-            //Above Y - Level
-            else if (location.getY() >= disableAboveY)
-            {
-                location.getWorld().createExplosion(
-                        location.getX(), location.getY(), location.getZ(),
-                        type.getPower(),
-                        type.isFire(),
-                        false);//disable blockDamage above the y-level specified
-            }
+            loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, damageWorld);
         }
     }
 
@@ -109,8 +166,12 @@ public class CreateExplosionTask implements Runnable
     public boolean validateLocationSafe(Location loc, ExplosionType type)
     {
         boolean isSafe = true;
-        int boomSize = type.getPower();
-        boomSize *= 2;
+        int boomSize;
+        if (loc.getY() < CFG.getInt(RootNode.EXPLOSIONS_Y, loc.getWorld().getName()))
+            boomSize = type.getPowerB();
+        else
+            boomSize = type.getPowerA();
+        boomSize *= 2; //raughly the size to check borders of protected areas
         ArrayList<Block> boundaries = getBlockList(loc, boomSize);
 
         switch (type)
