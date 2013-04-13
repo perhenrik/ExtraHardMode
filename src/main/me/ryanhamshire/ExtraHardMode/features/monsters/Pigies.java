@@ -20,6 +20,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.weather.WeatherEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -127,7 +129,10 @@ public class Pigies implements Listener
 
         Location loc = strike.getLocation();
         World world = loc.getWorld();
-        if (entities.simpleIsLocSafeSpawn(loc))
+
+        final boolean spawnPigsOnLightning = CFG.getBoolean(RootNode.LIGHTNING_SPAWNS_PIGMEN, world.getName());
+
+        if (spawnPigsOnLightning && entities.simpleIsLocSafeSpawn(loc))
         {
             int rdm = plugin.getRandom().nextInt(10);
             int amount = 1;
