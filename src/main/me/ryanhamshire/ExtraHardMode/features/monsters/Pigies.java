@@ -3,6 +3,7 @@ package me.ryanhamshire.ExtraHardMode.features.monsters;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.EventHandler;
@@ -17,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -109,6 +112,43 @@ public class Pigies implements Listener
                     pigZombie.setAnger(Integer.MAX_VALUE);
                 }
             }
+        }
+    }
+
+    /**
+     * When a lightning strikes
+     * spawn a pigmen
+     */
+    @EventHandler
+    public void onLightingStrike(LightningStrikeEvent event)
+    {
+        LightningStrike strike = event.getLightning();
+        EntityModule entities = plugin.getModuleForClass(EntityModule.class);
+
+        Location loc = strike.getLocation();
+        World world = loc.getWorld();
+        if (entities.simpleIsLocSafeSpawn(loc))
+        {
+            int rdm = plugin.getRandom().nextInt(10);
+            int amount = 1;
+            switch (rdm)
+            {
+                case 0:case 1: //20%
+                {
+                    amount = 2;
+                    break;
+                }
+                case 2:case 3://20%
+                {
+                    amount = 3;
+                }
+                default:
+                {
+                    amount = 1;
+                }
+            }
+            for (int i = 0; i < amount; i++)
+                world.spawn(loc, PigZombie.class);
         }
     }
 }
