@@ -71,7 +71,7 @@ public class LimitedBuilding implements Listener
             }
 
             // otherwise if hovering over air, check one block lower
-            else if (underBlock.getType() == Material.AIR)
+            else if (underBlock.getType() == Material.AIR && (!playerBlock.getType().name().contains("STEP") && !playerBlock.getType().name().contains("STAIRS")))
             {
                 underBlock = underBlock.getRelative(BlockFace.DOWN);
 
