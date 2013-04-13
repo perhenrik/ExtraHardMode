@@ -335,7 +335,17 @@ public enum RootNode implements ConfigNode
      */
     NETHER_PIGS_DROP_WART
             (baseNode()+".PigZombies.Percent Chance to Drop Netherwart Elsewhere In Nether", VarType.INTEGER, SubType.PERCENTAGE, 0),
-    
+    /**
+     * PigMen get spawned when lighting strikes
+     */
+    LIGHTNING_SPAWNS_PIGMEN
+            (baseNode()+".PigZombies.Spawn on Lighting Strikes.Enable", VarType.BOOLEAN, true),
+    /**
+     * PigMen get spawned when lighting strikes
+     */
+    /*THUNDER_PERCENT_INCREASE
+            (baseNode()+".PigZombies.Spawn on Lighting Strikes.Thunder Percent Increase", VarType.INTEGER, 20),*/
+
     /**
      * whether ghasts should deflect arrows and drop extra loot
      * percentage like skeleton deflect

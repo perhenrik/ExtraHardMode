@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
+import org.bukkit.potion.PotionEffectType;
 
 
 public class BumBumBens implements Listener
@@ -108,16 +109,16 @@ public class BumBumBens implements Listener
                             if (damager != null && damager.hasPermission(PermissionNode.BYPASS_CREEPERS.getNode()))
                                 return;
                         }
-                        else if (damageByEntityEvent.getDamager() instanceof Arrow)
+                        else if (damageByEntityEvent.getDamager() instanceof Projectile)
                         {   //Damaged by an arrow shot by a player
-                            Arrow arrow = (Arrow) damageByEntityEvent.getDamager();
-                            if (arrow.getShooter() instanceof Player)//otherwise skeli/dispenser etc.
-                                damager = (Player) arrow.getShooter();
+                            Projectile bullet = (Projectile) damageByEntityEvent.getDamager();
+                            if (bullet.getShooter() instanceof Player)//otherwise skeli/dispenser etc.
+                                damager = (Player) bullet.getShooter();
                             if (damager != null && damager.hasPermission(PermissionNode.BYPASS_CREEPERS.getNode()))
                                 return;
                         }
                     }
-                    if (event != null && creeper.getTarget() == null && damager == null)
+                    if (creeper.getTarget() == null && damager == null)
                     {   //If not targetting a player this is an explosion we don't need. Trying to prevent unecessary world damage
                         return;
                     }
@@ -133,15 +134,16 @@ public class BumBumBens implements Listener
         //Will only trigger if creeper died from fire not from a sword with fireaspect or bow
         if (flamingCreepersExplode)
         {
-            if (event != null && entity != null && entityType.equals(EntityType.CREEPER))
+            if (entityType.equals(EntityType.CREEPER))
             {
                 if (!entityModule.hasFlagIgnore(entity))
                 {
-                    if (event.getCause().equals(EntityDamageEvent.DamageCause.FIRE)
+                    Creeper creeper = (Creeper) entity;
+                    if ((event.getCause().equals(EntityDamageEvent.DamageCause.FIRE)
                             || event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)
                             || event.getCause().equals(EntityDamageEvent.DamageCause.LAVA))
+                            &&! creeper.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE))
                     {
-                        Creeper creeper = (Creeper) entity;
                         entityModule.flagIgnore(entity);
                         CoolCreeperExplosion bigBoom = new CoolCreeperExplosion(creeper, plugin);
                         bigBoom.run();
@@ -154,10 +156,8 @@ public class BumBumBens implements Listener
     @EventHandler
     public void onExplosion(EntityExplodeEvent event)
     {
-        World world = event.getLocation().getWorld();
         Entity entity = event.getEntity();
 
-        //TODO CONFIG
         // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
         if (entity != null && entity instanceof Creeper &&! entityModule.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
         {

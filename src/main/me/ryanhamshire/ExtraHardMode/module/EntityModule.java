@@ -15,8 +15,11 @@
 package me.ryanhamshire.ExtraHardMode.module;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -145,6 +148,58 @@ public class EntityModule extends EHMModule
         return     entity instanceof Cow
                 || entity instanceof Chicken
                 || entity instanceof Pig;
+    }
+
+    /**
+     * Simple check if there is enough space for a monster to spawn
+     * @param loc
+     * @return
+     */
+    public boolean simpleIsLocSafeSpawn(Location loc)
+    {
+        //quickly check if 2 blocks above this is clear
+        Block oneAbove = loc.getBlock();
+        Block twoAbove = oneAbove.getRelative(BlockFace.UP, 1);
+        return oneAbove.getType().equals(Material.AIR) && twoAbove.getType().equals(Material.AIR);
+    }
+
+    /**
+     * Checks if Location is safe, if in air will return the a valid Block to spawn on or null
+     * @return valid Block or null if no valid Block
+     */
+    public Location isLocSafeSpawn(Location location)
+    {
+        Block playerBlock = location.getBlock();
+
+        // the playerBlock should always be air, but if the player stands on a slab he actually is in the slab, checking a few blocks under because player could have jumped etc..
+        if (playerBlock.getType().equals(Material.AIR))
+        {
+            for (int i = 0; i <= 3; i++)
+            {
+                playerBlock = location.getBlock().getRelative(BlockFace.DOWN, 1);
+
+                if (playerBlock.getType().equals(Material.AIR))
+                {
+                    location.subtract(0, 1, 0);
+                    playerBlock = location.getBlock();
+                    // the playerBlock is now the block where the monster
+                    // should spawn on, next up: verify block
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        // no spawning on steps, stairs and transparent blocks
+        if (playerBlock.getType().name().endsWith("STEP") || playerBlock.getType().name().endsWith("STAIRS")
+                || playerBlock.getType().isTransparent() || !playerBlock.getType().isOccluding() || playerBlock.getType().equals(Material.AIR))
+        {
+            // don't spawn here
+            return null;
+        }
+
+        return location;
     }
 
     @Override
