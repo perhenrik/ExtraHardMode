@@ -140,7 +140,8 @@ public class RootConfig extends MultiWorldConfig
             {
                 case MAIN:
                 {
-                    if (/*no value in config*/obj ==  null)
+
+                        if (/*no value in config*/obj ==  null)
                     {
                         //get with defaults on
                         obj = getObjectForNode(config, node, true);

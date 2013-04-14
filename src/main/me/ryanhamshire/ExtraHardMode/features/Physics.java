@@ -72,18 +72,54 @@ public class Physics implements Listener
         // FEATURE: trees chop more naturally
         if (block.getType() == Material.LOG && betterTreeChoppingEnabled &&! playerPerm)
         {
-            Block rootBlock = block;
-            while (rootBlock.getType() == Material.LOG)
+            //Are there any leaves above the log? -> tree
+            boolean isTree = false;
+            checkers : for (int i = 1; i < 20; i++)
             {
-                rootBlock = rootBlock.getRelative(BlockFace.DOWN);
+               Material upType = block.getRelative(BlockFace.UP, i).getType();
+                switch (upType)
+                {
+                    case LEAVES:
+                    {
+                        isTree = true;
+                        break checkers;
+                    }
+                    case AIR:case LOG:
+                    {
+                        break;
+                    }
+                    default: //if something other than log/air this is most likely part of a building
+                    {
+                        break checkers;
+                    }
+                }
             }
 
-            if (rootBlock.getType() == Material.DIRT || rootBlock.getType() == Material.GRASS)
+            if (isTree)
             {
-                Block aboveLog = block.getRelative(BlockFace.UP);
-                while (aboveLog.getType() == Material.LOG)
+                Block rootsBlock = block;
+                for (int blocksDown = 1; blocksDown < 20; blocksDown++)
                 {
-                    blockModule.applyPhysics(aboveLog);
+                    if (rootsBlock.getRelative(BlockFace.DOWN, blocksDown).getType() != Material.LOG)
+                    {
+                        rootsBlock = block.getRelative(BlockFace.DOWN, blocksDown);
+                        break;
+                    }
+                }
+
+                Block aboveLog = block.getRelative(BlockFace.UP);
+                loop : for (int limit = 0; limit < 20; limit++)
+                {
+                    switch (aboveLog.getType())
+                    {
+                        case AIR:
+                            break; //can air fall?
+                        case LOG:
+                            blockModule.applyPhysics(aboveLog);
+                            break;
+                        default: //we reached something that is not part of a tree or leaves
+                            break loop;
+                    }
                     aboveLog = aboveLog.getRelative(BlockFace.UP);
                 }
             }

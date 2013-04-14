@@ -137,7 +137,7 @@ public class Skeletors implements Listener
 
                 // replace with silverfish, quarter velocity of arrow, wants to attack
                 // same target as skeleton
-                Creature silverFish = (Creature) entityModule.spawn(skeleton.getLocation().add(0, 1.5, 0), EntityType.SILVERFISH);
+                Creature silverFish = (Creature) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0, 1.5, 0), EntityType.SILVERFISH);
                 silverFish.setVelocity(arrow.getVelocity().multiply(.25));
                 silverFish.setTarget(skeleton.getTarget());
                 module.markLootLess(silverFish); // this silverfish doesn't
