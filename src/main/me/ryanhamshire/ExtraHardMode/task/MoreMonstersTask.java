@@ -27,7 +27,6 @@ import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -55,7 +54,7 @@ public class MoreMonstersTask implements Runnable
     /**
      * module to check if spawnlocation is safe etc.
      */
-    private EntityModule entities;
+    private EntityModule entityModule;
     /**
      * Constructor.
      *
@@ -66,7 +65,7 @@ public class MoreMonstersTask implements Runnable
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
-        entities = plugin.getModuleForClass(EntityModule.class);
+        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class MoreMonstersTask implements Runnable
                             int totalToSpawn = typeMultiplier;
                             for (int j = 0; j < totalToSpawn; j++)
                             {
-                                world.spawnEntity(location, monsterType);
+                                entityModule.spawn(location, monsterType);
                             }
                         }
                     }
@@ -176,7 +175,7 @@ public class MoreMonstersTask implements Runnable
         // Only spawn monsters in normal world. End is crowded with endermen and nether is too extreme anyway, add config later
         int lightLvl = location.getBlock().getLightFromSky();
         if (world.getEnvironment() == World.Environment.NORMAL && (location.getY() < maxY && lightLvl < 3) && monstersInLightEnabled)
-            verifiedLoc = entities.isLocSafeSpawn(location);
+            verifiedLoc = entityModule.isLocSafeSpawn(location);
 
         return verifiedLoc;
     }

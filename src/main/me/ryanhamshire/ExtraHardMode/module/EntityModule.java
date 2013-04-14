@@ -23,6 +23,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
@@ -200,6 +201,25 @@ public class EntityModule extends EHMModule
         }
 
         return location;
+    }
+
+    /**
+     * Spawn Monsters with their gear, use instead of world.spawn()
+     * @return a reference to the spawned Entity
+     */
+    public Entity spawn (Location loc, EntityType type)
+    {
+        Entity entity = loc.getWorld().spawnEntity(loc, type);
+        switch (type)
+        {
+            case SKELETON:
+                ((Skeleton)entity).getEquipment().setItemInHand(new ItemStack(Material.BOW));
+                break;
+            case PIG_ZOMBIE:
+                ((PigZombie)entity).getEquipment().setItemInHand(new ItemStack(Material.GOLD_SWORD));
+                break;
+        }
+        return entity;
     }
 
     @Override

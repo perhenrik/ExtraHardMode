@@ -63,7 +63,7 @@ public class MonsterRules implements Listener
                     {
                         for (int i = 1; i < multiplier; i++)
                         {
-                            Entity newEntity = world.spawnEntity(event.getLocation(), entityType);
+                            Entity newEntity = entityModule.spawn(event.getLocation(), entityType);
                             if (entityModule.isLootLess(entity))
                             {
                                 entityModule.markLootLess((LivingEntity) newEntity);

@@ -68,10 +68,10 @@ public class Blazes implements Listener
                 // FEATURE: magma cubes spawn with blazes
                 if (plugin.random(bonusNetherBlazeSpawnPercent))
                 {
-                    MagmaCube cube = (MagmaCube) (world.spawnEntity(location, EntityType.MAGMA_CUBE));
+                    MagmaCube cube = (MagmaCube) (entityModule.spawn(location, EntityType.MAGMA_CUBE));
                     cube.setSize(1);
                 }
-                world.spawnEntity(location, entityType);
+                entityModule.spawn(location, entityType);
             }
         }
 
@@ -82,7 +82,7 @@ public class Blazes implements Listener
             {
                 event.setCancelled(true);
                 entityType = EntityType.BLAZE;
-                world.spawnEntity(location, entityType);
+                entityModule.spawn(location, entityType);
             }
         }
     }
@@ -161,10 +161,10 @@ public class Blazes implements Listener
         {
             if (plugin.random(blazeSplitPercent))
             {
-                Entity firstNewBlaze = world.spawnEntity(entity.getLocation(), EntityType.BLAZE);
+                Entity firstNewBlaze = entityModule.spawn(entity.getLocation(), EntityType.BLAZE);
                 firstNewBlaze.setVelocity(new Vector(1, 0, 1));
 
-                Entity secondNewBlaze = world.spawnEntity(entity.getLocation(), EntityType.BLAZE);
+                Entity secondNewBlaze = entityModule.spawn(entity.getLocation(), EntityType.BLAZE);
                 secondNewBlaze.setVelocity(new Vector(-1, 0, -1));
 
                 // if this blaze was marked lootless, mark the new blazes the same
@@ -191,7 +191,7 @@ public class Blazes implements Listener
         if (magmacubesBlazeOnDmg && entityType == EntityType.MAGMA_CUBE  && !entity.isDead())
         {
             entity.remove(); // remove magma cube
-            entity.getWorld().spawnEntity(entity.getLocation().add(0, 2, 0), EntityType.BLAZE); // replace with blaze
+            entityModule.spawn(entity.getLocation().add(0, 2, 0), EntityType.BLAZE); // replace with blaze
             new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.MAGMACUBE_FIRE).run(); // fiery explosion for effect
         }
 

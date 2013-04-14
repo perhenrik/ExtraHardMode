@@ -264,7 +264,7 @@ public class Glydia implements Listener
             // otherwise, spawn one
             else
             {
-                world.spawnEntity(new Location(world, 0, world.getMaxHeight() - 1, 0), EntityType.ENDER_DRAGON);
+                entityModule.spawn(new Location(world, 0, world.getMaxHeight() - 1, 0), EntityType.ENDER_DRAGON);
             }
         }
     }

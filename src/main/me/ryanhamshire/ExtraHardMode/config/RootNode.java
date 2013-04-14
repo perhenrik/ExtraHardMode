@@ -456,11 +456,6 @@ public enum RootNode implements ConfigNode
             (baseNode()+".Additional Falling Blocks.Enabled Blocks", VarType.LIST, new DefaultFallingBlocks()),
 
     /**
-     * Should explosions be disabled above a certain y value to prevent world damage
-     */
-    EXPLOSIONS_DISABLE_ABOVE
-            (baseNode()+".Explosions.No BlockDamage Above Y", VarType.INTEGER, SubType.Y_VALUE, 255),
-    /**
      * Should Stone be turned to cobblestone
      */
     EXPLOSIONS_TURN_STONE_TO_COBLE
@@ -469,10 +464,15 @@ public enum RootNode implements ConfigNode
      * This determines if the explosion is categorized as under or above
      */
     EXPLOSIONS_Y
-            (baseNode()+".Explosions.Border - Y", VarType.INTEGER, 55),
+            (baseNode()+".Explosions.Border Y", VarType.INTEGER, 55),
 
     //WHEN ADDING NEW EXPLOSIONTYPES YOU HAVE TO ADD THE NODES TO EXPLOSIONTYPE AND ALSO UPDATE THE EXPLOSIONTASK
-    /** Normal CREEPER
+    /**CREEPER
+     * Enable this custom explosion
+     */
+    EXPLOSIONS_CREEPERS_ENABLE
+            (baseNode()+".Explosions.Creeper.Enable", VarType.BOOLEAN, true),
+    /**
      * Size of Explosion below border
      */
     EXPLOSIONS_CREEPERS_BELOW_POWER
@@ -665,13 +665,18 @@ public enum RootNode implements ConfigNode
 
     private RootNode(String path, VarType type, SubType subType, Object def)
     {
-        this (path, type, def);
+        this.path = path;
+        this.type = type;
+        this.defaultValue = def;
         this.subType = subType;
     }
 
     private RootNode(String path, VarType type, SubType subType, Disable disable, Object def)
     {
-        this (path, type, subType, def);
+        this.path = path;
+        this.type = type;
+        this.defaultValue = def;
+        this.subType = subType;
         this.disableValue = disable;
     }
 

@@ -78,7 +78,6 @@ public abstract class MultiWorldConfig extends EHMModule
                     && config.getStringList(RootNode.WORLDS.getPath()) != null)
                     || entry.getKey().equals("config.yml")); //holds all default values for the other configs
             else iter.remove();
-
         }
         return fileNameConfigMap;
     }
@@ -131,7 +130,7 @@ public abstract class MultiWorldConfig extends EHMModule
                 throw new UnsupportedOperationException(node.getPath() + "No specific getter available for Type: " + " " + node.getVarType());
             }
         }
-        if (obj == null && defaults)
+        if (!config.isSet(node.getPath()) && defaults)
         {
             obj = node.getDefaultValue();
         }
@@ -193,7 +192,8 @@ public abstract class MultiWorldConfig extends EHMModule
             default:
             {
                 OPTIONS.put(world, node, node.getDefaultValue());
-                throw new IllegalArgumentException(node.getPath() + " expects " + node.getVarType() + " but got " + value.getClass().getName());
+                String inputClassName = value != null ? value.getClass().getName() : "null";
+                throw new IllegalArgumentException(node.getPath() + " expects " + node.getVarType() + " but got " + inputClassName);
             }
         }
     }
@@ -202,7 +202,7 @@ public abstract class MultiWorldConfig extends EHMModule
      * Verify that the ConfigNode contains a valid value and is usable by the Plugin
      *
      * @param node  the ConfigNode to validate, validates according to the SubType of the ConfigNode
-     * @param value the current value to validate, to check if it has changed
+     * @param value the current value to validate
      *
      * @return the original/adjusted value
      */
@@ -390,4 +390,25 @@ public abstract class MultiWorldConfig extends EHMModule
     }
 
     public abstract void load ();
+
+
+
+    /**
+     * Determines how to load the specific ConfigFile
+     */
+    protected enum Mode
+    {
+        /**
+         * This is the main configFile and gets overriden by other Configs
+         */
+        MAIN,
+        /**
+         * Override the settings of the main config in specific worlds
+         */
+        OVERRIDE,
+        /**
+         * All options which aren't found default to disabled, this allows to only activate a few things and not having to disable everything else
+         */
+        DEFAULT_DISABLED
+    }
 }

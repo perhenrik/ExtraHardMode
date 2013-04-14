@@ -60,7 +60,7 @@ public class Spoiders implements Listener
             {
                 event.setCancelled(true);
                 entityType = EntityType.SPIDER;
-                world.spawnEntity(location, entityType);
+                entityModule.spawn(location, entityType);
             }
         }
     }

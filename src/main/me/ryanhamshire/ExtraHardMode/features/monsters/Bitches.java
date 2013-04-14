@@ -59,8 +59,7 @@ public class Bitches implements Listener
             if (plugin.random(witchSpawnPercent))
             {
                 event.setCancelled(true);
-                entityType = EntityType.WITCH;
-                world.spawnEntity(location, entityType);
+                entityModule.spawn(location, EntityType.WITCH);
             }
         }
     }
@@ -111,7 +110,7 @@ public class Bitches implements Listener
 
                 if (!zombieNearby)
                 {
-                    Zombie zombie = (Zombie) location.getWorld().spawnEntity(location, EntityType.ZOMBIE);
+                    Zombie zombie = (Zombie) entityModule.spawn(location, EntityType.ZOMBIE);
                     zombie.setVillager(true);
                     zombie.setBaby(true);
                     if (zombie.getTarget() != null)
