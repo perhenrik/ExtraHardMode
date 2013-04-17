@@ -15,11 +15,9 @@
 package me.ryanhamshire.ExtraHardMode.module;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -32,6 +30,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 public class EntityModule extends EHMModule
 {
 
+    private final String IGNORE = "extrahardmode.ignore.me";
+    private final String ENVIRONMENTAL_DAMAGE = "extrahard_environmentalDamage";
+    
     /**
      * Constructor.
      *
@@ -50,7 +51,7 @@ public class EntityModule extends EHMModule
      */
     public void markLootLess(LivingEntity entity)
     {
-        entity.setMetadata("extrahard_environmentalDamage", new FixedMetadataValue(plugin, entity.getMaxHealth()));
+        entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, entity.getMaxHealth()));
     }
 
     /**
@@ -61,14 +62,14 @@ public class EntityModule extends EHMModule
      */
     public void addEnvironmentalDamage(LivingEntity entity, int damage)
     {
-        if (!entity.hasMetadata("extrahard_environmentalDamage"))
+        if (!entity.hasMetadata(ENVIRONMENTAL_DAMAGE))
         {
-            entity.setMetadata("extrahard_environmentalDamage", new FixedMetadataValue(plugin, damage));
+            entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, damage));
         }
         else
         {
-            int currentTotalDamage = entity.getMetadata("extrahard_environmentalDamage").get(0).asInt();
-            entity.setMetadata("extrahard_environmentalDamage", new FixedMetadataValue(plugin, currentTotalDamage + damage));
+            int currentTotalDamage = entity.getMetadata(ENVIRONMENTAL_DAMAGE).get(0).asInt();
+            entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, currentTotalDamage + damage));
         }
     }
 
@@ -80,9 +81,9 @@ public class EntityModule extends EHMModule
      */
     public boolean isLootLess(LivingEntity entity)
     {
-        if (entity instanceof Creature && entity.hasMetadata("extrahard_environmentalDamage"))
+        if (entity instanceof Creature && entity.hasMetadata(ENVIRONMENTAL_DAMAGE))
         {
-            int totalDamage = entity.getMetadata("extrahard_environmentalDamage").get(0).asInt();
+            int totalDamage = entity.getMetadata(ENVIRONMENTAL_DAMAGE).get(0).asInt();
             // wither is exempt. he can't be farmed because creating him requires combining not-farmable components
             return !(entity instanceof Wither) && (totalDamage > entity.getMaxHealth() / 2);
         }
@@ -119,7 +120,7 @@ public class EntityModule extends EHMModule
     {
         if (entity instanceof LivingEntity)
         {
-            entity.setMetadata("extrahardmode.ignore.me", new FixedMetadataValue(plugin, true));
+            entity.setMetadata(IGNORE, new FixedMetadataValue(plugin, true));
         }
     }
 
@@ -132,7 +133,7 @@ public class EntityModule extends EHMModule
     {
         if (entity instanceof LivingEntity)
         {
-            if (entity.hasMetadata("extrahardmode.ignore.me"))
+            if (entity.hasMetadata(IGNORE))
             {
                 return true;
             }

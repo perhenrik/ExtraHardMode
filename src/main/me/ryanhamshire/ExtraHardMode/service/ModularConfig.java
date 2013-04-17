@@ -15,7 +15,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package me.ryanhamshire.ExtraHardMode.service;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

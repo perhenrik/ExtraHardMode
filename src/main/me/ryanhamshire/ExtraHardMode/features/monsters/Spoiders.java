@@ -3,6 +3,7 @@ package me.ryanhamshire.ExtraHardMode.features.monsters;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.task.WebCleanupTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,11 +33,13 @@ public class Spoiders implements Listener
 {
     ExtraHardMode plugin;
     RootConfig CFG;
+    EntityModule entityModule;
 
     public Spoiders(ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
+        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
