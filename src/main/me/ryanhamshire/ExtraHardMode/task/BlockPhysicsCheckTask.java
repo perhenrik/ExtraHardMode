@@ -26,7 +26,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**

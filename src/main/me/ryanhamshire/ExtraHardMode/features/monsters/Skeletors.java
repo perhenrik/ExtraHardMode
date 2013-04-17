@@ -25,11 +25,13 @@ public class Skeletors implements Listener
 {
     ExtraHardMode plugin;
     RootConfig CFG;
+    EntityModule entityModule;
 
     public Skeletors(ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
+        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
 
