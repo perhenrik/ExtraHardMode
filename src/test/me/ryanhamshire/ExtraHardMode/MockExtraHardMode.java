@@ -1,13 +1,21 @@
 package me.ryanhamshire.ExtraHardMode;
 
+import org.powermock.api.mockito.PowerMockito;
+
 /**
- * Created with IntelliJ IDEA.
- * User: max
- * Date: 3/17/13
- * Time: 12:48 PM
- * To change this template use File | Settings | File Templates.
+ * Mock Plugin Object
  */
 public class MockExtraHardMode
 {
+    ExtraHardMode instance = PowerMockito.mock(ExtraHardMode.class);
 
+    public MockExtraHardMode()
+    {
+
+    }
+
+    public ExtraHardMode getInstance()
+    {
+        return instance;
+    }
 }

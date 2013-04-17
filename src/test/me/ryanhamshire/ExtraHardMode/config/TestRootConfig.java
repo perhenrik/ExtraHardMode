@@ -1,6 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.config;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.MockExtraHardMode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class TestRootConfig
 {
     //Mock Plugin
-    ExtraHardMode plugin = PowerMockito.mock(ExtraHardMode.class);
+    ExtraHardMode plugin = new MockExtraHardMode().getInstance();
     RootConfig cfg = new RootConfig(plugin);
 
     public TestRootConfig()

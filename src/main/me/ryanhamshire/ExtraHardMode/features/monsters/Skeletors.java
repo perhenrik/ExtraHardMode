@@ -142,8 +142,7 @@ public class Skeletors implements Listener
                 Creature silverFish = (Creature) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0, 1.5, 0), EntityType.SILVERFISH);
                 silverFish.setVelocity(arrow.getVelocity().multiply(.25));
                 silverFish.setTarget(skeleton.getTarget());
-                module.markLootLess(silverFish); // this silverfish doesn't
-                // drop loot
+                module.markLootLess(silverFish); // this silverfish doesn't drop loot
             }
         }
     }

@@ -63,67 +63,12 @@ public class Physics implements Listener
         World world = block.getWorld();
         Player player = breakEvent.getPlayer();
 
-        final boolean betterTreeChoppingEnabled = CFG.getBoolean(RootNode.BETTER_TREE_CHOPPING, world.getName());
         final boolean moreFallingBlocksEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName());
         final int netherRackFirePercent = CFG.getInt(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT, world.getName());
         final boolean playerPerm = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                    || player.getGameMode().equals(GameMode.CREATIVE) : true;
 
-        // FEATURE: trees chop more naturally
-        if (block.getType() == Material.LOG && betterTreeChoppingEnabled &&! playerPerm)
-        {
-            //Are there any leaves above the log? -> tree
-            boolean isTree = false;
-            checkers : for (int i = 1; i < 20; i++)
-            {
-               Material upType = block.getRelative(BlockFace.UP, i).getType();
-                switch (upType)
-                {
-                    case LEAVES:
-                    {
-                        isTree = true;
-                        break checkers;
-                    }
-                    case AIR:case LOG:
-                    {
-                        break;
-                    }
-                    default: //if something other than log/air this is most likely part of a building
-                    {
-                        break checkers;
-                    }
-                }
-            }
 
-            if (isTree)
-            {
-                Block rootsBlock = block;
-                for (int blocksDown = 1; blocksDown < 20; blocksDown++)
-                {
-                    if (rootsBlock.getRelative(BlockFace.DOWN, blocksDown).getType() != Material.LOG)
-                    {
-                        rootsBlock = block.getRelative(BlockFace.DOWN, blocksDown);
-                        break;
-                    }
-                }
-
-                Block aboveLog = block.getRelative(BlockFace.UP);
-                loop : for (int limit = 0; limit < 20; limit++)
-                {
-                    switch (aboveLog.getType())
-                    {
-                        case AIR:
-                            break; //can air fall?
-                        case LOG:
-                            blockModule.applyPhysics(aboveLog);
-                            break;
-                        default: //we reached something that is not part of a tree or leaves
-                            break loop;
-                    }
-                    aboveLog = aboveLog.getRelative(BlockFace.UP);
-                }
-            }
-        }
 
         // FEATURE: more falling blocks
         if (moreFallingBlocksEnabled &&! playerPerm)
