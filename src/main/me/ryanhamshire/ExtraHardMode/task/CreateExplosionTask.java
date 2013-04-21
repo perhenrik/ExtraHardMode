@@ -1,5 +1,6 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
@@ -7,6 +8,9 @@ import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.minecart.ExplosiveMinecart;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import java.util.ArrayList;
@@ -34,9 +38,9 @@ public class CreateExplosionTask implements Runnable
      */
     private RootConfig CFG;
     /**
-     * Instance of a creeper that should explode, only used for custom creeper explosions
+     * Instance of a the Entity which caused the Explosion
      */
-    private Creeper creeper;
+    private Creeper creeper; private TNTPrimed tnt; private ExplosiveMinecart minecartTnt;
 
     /**
      * Constructor.
@@ -57,12 +61,33 @@ public class CreateExplosionTask implements Runnable
      *
      * @param location  - Location to make explosion occur.
      * @param type      - Type that determines size and possible blockdamage or fire of explosion.
-     * @param creeper   - Reference to the creeper that just exploded
+     * @param entity    - Reference to the Entity that caused this Explosion
      */
-    public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type, Creeper creeper)
+    public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type, Entity entity)
     {
         this(plugin, location, type); //Call to standard constructor to save code
-        this.creeper = creeper;
+        switch (entity.getType())
+        {
+            case CREEPER:
+            {
+                this.creeper = (Creeper) entity;
+                break;
+            }
+            case PRIMED_TNT:
+            {
+                tnt = (TNTPrimed) entity;
+                break;
+            }
+            case MINECART_TNT:
+            {
+                minecartTnt = (ExplosiveMinecart) entity;
+                break;
+            }
+            default:
+            {
+                throw new IllegalArgumentException(entity.getType().getName() + " is not handled ");
+            }
+        }
     }
 
     @Override

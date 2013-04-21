@@ -90,6 +90,7 @@ public class BumBumBens implements Listener
 
         final boolean chargedExplodeOnHit = CFG.getBoolean(RootNode.CHARGED_CREEPERS_EXPLODE_ON_HIT, world.getName());
         final boolean flamingCreepersExplode = CFG.getBoolean(RootNode.FLAMING_CREEPERS_EXPLODE, world.getName());
+        final boolean customCharged = CFG.getBoolean(RootNode.EXPLOSIONS_CHARGED_CREEPERS_ENABLE, world.getName());
 
         // FEATURE: charged creepers explode on hit
         if (chargedExplodeOnHit)
@@ -123,7 +124,8 @@ public class BumBumBens implements Listener
                         return;
                     }
                     entityModule.markLootLess((LivingEntity) entity);
-                    new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED, creeper).run(); // equal to a TNT blast
+                    if (customCharged)
+                        new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED, creeper).run(); // equal to a TNT blast
                     entity.remove();
                     return;
                 }
@@ -154,17 +156,20 @@ public class BumBumBens implements Listener
         }
     }
 
-    @EventHandler
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST) //give some time for other plugins to block the event
     public void onExplosion(EntityExplodeEvent event)
     {
         Entity entity = event.getEntity();
+        World world = event.getLocation().getWorld();
+
+        final boolean customCreeper = CFG.getBoolean(RootNode.EXPLOSIONS_CREEPERS_ENABLE, world.getName());
 
         // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
-        if (entity instanceof Creeper &&! ((Creeper)entity).isPowered() &&! entityModule.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
+        if (customCreeper && entity instanceof Creeper &&! ((Creeper)entity).isPowered() &&! entityModule.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
         {
             event.setCancelled(true);
             entityModule.flagIgnore(entity);//Ignore this creeper in further calls to this method
-            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER, (Creeper)entity).run();
+            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER, entity).run();
         }
     }
 }

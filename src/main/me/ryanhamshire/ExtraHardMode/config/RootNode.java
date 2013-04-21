@@ -48,7 +48,7 @@ public enum RootNode implements ConfigNode
      * maximum y for placing standard torches
      */
     STANDARD_TORCH_MIN_Y
-            (baseNode()+".World Rules.Torches.Max Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 30),
+            (baseNode()+".World Rules.Torches.No Placement Under Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 30),
     /**
      * whether players are limited to placing torches against specific materials
      */
@@ -59,16 +59,7 @@ public enum RootNode implements ConfigNode
      */
     RAIN_BREAKS_TORCHES
             (baseNode()+".World Rules.Torches.Rain Breaks Torches", VarType.BOOLEAN, true),
-    /**
-     * whether TNT should be more powerful and plentiful
-     */
-    BETTER_TNT
-            (baseNode()+".World Rules.Better Tnt.Bigger Explosions", VarType.BOOLEAN, true),
-    /**
-     * wheter the crafting recipe should give more tnt
-     */
-    MORE_TNT_NUMBER
-            (baseNode()+".World Rules.Better Tnt.Tnt Per Recipe", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 3),
+
     /**
      * Sound when torch placing fails
      */
@@ -277,11 +268,6 @@ public enum RootNode implements ConfigNode
      */
     BONUS_NETHER_BLAZE_SPAWN_PERCENT
             (baseNode()+".Blazes.Bonus Nether Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
-    /**
-     * whether blazes explode and spread fire when they die
-     */
-    BLAZES_EXPLODE_ON_DEATH
-            (baseNode()+".Blazes.Explode On Death", VarType.BOOLEAN, true),
     /**
      * whether blazes drop fire when damaged
      */
@@ -505,10 +491,13 @@ public enum RootNode implements ConfigNode
             (baseNode()+".Explosions.Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
 
     /** Charged CREEPER
-     * Size of Explosion below border
+     * Enable?
      */
     EXPLOSIONS_CHARGED_CREEPERS_ENABLE
             (baseNode()+".Explosions.Charged Creeper.Enable Custom Explosion", VarType.BOOLEAN, true),
+    /**
+     * Size of Explosion below the border
+     */
     EXPLOSIONS_CHARGED_CREEPERS_BELOW_POWER
             (baseNode()+".Explosions.Charged Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
     /**
@@ -538,10 +527,23 @@ public enum RootNode implements ConfigNode
             (baseNode()+".Explosions.Charged Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
 
     /** TNT
-     * Size of Explosion below border
+     * Enable Custom Explosion?
      */
     EXPLOSIONS_TNT_ENABLE
             (baseNode()+".Explosions.Tnt.Enable Custom Explosion", VarType.BOOLEAN, true),
+    /**
+     * whether TNT should explode multiple times
+     */
+    BETTER_TNT
+            (baseNode()+".Explosions.Tnt.Enable Multiple Explosions", VarType.BOOLEAN, true),
+    /**
+     * wheter the crafting recipe should give more tnt
+     */
+    MORE_TNT_NUMBER
+            (baseNode()+".Explosions.Tnt.Tnt Per Recipe", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 3),
+    /**
+     * Size of Explosion below the border
+     */
     EXPLOSIONS_TNT_BELOW_POWER
             (baseNode()+".Explosions.Tnt.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
     /**
@@ -570,44 +572,50 @@ public enum RootNode implements ConfigNode
     EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF
             (baseNode()+".Explosions.Tnt.Above Border.World Damage", VarType.BOOLEAN, true),
 
-    /** Blaze
-     * Size of Explosion below border
+    /** BLAZE
+    * whether blazes explode and spread fire when they die
+    */
+    BLAZES_EXPLODE_ON_DEATH
+            (baseNode()+".Explosions.Blazes Explode On Death.Enable", VarType.BOOLEAN, true),
+    /**
+     * Size of Explosion below the border
      */
-    EXPLOSIONS_BLAZE_ENABLE
-            (baseNode()+".Explosions.Overworld Blaze.Enable Custom Explosion", VarType.BOOLEAN, true),
     EXPLOSIONS_BLAZE_BELOW_POWER
-            (baseNode()+".Explosions.Overworld Blazes.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+            (baseNode()+".Explosions.Blazes Explode On Death.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
     /**
      * Set Fire on Explosion below border
      */
     EXPLOSIONS_BLAZE_BELOW_FIRE
-            (baseNode()+".Explosions.Overworld Blazes.Below Border.Set Fire", VarType.BOOLEAN, true),
+            (baseNode()+".Explosions.Blazes Explode On Death.Below Border.Set Fire", VarType.BOOLEAN, true),
     /**
      * Damage the world below border
      */
     EXPLOSIONS_BLAZE_BELOW_WORLD_GRIEF
-            (baseNode()+".Explosions.Overworld Blazes.Below Border.World Damage", VarType.BOOLEAN, true),
+            (baseNode()+".Explosions.Blazes Explode On Death.Below Border.World Damage", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below border
      */
     EXPLOSIONS_BLAZE_ABOVE_POWER
-            (baseNode()+".Explosions.Overworld Blazes.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+            (baseNode()+".Explosions.Blazes Explode On Death.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
     /**
      * Set Fire on Explosion below border
      */
     EXPLOSIONS_BLAZE_ABOVE_FIRE
-            (baseNode()+".Explosions.Overworld Blazes.Above Border.Set Fire", VarType.BOOLEAN, true),
+            (baseNode()+".Explosions.Blazes Explode On Death.Above Border.Set Fire", VarType.BOOLEAN, true),
     /**
      * Damage the world below border
      */
     EXPLOSIONS_BLAZE_ABOVE_WORLD_GRIEF
-            (baseNode()+".Explosions.Overworld Blazes.Above Border.World Damage", VarType.BOOLEAN, true),
+            (baseNode()+".Explosions.Blazes Explode On Death.Above Border.World Damage", VarType.BOOLEAN, true),
 
     /** Ghast
-     * Size of Explosion below border
+     * Enable custom Explosion?
      */
     EXPLOSIONS_GHASTS_ENABLE
             (baseNode()+".Explosions.Ghasts.Enable Custom Explosion", VarType.BOOLEAN, true),
+    /**
+     * Size of Explosion below the border
+     */
     EXPLOSIONS_GHAST_BELOW_POWER
             (baseNode()+".Explosions.Ghasts.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
     /**
