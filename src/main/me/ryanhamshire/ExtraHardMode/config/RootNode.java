@@ -1,6 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.config;
 
 import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
+import me.ryanhamshire.ExtraHardMode.service.MultiWorldConfig;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public enum RootNode implements ConfigNode
      * How this ConfigFile is going to be handled by the plugin
      */
     MODE
-            (baseNode()+".Config Type", VarType.STRING, "Main"),
+            (baseNode()+".Config Type", VarType.STRING, "MAIN"),
     /**
      * list of worlds where extra hard mode rules apply
      */
@@ -471,7 +472,7 @@ public enum RootNode implements ConfigNode
      * Enable this custom explosion
      */
     EXPLOSIONS_CREEPERS_ENABLE
-            (baseNode()+".Explosions.Creeper.Enable", VarType.BOOLEAN, true),
+            (baseNode()+".Explosions.Creeper.Enable Custom Explosion", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below border
      */
@@ -506,6 +507,8 @@ public enum RootNode implements ConfigNode
     /** Charged CREEPER
      * Size of Explosion below border
      */
+    EXPLOSIONS_CHARGED_CREEPERS_ENABLE
+            (baseNode()+".Explosions.Charged Creeper.Enable Custom Explosion", VarType.BOOLEAN, true),
     EXPLOSIONS_CHARGED_CREEPERS_BELOW_POWER
             (baseNode()+".Explosions.Charged Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
     /**
@@ -537,6 +540,8 @@ public enum RootNode implements ConfigNode
     /** TNT
      * Size of Explosion below border
      */
+    EXPLOSIONS_TNT_ENABLE
+            (baseNode()+".Explosions.Tnt.Enable Custom Explosion", VarType.BOOLEAN, true),
     EXPLOSIONS_TNT_BELOW_POWER
             (baseNode()+".Explosions.Tnt.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
     /**
@@ -568,6 +573,8 @@ public enum RootNode implements ConfigNode
     /** Blaze
      * Size of Explosion below border
      */
+    EXPLOSIONS_BLAZE_ENABLE
+            (baseNode()+".Explosions.Overworld Blaze.Enable Custom Explosion", VarType.BOOLEAN, true),
     EXPLOSIONS_BLAZE_BELOW_POWER
             (baseNode()+".Explosions.Overworld Blazes.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
     /**
@@ -599,6 +606,8 @@ public enum RootNode implements ConfigNode
     /** Ghast
      * Size of Explosion below border
      */
+    EXPLOSIONS_GHASTS_ENABLE
+            (baseNode()+".Explosions.Ghasts.Enable Custom Explosion", VarType.BOOLEAN, true),
     EXPLOSIONS_GHAST_BELOW_POWER
             (baseNode()+".Explosions.Ghasts.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
     /**
@@ -647,7 +656,7 @@ public enum RootNode implements ConfigNode
     /**
      * The value that will disable this option
      */
-    private Object disableValue = null;
+    private Disable disableValue = null;
 
     /**
      * Constructor.
@@ -715,7 +724,7 @@ public enum RootNode implements ConfigNode
      */
     public Object getValueToDisable ()
     {
-        Object obj = null;
+        Object obj;
         switch (type)
         {
             case BOOLEAN:
@@ -725,33 +734,40 @@ public enum RootNode implements ConfigNode
             }
             case INTEGER:
             {
-                switch (subType)
+                obj = 0;
+                if (subType != null)
                 {
-                    case NATURAL_NUMBER:
-                    case Y_VALUE:
+                    switch (subType)
                     {
-                        if (disableValue != null)
-                            obj = disableValue;
-                    }
-                    case HEALTH:
-                    {
-                        obj = 20;
-                        break;
-                    }
-                    case PERCENTAGE:
-                    {
-                        obj = 0;
-                        break;
-                    }
-                    default:
-                    {
-                        obj = defaultValue;
-                        throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
+                        case NATURAL_NUMBER:
+                        case Y_VALUE:
+                        {
+                            if (disableValue != null)
+                                obj = (Integer) disableValue.get();
+                            break;
+                        }
+                        case HEALTH:
+                        {
+                            obj = 20;
+                            break;
+                        }
+                        case PERCENTAGE:
+                        {
+                            obj = 0;
+                            break;
+                        }
+                        default:
+                        {
+                            obj = defaultValue;
+                            throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
+                        }
                     }
                 }
+                break;
             }
             case DOUBLE:
             {
+                obj = 0.0;
                 break;
             }
             case STRING:
@@ -792,6 +808,11 @@ public enum RootNode implements ConfigNode
         }
 
         Object disable;
+
+        public Object get()
+        {
+            return disable;
+        }
     }
 
     /**

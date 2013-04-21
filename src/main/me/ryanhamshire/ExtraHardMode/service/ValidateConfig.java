@@ -8,11 +8,11 @@ import java.util.List;
 /**
  * Validate the Bounds of a ConfigNode
  */
-public class Validate
+public class ValidateConfig
 {
     private final ExtraHardMode plugin;
 
-    public Validate (ExtraHardMode plugin)
+    public ValidateConfig (ExtraHardMode plugin)
     {
        this.plugin = plugin;
     }

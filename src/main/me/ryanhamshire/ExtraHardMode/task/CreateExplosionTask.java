@@ -76,12 +76,14 @@ public class CreateExplosionTask implements Runnable
      */
     public void createExplosion(Location loc, ExplosionType type)
     {
-        int power;
-        boolean setFire;
-        boolean damageWorld;
+        int power = type.getPowerA();
+        boolean setFire = type.isFireA();
+        boolean damageWorld = type.allowBlockDmgA();
         String worldName = loc.getWorld().getName();
 
-        if (loc.getY() < CFG.getInt(RootNode.EXPLOSIONS_Y, loc.getWorld().getName()))
+        final int border = CFG.getInt(RootNode.EXPLOSIONS_Y, loc.getWorld().getName());
+
+        if (loc.getY() <= border)
         {
             switch (type)
             {
@@ -116,7 +118,7 @@ public class CreateExplosionTask implements Runnable
                     damageWorld = type.allowBlockDmgB();
             }
         }
-        else
+        else if (loc.getY() > border)
         {
             switch (type)
             {

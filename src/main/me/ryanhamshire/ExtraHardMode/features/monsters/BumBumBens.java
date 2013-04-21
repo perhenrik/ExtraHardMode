@@ -123,8 +123,9 @@ public class BumBumBens implements Listener
                         return;
                     }
                     entityModule.markLootLess((LivingEntity) entity);
-                    entity.remove();
                     new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED, creeper).run(); // equal to a TNT blast
+                    entity.remove();
+                    return;
                 }
             }
         }
@@ -159,7 +160,7 @@ public class BumBumBens implements Listener
         Entity entity = event.getEntity();
 
         // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
-        if (entity != null && entity instanceof Creeper &&! entityModule.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
+        if (entity instanceof Creeper &&! ((Creeper)entity).isPowered() &&! entityModule.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
         {
             event.setCancelled(true);
             entityModule.flagIgnore(entity);//Ignore this creeper in further calls to this method

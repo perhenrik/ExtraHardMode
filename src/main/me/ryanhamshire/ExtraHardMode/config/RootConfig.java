@@ -5,13 +5,12 @@ import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
 import me.ryanhamshire.ExtraHardMode.service.MultiWorldConfig;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -24,7 +23,10 @@ public class RootConfig extends MultiWorldConfig
     }
 
     @Override
-    public void starting (){ load(); }
+    public void starting ()
+    {
+        load();
+    }
 
     @Override
     public void closing (){}
@@ -32,148 +34,270 @@ public class RootConfig extends MultiWorldConfig
     @Override
     public void load()
     {
-        File[] configFiles= getConfigFiles(plugin.getDataFolder());
-        LinkedHashMap<String, FileConfiguration> configurations= loadConfigFiles(configFiles);
-        load (configurations);
+        init();
+        File[] configFiles = getConfigFiles(plugin.getDataFolder());
+        List <Config> configs = loadFilesFromDisk(configFiles);
+        load (configs);
     }
 
     /**
      * Loads all FileConfigurations into memory
+     * Insures that there is always a main config.yml
+     * loads all other Config's based on the Mode specified in the ConfigFile
      * @param configs FileName + respective FileConfiguration
      */
-    public void load (Map <String, FileConfiguration> configs)
+    public void load (List <Config> configs)
     {
-        {   //MAIN Config loaded first, so we can override it later
-            if (!configs.containsKey("config.yml"))
+        configs = loadMain(configs);
+
+        Config defaults = null;
+        for (Config config : configs)
+        {   //loadMain insures that there is always a config.yml
+            if (config.getFileName().equals("config.yml") && config.getStatus() == Status.PROCESSED && config.getMode() == Mode.MAIN)
             {
-                configs.put("config.yml", new YamlConfiguration());
+                defaults = config;
+                configs.remove(config);
+                break;
             }
-            FileConfiguration configYml = configs.get("config.yml");
-            configYml = store(configYml, Mode.MAIN);
-            if (/*returned config has been adjusted*/ configYml!=null)
-                try
-                {
-                    configYml.save(new File(plugin.getDataFolder() + File.separator + "config.yml"));
-                }catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-            configs.remove("config.yml");
         }
 
-        for (Map.Entry<String, FileConfiguration> entry : configs.entrySet())
+        for (Config config : configs)
         {
-            File outputFile = new File (plugin.getDataFolder() + File.separator + entry.getKey());
-            FileConfiguration input = entry.getValue();
+            {//Check if Mode is specified
+                Response <String> response = (Response<String>) loadNode(config.getConfig(), RootNode.MODE, false);
+                try
+                {
+                    if (response.getStatusCode() != Status.NOT_FOUND)
+                        config.setMode(Mode.valueOf(response.getContent().toUpperCase()));
+                } catch (IllegalArgumentException ignored){}
+                finally
+                {
+                    if (config.getMode() == null || config.getMode() == Mode.NOT_SET)
+                        config.setMode(Mode.INHERIT);
+                }
+            }
 
-            String configType = (String) getObjectForNode(input, RootNode.MODE, false);
-            Mode mode = Mode.OVERRIDE;
-            try {
-                mode = Mode.valueOf(configType.toUpperCase());
-            } catch (IllegalArgumentException ignored){}
-
-            FileConfiguration output;
-
-            switch (mode)
+            switch (config.getMode())
             {
                 case MAIN:
                 {
-                    output = store(input, Mode.MAIN);
+                    throw new UnsupportedOperationException("There can only be one Config loaded with Mode.MAIN");
+                }
+                case DISABLE: case INHERIT:
+                {
+                    config = loadConfigToMem(config, defaults);
                     break;
                 }
-                case DEFAULT_DISABLED:
+                case NOT_SET: default:
                 {
-                    output = store(input, Mode.DEFAULT_DISABLED);
-                    break;
-                }
-                case OVERRIDE:
-                {
-                    output = store(input, Mode.OVERRIDE);
-                    break;
-                }
-                default:
-                {
-                    if (entry.getKey().equals("config.yml"))
-                        output = store(input, Mode.MAIN);
-                    else
-                        output = store(input, Mode.OVERRIDE);
+                    config.setMode(config.getFileName().equals("config.yml") ? Mode.MAIN : Mode.INHERIT);
+                    config = loadConfigToMem(config, defaults);
                     break;
                 }
             }
 
-            if (/*config has been adjusted*/ output != null)
+            //Check if all values in the config are the same as in the master config and mark them as "inheritent" if they are the same, this makes
+            //it easier to see what the admin has overriden. Or if a value in disable mode is already disabled.
+            if (config.getMode() == Mode.INHERIT || config.getMode() == Mode.DISABLE)
             {
-                try
+                for (RootNode node : RootNode.values())
                 {
-                    output.save(outputFile);
+                    Object thisValue = loadNode(config.getConfig(), node, false).getContent();
+                    Object thatValue = loadNode(defaults.getConfig(), node, false).getContent();
+
+                    switch (config.getMode())
+                    {
+                        case INHERIT:
+                        {   //floating point arithmetic is inaccurate...
+                            if ((thisValue == thatValue) || ((thisValue instanceof Double && thatValue instanceof Double)
+                                    && (BigDecimal.valueOf((Double)thisValue) .equals( BigDecimal.valueOf((Double)thatValue) ))))
+                            {
+                                config.getConfig().set(node.getPath(), config.getMode().name().toLowerCase());
+                                config.setStatus (Status.ADJUSTED);
+                            }
+                            break;
+                        }
+                        case DISABLE:
+                        {
+                            if ((thisValue == node.getValueToDisable()) || ((thisValue instanceof Double && node.getValueToDisable() instanceof Double)
+                                    && (BigDecimal.valueOf((Double)thisValue) .equals (BigDecimal.valueOf((Double)node.getValueToDisable())) )))
+                            {
+                                config.getConfig().set(node.getPath(), config.getMode().name().toLowerCase());
+                                config.setStatus (Status.ADJUSTED);
+                            }
+                            break;
+                        }
+                        default:
+                            throw new NotImplementedException();
+                    }
+
                 }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
+            }
+
+            if (config.getStatus() == Status.ADJUSTED )
+            {
+                saveConfig(config);
             }
         }
     }
 
     /**
-     * Store the Options from the FileConfiguration into memory
-     * @param config
-     * @return FileConfiguration if values have been adjusted - null: if not adjusted
+     * Loads the main config.yml
+     * @param configs to process
+     * @return all configs and the main config marked as processed
      */
-    private FileConfiguration store (FileConfiguration config, Mode mode)
+    public List<Config> loadMain (List <Config> configs)
     {
-        boolean changed = false;
-        List<String> worlds = (List<String>) getObjectForNode(config, RootNode.WORLDS, false);
+        Config main = null;
 
-        YamlConfiguration output = new YamlConfiguration();
+        boolean contains = false;
+        for (Config config : configs)
+        {
+            if (config.getFileName().equals("config.yml"))
+            {
+                contains = true;
+                main = config;
+                configs.remove(config);
+                break;
+            }
+        }
+        if (!contains)
+        {
+            main = new Config(new YamlConfiguration(), plugin.getDataFolder() + File.separator + "config.yml");
+        }
+
+        main.setMode(Mode.MAIN);
+        main = loadConfigToMem(main, null);
+        if (main.getStatus() == Status.ADJUSTED)
+        {
+            saveConfig(main);
+        }
+
+        main.setStatus(Status.PROCESSED);
+        configs.add(main);
+        return configs;
+    }
+
+    /**
+     * Store the Options from the FileConfiguration into memory
+     *
+     * @param config Config, to load the values from, according to the Mode specified. The Mode determines how not found or same values are treated
+     * @param main main file to use for reference values, can be null if we are loading with Mode.MAIN
+     *
+     * @return the passed in config, is marked as Status.ADJUSTED if the Config has been changed
+     */
+    private Config loadConfigToMem (Config config, Config main)
+    {
+        Response<List<String>> myWorlds  = loadNode(config.getConfig(), RootNode.WORLDS, false);
+        List<String> worlds = myWorlds.getContent();
+
         for (RootNode node : RootNode.values())
         {
-            Object obj = getObjectForNode(config, node, false);
-            if (node.getVarType().equals(ConfigNode.VarType.INTEGER))
+            Response response = loadNode(config.getConfig(), node, false);
+
+            if (node.getVarType().equals(ConfigNode.VarType.INTEGER) && response.getStatusCode() == Status.OK)
             {
-                Object valObj = validateInt(node, obj);
-                if (valObj != obj ) changed = true;
-                obj = valObj;
+                response = validateInt(node, response.getContent());
             }
 
-            switch (mode) //special actions regarding default values
+            switch (config.getMode()) //special actions regarding default values
             {
                 case MAIN:
                 {
-                    if (/*no value in config*/obj ==  null)
+                    if (response.getStatusCode() == Status.NOT_FOUND)
                     {
                         //get with defaults on
-                        obj = getObjectForNode(config, node, true);
-                        changed = true;
+                        response = loadNode(config.getConfig(), node, true);
+                        config.setStatus(Status.ADJUSTED);
                     }
                     break;
                 }
-                case DEFAULT_DISABLED:
+                case DISABLE:
                 {
-                    if (/*no value in config*/obj == null)
+                    if (response.getStatusCode() == Status.NOT_FOUND || response.getStatusCode() == Status.INHERITS) //Status = Disable: nothing needs to be done
                     {
-                        obj = node.getValueToDisable();
-                     }
-                }
-                case OVERRIDE: //a value that isn't found here will just be ignored as long as it's not the mode <- ?
-                    if (node.equals(RootNode.MODE))
-                    {
+                        if ((!response.getContent().equals(Mode.DISABLE.name()) && response.getStatusCode() == Status.INHERITS)
+                                || response.getStatusCode() == Status.NOT_FOUND)
+                        {   //mark it only adjusted if it has been changed, we rewrite the option nevertheless
+                            config.setStatus(Status.ADJUSTED);
+                        }
 
+                        response.setContent (Mode.DISABLE.name().toLowerCase());
+                        response.setStatus(Status.DISABLES);
                     }
                     break;
+                }
+                case INHERIT: //mark non found nodes as inherits
+                {
+                    if (response.getStatusCode() == Status.NOT_FOUND || response.getStatusCode() == Status.DISABLES)
+                    {
+                        if ((!response.getContent().equals(Mode.INHERIT.name()) && response.getStatusCode() == Status.DISABLES)
+                                || response.getStatusCode() == Status.NOT_FOUND)
+                        {   //mark it only adjusted if it has been changed, we rewrite the option nevertheless
+                            config.setStatus(Status.ADJUSTED);
+                        }
+                        response.setContent(Mode.INHERIT.name().toLowerCase());
+                        response.setStatus (Status.INHERITS);
+                    }
+                    break;
+                }
                 default:
-                    throw new UnsupportedOperationException("Mode: " + mode.name() + " isn't handled");
+                {
+                    throw new UnsupportedOperationException("Mode: " + config.getMode().name() + " isn't handled");
+                }
             }
-            if (worlds == null) worlds = Collections.emptyList();
-            for (String world : worlds)
+
+            config.getConfig().set (node.getPath(), response.getContent()); //has to be before we get the actual values
+
+            //the actual values that need to be loaded for the two modes to work
+            if (response.getStatusCode() == Status.INHERITS || response.getStatusCode() == Status.DISABLES)
             {
-                set(world, node, obj);
+                switch (config.getMode())
+                {
+                    case INHERIT: //load the value from the main config
+                        response.setContent(loadNode (main.getConfig(), node, false).getContent());
+                        break;
+                    case DISABLE: //get the value to disable this option
+                        response.setContent(node.getValueToDisable());
+                        break;
+                }
             }
-            output.set(node.getPath(), obj);
+
+            if (myWorlds.getStatusCode() != Status.NOT_FOUND)
+            {
+                for (String world : worlds)
+                {
+                    set(world, node, response.getContent());
+                }
+            }
         }
-        if(changed)
-            return output;
-        else
-            return null;
+        return config;
+    }
+
+    /**
+     * Reorders and saves the config.
+     * Reorders the Config to the order specified by the enum in RootNode.
+     * This assumes that the Config only has valid Entries.
+     *
+     * @param config Config to save
+     */
+    public void saveConfig (Config config)
+    {
+        //Reorder
+        FileConfiguration reorderedConfig = new YamlConfiguration();
+        for (RootNode node : RootNode.values())
+        {
+            reorderedConfig.set(node.getPath(), config.getConfig().get(node.getPath()));
+        }
+        config.setConfig(reorderedConfig);
+
+        //save the reordered config
+        try
+        {
+            config.getConfig().save(config.getConfigFile());
+        }catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }
