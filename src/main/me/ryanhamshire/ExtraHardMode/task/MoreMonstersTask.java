@@ -168,16 +168,14 @@ public class MoreMonstersTask implements Runnable
      */
     private Location verifyLocation(Location location)
     {
-        Block playerBlock = location.getBlock();
         World world = location.getWorld();
         Location verifiedLoc = null;
 
-        final boolean monstersInLightEnabled = CFG.getInt(RootNode.MORE_MONSTERS_MULTIPLIER, world.getName()) > 0;
-        final int maxY = CFG.getInt(RootNode.MORE_MONSTERS_MAX_Y, world.getName());
+        final int maxY = CFG.getInt(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y, world.getName());
 
         // Only spawn monsters in normal world. End is crowded with endermen and nether is too extreme anyway, add config later
         int lightLvl = location.getBlock().getLightFromSky();
-        if (world.getEnvironment() == World.Environment.NORMAL && (location.getY() < maxY && lightLvl < 3) && monstersInLightEnabled)
+        if (world.getEnvironment() == World.Environment.NORMAL && (location.getY() < maxY && lightLvl < 3))
             verifiedLoc = entityModule.isLocSafeSpawn(location);
 
         return verifiedLoc;
