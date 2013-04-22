@@ -1,6 +1,5 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;

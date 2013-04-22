@@ -5,7 +5,6 @@ import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
 import me.ryanhamshire.ExtraHardMode.service.MultiWorldConfig;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +80,8 @@ public class RootConfig extends MultiWorldConfig
             {
                 case MAIN:
                 {
-                    throw new UnsupportedOperationException("There can only be one Config loaded with Mode.MAIN");
+                    //Inherit is the default mode
+                    config.setMode(Mode.INHERIT); //fallthrough
                 }
                 case DISABLE: case INHERIT:
                 {
@@ -128,7 +128,7 @@ public class RootConfig extends MultiWorldConfig
                             break;
                         }
                         default:
-                            throw new NotImplementedException();
+                            throw new IllegalArgumentException(config.getMode().name() + " not implemented");
                     }
 
                 }
@@ -247,9 +247,16 @@ public class RootConfig extends MultiWorldConfig
                 }
             }
 
+            //the Mode should always reflect in the yml file
+            if (node == RootNode.MODE && (response.getContent() instanceof String) &&! ((String)response.getContent()) .equalsIgnoreCase (config.getMode().name()))
+            {
+                response.setContent(config.getMode().name());
+                config.setStatus(Status.ADJUSTED);
+            }
+
             config.getConfig().set (node.getPath(), response.getContent()); //has to be before we get the actual values
 
-            //the actual values that need to be loaded for the two modes to work
+            //the actual values that need to be loaded into memory for the two modes to work
             if (response.getStatusCode() == Status.INHERITS || response.getStatusCode() == Status.DISABLES)
             {
                 switch (config.getMode())

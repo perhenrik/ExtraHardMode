@@ -104,11 +104,6 @@
             <version>${mc-version}-${bukkit-ver}${snapshot}</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency> <!--We need stuff from version 11, bukkit only has 10 included-->
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0.1</version>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -119,6 +114,12 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>

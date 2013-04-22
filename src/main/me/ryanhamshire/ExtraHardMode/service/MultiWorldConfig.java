@@ -5,13 +5,15 @@ import com.google.common.collect.Table;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.math.BigDecimal;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -33,6 +35,7 @@ public abstract class MultiWorldConfig extends EHMModule
     public MultiWorldConfig (ExtraHardMode plugin)
     {
         super(plugin);
+        init();
     }
 
     /**
@@ -132,7 +135,9 @@ public abstract class MultiWorldConfig extends EHMModule
             case STRING:
             {
                 if (config.get(node.getPath()) instanceof String)
+                {
                     obj = config.getString(node.getPath());
+                }
                 break;
             }
             case INTEGER:
@@ -159,6 +164,17 @@ public abstract class MultiWorldConfig extends EHMModule
             if (obj != null)
             {   //is in config and has been loaded sucesfully
                 status = Status.OK;
+                if (obj instanceof String) //for Strings makes sure their modes get recognized
+                {
+                    if (((String) obj).toUpperCase() .equals (Mode.DISABLE.name()))
+                    {
+                        status = Status.DISABLES;
+                    }
+                    else if (((String) obj).toUpperCase() .equals (Mode.INHERIT.name()))
+                    {
+                        status = Status.INHERITS;
+                    }
+                }
             }
             else
             {   //hasn't been loaded
@@ -267,63 +283,53 @@ public abstract class MultiWorldConfig extends EHMModule
      */
     public Response<Integer> validateInt (final ConfigNode node, Object value)
     {
-        Status status = Status.OK;
-        int newValue;
+        Response response = new Response (Status.NOT_FOUND, value);
 
         if (node.getVarType() == (ConfigNode.VarType.INTEGER))
         {
             if (value instanceof Integer)
             {
-                newValue = (Integer) value;
-                int oldValue = (Integer) value;
+                int valMe = (Integer)value;
 
                 if (node.getSubType() != null)
                 {
-                    ValidateConfig val = new ValidateConfig(plugin);
-
                     switch (node.getSubType())
                     {
                         case PERCENTAGE:
                         {
-                            newValue = val.percentage(node, oldValue);
+                            response = validatePercentage(node, valMe);
                             break;
                         }
                         case Y_VALUE:
                         {
-                            //TODO
-                            /*we are going to just check that it's > 0 so we don't need the worlds as argument. Doesn't
-                              matter if the supplied y-value is greater than the world height, nothing will break. */
-                            newValue = val.customBounds(node, 0, 0, oldValue);
+                            response = validateYCoordinate(node, Arrays.asList(getEnabledWorlds()), valMe);
                             break;
                         }
                         case HEALTH:
                         {
-                            newValue = val.customBounds(node, 1, 20, oldValue);
+                            response = validateCustomBounds(node, 1, 20, valMe);
                             break;
                         }
                         case NATURAL_NUMBER:
                         {
-                            newValue = val.customBounds(node, 0, 0, oldValue);
+                            response = validateCustomBounds(node, 0, 0, valMe);
                             break;
                         }
                         default:
                             throw new UnsupportedOperationException("SubType of " + node.getPath() + " doesn't have a validation method");
                     }
                 }
-                if (oldValue != newValue)
-                    status = Status.ADJUSTED;
             }
             else
             {
-                status = Status.ADJUSTED;
-                newValue = (Integer) node.getDefaultValue();
+                response = new Response(Status.ADJUSTED, (Integer)node.getDefaultValue());
             }
         }
         else
         {
             throw new IllegalArgumentException("Expected a ConfigNode with Type Integer but got " + node.getVarType() + " for " + node.getPath());
         }
-       return new Response(status, newValue);
+       return response;
     }
 
     /**
@@ -472,6 +478,101 @@ public abstract class MultiWorldConfig extends EHMModule
     public abstract void load ();
 
     /**
+     * Validate Y coordinate limit for the given configuration option against the
+     * list of enabled worlds.
+     *
+     * @param node   - Root node to validate.
+     * @param worlds - List of worlds to check against.
+     * @param value  - Integer to validate
+     *
+     * @return a Response containing either the original value or adjusted if out of bounds and the Status
+     */
+    public Response validateYCoordinate (ConfigNode node, List<String> worlds, Integer value)
+    {
+        //Either 255 or the height of the first world loaded is the default max height
+        Status status = Status.OK;
+        int maxHeight = plugin.getServer().getWorlds().size() > 0 ? plugin.getServer().getWorlds().get(0).getMaxHeight() : 255;
+        if (value < 0)
+        {
+            if (plugin.getLogger() != null) //testing
+                plugin.getLogger().warning(ChatColor.YELLOW + " Y coordinate for " + node.getPath() + " cannot be less than 0.");
+            value = 0;
+        }
+        for (String worldName : worlds)
+        {
+            World world = plugin.getServer().getWorld(worldName);
+            //if world is not loaded (yet)
+            if (world != null) maxHeight = world.getMaxHeight();
+            if (value > maxHeight)
+            {
+                if (plugin.getLogger() != null) //testing
+                    plugin.getLogger().warning(ChatColor.YELLOW + " Y coordinate for " + node.getPath() + " is greater than the max height for world " + worldName);
+                value = maxHeight;
+                status = Status.ADJUSTED;
+            }
+        }
+        return new Response(status, value);
+    }
+
+    /**
+     * Validate percentage (0-100) value for given configuration option.
+     *
+     * @param node  - Root node to validate.
+     * @param value - Integer to validate
+     *
+     * @return a Response containing either the original value or adjusted if out of bounds and the Status
+     */
+    public Response validatePercentage (ConfigNode node, Integer value)
+    {
+        Status status = Status.OK;
+        if (value < 0)
+        {
+            if (plugin.getLogger() != null) //testing
+                plugin.getLogger().warning(ChatColor.YELLOW + " Percentage for " + node.getPath() + " cannot be less than 0.");
+            value = 0;
+            status = Status.ADJUSTED;
+        }
+        else if (value > 100)
+        {
+            if (plugin.getLogger() != null) //testing
+                plugin.getLogger().warning(ChatColor.YELLOW + " Percentage for " + node.getPath() + " cannot be greater than 100.");
+            value = 100;
+            status = Status.ADJUSTED;
+        }
+        return new Response(status, value);
+    }
+
+    /**
+     * Validates a configOption with custom bounds
+     *
+     * @param node   the configNode
+     * @param minVal the minimum value the config is allowed to have
+     * @param maxVal the maximum value for the config, if == minVal then it doesn't get checked
+     * @param value  - Integer to validate
+     *
+     * @return a Response containing either the original value or adjusted if out of bounds and the Status
+     */
+    public Response validateCustomBounds (ConfigNode node, int minVal, int maxVal, Integer value)
+    {
+        Status status = Status.OK;
+        if (value < minVal)
+        {
+            if (plugin.getLogger() != null) //testing
+                plugin.getLogger().warning(plugin.getTag() + " Value for " + node.getPath() + " cannot be smaller than " + minVal);
+            value = minVal;
+            status = Status.ADJUSTED;
+        }
+        else if (minVal < maxVal && value > maxVal)
+        {
+            if (plugin.getLogger() != null) //testing
+                plugin.getLogger().warning(plugin.getTag() + " Value for " + node.getPath() + " cannot be greater than " + maxVal);
+            value = maxVal;
+            status = Status.ADJUSTED;
+        }
+        return new Response(status, value);
+    }
+
+    /**
      * A Wrapper that contains a FileConfiguration and a reference to the file as such
      */
     protected class Config
@@ -502,7 +603,17 @@ public abstract class MultiWorldConfig extends EHMModule
         {
             this.config = config;
             configFile = new File(fullFilePath);
-            Validate.isTrue(configFile.exists() && configFile.canWrite(), "FilePath " + fullFilePath + " doesn't exist or is not writable");
+            if (!configFile.exists())
+            {
+                try
+                {
+                    configFile.createNewFile();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                Validate.isTrue(configFile.exists() && configFile.canWrite(), "FilePath " + fullFilePath + " doesn't exist or is not writable");
+            }
         }
 
         /**
