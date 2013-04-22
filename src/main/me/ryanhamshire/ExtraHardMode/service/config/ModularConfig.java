@@ -12,9 +12,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-package me.ryanhamshire.ExtraHardMode.service;
+package me.ryanhamshire.ExtraHardMode.service.config;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

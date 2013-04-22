@@ -16,8 +16,8 @@
         <project.mainclass>me.ryanhamshire.ExtraHardMode.ExtraHardMode</project.mainclass>
         <outputdir>${project.build.outputDirectory}</outputdir><!--Use a profile to overwrite this-->
         <mc-version>1.5.1</mc-version>
-        <bukkit-ver>R0.2</bukkit-ver>
-        <snapshot></snapshot>
+        <bukkit-ver>R0.3</bukkit-ver>
+        <snapshot>-SNAPSHOT</snapshot>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/</srcDir>
     </properties>

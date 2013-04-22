@@ -1,9 +1,11 @@
-package me.ryanhamshire.ExtraHardMode.service;
+package me.ryanhamshire.ExtraHardMode.service.config;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.service.EHMModule;
+import me.ryanhamshire.ExtraHardMode.service.Response;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -13,7 +15,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -274,65 +275,6 @@ public abstract class MultiWorldConfig extends EHMModule
     }
 
     /**
-     * Verify that the ConfigNode contains a valid value and is usable by the Plugin
-     *
-     * @param node  the ConfigNode to validate, validates according to the SubType of the ConfigNode
-     * @param value the current value to validate
-     *
-     * @return a Response containing if the Object has been adjusted and the value (adjusted/original)
-     */
-    public Response<Integer> validateInt (final ConfigNode node, Object value)
-    {
-        Response response = new Response (Status.NOT_FOUND, value);
-
-        if (node.getVarType() == (ConfigNode.VarType.INTEGER))
-        {
-            if (value instanceof Integer)
-            {
-                int valMe = (Integer)value;
-
-                if (node.getSubType() != null)
-                {
-                    switch (node.getSubType())
-                    {
-                        case PERCENTAGE:
-                        {
-                            response = validatePercentage(node, valMe);
-                            break;
-                        }
-                        case Y_VALUE:
-                        {
-                            response = validateYCoordinate(node, Arrays.asList(getEnabledWorlds()), valMe);
-                            break;
-                        }
-                        case HEALTH:
-                        {
-                            response = validateCustomBounds(node, 1, 20, valMe);
-                            break;
-                        }
-                        case NATURAL_NUMBER:
-                        {
-                            response = validateCustomBounds(node, 0, 0, valMe);
-                            break;
-                        }
-                        default:
-                            throw new UnsupportedOperationException("SubType of " + node.getPath() + " doesn't have a validation method");
-                    }
-                }
-            }
-            else
-            {
-                response = new Response(Status.ADJUSTED, (Integer)node.getDefaultValue());
-            }
-        }
-        else
-        {
-            throw new IllegalArgumentException("Expected a ConfigNode with Type Integer but got " + node.getVarType() + " for " + node.getPath());
-        }
-       return response;
-    }
-
-    /**
      * Return all world names were EHM is activated
      * @return world names
      */
@@ -478,6 +420,65 @@ public abstract class MultiWorldConfig extends EHMModule
     public abstract void load ();
 
     /**
+     * Verify that the ConfigNode contains a valid value and is usable by the Plugin
+     *
+     * @param node  the ConfigNode to validate, validates according to the SubType of the ConfigNode
+     * @param value the current value to validate
+     *
+     * @return a Response containing if the Object has been adjusted and the value (adjusted/original)
+     */
+    public Response<Integer> validateInt (final ConfigNode node, Object value)
+    {
+        Response response = new Response (Status.NOT_FOUND, value);
+
+        if (node.getVarType() == (ConfigNode.VarType.INTEGER))
+        {
+            if (value instanceof Integer)
+            {
+                int valMe = (Integer)value;
+
+                if (node.getSubType() != null)
+                {
+                    switch (node.getSubType())
+                    {
+                        case PERCENTAGE:
+                        {
+                            response = validatePercentage(node, valMe);
+                            break;
+                        }
+                        case Y_VALUE:
+                        {
+                            response = validateYCoordinate(node, Arrays.asList(getEnabledWorlds()), valMe);
+                            break;
+                        }
+                        case HEALTH:
+                        {
+                            response = validateCustomBounds(node, 1, 20, valMe);
+                            break;
+                        }
+                        case NATURAL_NUMBER:
+                        {
+                            response = validateCustomBounds(node, 0, 0, valMe);
+                            break;
+                        }
+                        default:
+                            throw new UnsupportedOperationException("SubType of " + node.getPath() + " doesn't have a validation method");
+                    }
+                }
+            }
+            else
+            {
+                response = new Response(Status.ADJUSTED, (Integer)node.getDefaultValue());
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException("Expected a ConfigNode with Type Integer but got " + node.getVarType() + " for " + node.getPath());
+        }
+        return response;
+    }
+
+    /**
      * Validate Y coordinate limit for the given configuration option against the
      * list of enabled worlds.
      *
@@ -570,274 +571,5 @@ public abstract class MultiWorldConfig extends EHMModule
             status = Status.ADJUSTED;
         }
         return new Response(status, value);
-    }
-
-    /**
-     * A Wrapper that contains a FileConfiguration and a reference to the file as such
-     */
-    protected class Config
-    {
-        /**
-         * Loaded FileConfiguration
-         */
-        private FileConfiguration config;
-        /**
-         * Location we loaded the File from
-         */
-        private File configFile;
-        /**
-         * Mode with which this config will get loaded
-         */
-        private Mode mode = Mode.NOT_SET;
-        /**
-         * Some status information about this Config
-         */
-        private Status status = Status.OK;
-
-        /**
-         * Constructor
-         * @param config that's loaded                         config
-         * @param fullFilePath fileName including the directory!
-         */
-        public Config (FileConfiguration config, String fullFilePath)
-        {
-            this.config = config;
-            configFile = new File(fullFilePath);
-            if (!configFile.exists())
-            {
-                try
-                {
-                    configFile.createNewFile();
-                } catch (IOException e)
-                {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                Validate.isTrue(configFile.exists() && configFile.canWrite(), "FilePath " + fullFilePath + " doesn't exist or is not writable");
-            }
-        }
-
-        /**
-         * Constructor
-         * @param config that's loaded
-         * @param file File-Object to save to
-         */
-        public Config (FileConfiguration config, File file)
-        {
-            this.config = config;
-            configFile = file;
-        }
-
-        /**
-         * Get loaded FileConfiguration
-         * @return
-         */
-        public FileConfiguration getConfig ()
-        {
-            return config;
-        }
-
-        /**
-         * Set FileConfiguration
-         * @param config
-         */
-        public void setConfig (FileConfiguration config)
-        {
-            this.config = config;
-        }
-
-        /**
-         * Returns the File to save the FileConfiguration to
-         * @return
-         */
-        public File getConfigFile ()
-        {
-            return configFile;
-        }
-
-        /**
-         * Get the fileName of this Config
-         */
-        public String getFileName ()
-        {
-            return configFile.getName();
-        }
-
-        /**
-         * Set where to save this Config
-         * @param configFile
-         */
-        public void setConfigFile (File configFile)
-        {
-            this.configFile = configFile;
-        }
-
-        /**
-         * Get the Mode this config should be loaded
-         * @return mode or Mode.NOT_SET if not set yet
-         */
-        public Mode getMode ()
-        {
-            return mode;
-        }
-
-        /**
-         * Set the Mode with which this Config should be loaded
-         * @param mode to set
-         */
-        public void setMode (Mode mode)
-        {
-            this.mode = mode;
-        }
-
-        /**
-         * Get the Status of this config
-         * @return Status, initialized with Status.OK
-         */
-        public Status getStatus ()
-        {
-            return status;
-        }
-
-        /**
-         * Set the Status of this Config
-         * @param status of the Config
-         */
-        public void setStatus (Status status)
-        {
-            this.status = status;
-        }
-    }
-
-    /**
-     * Determines how to load the specific ConfigFile
-     */
-    protected enum Mode
-    {
-        /**
-         * This is the main configFile and gets overriden by other Configs
-         */
-        MAIN,
-        /**
-         * Override the settings of the main config in specific worlds
-         */
-        INHERIT,
-        /**
-         * All options which aren't found default to disabled, this allows to only activate a few things and not having to disable everything else
-         */
-        DISABLE,
-        /**
-         * The mode hasn't been set yet
-         */
-        NOT_SET
-    }
-
-    /**
-     * Easier to read than meaningless null return values
-     */
-    protected enum Status
-    {
-        /**
-         * The config has been adjusted and needs to be saved
-         */
-        ADJUSTED,
-        /**
-         * Config hasn't been altered and doesn't need to be saved
-         */
-        OK,
-        /**
-         * Requested value not found
-         */
-        NOT_FOUND,
-        /**
-         * For use as a default for another Object (e.g. Config)
-         */
-        DEFAULTS,
-        /**
-         * This value inherits from something
-         */
-        INHERITS,
-        /**
-         * The values to disable this option should be loaded
-         */
-        DISABLES,
-        /**
-         * This Object has been fully processed and will be ignored
-         */
-        PROCESSED
-    }
-
-    /**
-     * Attach some information to a returned value
-     * only public for testing purposes
-     */
-    protected class Response <T>
-    {
-        /**
-         * Statuscode of this Response
-         */
-        private Status status;
-        /**
-         * Object to return
-         */
-        private T response;
-
-        /**
-         * A parameterized Response with StatusCode
-         * @param status
-         * @param response
-         */
-        public Response(Status status, T response)
-        {
-            this.status = status;
-            this.response = response;
-        }
-
-        @Override
-        public boolean equals(Object other)
-        {
-            if (other instanceof Response)
-            {
-                Response otherR = (Response) other;
-                return otherR.getStatusCode() == this.getStatusCode() && otherR.getContent() == this.getContent();
-            }
-            else
-                return false;
-        }
-
-        /**
-         * Get the Status of this Response
-         * @return
-         */
-        public Status getStatusCode()
-        {
-            return status;
-        }
-
-        /**
-         * Get the actual content of the response
-         * @return
-         */
-        public T getContent ()
-        {
-            return response;
-        }
-
-        /**
-         * Set the status of the Response
-         * @param status code to set
-         */
-        public void setStatus(Status status)
-        {
-            this.status = status;
-        }
-
-        /**
-         * Set the returned content of the Response
-         * @param response to set
-         */
-        public void setContent (T response)
-        {
-            this.response = response;
-        }
     }
 }

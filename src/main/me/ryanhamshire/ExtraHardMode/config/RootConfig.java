@@ -1,8 +1,8 @@
 package me.ryanhamshire.ExtraHardMode.config;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
-import me.ryanhamshire.ExtraHardMode.service.MultiWorldConfig;
+import me.ryanhamshire.ExtraHardMode.service.*;
+import me.ryanhamshire.ExtraHardMode.service.config.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -63,7 +63,7 @@ public class RootConfig extends MultiWorldConfig
         for (Config config : configs)
         {
             {//Check if Mode is specified
-                Response <String> response = (Response<String>) loadNode(config.getConfig(), RootNode.MODE, false);
+                Response<String> response = (Response<String>) loadNode(config.getConfig(), RootNode.MODE, false);
                 try
                 {
                     if (response.getStatusCode() != Status.NOT_FOUND)

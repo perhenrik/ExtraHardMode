@@ -2,6 +2,9 @@ package me.ryanhamshire.ExtraHardMode.service;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.MockExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.service.config.Mode;
+import me.ryanhamshire.ExtraHardMode.service.config.MultiWorldConfig;
+import me.ryanhamshire.ExtraHardMode.service.config.Status;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginLogger;
@@ -39,19 +42,19 @@ public class TestMultiWorldConfig
         FileConfiguration config = getBasicConfig();
 
         assertEquals    (false, module.loadNode(config, MockConfigNode.BOOL_TRUE, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.BOOL_TRUE, false).getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue      (module.loadNode(config, MockConfigNode.BOOL_TRUE, false).getStatusCode() == Status.OK);
 
         assertEquals    (false, module.loadNode(config, MockConfigNode.BOOL_FALSE, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.BOOL_FALSE, false).getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue      (module.loadNode(config, MockConfigNode.BOOL_FALSE, false).getStatusCode() == Status.OK);
 
         assertEquals    (4, module.loadNode(config, MockConfigNode.INT_0, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue      (module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == Status.OK);
 
         assertEquals    (9, module.loadNode(config, MockConfigNode.INT_9, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue      (module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == Status.OK);
 
-        assertEquals    (MultiWorldConfig.Mode.INHERIT.name(), (String) module.loadNode(config, MockConfigNode.STR_0, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.STR_0, false).getStatusCode() == MultiWorldConfig.Status.INHERITS);
+        assertEquals    (Mode.INHERIT.name(), (String) module.loadNode(config, MockConfigNode.STR_0, false).getContent());
+        assertTrue      (module.loadNode(config, MockConfigNode.STR_0, false).getStatusCode() == Status.INHERITS);
     }
 
     /**
@@ -64,27 +67,27 @@ public class TestMultiWorldConfig
         FileConfiguration config = getBasicConfig();
 
         assertEquals    (MockConfigNode.NOTFOUND_BOOL.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, false).getStatusCode() == MultiWorldConfig.Status.NOT_FOUND);
+        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, false).getStatusCode() == Status.NOT_FOUND);
 
         assertEquals    (MockConfigNode.NOTFOUND_DOUBLE.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getStatusCode() == MultiWorldConfig.Status.NOT_FOUND);
+        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getStatusCode() == Status.NOT_FOUND);
 
         assertEquals    (MockConfigNode.NOTFOUND_INT.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getStatusCode() == MultiWorldConfig.Status.NOT_FOUND);
+        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getStatusCode() == Status.NOT_FOUND);
 
         assertEquals    (MockConfigNode.NOTFOUND_STR.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getStatusCode() == MultiWorldConfig.Status.NOT_FOUND);
+        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getStatusCode() == Status.NOT_FOUND);
 
         assertEquals    (MockConfigNode.NOTFOUND_LIST.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getStatusCode() == MultiWorldConfig.Status.NOT_FOUND);
+        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getStatusCode() == Status.NOT_FOUND);
 
 
 
         assertEquals    (true, module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getStatusCode() == Status.ADJUSTED);
 
         assertEquals    (1, module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getStatusCode() == Status.ADJUSTED);
 
     }
 
@@ -96,28 +99,28 @@ public class TestMultiWorldConfig
     public void testLoadNodeInherited()
     {
         FileConfiguration config = getBasicConfig();
-        String inherit = MultiWorldConfig.Mode.INHERIT.name().toLowerCase();
-        MultiWorldConfig.Response response;
+        String inherit = Mode.INHERIT.name().toLowerCase();
+        Response response;
 
         response = module.loadNode(config, MockConfigNode.INHERITS_BOOL, false);
         assertEquals    (inherit, response.getContent());
-        assertTrue      (response.getStatusCode() == MultiWorldConfig.Status.INHERITS);
+        assertTrue      (response.getStatusCode() == Status.INHERITS);
 
         response = module.loadNode(config, MockConfigNode.INHERITS_INT, false);
         assertEquals    (inherit, response.getContent());
-        assertTrue      (response.getStatusCode() == MultiWorldConfig.Status.INHERITS);
+        assertTrue      (response.getStatusCode() == Status.INHERITS);
 
         response = module.loadNode(config, MockConfigNode.INHERITS_DOUBLE, false);
         assertEquals    (inherit, response.getContent());
-        assertTrue      (response.getStatusCode() == MultiWorldConfig.Status.INHERITS);
+        assertTrue      (response.getStatusCode() == Status.INHERITS);
 
         response = module.loadNode(config, MockConfigNode.INHERITS_STR, false);
-        assertEquals    (MultiWorldConfig.Mode.INHERIT.name(), response.getContent()); //only for strings the expected output is the same as the input
-        assertTrue      (response.getStatusCode() == MultiWorldConfig.Status.INHERITS);
+        assertEquals    (Mode.INHERIT.name(), response.getContent()); //only for strings the expected output is the same as the input
+        assertTrue      (response.getStatusCode() == Status.INHERITS);
 
         response = module.loadNode(config, MockConfigNode.INHERITS_LIST, false);
         assertEquals    (inherit, response.getContent());
-        assertTrue      (response.getStatusCode() == MultiWorldConfig.Status.INHERITS);
+        assertTrue      (response.getStatusCode() == Status.INHERITS);
     }
 
     /**
@@ -126,31 +129,31 @@ public class TestMultiWorldConfig
     @Test
     public void testValPercent()
     {
-        MultiWorldConfig.Response response;
+        Response response;
 
         response = module.validateInt(MockConfigNode.INT_PERC_1, -123);
         assertEquals (0, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_PERC_1, 42);
         assertEquals (42, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue(response.getStatusCode() == Status.OK);
 
         response = module.validateInt(MockConfigNode.INT_PERC_1, 0);
         assertEquals (0, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue(response.getStatusCode() == Status.OK);
 
         response = module.validateInt(MockConfigNode.INT_PERC_1, 100);
         assertEquals (100, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue(response.getStatusCode() == Status.OK);
 
         response = module.validateInt(MockConfigNode.INT_PERC_1, 101);
         assertEquals (100, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_PERC_1, 1032);
         assertEquals (100, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue(response.getStatusCode() == Status.ADJUSTED);
     }
 
     /**
@@ -160,23 +163,23 @@ public class TestMultiWorldConfig
     @Test
     public void testCustomBounds()
     {
-        MultiWorldConfig.Response response;
+        Response response;
 
         response = module.validateInt(MockConfigNode.INT_HP_1, -123);
         assertEquals (1, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_HP_1, 0);
         assertEquals (1, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_HP_1, 23);
         assertEquals (20, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_HP_1, 12);
         assertEquals (12, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue(response.getStatusCode() == Status.OK);
     }
 
     /**
@@ -185,27 +188,27 @@ public class TestMultiWorldConfig
     @Test
     public void testValNaturalNumbers()
     {
-        MultiWorldConfig.Response response;
+        Response response;
 
         response = module.validateInt(MockConfigNode.INT_NN_1, -123);
         assertEquals (0, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_NN_1, -1);
         assertEquals (0, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.ADJUSTED);
+        assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_NN_1, 123);
         assertEquals (123, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue(response.getStatusCode() == Status.OK);
 
         response = module.validateInt(MockConfigNode.INT_NN_1, 42);
         assertEquals (42, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue(response.getStatusCode() == Status.OK);
 
         response = module.validateInt(MockConfigNode.INT_NN_1, 1);
         assertEquals (1, response.getContent());
-        assertTrue(response.getStatusCode() == MultiWorldConfig.Status.OK);
+        assertTrue(response.getStatusCode() == Status.OK);
     }
 
     /**
@@ -231,14 +234,14 @@ public class TestMultiWorldConfig
         configuration.set (MockConfigNode.BOOL_FALSE.getPath(), false);
         configuration.set (MockConfigNode.INT_0.getPath(), 4);
         configuration.set (MockConfigNode.INT_9.getPath(), 9);
-        configuration.set (MockConfigNode.STR_0.getPath(), MultiWorldConfig.Mode.INHERIT.name());
+        configuration.set (MockConfigNode.STR_0.getPath(), Mode.INHERIT.name());
 
         //inherited values
-        configuration.set (MockConfigNode.INHERITS_BOOL.getPath(),  MultiWorldConfig.Mode.INHERIT.name());
-        configuration.set (MockConfigNode.INHERITS_INT.getPath(),   MultiWorldConfig.Mode.INHERIT.name());
-        configuration.set (MockConfigNode.INHERITS_DOUBLE.getPath(),MultiWorldConfig.Mode.INHERIT.name().toLowerCase());//just to test if that also works
-        configuration.set (MockConfigNode.INHERITS_STR.getPath(),   MultiWorldConfig.Mode.INHERIT.name());
-        configuration.set (MockConfigNode.INHERITS_LIST.getPath(),  MultiWorldConfig.Mode.INHERIT.name().toLowerCase());
+        configuration.set (MockConfigNode.INHERITS_BOOL.getPath(),  Mode.INHERIT.name());
+        configuration.set (MockConfigNode.INHERITS_INT.getPath(),   Mode.INHERIT.name());
+        configuration.set (MockConfigNode.INHERITS_DOUBLE.getPath(), Mode.INHERIT.name().toLowerCase());//just to test if that also works
+        configuration.set (MockConfigNode.INHERITS_STR.getPath(),   Mode.INHERIT.name());
+        configuration.set (MockConfigNode.INHERITS_LIST.getPath(),  Mode.INHERIT.name().toLowerCase());
 
         return configuration;
     }

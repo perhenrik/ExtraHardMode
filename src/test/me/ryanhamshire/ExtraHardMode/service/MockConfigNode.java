@@ -1,7 +1,6 @@
 package me.ryanhamshire.ExtraHardMode.service;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import me.ryanhamshire.ExtraHardMode.service.config.ConfigNode;
 
 public enum MockConfigNode implements ConfigNode
 {

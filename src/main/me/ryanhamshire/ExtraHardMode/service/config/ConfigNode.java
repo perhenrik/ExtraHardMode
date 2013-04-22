@@ -1,4 +1,4 @@
-package me.ryanhamshire.ExtraHardMode.service;
+package me.ryanhamshire.ExtraHardMode.service.config;
 
 /**
  * Represents a configuration node.

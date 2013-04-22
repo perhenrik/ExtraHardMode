@@ -1,6 +1,6 @@
 package me.ryanhamshire.ExtraHardMode.config;
 
-import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
+import me.ryanhamshire.ExtraHardMode.service.config.ConfigNode;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
