@@ -14,31 +14,31 @@ import java.util.UUID;
 /**
  * Gradually let's Logs which have been marked as loose fall down.
  */
-public class FallingLogsTask extends BukkitRunnable
+public class FallingLogsTask //extends BukkitRunnable
 {
     /**
      * Reference to the plugin using this class
      */
-    private final ExtraHardMode plugin;
+    //private final ExtraHardMode plugin;
     /**
      * Where our "loose" Logs are stored
      */
-    private final DataStoreModule dataStoreModule;
+    //private final DataStoreModule dataStoreModule;
     /**
      * BlockModule to spawn FallingBlocks
      */
-    private final BlockModule blockModule;
+    //private final BlockModule blockModule;
     /**
      * Delay before next block falls
      */
-    private final long delay;
+    //private final long delay;
 
     /**
      * Constructor
      * @param plugin reference to the plugin
      * @param delay before the next block falls
      */
-
+    /*
     public FallingLogsTask (ExtraHardMode plugin, long delay)
     {
         this.plugin = plugin;
@@ -115,5 +115,5 @@ public class FallingLogsTask extends BukkitRunnable
             }
             catch (IllegalStateException ignored){}
         }
-    }
+    }*/
 }

@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class TestRootConfig
 {
     //Mock Plugin
-    ExtraHardMode plugin = new MockExtraHardMode().getInstance();
+    ExtraHardMode plugin = new MockExtraHardMode().get();
     RootConfig cfg = new RootConfig(plugin);
 
     public TestRootConfig()

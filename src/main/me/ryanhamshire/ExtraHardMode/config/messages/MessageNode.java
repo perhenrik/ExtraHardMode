@@ -14,7 +14,7 @@
  */
 package me.ryanhamshire.ExtraHardMode.config.messages;
 
-import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
+import me.ryanhamshire.ExtraHardMode.service.config.ConfigNode;
 
 /**
  * Configuration nodes for messages.yml configuration file.

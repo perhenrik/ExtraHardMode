@@ -51,7 +51,7 @@ public class DataStoreModule extends EHMModule
     /**
      * List of FallingBlocks that need custom handling
      */
-    private Map <UUID, FallingBlockData> fallingBlocksData = new HashMap<UUID, FallingBlockData>();
+    /*private Map <UUID, FallingBlockData> looseLogs = new HashMap<UUID, FallingBlockData>();*/
 
     /**
      * Constructor.
@@ -144,86 +144,16 @@ public class DataStoreModule extends EHMModule
      * @param loc where Block is at
      * @param damagePlayer damage Player when he is hit by this Block
      */
-    public void addLog (Location loc, boolean damagePlayer)
+    /*public void addLog (Location loc, boolean damagePlayer)
     {
-        FallingBlockData fbData = new F
-        fallingBlocksData.
-    }
-
-    /**
-     * If we are tracking this instance of a FallingBlock
-     * @param id of the FallingLog
-     * @return true if found
-     */
-    public boolean isMarkedForProcessing (UUID id)
-    {
-        return fallingBlocksData.containsKey(id);
-    }
-
-    /**
-     * Does the given Location match the x and z coordinate given in the Location
-     * Idea is that we are just iterested in the x and z
-     * @param loc to check
-     */
-    public boolean isBlockFallingAtLoc (Location loc)
-    {
-        boolean contains = false;
-        for (Map.Entry<UUID, FallingBlockData> data : fallingBlocksData.entrySet())
-        {
-            Location startLoc = data.getValue().getStartingLoc();
-            if (loc.getBlockX() == startLoc.getBlockX() && loc.getBlockZ() == startLoc.getBlockX())
-            {
-                contains = true;
-                break;
-            }
-        }
-        return contains;
-    }
-
-    /**
-     * Add a FallingBlock Reference to the List
-     * @param id to add
-     * @param loc starting point of the FallingBlock
-     * @param damagePlayer should this Block damage the Player on hit
-     */
-    public void addFallLog (UUID id, Location loc, boolean damagePlayer)
-    {
-        FallingBlockData fbData = new FallingBlockData(loc);
-        fbData.setDamagesPlayer(damagePlayer);
-        fallingBlocksData.put(id, fbData);
-    }
-
-    /**
-     * Remove the Block with the given UUID from the List of currently falling blocks
-     * @param id to remove
-     */
-    public void rmFallLogById (UUID id)
-    {
-        fallingBlocksData.remove(id);
-    }
-
-    /**
-     * Remove the Block(s) with the given Location from the List of falling blocks
-     * @param loc to check for FallingBlocks
-     */
-    public void rmFallLogsByLoc (Location loc)
-    {
-        Iterator<Map.Entry<UUID,FallingBlockData>> iter = fallingBlocksData.entrySet().iterator();
-        while (iter.hasNext())
-        {
-            Map.Entry<UUID, FallingBlockData> entry = iter.next();
-            Location startLoc = entry.getValue().startingLoc;
-            if (loc.getBlockX() == startLoc.getBlockX() && loc.getBlockZ() == startLoc.getBlockX())
-                iter.remove();
-        }
-    }
-
+        looseLogs.put(loc, damagePlayer);
+    }*/
 
     /**
      * Get a random Log from the List of availile ones and remove it
      * @return Block of Type LOG, or null if no blocks availible
      */
-    public Block getRdmLog ()
+    /*public Block getRdmLog ()
     {
         if (looseLogs.size() > 0)
         {
@@ -232,91 +162,18 @@ public class DataStoreModule extends EHMModule
         }
         else
             return null;
-    }
+    }*/
 
     /**
      * Remove the given Log if it exists
      * @param log to remove
      */
-    public void rmLog(Block log)
+    /*public void rmLog(Block log)
     {
         if (log == null)
             throw new IllegalArgumentException("Block can't be null!");
         looseLogs.remove(log);
-    }
-
-
-    /**
-     * Data for FallingBlocks if they require special processing
-     */
-    private class FallingBlockData
-    {
-        /**
-         * Location where the Block was in it's original Form
-         */
-        private final  Location startingLoc;
-        /**
-         * In which state is the FallingBlock
-         */
-        private FallState state;
-        /**
-         * Will the Block damage a Player if it lands on them?
-         */
-        private boolean damagesPlayer;
-
-        /**
-         * Constructor
-         * @param startLoc
-         */
-        public FallingBlockData (Location startLoc)
-        {
-            this.startingLoc = startLoc;
-        }
-
-        private boolean isDamagesPlayer ()
-        {
-            return damagesPlayer;
-        }
-
-        private void setDamagesPlayer (boolean damagesPlayer)
-        {
-            this.damagesPlayer = damagesPlayer;
-        }
-
-        private FallState getState ()
-        {
-            return state;
-        }
-
-        private void setState (FallState state)
-        {
-            this.state = state;
-        }
-
-        private Location getStartingLoc ()
-        {
-            return startingLoc;
-        }
-    }
-
-    /**
-     * State of the FallingBlock
-     */
-    private enum FallState
-    {
-        /**
-         * The Block has been scheduled to fall
-         */
-        SCHEDULED,
-        /**
-         * The Block is falling and hasnt landed yet
-         */
-        FALLING,
-        /**
-         * The Block has landed and processing is complete
-         */
-        LANDED
-    }
+    }*/
 
     @Override
     public void starting()

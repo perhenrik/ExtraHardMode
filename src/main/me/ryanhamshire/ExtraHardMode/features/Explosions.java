@@ -54,17 +54,19 @@ public class Explosions implements Listener
      *
      * @param event - Event that occurred.
      */
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onExplosion(EntityExplodeEvent event)
     {
         World world = event.getLocation().getWorld();
         Entity entity = event.getEntity();
 
-        final boolean betterTntEnabled = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
+        final boolean customTntExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ENABLE, world.getName());
+        final boolean customGhastExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_GHASTS_ENABLE, world.getName());
+        final boolean multipleExplosions = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
         final boolean turnStoneToCobble = CFG.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
 
         // FEATURE: bigger TNT booms, all explosions have 100% block yield
-        if (betterTntEnabled)
+        if (customTntExplosion)
         {
             event.setYield(1);
 
@@ -83,7 +85,9 @@ public class Explosions implements Listener
                     entity.getLocation().add(random1 / 2, 0, -random2 / 2)
                 };
 
-                for (int i = 0; i < locations.length; i++)
+                final int explosionsNum = multipleExplosions ? locations.length : 1;
+
+                for (int i = 0; i < explosionsNum; i++)
                 {
                     CreateExplosionTask task = new CreateExplosionTask(plugin, locations[i], ExplosionType.TNT);
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 3L * (i + 1));
@@ -113,7 +117,7 @@ public class Explosions implements Listener
         }
 
         // FEATURE: more powerful ghast fireballs
-        if (entity != null && entity instanceof Fireball)
+        if (entity != null && entity instanceof Fireball && customGhastExplosion)
         {
             Fireball fireball = (Fireball) entity;
             if (fireball.getShooter() != null && fireball.getShooter().getType() == EntityType.GHAST)

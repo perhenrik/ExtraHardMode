@@ -1,21 +1,17 @@
 package me.ryanhamshire.ExtraHardMode;
 
-import org.powermock.api.mockito.PowerMockito;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 /**
- * Mock Plugin Object
+ *
  */
 public class MockExtraHardMode
 {
-    ExtraHardMode instance = PowerMockito.mock(ExtraHardMode.class);
+    ExtraHardMode ehm;
 
-    public MockExtraHardMode()
+    public ExtraHardMode get ()
     {
-
-    }
-
-    public ExtraHardMode getInstance()
-    {
-        return instance;
+        ehm = mock(ExtraHardMode.class);
+        return ehm;
     }
 }

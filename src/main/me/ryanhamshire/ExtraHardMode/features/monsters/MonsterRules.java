@@ -42,7 +42,7 @@ public class MonsterRules implements Listener
         Location location = event.getLocation();
         World world = location.getWorld();
 
-        final int maxY = CFG.getInt(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_Y, world.getName());
+        final int maxY = CFG.getInt(RootNode.MORE_MONSTERS_MAX_Y, world.getName());
         final int multiplier = CFG.getInt(RootNode.MORE_MONSTERS_MULTIPLIER, world.getName());
 
         LivingEntity entity = event.getEntity();

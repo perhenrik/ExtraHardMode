@@ -23,7 +23,7 @@ public class TestBlockModule
 
     public TestBlockModule()
     {
-        plugin  = new MockExtraHardMode().getInstance();
+        plugin  = new MockExtraHardMode().get();
         module  = new BlockModule(plugin);
     }
 

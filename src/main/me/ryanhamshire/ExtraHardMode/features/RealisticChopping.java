@@ -13,10 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -111,19 +108,19 @@ public class RealisticChopping implements Listener
                             Block[] logs = blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 5, Material.LOG);
                             for (Block log : logs)
                             {
-                                dataStoreModule.addLog(log);
+                                blockModule.applyPhysics(log, true);
+                                //dataStoreModule.addLog(log.getLocation(), true);
                             }
                             //Only run that task once, it will cancel itself when all Blocks are used up
                             if (logs.length > 0 && !dataStoreModule.isTaskRunning(FallingLogsTask.class))
                             {
-                                plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, 1L), 2L);
-                                dataStoreModule.addRunningTask(FallingLogsTask.class, 1234567890);
+                                //plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, 1L), 2L);
+                                //dataStoreModule.addRunningTask(FallingLogsTask.class, 1234567890);
                             }
                             break; //can air fall?
                         }
                         case LOG:
                             UUID id =  blockModule.applyPhysics(aboveLog);
-                            dataStoreModule.addFallLog(id, aboveLog.getLocation());
                             break;
                         default: //we reached something that is not part of a tree or leaves
                             break loop;
@@ -146,15 +143,15 @@ public class RealisticChopping implements Listener
         Material to = event.getTo();
 
         //Only when Block has been marked to deal damage
-        if (entity.getType().equals(EntityType.FALLING_BLOCK) && to.equals(Material.LOG) && dataStoreModule.isMarkedForProcessing(entity.getUniqueId()))
+        if (entity.getType().equals(EntityType.FALLING_BLOCK) && to.equals(Material.LOG) && entity.hasMetadata("key") && entity.getMetadata("key").get(0).asBoolean()/*dataStoreModule.isMarkedForProcessing(entity.getUniqueId())*/)
         {
-            dataStoreModule.rmFallLogById(entity.getUniqueId());
+            //dataStoreModule.rmFallLogById(entity.getUniqueId());
             List<Entity> entities =  entity.getNearbyEntities(1, 2, 1);
             for (Entity ent : entities)
             {
-                if (ent instanceof Player)
+                if (ent instanceof LivingEntity)
                 {
-                    Player player = (Player) ent;
+                    LivingEntity player = (LivingEntity) ent;
                     //Frighten the player
                     player.damage(6, entity);
                 }
@@ -166,7 +163,7 @@ public class RealisticChopping implements Listener
      * When a Falling Block is destroyed
      * @param event
      */
-    @EventHandler
+    /*@EventHandler
     public void fallingBlockDestroyed (ItemSpawnEvent event)
     {
         Location loc = event.getLocation();
@@ -182,5 +179,5 @@ public class RealisticChopping implements Listener
                 dataStoreModule.rmFallLogsByLoc(loc);
             }
         }
-    }
+    } */
 }

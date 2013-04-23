@@ -15,8 +15,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package me.ryanhamshire.ExtraHardMode.config.messages;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.service.ConfigNode;
-import me.ryanhamshire.ExtraHardMode.service.ModularConfig;
+import me.ryanhamshire.ExtraHardMode.service.config.ConfigNode;
+import me.ryanhamshire.ExtraHardMode.service.config.ModularConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
