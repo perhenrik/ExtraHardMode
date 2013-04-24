@@ -72,18 +72,20 @@ public class BlockPhysicsCheckTask implements Runnable
     @Override
     public void run()
     {
-        final List fallingBlocks = Arrays.asList(CFG.getEnabledWorlds());
 
         BlockModule module = plugin.getModuleForClass(BlockModule.class);
         block = block.getWorld().getBlockAt(block.getLocation());
         boolean fall = false;
+
+        final List<String> fallingBlocks = CFG.getStringList(RootNode.MORE_FALLING_BLOCKS, block.getWorld().getName());
+
         Material material = block.getType();
         if ((block.getRelative(BlockFace.DOWN).getType() == Material.AIR
                 || block.getRelative(BlockFace.DOWN).isLiquid()
                 || block.getRelative(BlockFace.DOWN).getType() == Material.TORCH)
                 && (material == Material.SAND
                 || material == Material.GRAVEL
-                || fallingBlocks.contains(material))
+                || fallingBlocks.contains(material.name()))
                 && CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, block.getWorld().getName()))
         {
             module.applyPhysics(block);
