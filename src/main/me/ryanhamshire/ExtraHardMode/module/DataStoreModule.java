@@ -18,11 +18,12 @@ package me.ryanhamshire.ExtraHardMode.module;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.AbstractMap.SimpleEntry;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -41,6 +42,16 @@ public class DataStoreModule extends EHMModule
      * List of previous locations.
      */
     private final List<SimpleEntry<Player, Location>> previousLocations = new CopyOnWriteArrayList<SimpleEntry<Player, Location>>();
+
+    /**
+     * TaskClasses that are running with their Ids
+     */
+    private Map<Class<?>, Integer/*taskid*/> currentTasks = new HashMap<Class<?>, Integer>();
+
+    /**
+     * List of FallingBlocks that need custom handling
+     */
+    /*private Map <UUID, FallingBlockData> looseLogs = new HashMap<UUID, FallingBlockData>();*/
 
     /**
      * Constructor.
@@ -83,6 +94,86 @@ public class DataStoreModule extends EHMModule
     {
         return previousLocations;
     }
+
+
+    /**
+     * Add a Task with it's id to the list of running tasks
+     * @param clazz Reference to the class of the task
+     * @param id of the Task
+     */
+    public void addRunningTask (Class<?> clazz, int id)
+    {
+        if (clazz == null)
+            throw new IllegalArgumentException("Class cannot be null");
+        currentTasks.put(clazz, id);
+    }
+
+    /**
+     * Remove the Task from the List of running Tasks
+     * @param clazz reference of the task
+     */
+    public void rmRunningTask (Class <?> clazz)
+    {
+        currentTasks.remove(clazz);
+    }
+
+    /**
+     * For Tasks that don't need multiple instances
+     * @param clazz the Task to check
+     * @return if there is an instance running already of the given task
+     */
+    public boolean isTaskRunning (Class<?> clazz)
+    {
+        if (clazz == null)
+            throw new IllegalArgumentException("Class cannot be null");
+        return currentTasks.containsKey(clazz);
+    }
+
+    /**
+     * Get the id of the task
+     * @param clazz to get the id for
+     * @return the id of the running task or -1 if not running
+     */
+    public int getTaskId (Class<?> clazz)
+    {
+        return currentTasks.containsKey(clazz) ? currentTasks.get(clazz) : -1;
+    }
+
+    /**
+     * Add a Block to be scheduled to fall later
+     * @param loc where Block is at
+     * @param damagePlayer damage Player when he is hit by this Block
+     */
+    /*public void addLog (Location loc, boolean damagePlayer)
+    {
+        looseLogs.put(loc, damagePlayer);
+    }*/
+
+    /**
+     * Get a random Log from the List of availile ones and remove it
+     * @return Block of Type LOG, or null if no blocks availible
+     */
+    /*public Block getRdmLog ()
+    {
+        if (looseLogs.size() > 0)
+        {
+            int rdmIndex = plugin.getRandom().nextInt(looseLogs.size());
+            return looseLogs.get(rdmIndex);
+        }
+        else
+            return null;
+    }*/
+
+    /**
+     * Remove the given Log if it exists
+     * @param log to remove
+     */
+    /*public void rmLog(Block log)
+    {
+        if (log == null)
+            throw new IllegalArgumentException("Block can't be null!");
+        looseLogs.remove(log);
+    }*/
 
     @Override
     public void starting()

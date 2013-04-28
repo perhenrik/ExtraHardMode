@@ -63,31 +63,12 @@ public class Physics implements Listener
         World world = block.getWorld();
         Player player = breakEvent.getPlayer();
 
-        final boolean betterTreeChoppingEnabled = CFG.getBoolean(RootNode.BETTER_TREE_CHOPPING, world.getName());
         final boolean moreFallingBlocksEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName());
         final int netherRackFirePercent = CFG.getInt(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT, world.getName());
         final boolean playerPerm = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                    || player.getGameMode().equals(GameMode.CREATIVE) : true;
 
-        // FEATURE: trees chop more naturally
-        if (block.getType() == Material.LOG && betterTreeChoppingEnabled &&! playerPerm)
-        {
-            Block rootBlock = block;
-            while (rootBlock.getType() == Material.LOG)
-            {
-                rootBlock = rootBlock.getRelative(BlockFace.DOWN);
-            }
 
-            if (rootBlock.getType() == Material.DIRT || rootBlock.getType() == Material.GRASS)
-            {
-                Block aboveLog = block.getRelative(BlockFace.UP);
-                while (aboveLog.getType() == Material.LOG)
-                {
-                    blockModule.applyPhysics(aboveLog);
-                    aboveLog = aboveLog.getRelative(BlockFace.UP);
-                }
-            }
-        }
 
         // FEATURE: more falling blocks
         if (moreFallingBlocksEnabled &&! playerPerm)
