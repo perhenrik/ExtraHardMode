@@ -63,10 +63,11 @@ public abstract class MultiWorldConfig extends EHMModule
                 return name.endsWith(".yml");
             }
         });
+        if (filePaths == null) filePaths = new String[] {};
         Arrays.sort(filePaths); //lexicality
         ArrayList<File> files = new ArrayList<File>();
         for (String fileName : filePaths)
-            files.add(new File(plugin.getDataFolder() + File.separator + fileName));
+            files.add(new File (plugin.getDataFolder() + File.separator + fileName));
         return files.toArray(new File[]{});
     }
 

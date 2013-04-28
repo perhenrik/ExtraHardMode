@@ -47,6 +47,7 @@ public class Config
         {
             try
             {
+                configFile.getParentFile().mkdirs();
                 configFile.createNewFile();
             } catch (IOException e)
             {
