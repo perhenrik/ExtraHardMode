@@ -303,7 +303,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case INTEGER:
             {
                 Object obj = OPTIONS.get(world, node);
-                i = obj instanceof Integer ? (Integer)obj : (Integer)node.getDefaultValue();
+                i = obj instanceof Integer ? (Integer)obj : (Integer)node.getValueToDisable();
                 break;
             }
             default:
@@ -329,7 +329,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case DOUBLE:
             {
                 Object obj = OPTIONS.get(world, node);
-                d = obj instanceof Double ? (Double)obj : (Double) node.getDefaultValue();
+                d = obj instanceof Double ? (Double)obj : (Double) node.getValueToDisable();
                 break;
             }
             default:
@@ -355,7 +355,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case BOOLEAN:
             {
                 Object obj = OPTIONS.get(world, node);
-                b = obj instanceof Boolean ? (Boolean) obj : (Boolean) node.getDefaultValue();
+                b = obj instanceof Boolean ? (Boolean) obj : (Boolean) node.getValueToDisable();
                 break;
             }
             default:
@@ -381,7 +381,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case STRING:
             {
                 Object obj = OPTIONS.get(world, node);
-                out = obj instanceof String ? (String)obj : (String) node.getDefaultValue();
+                out = obj instanceof String ? (String)obj : (String) node.getValueToDisable();
                 break;
             }
             default:
@@ -407,7 +407,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case LIST:
             {
                 Object obj = OPTIONS.get(world, node);
-                list = obj instanceof List ? (List<String>)obj : (List<String>)node.getDefaultValue();
+                list = obj instanceof List ? (List<String>)obj : (List<String>)node.getValueToDisable();
                 break;
             }
             default:

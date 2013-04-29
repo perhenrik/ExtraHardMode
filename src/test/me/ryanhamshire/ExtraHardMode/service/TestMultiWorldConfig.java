@@ -9,10 +9,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,6 +35,38 @@ public class TestMultiWorldConfig
         @Override public void closing (){}
     }
 
+    /**
+     * Our Config<pre>
+     * BOOL_TRUE = false
+     * BOOL_FALSE = false
+     * INT_0 = 4
+     * INT_9 = 9
+     * STR_0 = inherit
+     *
+     * NOTFOUND_X = all not set in the config
+     * INHERITS_X = all "inherit"
+     * </pre>
+     * @return a config
+     */
+    FileConfiguration config = new YamlConfiguration();
+    @Before
+    public void prepare()
+    {
+        //normal values
+        config.set(MockConfigNode.BOOL_TRUE.getPath(), false);
+        config.set(MockConfigNode.BOOL_FALSE.getPath(), false);
+        config.set(MockConfigNode.INT_0.getPath(), 4);
+        config.set(MockConfigNode.INT_9.getPath(), 9);
+        config.set(MockConfigNode.STR_0.getPath(), Mode.INHERIT.name());
+
+        //inherited values
+        config.set(MockConfigNode.INHERITS_BOOL.getPath(), Mode.INHERIT.name());
+        config.set(MockConfigNode.INHERITS_INT.getPath(), Mode.INHERIT.name());
+        config.set(MockConfigNode.INHERITS_DOUBLE.getPath(), Mode.INHERIT.name().toLowerCase());//just to test if that also works
+        config.set(MockConfigNode.INHERITS_STR.getPath(), Mode.INHERIT.name());
+        config.set(MockConfigNode.INHERITS_LIST.getPath(), Mode.INHERIT.name().toLowerCase());
+    }
+
     MultiWorldConfig module = new Mock(plugin);
 
     /**
@@ -39,8 +75,6 @@ public class TestMultiWorldConfig
     @Test
     public void testLoadNodeValidInput()
     {
-        FileConfiguration config = getBasicConfig();
-
         assertEquals    (false, module.loadNode(config, MockConfigNode.BOOL_TRUE, false).getContent());
         assertTrue      (module.loadNode(config, MockConfigNode.BOOL_TRUE, false).getStatusCode() == Status.OK);
 
@@ -64,26 +98,24 @@ public class TestMultiWorldConfig
     @Test
     public void testLoadNodeNotFound()
     {
-        FileConfiguration config = getBasicConfig();
-
         assertEquals    (MockConfigNode.NOTFOUND_BOOL.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, false).getContent());
         assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, false).getStatusCode() == Status.NOT_FOUND);
 
         assertEquals    (MockConfigNode.NOTFOUND_DOUBLE.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getStatusCode() == Status.NOT_FOUND);
+        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getStatusCode() == Status.NOT_FOUND);
 
-        assertEquals    (MockConfigNode.NOTFOUND_INT.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getContent());
+        assertEquals(MockConfigNode.NOTFOUND_INT.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getContent());
         assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getStatusCode() == Status.NOT_FOUND);
 
         assertEquals    (MockConfigNode.NOTFOUND_STR.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getContent());
         assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getStatusCode() == Status.NOT_FOUND);
 
         assertEquals    (MockConfigNode.NOTFOUND_LIST.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getStatusCode() == Status.NOT_FOUND);
+        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getStatusCode() == Status.NOT_FOUND);
 
 
 
-        assertEquals    (true, module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getContent());
+        assertEquals(true, module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getContent());
         assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getStatusCode() == Status.ADJUSTED);
 
         assertEquals    (1, module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getContent());
@@ -98,7 +130,6 @@ public class TestMultiWorldConfig
     @Test
     public void testLoadNodeInherited()
     {
-        FileConfiguration config = getBasicConfig();
         String inherit = Mode.INHERIT.name().toLowerCase();
         Response response;
 
@@ -210,40 +241,4 @@ public class TestMultiWorldConfig
         assertEquals (1, response.getContent());
         assertTrue(response.getStatusCode() == Status.OK);
     }
-
-    /**
-     * Get an example config:
-     * <pre>
-     * BOOL_TRUE = false
-     * BOOL_FALSE = false
-     * INT_0 = 4
-     * INT_9 = 9
-     * STR_0 = inherit
-     *
-     * NOTFOUND_X = all not set in the config
-     * INHERITS_X = all "inherit"
-     * </pre>
-     * @return a config
-     */
-    public FileConfiguration getBasicConfig ()
-    {
-        FileConfiguration configuration = new YamlConfiguration();
-
-        //normal values
-        configuration.set (MockConfigNode.BOOL_TRUE.getPath(), false);
-        configuration.set (MockConfigNode.BOOL_FALSE.getPath(), false);
-        configuration.set (MockConfigNode.INT_0.getPath(), 4);
-        configuration.set (MockConfigNode.INT_9.getPath(), 9);
-        configuration.set (MockConfigNode.STR_0.getPath(), Mode.INHERIT.name());
-
-        //inherited values
-        configuration.set (MockConfigNode.INHERITS_BOOL.getPath(),  Mode.INHERIT.name());
-        configuration.set (MockConfigNode.INHERITS_INT.getPath(),   Mode.INHERIT.name());
-        configuration.set (MockConfigNode.INHERITS_DOUBLE.getPath(), Mode.INHERIT.name().toLowerCase());//just to test if that also works
-        configuration.set (MockConfigNode.INHERITS_STR.getPath(),   Mode.INHERIT.name());
-        configuration.set (MockConfigNode.INHERITS_LIST.getPath(),  Mode.INHERIT.name().toLowerCase());
-
-        return configuration;
-    }
-
 }

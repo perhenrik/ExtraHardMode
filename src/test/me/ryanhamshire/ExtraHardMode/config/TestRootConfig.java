@@ -9,6 +9,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
@@ -29,7 +30,26 @@ public class TestRootConfig
 
     public TestRootConfig()
     {
-        generateAdvancedCfg();
+        cfg.set("world", RootNode.WEAK_FOOD_CROPS, true);
+        cfg.set("pvp", RootNode.WEAK_FOOD_CROPS, false);
+        cfg.set("world_the_end", RootNode.WEAK_FOOD_CROPS, false);
+        cfg.set("miningWorld", RootNode.WEAK_FOOD_CROPS, true);
+
+        cfg.set("world", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, false);
+        cfg.set("world_nether", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, true);
+        cfg.set("worlds", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, true);
+
+
+        cfg.set("world_nether", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
+        cfg.set("worlds", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
+        cfg.set("pvp", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
+        cfg.set("world_the_end", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
+
+        cfg.set("world", RootNode.IRON_DURABILITY_PENALTY, 24);
+        cfg.set("world_nether", RootNode.IRON_DURABILITY_PENALTY, 22);
+        cfg.set("worlds", RootNode.IRON_DURABILITY_PENALTY, 22);
+        cfg.set("pvp", RootNode.IRON_DURABILITY_PENALTY, 80);
+        cfg.set("world_the_end", RootNode.IRON_DURABILITY_PENALTY, 80);
     }
 
     /**
@@ -59,15 +79,15 @@ public class TestRootConfig
     public void testNotExisting()
     {
         //Integer
-        assertEquals(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT.getDefaultValue(), cfg.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, "test123"));
+        assertEquals(0, cfg.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, "test123"));
         //Boolean
-        assertEquals(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS.getDefaultValue(), cfg.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, "test123"));
+        assertEquals(false, cfg.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, "test123"));
         //String
-        assertEquals(RootNode.MODE.getDefaultValue(), cfg.getString(RootNode.MODE, "test123"));
+        assertEquals("", cfg.getString(RootNode.MODE, "test123"));
         //Double
-        assertEquals(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS.getDefaultValue(), cfg.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, "test123"));
+        assertEquals(0.0, cfg.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, "test123"), 0.0);
         //StringList
-        assertEquals(RootNode.MORE_FALLING_BLOCKS.getDefaultValue(), cfg.getStringList(RootNode.MORE_FALLING_BLOCKS, "test123"));
+        assertEquals(Collections.<String>emptyList(), cfg.getStringList(RootNode.MORE_FALLING_BLOCKS, "test123"));
     }
 
     /**
@@ -122,29 +142,5 @@ public class TestRootConfig
         HashSet<String> expectedWorlds = new HashSet<String>(Arrays.asList(new String[]{"world", "pvp", "world_the_end", "miningWorld", "world_nether", "worlds"}));
         HashSet<String> inputWorlds = new HashSet<String>(Arrays.asList(cfg.getEnabledWorlds()));
         assertTrue(expectedWorlds.equals(inputWorlds));
-    }
-
-    public void generateAdvancedCfg()
-    {
-        cfg.set("world", RootNode.WEAK_FOOD_CROPS, true);
-        cfg.set("pvp", RootNode.WEAK_FOOD_CROPS, false);
-        cfg.set("world_the_end", RootNode.WEAK_FOOD_CROPS, false);
-        cfg.set("miningWorld", RootNode.WEAK_FOOD_CROPS, true);
-
-        cfg.set("world", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, false);
-        cfg.set("world_nether", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, true);
-        cfg.set("worlds", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, true);
-
-
-        cfg.set("world_nether", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
-        cfg.set("worlds", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
-        cfg.set("pvp", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
-        cfg.set("world_the_end", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
-
-        cfg.set("world", RootNode.IRON_DURABILITY_PENALTY, 24);
-        cfg.set("world_nether", RootNode.IRON_DURABILITY_PENALTY, 22);
-        cfg.set("worlds", RootNode.IRON_DURABILITY_PENALTY, 22);
-        cfg.set("pvp", RootNode.IRON_DURABILITY_PENALTY, 80);
-        cfg.set("world_the_end", RootNode.IRON_DURABILITY_PENALTY, 80);
     }
 }

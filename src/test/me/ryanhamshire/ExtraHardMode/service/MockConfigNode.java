@@ -2,6 +2,8 @@ package me.ryanhamshire.ExtraHardMode.service;
 
 import me.ryanhamshire.ExtraHardMode.service.config.ConfigNode;
 
+import java.util.Collections;
+
 public enum MockConfigNode implements ConfigNode
 {
     BOOL_FALSE      ("test01", VarType.BOOLEAN, false),
@@ -37,13 +39,14 @@ public enum MockConfigNode implements ConfigNode
     String path;
     VarType type;
     SubType subType = null; //initialize because this is optional
-    Object val;
+    Object defaultValue;
+    Disable disableValue;
 
     private MockConfigNode (String path, VarType type, Object defaultValue)
     {
         this.path = path;
         this.type = type;
-        this.val = defaultValue;
+        this.defaultValue = defaultValue;
     }
 
     private MockConfigNode (String path, VarType type, SubType subType, Object defaultValue)
@@ -73,6 +76,106 @@ public enum MockConfigNode implements ConfigNode
     @Override
     public Object getDefaultValue ()
     {
-        return val;
+        return defaultValue;
+    }
+
+    /**
+     * COPIED FROM ROOTNODE
+     * Get the Object that will disable this option
+     * @return Object that will disable this option in the plugin
+     */
+    @Override
+    public Object getValueToDisable ()
+    {
+        Object obj;
+        switch (type)
+        {
+            case BOOLEAN:
+            {
+                obj = false;
+                break;
+            }
+            case INTEGER:
+            {
+                obj = 0;
+                if (subType != null)
+                {
+                    switch (subType)
+                    {
+                        case NATURAL_NUMBER:
+                        case Y_VALUE:
+                        {
+                            if (disableValue != null)
+                                obj = (Integer) disableValue.get();
+                            break;
+                        }
+                        case HEALTH:
+                        {
+                            obj = 20;
+                            break;
+                        }
+                        case PERCENTAGE:
+                        {
+                            obj = 0;
+                            break;
+                        }
+                        default:
+                        {
+                            obj = defaultValue;
+                            throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
+                        }
+                    }
+                }
+                break;
+            }
+            case DOUBLE:
+            {
+                obj = 0.0;
+                break;
+            }
+            case STRING:
+            {
+                obj = "";
+                break;
+            }
+            case LIST:
+            {
+                obj = Collections.emptyList();
+                break;
+            }
+            default:
+            {
+                throw new UnsupportedOperationException("Type of " + type + " doesn't have a default value to be disabled");
+            }
+        }
+        return obj;
+    }
+
+
+    /**
+     * Contains values for some Nodes which require a special value, which differs from other Nodes with the same type
+     */
+    private enum Disable
+    {
+        /**
+         * A value of 0 will disable this feature in the plugin
+         */
+        ZERO (0),
+        /**
+         * A value of 1 will disable this feature in the plugin
+         */
+        ONE (1);
+
+        private Disable (Object obj)
+        {
+            disable = obj;
+        }
+
+        Object disable;
+
+        public Object get()
+        {
+            return disable;
+        }
     }
 }

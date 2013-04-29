@@ -78,6 +78,12 @@ public enum MessageNode implements ConfigNode
     }
 
     @Override
+    public Object getValueToDisable()
+    {   /*ignored*/
+        return null;
+    }
+
+    @Override
     public Object getDefaultValue()
     {
         return defaultValue;
