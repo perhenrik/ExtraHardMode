@@ -171,7 +171,7 @@ public class RootConfig extends MultiWorldConfig
         }
         if (!contains)
         {
-            main = new Config(new YamlConfiguration(), plugin.getDataFolder() + File.separator + "config.yml");
+            main = new Config(new YamlConfiguration(), plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
         }
 
         main.setMode(Mode.MAIN);
