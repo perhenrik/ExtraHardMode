@@ -32,7 +32,7 @@ public class EntityModule extends EHMModule
 
     private final String IGNORE = "extrahardmode.ignore.me";
     private final String ENVIRONMENTAL_DAMAGE = "extrahard_environmentalDamage";
-    
+
     /**
      * Constructor.
      *

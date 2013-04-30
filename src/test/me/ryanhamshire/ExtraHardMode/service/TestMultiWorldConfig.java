@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.service;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.MockExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.mocks.MockExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.service.config.Mode;
 import me.ryanhamshire.ExtraHardMode.service.config.MultiWorldConfig;
 import me.ryanhamshire.ExtraHardMode.service.config.Status;

@@ -32,6 +32,18 @@ public class Antigrinder implements Listener
     BlockModule blockModule;
     UtilityModule utils;
 
+    /**
+     * For Testing Purposes
+     * Constructor to allow dependency injection
+     */
+    public Antigrinder (RootConfig CFG, EntityModule entityModule, BlockModule blockModule, UtilityModule utils)
+    {
+        this. CFG = CFG;
+        this. entityModule = entityModule;
+        this. blockModule = blockModule;
+        this. utils = utils;
+    }
+
     public Antigrinder (ExtraHardMode plugin)
     {
         this.plugin = plugin;
@@ -45,9 +57,10 @@ public class Antigrinder implements Listener
     /**
      * When an Animal/Monster spawns check if the Location is "natural"
      * @param event
+     * @return true succeeded and false if cancelled or marked lootless
      */
     @EventHandler(priority = EventPriority.LOW)
-    public void onEntitySpawn(CreatureSpawnEvent event)
+    public boolean onEntitySpawn(CreatureSpawnEvent event)
     {
         Location location = event.getLocation();
         World world = location.getWorld();
@@ -64,6 +77,7 @@ public class Antigrinder implements Listener
             if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER && blazeBonusSpawnPercent > 0 || !(entity instanceof Blaze))
             {
                 entityModule.markLootLess(entity);
+                return false;
             }
 
             // otherwise, consider environment to stop monsters from spawning in non-natural places
@@ -78,12 +92,14 @@ public class Antigrinder implements Listener
                         if (utils.isNaturalSpawnMaterial(underBlockType))
                         {
                             event.setCancelled(true);
+                            return false;
                         }
                         break;
                     case NETHER:
                         if (utils.isNaturalNetherSpawnMaterial(underBlockType))
                         {
                             event.setCancelled(true);
+                            return false;
                         }
                         break;
                     case THE_END:
@@ -91,6 +107,7 @@ public class Antigrinder implements Listener
                         {
                             // ender dragon
                             event.setCancelled(true);
+                            return false;
                         }
                         break;
                     default:
@@ -98,6 +115,7 @@ public class Antigrinder implements Listener
                 }
             }
         }
+        return true;
     }
 
     /**

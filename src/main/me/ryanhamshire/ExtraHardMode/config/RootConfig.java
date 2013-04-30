@@ -21,6 +21,14 @@ public class RootConfig extends MultiWorldConfig
         super(plugin);
     }
 
+    /**
+     * ONLY for Testing - Constructor
+     */
+    public RootConfig ()
+    {
+        super(null);
+    }
+
     @Override
     public void starting ()
     {
