@@ -16,7 +16,11 @@ public class MockWorld
     /**
      * Our mocked World Object
      */
-    World world = mock (World.class);
+    private World world = mock (World.class);
+    /**
+     * Environment of this world NORMAL/NETHER/END
+     */
+    private World.Environment environment;
 
     /**
      * Construct a new mocked World with a given name
@@ -25,6 +29,24 @@ public class MockWorld
     public MockWorld (String name)
     {
         when(world.getName()).thenReturn(name);
+    }
+
+    /**
+     * Set the Environment of this World
+     * @param environment
+     */
+    public void setEnvironment (World.Environment environment)
+    {
+        this.environment = environment;
+        when( this.get().getEnvironment()).thenReturn(environment);
+    }
+
+    /**
+     * Get the Environment of this World
+     */
+    public World.Environment getEnvironment()
+    {
+        return environment;
     }
 
     /**

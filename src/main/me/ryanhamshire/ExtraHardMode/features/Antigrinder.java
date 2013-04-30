@@ -68,50 +68,50 @@ public class Antigrinder implements Listener
         CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
 
         final boolean inhibitMonsterGrindersEnabled = CFG.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS, world.getName());
-        final int blazeBonusSpawnPercent = CFG.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, world.getName());
 
         // FEATURE: inhibited monster grinders/farms
-        if (inhibitMonsterGrindersEnabled)
+        if (inhibitMonsterGrindersEnabled && entity instanceof Monster)
         {
-            // spawners and spawn eggs always spawn a monster, but the monster doesn't drop any loot
-            if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER && blazeBonusSpawnPercent > 0 || !(entity instanceof Blaze))
+            switch (reason)
             {
-                entityModule.markLootLess(entity);
-                return false;
-            }
-
-            // otherwise, consider environment to stop monsters from spawning in non-natural places
-            else if ((reason == CreatureSpawnEvent.SpawnReason.NATURAL || reason == CreatureSpawnEvent.SpawnReason.VILLAGE_INVASION) && entity instanceof Monster)
-            {
-                World.Environment environment = location.getWorld().getEnvironment();
-
-                Material underBlockType = location.getBlock().getRelative(BlockFace.DOWN).getType();
-                switch (environment)
+                case SPAWNER:
                 {
-                    case NORMAL:
-                        if (utils.isNaturalSpawnMaterial(underBlockType))
-                        {
-                            event.setCancelled(true);
-                            return false;
-                        }
-                        break;
-                    case NETHER:
-                        if (utils.isNaturalNetherSpawnMaterial(underBlockType))
-                        {
-                            event.setCancelled(true);
-                            return false;
-                        }
-                        break;
-                    case THE_END:
-                        if (underBlockType != Material.ENDER_STONE && underBlockType != Material.OBSIDIAN && underBlockType != Material.AIR)
-                        {
-                            // ender dragon
-                            event.setCancelled(true);
-                            return false;
-                        }
-                        break;
-                    default:
-                        break;
+                    // Block all Spawner drops completely
+                    entityModule.markLootLess(entity);
+                    return false;
+                }
+                case NATURAL: case VILLAGE_INVASION:
+                {
+                    // consider environment to stop monsters from spawning in non-natural places
+                    World.Environment environment = location.getWorld().getEnvironment();
+
+                    Material underBlockType = location.getBlock().getRelative(BlockFace.DOWN).getType();
+                    switch (environment)
+                    {
+                        case NORMAL:
+                            if (!utils.isNaturalSpawnMaterial(underBlockType))
+                            {
+                                event.setCancelled(true);
+                                return false;
+                            }
+                            break;
+                        case NETHER:
+                            if (!utils.isNaturalNetherSpawnMaterial(underBlockType))
+                            {
+                                event.setCancelled(true);
+                                return false;
+                            }
+                            break;
+                        case THE_END:
+                            if (underBlockType != Material.ENDER_STONE && underBlockType != Material.OBSIDIAN && underBlockType != Material.AIR/*dragon*/)
+                            {
+                                event.setCancelled(true);
+                                return false;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
