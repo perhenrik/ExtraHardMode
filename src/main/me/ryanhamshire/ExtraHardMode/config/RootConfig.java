@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.config;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.service.*;
+import me.ryanhamshire.ExtraHardMode.service.Response;
 import me.ryanhamshire.ExtraHardMode.service.config.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,6 +19,14 @@ public class RootConfig extends MultiWorldConfig
     public RootConfig (ExtraHardMode plugin)
     {
         super(plugin);
+    }
+
+    /**
+     * ONLY for Testing - Constructor
+     */
+    public RootConfig ()
+    {
+        super(null);
     }
 
     @Override

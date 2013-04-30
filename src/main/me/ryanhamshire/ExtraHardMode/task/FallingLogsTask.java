@@ -1,16 +1,5 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
-import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.module.BlockModule;
-import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 /**
  * Gradually let's Logs which have been marked as loose fall down.
  */

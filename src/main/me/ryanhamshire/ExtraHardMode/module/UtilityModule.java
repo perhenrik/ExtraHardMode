@@ -115,6 +115,7 @@ public class UtilityModule extends EHMModule
     public boolean isNaturalSpawnMaterial (Material material)
     {
         return     material == Material.GRASS
+                || material == Material.DIRT
                 || material == Material.STONE
                 || material == Material.SAND
                 || material == Material.GRAVEL

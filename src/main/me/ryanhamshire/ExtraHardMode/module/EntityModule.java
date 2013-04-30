@@ -29,15 +29,10 @@ import org.bukkit.metadata.FixedMetadataValue;
  */
 public class EntityModule extends EHMModule
 {
-    /**
-     * Getter for environmental damage for the specified entity
-     */
-    private final String ENVIRONMENTAL_DMG = "extrahardmode_environmental_damage";
-    /**
-     * Getter to set a flag to ignore a entity in further processing
-     */
-    private final String IGNORE_ENTITY = "extrahardmode_ignore_in_processing";
-    
+
+    private final String IGNORE = "extrahardmode.ignore.me";
+    private final String ENVIRONMENTAL_DAMAGE = "extrahard_environmentalDamage";
+
     /**
      * Constructor.
      *
@@ -56,7 +51,7 @@ public class EntityModule extends EHMModule
      */
     public void markLootLess(LivingEntity entity)
     {
-        entity.setMetadata(ENVIRONMENTAL_DMG, new FixedMetadataValue(plugin, entity.getMaxHealth()));
+        entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, entity.getMaxHealth()));
     }
 
     /**
@@ -67,14 +62,14 @@ public class EntityModule extends EHMModule
      */
     public void addEnvironmentalDamage(LivingEntity entity, int damage)
     {
-        if (!entity.hasMetadata(ENVIRONMENTAL_DMG))
+        if (!entity.hasMetadata(ENVIRONMENTAL_DAMAGE))
         {
-            entity.setMetadata(ENVIRONMENTAL_DMG, new FixedMetadataValue(plugin, damage));
+            entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, damage));
         }
         else
         {
-            int currentTotalDamage = entity.getMetadata(ENVIRONMENTAL_DMG).get(0).asInt();
-            entity.setMetadata(ENVIRONMENTAL_DMG, new FixedMetadataValue(plugin, currentTotalDamage + damage));
+            int currentTotalDamage = entity.getMetadata(ENVIRONMENTAL_DAMAGE).get(0).asInt();
+            entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, currentTotalDamage + damage));
         }
     }
 
@@ -86,9 +81,9 @@ public class EntityModule extends EHMModule
      */
     public boolean isLootLess(LivingEntity entity)
     {
-        if (entity instanceof Creature && entity.hasMetadata(ENVIRONMENTAL_DMG))
+        if (entity instanceof Creature && entity.hasMetadata(ENVIRONMENTAL_DAMAGE))
         {
-            int totalDamage = entity.getMetadata(ENVIRONMENTAL_DMG).get(0).asInt();
+            int totalDamage = entity.getMetadata(ENVIRONMENTAL_DAMAGE).get(0).asInt();
             // wither is exempt. he can't be farmed because creating him requires combining not-farmable components
             return !(entity instanceof Wither) && (totalDamage > entity.getMaxHealth() / 2);
         }
@@ -125,7 +120,7 @@ public class EntityModule extends EHMModule
     {
         if (entity instanceof LivingEntity)
         {
-            entity.setMetadata(IGNORE_ENTITY, new FixedMetadataValue(plugin, true));
+            entity.setMetadata(IGNORE, new FixedMetadataValue(plugin, true));
         }
     }
 
@@ -138,7 +133,7 @@ public class EntityModule extends EHMModule
     {
         if (entity instanceof LivingEntity)
         {
-            if (entity.hasMetadata(IGNORE_ENTITY))
+            if (entity.hasMetadata(IGNORE))
             {
                 return true;
             }
@@ -146,6 +141,7 @@ public class EntityModule extends EHMModule
         return false;
     }
 
+    //TODO config block iron farms
     /**
      * Is the Monster farmable cattle, which drops something on death?
      */

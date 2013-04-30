@@ -1,18 +1,11 @@
 package me.ryanhamshire.ExtraHardMode.modules;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.MockExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.mocks.MockLocation;
+import me.ryanhamshire.ExtraHardMode.mocks.MockExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
-import org.bukkit.Location;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  *

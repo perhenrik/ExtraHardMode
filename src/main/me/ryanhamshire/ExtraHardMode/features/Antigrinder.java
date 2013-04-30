@@ -32,6 +32,18 @@ public class Antigrinder implements Listener
     BlockModule blockModule;
     UtilityModule utils;
 
+    /**
+     * For Testing Purposes
+     * Constructor to allow dependency injection
+     */
+    public Antigrinder (RootConfig CFG, EntityModule entityModule, BlockModule blockModule, UtilityModule utils)
+    {
+        this. CFG = CFG;
+        this. entityModule = entityModule;
+        this. blockModule = blockModule;
+        this. utils = utils;
+    }
+
     public Antigrinder (ExtraHardMode plugin)
     {
         this.plugin = plugin;
@@ -45,9 +57,10 @@ public class Antigrinder implements Listener
     /**
      * When an Animal/Monster spawns check if the Location is "natural"
      * @param event
+     * @return true succeeded and false if cancelled or marked lootless
      */
     @EventHandler(priority = EventPriority.LOW)
-    public void onEntitySpawn(CreatureSpawnEvent event)
+    public boolean onEntitySpawn(CreatureSpawnEvent event)
     {
         Location location = event.getLocation();
         World world = location.getWorld();
@@ -55,49 +68,54 @@ public class Antigrinder implements Listener
         CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
 
         final boolean inhibitMonsterGrindersEnabled = CFG.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS, world.getName());
-        final int blazeBonusSpawnPercent = CFG.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, world.getName());
 
         // FEATURE: inhibited monster grinders/farms
-        if (inhibitMonsterGrindersEnabled)
+        if (inhibitMonsterGrindersEnabled && entity instanceof Monster)
         {
-            // spawners and spawn eggs always spawn a monster, but the monster doesn't drop any loot
-            if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER && blazeBonusSpawnPercent > 0 || !(entity instanceof Blaze))
+            switch (reason)
             {
-                entityModule.markLootLess(entity);
-            }
-
-            // otherwise, consider environment to stop monsters from spawning in non-natural places
-            else if ((reason == CreatureSpawnEvent.SpawnReason.NATURAL || reason == CreatureSpawnEvent.SpawnReason.VILLAGE_INVASION) && entity instanceof Monster)
-            {
-                World.Environment environment = location.getWorld().getEnvironment();
-
-                Material underBlockType = location.getBlock().getRelative(BlockFace.DOWN).getType();
-                switch (environment)
+                case SPAWNER:
                 {
-                    case NORMAL:
-                        if (utils.isNaturalSpawnMaterial(underBlockType))
-                        {
-                            event.setCancelled(true);
-                        }
-                        break;
-                    case NETHER:
-                        if (utils.isNaturalNetherSpawnMaterial(underBlockType))
-                        {
-                            event.setCancelled(true);
-                        }
-                        break;
-                    case THE_END:
-                        if (underBlockType != Material.ENDER_STONE && underBlockType != Material.OBSIDIAN && underBlockType != Material.AIR)
-                        {
-                            // ender dragon
-                            event.setCancelled(true);
-                        }
-                        break;
-                    default:
-                        break;
+                    // Block all Spawner drops completely
+                    entityModule.markLootLess(entity);
+                    return false;
+                }
+                case NATURAL: case VILLAGE_INVASION:
+                {
+                    // consider environment to stop monsters from spawning in non-natural places
+                    World.Environment environment = location.getWorld().getEnvironment();
+
+                    Material underBlockType = location.getBlock().getRelative(BlockFace.DOWN).getType();
+                    switch (environment)
+                    {
+                        case NORMAL:
+                            if (!utils.isNaturalSpawnMaterial(underBlockType))
+                            {
+                                event.setCancelled(true);
+                                return false;
+                            }
+                            break;
+                        case NETHER:
+                            if (!utils.isNaturalNetherSpawnMaterial(underBlockType))
+                            {
+                                event.setCancelled(true);
+                                return false;
+                            }
+                            break;
+                        case THE_END:
+                            if (underBlockType != Material.ENDER_STONE && underBlockType != Material.OBSIDIAN && underBlockType != Material.AIR/*dragon*/)
+                            {
+                                event.setCancelled(true);
+                                return false;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
+        return true;
     }
 
     /**

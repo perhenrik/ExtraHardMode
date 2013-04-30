@@ -1,4 +1,6 @@
-package me.ryanhamshire.ExtraHardMode;
+package me.ryanhamshire.ExtraHardMode.mocks;
+
+import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
 

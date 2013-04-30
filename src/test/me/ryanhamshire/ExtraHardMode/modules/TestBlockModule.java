@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.modules;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.MockExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.mocks.MockExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import org.bukkit.Material;
 import org.junit.Test;

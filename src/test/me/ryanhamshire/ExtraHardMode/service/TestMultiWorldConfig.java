@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.service;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.MockExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.mocks.MockExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.service.config.Mode;
 import me.ryanhamshire.ExtraHardMode.service.config.MultiWorldConfig;
 import me.ryanhamshire.ExtraHardMode.service.config.Status;
@@ -14,9 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -85,7 +82,7 @@ public class TestMultiWorldConfig
         assertTrue      (module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == Status.OK);
 
         assertEquals    (9, module.loadNode(config, MockConfigNode.INT_9, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == Status.OK);
+        assertTrue(module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == Status.OK);
 
         assertEquals    (Mode.INHERIT.name(), (String) module.loadNode(config, MockConfigNode.STR_0, false).getContent());
         assertTrue      (module.loadNode(config, MockConfigNode.STR_0, false).getStatusCode() == Status.INHERITS);
@@ -105,9 +102,9 @@ public class TestMultiWorldConfig
         assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getStatusCode() == Status.NOT_FOUND);
 
         assertEquals(MockConfigNode.NOTFOUND_INT.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getStatusCode() == Status.NOT_FOUND);
+        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getStatusCode() == Status.NOT_FOUND);
 
-        assertEquals    (MockConfigNode.NOTFOUND_STR.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getContent());
+        assertEquals(MockConfigNode.NOTFOUND_STR.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getContent());
         assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getStatusCode() == Status.NOT_FOUND);
 
         assertEquals    (MockConfigNode.NOTFOUND_LIST.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getContent());
@@ -116,9 +113,9 @@ public class TestMultiWorldConfig
 
 
         assertEquals(true, module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getContent());
-        assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getStatusCode() == Status.ADJUSTED);
+        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getStatusCode() == Status.ADJUSTED);
 
-        assertEquals    (1, module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getContent());
+        assertEquals(1, module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getContent());
         assertTrue      (module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getStatusCode() == Status.ADJUSTED);
 
     }
@@ -197,19 +194,19 @@ public class TestMultiWorldConfig
         Response response;
 
         response = module.validateInt(MockConfigNode.INT_HP_1, -123);
-        assertEquals (1, response.getContent());
+        assertEquals(1, response.getContent());
         assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_HP_1, 0);
-        assertEquals (1, response.getContent());
+        assertEquals(1, response.getContent());
         assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_HP_1, 23);
-        assertEquals (20, response.getContent());
+        assertEquals(20, response.getContent());
         assertTrue(response.getStatusCode() == Status.ADJUSTED);
 
         response = module.validateInt(MockConfigNode.INT_HP_1, 12);
-        assertEquals (12, response.getContent());
+        assertEquals(12, response.getContent());
         assertTrue(response.getStatusCode() == Status.OK);
     }
 
