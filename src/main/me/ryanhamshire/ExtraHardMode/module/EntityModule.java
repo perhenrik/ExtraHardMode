@@ -23,6 +23,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+
+import java.util.List;
 
 /**
  * Module that contains logic dealing with entities.
@@ -62,15 +65,11 @@ public class EntityModule extends EHMModule
      */
     public void addEnvironmentalDamage(LivingEntity entity, int damage)
     {
-        if (!entity.hasMetadata(ENVIRONMENTAL_DAMAGE))
-        {
-            entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, damage));
-        }
-        else
-        {
-            int currentTotalDamage = entity.getMetadata(ENVIRONMENTAL_DAMAGE).get(0).asInt();
-            entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, currentTotalDamage + damage));
-        }
+        int currentTotalDamage = 0;
+        List <MetadataValue> meta = entity.getMetadata(ENVIRONMENTAL_DAMAGE);
+        if (meta.size() > 0)
+            currentTotalDamage = meta.get(0).asInt();
+        entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, currentTotalDamage + damage));
     }
 
     /**
@@ -81,14 +80,12 @@ public class EntityModule extends EHMModule
      */
     public boolean isLootLess(LivingEntity entity)
     {
-        if (entity instanceof Creature && entity.hasMetadata(ENVIRONMENTAL_DAMAGE))
-        {
-            int totalDamage = entity.getMetadata(ENVIRONMENTAL_DAMAGE).get(0).asInt();
-            // wither is exempt. he can't be farmed because creating him requires combining not-farmable components
-            return !(entity instanceof Wither) && (totalDamage > entity.getMaxHealth() / 2);
-        }
-
-        return false;
+        int currentTotalDamage = 0;
+        List <MetadataValue> meta = entity.getMetadata(ENVIRONMENTAL_DAMAGE);
+        if (meta.size() > 0)
+            currentTotalDamage = meta.get(0).asInt();
+        // wither is exempt. he can't be farmed because creating him requires combining non-farmable components
+        return !(entity instanceof Wither) && (currentTotalDamage > entity.getMaxHealth() / 2);
     }
 
     /**
@@ -141,7 +138,6 @@ public class EntityModule extends EHMModule
         return false;
     }
 
-    //TODO config block iron farms
     /**
      * Is the Monster farmable cattle, which drops something on death?
      */
