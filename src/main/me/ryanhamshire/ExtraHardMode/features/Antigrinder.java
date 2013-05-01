@@ -20,9 +20,10 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-//TODO world check
-//TODO netherrack breaks tools
-//TODO netherrack slow to break
+/**
+ * A MonsterGrinder Inhibitor which disables drops for Monsters which appear to be farmed or which have been killed in
+ * conditions where the Player had a clear advantage
+ */
 public class Antigrinder implements Listener
 {
     ExtraHardMode plugin;
@@ -121,9 +122,10 @@ public class Antigrinder implements Listener
     /**
      * When an entity dies check if loot should be blocked due to AntiGrinder
      * @param event
+     * @return true if drops loot, false if loot was blocked
      */
     @EventHandler
-    public void onEntityDeath(EntityDeathEvent event)
+    public boolean onEntityDeath(EntityDeathEvent event)
     {
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
@@ -131,107 +133,104 @@ public class Antigrinder implements Listener
         final boolean inhibitMonsterGrindersEnabled = CFG.getBoolean(RootNode.INHIBIT_MONSTER_GRINDERS, world.getName());
 
         // FEATURE: monsters which take environmental damage or spawn from spawners don't drop loot and exp (monster grinder inhibitor)
-        if (inhibitMonsterGrindersEnabled && entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.SQUID)
+        if (inhibitMonsterGrindersEnabled && entity instanceof Monster && entity.getType() != EntityType.SQUID)
         {
-            boolean noLoot = false;
-
-            //animals aren't affected by antigrinder
-            if (!entityModule.isCattle(entity))
+            if (entityModule.isLootLess(entity))
             {
-                if (entityModule.isLootLess(entity))
+                clearDrops(event);
+                return false;
+            }
+            else
+            {   //Evaluate if this kill was a too easy kill
+                switch (entity.getType())
                 {
-                    noLoot = true;
-                }
-                else if (entity instanceof Skeleton)
-                {
-                    Skeleton skeleton = (Skeleton) entity;
-                    //Stuck Wither Skeletons
-                    if (skeleton.getSkeletonType() == Skeleton.SkeletonType.WITHER && skeleton.getEyeLocation().getBlock().getType() != Material.AIR)
+                    case SKELETON:case ENDERMAN:
                     {
-                        noLoot = true;
+                        // tall monsters can get stuck when they spawn like WitherSkeletons
+                        if (entity.getEyeLocation().getBlock().getType() != Material.AIR)
+                            return clearDrops(event);
+                        break;
                     }
-                }
-                else if (entity instanceof Enderman)
-                {
-                    //Enderman spawned in block
-                    if (entity.getEyeLocation().getBlock().getType() != Material.AIR)
+                    default:
                     {
-                        noLoot = true;
-                    }
-                }
-                else
-                {
-                    // also no loot for monsters which die standing in water
-                    Block block = entity.getLocation().getBlock();
-                    Block underBlock = block.getRelative(BlockFace.DOWN);
-                    BlockFace[] adjacentFaces = blockModule.getHorizontalAdjacentFaces();
-                    //All the adjacentBlocks
-                    Block[] adjacentBlocks = new Block[adjacentFaces.length * 2 + 1];
-                    adjacentBlocks[0] = block;
-                    for (int i = 0; i < adjacentFaces.length; i++)
-                    {
-                        adjacentBlocks[i+1] = block.getRelative(adjacentFaces[i]);
-                    }
-                    for (int i = 0; i < adjacentFaces.length; i++)
-                    {
-                        adjacentBlocks[i+adjacentFaces.length] = underBlock.getRelative(adjacentFaces[i]);
-                    }
-                    for (Block adjacentBlock : adjacentBlocks)
-                    {
-                        if (adjacentBlock!=null && (adjacentBlock.getType() == Material.WATER || adjacentBlock.getType() == Material.STATIONARY_WATER))
+                        // no loot for monsters which die standing in water, to make building grinders even more difficult
+                        Block block = entity.getLocation().getBlock();
+                        Block underBlock = block.getRelative(BlockFace.DOWN);
+
+                        BlockFace[] adjacentFaces = blockModule.getHorizontalAdjacentFaces();
+                        Block[] adjacentBlocks = new Block[adjacentFaces.length * 2 + 1];
+
+                        //All Blocks directly surrounding the Monster
+                        adjacentBlocks[0] = block;
+                        for (int i = 0; i < adjacentFaces.length; i++)
                         {
-                            noLoot = true;
-                            break;
+                            adjacentBlocks[i+1] = block.getRelative(adjacentFaces[i]);
                         }
-                    }
-
-                    // also no loot for monsters who can't reach their (melee) killers
-                    Player killer = entity.getKiller();
-                    if (killer != null)
-                    {
-                        Location monsterEyeLocation = entity.getEyeLocation();
-                        Location playerEyeLocation = killer.getEyeLocation();
-
-                        // interpolate locations
-                        Location[] locations = new Location[]{
-                                new Location(monsterEyeLocation.getWorld(), .2 * monsterEyeLocation.getX() + .8 * playerEyeLocation.getX(),
-                                        monsterEyeLocation.getY(), .2 * monsterEyeLocation.getZ() + .8 * playerEyeLocation.getZ()),
-                                new Location(monsterEyeLocation.getWorld(), .5 * monsterEyeLocation.getX() + .5 * playerEyeLocation.getX(),
-                                        monsterEyeLocation.getY(), .5 * monsterEyeLocation.getZ() + .5 * playerEyeLocation.getZ()),
-                                new Location(monsterEyeLocation.getWorld(), .8 * monsterEyeLocation.getX() + .2 * playerEyeLocation.getX(),
-                                        monsterEyeLocation.getY(), .8 * monsterEyeLocation.getZ() + .2 * playerEyeLocation.getZ()),};
-
-                        for (Location middleLocation : locations)
+                        for (int i = 0; i < adjacentFaces.length; i++)
                         {
-                            // monster is blocked at eye level, unable to advance toward killer
-                            if (middleLocation.getBlock().getType() != Material.AIR)
-                            {
-                                noLoot = true;
-                            }
+                            adjacentBlocks[i+adjacentFaces.length] = underBlock.getRelative(adjacentFaces[i]);
+                        }
 
-                            // monster doesn't have room above to hurdle a foot level block, unable to advance toward killer
-                            else
+                        for (Block adjacentBlock : adjacentBlocks)
+                        {
+                            if (adjacentBlock.getType() == Material.WATER || adjacentBlock.getType() == Material.STATIONARY_WATER)
+                                return clearDrops(event);
+                        }
+
+                        // also no loot for monsters who can't reach their (melee) killers
+                        Player killer = entity.getKiller();
+                        if (killer != null)
+                        {
+                            Location monsterEyeLocation = entity.getEyeLocation();
+                            Location playerEyeLocation = killer.getEyeLocation();
+
+                            // interpolate locations
+                            Location[] locations = new Location[]{
+                                    new Location(monsterEyeLocation.getWorld(), .2 * monsterEyeLocation.getX() + .8 * playerEyeLocation.getX(),
+                                            monsterEyeLocation.getY(), .2 * monsterEyeLocation.getZ() + .8 * playerEyeLocation.getZ()),
+                                    new Location(monsterEyeLocation.getWorld(), .5 * monsterEyeLocation.getX() + .5 * playerEyeLocation.getX(),
+                                            monsterEyeLocation.getY(), .5 * monsterEyeLocation.getZ() + .5 * playerEyeLocation.getZ()),
+                                    new Location(monsterEyeLocation.getWorld(), .8 * monsterEyeLocation.getX() + .2 * playerEyeLocation.getX(),
+                                            monsterEyeLocation.getY(), .8 * monsterEyeLocation.getZ() + .2 * playerEyeLocation.getZ()),};
+
+                            for (Location middleLocation : locations)
                             {
-                                Block bottom = middleLocation.getBlock().getRelative(BlockFace.DOWN);
-                                Block top = middleLocation.getBlock().getRelative(BlockFace.UP);
-                                if (top.getType() != Material.AIR && bottom.getType() != Material.AIR || bottom.getType() == Material.FENCE
-                                        || bottom.getType() == Material.FENCE_GATE || bottom.getType() == Material.COBBLE_WALL
-                                        || bottom.getType() == Material.NETHER_FENCE)
+                                // monster is blocked at eye level, unable to advance toward killer
+                                if (middleLocation.getBlock().getType() != Material.AIR)
+                                    return clearDrops(event);
+                                // monster doesn't have room above to hurdle a foot level block, unable to advance toward killer
+                                else
                                 {
-                                    noLoot = true;
+                                    Block bottom = middleLocation.getBlock().getRelative(BlockFace.DOWN);
+                                    Block top = middleLocation.getBlock().getRelative(BlockFace.UP);
+                                    if (top.getType() != Material.AIR &&
+                                            bottom.getType() != Material.AIR
+                                            || bottom.getType() == Material.FENCE
+                                            || bottom.getType() == Material.FENCE_GATE
+                                            || bottom.getType() == Material.COBBLE_WALL
+                                            || bottom.getType() == Material.NETHER_FENCE)
+                                    {
+                                        return clearDrops(event);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
-                if (noLoot)
-                {
-                    event.setDroppedExp(0);
-                    event.getDrops().clear();
-                }
             }
         }
+        return true;
+    }
+
+    /**
+     * Utility method to clear the drops
+     * @return false which means that the drops have been cleared, there are no drops
+     */
+    private boolean clearDrops(EntityDeathEvent event)
+    {
+        event.setDroppedExp(0);
+        event.getDrops().clear();
+        return false;
     }
 
     /**
