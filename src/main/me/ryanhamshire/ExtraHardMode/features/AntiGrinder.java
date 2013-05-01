@@ -24,7 +24,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
  * A MonsterGrinder Inhibitor which disables drops for Monsters which appear to be farmed or which have been killed in
  * conditions where the Player had a clear advantage
  */
-public class Antigrinder implements Listener
+public class AntiGrinder implements Listener
 {
     ExtraHardMode plugin;
     RootConfig CFG;
@@ -37,7 +37,7 @@ public class Antigrinder implements Listener
      * For Testing Purposes
      * Constructor to allow dependency injection
      */
-    public Antigrinder (RootConfig CFG, EntityModule entityModule, BlockModule blockModule, UtilityModule utils)
+    public AntiGrinder(RootConfig CFG, EntityModule entityModule, BlockModule blockModule, UtilityModule utils)
     {
         this. CFG = CFG;
         this. entityModule = entityModule;
@@ -45,7 +45,11 @@ public class Antigrinder implements Listener
         this. utils = utils;
     }
 
-    public Antigrinder (ExtraHardMode plugin)
+    /**
+     * Your basic constructor of choice
+     * @param plugin
+     */
+    public AntiGrinder(ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);

@@ -26,7 +26,7 @@ public class TestAntiGrinder
 {
     ExtraHardMode plugin = new MockExtraHardMode().get();
     RootConfig CFG = new RootConfig();
-    Antigrinder module = new Antigrinder(CFG, new EntityModule(plugin), new BlockModule(plugin), new UtilityModule(plugin));
+    AntiGrinder module = new AntiGrinder(CFG, new EntityModule(plugin), new BlockModule(plugin), new UtilityModule(plugin));
 
     @Before
     public void prepare()
@@ -61,11 +61,11 @@ public class TestAntiGrinder
         relative.setMaterial(Material.DIRT);
         block.setRelative(BlockFace.DOWN, relative.get());
 
-        //Set the Environment to OVERWORLD
+        //Set the Environment to OverWorld
         MockWorld world = event.getWorld();
         world.setEnvironment(World.Environment.NORMAL);
 
-        assertTrue("Zombie spawn suceeds", module.onEntitySpawn(event.get()));
+        assertTrue("Zombie spawn succeeds", module.onEntitySpawn(event.get()));
     }
 
     @Test
@@ -97,15 +97,15 @@ public class TestAntiGrinder
         relative.setMaterial(Material.COBBLESTONE);
         block.setRelative(BlockFace.DOWN, relative.get());
 
-        assertFalse( "Natural spawn in a not natural Location suceeded", module.onEntitySpawn(event.get()));
+        assertFalse( "Natural spawn in a not natural Location succeeded", module.onEntitySpawn(event.get()));
 
 
-        //Netherrack doesnt spawn in the OverWorld
+        //NetherRack doesn't spawn in the OverWorld
         relative.setMaterial(Material.NETHERRACK);
         block.setRelative(BlockFace.DOWN, relative.get());
 
         world.setEnvironment(World.Environment.NORMAL);
 
-        assertFalse( "Spawn on Netherrack in the OverWorld should have failed", module.onEntitySpawn(event.get()));
+        assertFalse( "Spawn on NetherRack in the OverWorld should have failed", module.onEntitySpawn(event.get()));
     }
 }

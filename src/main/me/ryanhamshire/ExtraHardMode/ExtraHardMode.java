@@ -83,7 +83,7 @@ public class ExtraHardMode extends JavaPlugin
 
         // EventHandlers gallore....look away, scroll down
         pluginManager.registerEvents(new AntiFarming(this), this);
-        pluginManager.registerEvents(new Antigrinder(this), this);
+        pluginManager.registerEvents(new AntiGrinder(this), this);
         pluginManager.registerEvents(new Explosions(this), this);
         pluginManager.registerEvents(new HardenedStone(this), this);
         pluginManager.registerEvents(new LimitedBuilding(this), this);
