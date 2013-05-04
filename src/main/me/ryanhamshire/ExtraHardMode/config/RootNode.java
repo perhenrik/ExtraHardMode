@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
-        * Configuration options of the root config.yml file.
-        */
+* Configuration options of the root config.yml file.
+*/
 //Please keep the codestyle, it makes it easier to grasp the structure of the config
 public enum RootNode implements ConfigNode
 {
@@ -83,12 +83,16 @@ public enum RootNode implements ConfigNode
      * whether tree logs respect gravity
      */
     BETTER_TREE_CHOPPING
-            (baseNode()+".World Rules.Better Tree Felling", VarType.BOOLEAN, true),
+            (baseNode()+".World Rules.Better Tree Felling.Enable", VarType.BOOLEAN, true),
+    /**
+     * How much damage loose Falling Logs do to Players and Animals
+     */
+    BETTER_TREE_CHOPPING_DMG
+            (baseNode()+".World Rules.Better Tree Felling.Dmg Amount" , VarType.INTEGER, 5),
+
     /**
      * whether players take additional damage and/or debuffs from environmental injuries
      */
-
-
     ENHANCED_ENVIRONMENTAL_DAMAGE
             (baseNode()+".Player.Enhanced Environmental Injuries", VarType.BOOLEAN, true),
     /**

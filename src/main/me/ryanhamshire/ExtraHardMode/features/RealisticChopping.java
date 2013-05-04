@@ -5,6 +5,7 @@ import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
+import me.ryanhamshire.ExtraHardMode.module.EntityModule;
 import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import me.ryanhamshire.ExtraHardMode.task.FallingLogsTask;
 import org.bukkit.GameMode;
@@ -21,9 +22,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+<<<<<<< Updated upstream
+=======
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+>>>>>>> Stashed changes
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * When chopping down trees the logs fall down and loose logs fall down on the side and can injure you
@@ -43,16 +48,25 @@ public class RealisticChopping implements Listener
      */
     BlockModule blockModule;
     /**
-     * Temmporarily store data like logs that are supposed to fall
+     * Temporarily store data like logs that are supposed to fall
      */
     DataStoreModule dataStoreModule;
+    /**
+     * Stuff with Entities like MetaData
+     */
+    EntityModule entityModule;
 
+    /**
+     * Constructor
+     * @param plugin
+     */
     public RealisticChopping (ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
         dataStoreModule = plugin.getModuleForClass(DataStoreModule.class);
+        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -88,7 +102,7 @@ public class RealisticChopping implements Listener
                     }
                     case AIR:case LOG:
                     {
-                        break;
+                        break; //skip to next iteration
                     }
                     default: //if something other than log/air this is most likely part of a building
                     {
@@ -109,20 +123,15 @@ public class RealisticChopping implements Listener
                             Block[] logs = blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 5, Material.LOG);
                             for (Block log : logs)
                             {
-                                blockModule.applyPhysics(log, true);
-                                //dataStoreModule.addLog(log.getLocation(), true);
-                            }
-                            //Only run that task once, it will cancel itself when all Blocks are used up
-                            if (logs.length > 0 && !dataStoreModule.isTaskRunning(FallingLogsTask.class))
-                            {
-                                //plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, 1L), 2L);
-                                //dataStoreModule.addRunningTask(FallingLogsTask.class, 1234567890);
+                                plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, log), 1L);
                             }
                             break; //can air fall?
                         }
                         case LOG:
-                            UUID id =  blockModule.applyPhysics(aboveLog);
+                        {
+                            blockModule.applyPhysics(aboveLog, false);
                             break;
+                        }
                         default: //we reached something that is not part of a tree or leaves
                             break loop;
                     }
@@ -142,19 +151,22 @@ public class RealisticChopping implements Listener
     {
         Entity entity = event.getEntity();
         Material to = event.getTo();
+        World world = entity.getWorld();
+
+        final int damageAmount = CFG.getInt(RootNode.BETTER_TREE_CHOPPING_DMG, world.getName());
 
         //Only when Block has been marked to deal damage
-        if (entity.getType().equals(EntityType.FALLING_BLOCK) && to.equals(Material.LOG) && entity.hasMetadata("key") && entity.getMetadata("key").get(0).asBoolean()/*dataStoreModule.isMarkedForProcessing(entity.getUniqueId())*/)
+        if (entity.getType().equals(EntityType.FALLING_BLOCK) && to.equals(Material.LOG) && damageAmount > 0 && entityModule.isMarkedForProcessing(entity))
         {
-            //dataStoreModule.rmFallLogById(entity.getUniqueId());
-            List<Entity> entities =  entity.getNearbyEntities(1, 2, 1);
+            List<Entity> entities =  entity.getNearbyEntities(0.1, 1, 0.1);
             for (Entity ent : entities)
             {
                 if (ent instanceof LivingEntity)
                 {
-                    LivingEntity player = (LivingEntity) ent;
+                    LivingEntity entityWithDamagedHead = (LivingEntity) ent;
                     //Frighten the player
-                    player.damage(6, entity);
+                    entityWithDamagedHead.damage(damageAmount, entity);
+                    entityWithDamagedHead.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 100, 10));
                 }
             }
         }

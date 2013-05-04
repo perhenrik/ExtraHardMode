@@ -87,7 +87,7 @@ public class BlockPhysicsCheckTask implements Runnable
                 || fallingBlocks.contains(material.name()))
                 && CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, block.getWorld().getName()))
         {
-            module.applyPhysics(block);
+            module.applyPhysics(block, false);
             fall = true;
         }
 

@@ -39,6 +39,7 @@ public class BlockModule extends EHMModule
 {
 
     private RootConfig CFG;
+    private EntityModule entityModule;
 
     /**
      * Constructor.
@@ -49,6 +50,7 @@ public class BlockModule extends EHMModule
     {
         super(plugin);
         CFG = plugin.getModuleForClass(RootConfig.class);
+        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -72,17 +74,6 @@ public class BlockModule extends EHMModule
      * Makes a block subject to gravity
      *
      * @param block - Block to apply physics to.
-     * @return the UUID of this FallingBlock
-     */
-    public UUID applyPhysics(Block block)
-    {
-        return applyPhysics(block, false);
-    }
-
-    /**
-     * Makes a block subject to gravity
-     *
-     * @param block - Block to apply physics to.
      * @param damageEntities - if Entities should be damaged
      * @return the UUID of this FallingBlock
      */
@@ -97,7 +88,8 @@ public class BlockModule extends EHMModule
         // falling block
         FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
         fallingBlock.setDropItem(false);
-        fallingBlock.setMetadata("key", new FixedMetadataValue(plugin, true));
+        if (damageEntities)
+            entityModule.markForProcessing(fallingBlock);
 
         // remove original block
         block.setType(Material.AIR);

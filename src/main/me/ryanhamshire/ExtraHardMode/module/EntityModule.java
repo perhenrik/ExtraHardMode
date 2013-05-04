@@ -16,6 +16,7 @@ package me.ryanhamshire.ExtraHardMode.module;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -33,8 +34,18 @@ import java.util.List;
 public class EntityModule extends EHMModule
 {
 
+    /**
+     * Getter for environmental damage for the specified entity
+     */
     private final String IGNORE = "extrahardmode.ignore.me";
+    /**
+     * Getter to set a flag to ignore a entity in further processing
+     */
     private final String ENVIRONMENTAL_DAMAGE = "extrahard_environmentalDamage";
+    /**
+     * Process this Entity
+     */
+    private final String PROCESS_ENTITY = "extrahardmode_process_entity";
 
     /**
      * Constructor.
@@ -134,6 +145,35 @@ public class EntityModule extends EHMModule
             {
                 return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * Mark an Entity to be processed. E.g when only a small number of Entities should be processed
+     * @param entity
+     */
+    public void markForProcessing (Entity entity)
+    {
+        Validate.notNull(entity, "Entity can't be null");
+        {
+            entity.setMetadata(PROCESS_ENTITY, new FixedMetadataValue(plugin, true));
+        }
+    }
+
+    /**
+     * Check if an entity has been flagged to be processed
+     * @param entity
+     * @return
+     */
+    public boolean isMarkedForProcessing(Entity entity)
+    {
+        Validate.notNull(entity, "Entity can't be null");
+        List<MetadataValue> meta = entity.getMetadata(PROCESS_ENTITY);
+
+        if (entity.hasMetadata(PROCESS_ENTITY) && meta != null)
+        {
+            return true;
         }
         return false;
     }

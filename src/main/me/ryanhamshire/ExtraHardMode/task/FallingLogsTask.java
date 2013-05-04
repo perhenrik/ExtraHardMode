@@ -1,51 +1,67 @@
 package me.ryanhamshire.ExtraHardMode.task;
 
+<<<<<<< Updated upstream
+=======
+import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.module.BlockModule;
+import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
+import org.apache.commons.lang.Validate;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+>>>>>>> Stashed changes
 /**
  * Gradually let's Logs which have been marked as loose fall down.
  */
-public class FallingLogsTask //extends BukkitRunnable
+public class FallingLogsTask implements Runnable
 {
     /**
      * Reference to the plugin using this class
      */
-    //private final ExtraHardMode plugin;
+    private final ExtraHardMode plugin;
     /**
      * Where our "loose" Logs are stored
      */
-    //private final DataStoreModule dataStoreModule;
+    private final DataStoreModule dataStoreModule;
     /**
      * BlockModule to spawn FallingBlocks
      */
-    //private final BlockModule blockModule;
+    private final BlockModule blockModule;
     /**
-     * Delay before next block falls
+     * Block to apply physics to
      */
-    //private final long delay;
+    private final Block block;
 
     /**
      * Constructor
      * @param plugin reference to the plugin
-     * @param delay before the next block falls
+     * @param block to apply physics to
      */
-    /*
-    public FallingLogsTask (ExtraHardMode plugin, long delay)
+
+    public FallingLogsTask (ExtraHardMode plugin, Block block)
     {
+        Validate.notNull(block, "Block can't be null");
+        Validate.notNull(plugin, "Plugin can't be null");
+
+        this.block = block;
         this.plugin = plugin;
         dataStoreModule = plugin.getModuleForClass(DataStoreModule.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
-        this.delay = delay;
     }
     @Override
     public void run ()
     {
-        Block rdmLog = dataStoreModule.getRdmLog();
-        if (rdmLog != null)
+        if (block != null)
         {
-            dataStoreModule.rmLog(rdmLog);
             //Clear the area below of leaves
-            Block below = rdmLog;
+            Block below = block;
             List<Block> looseLogs = new ArrayList<Block>();
-            looseLogs.add(rdmLog);
+            looseLogs.add(block);
             checkBelow : while (below.getY() > 0)
             {
                 below = below.getRelative(BlockFace.DOWN);
@@ -86,23 +102,8 @@ public class FallingLogsTask //extends BukkitRunnable
             }
             for (Block looseLog : looseLogs)
             {
-                UUID id = blockModule.applyPhysics(looseLog);
-                //Save the Location so when the Block lands we know that we spawned it
-                dataStoreModule.addFallLog(id, looseLog.getLocation());
+                blockModule.applyPhysics(looseLog, true);
             }
         }
-        if (dataStoreModule.getRdmLog() != null) //More Logs
-        {
-            plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, delay), delay);
-        }
-        else //try to stop the task
-        {
-            dataStoreModule.rmRunningTask(FallingLogsTask.class);
-            try
-            {
-                cancel();
-            }
-            catch (IllegalStateException ignored){}
-        }
-    }*/
+    }
 }
