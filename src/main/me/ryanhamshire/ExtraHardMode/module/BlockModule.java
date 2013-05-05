@@ -33,6 +33,7 @@ public class BlockModule extends EHMModule
 {
 
     private RootConfig CFG;
+    private EntityModule entityModule;
 
     /**
      * Constructor.
@@ -43,6 +44,7 @@ public class BlockModule extends EHMModule
     {
         super(plugin);
         CFG = plugin.getModuleForClass(RootConfig.class);
+        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -66,8 +68,10 @@ public class BlockModule extends EHMModule
      * Makes a block subject to gravity
      *
      * @param block - Block to apply physics to.
+     * @param damageEntities - if Entities should be damaged
+     * @return the UUID of this FallingBlock
      */
-    public void applyPhysics(Block block)
+    public UUID applyPhysics (Block block , boolean damageEntities)
     {
         // grass and mycel become dirt when they fall
         if ((block.getType() == Material.GRASS || block.getType() == Material.MYCEL) && CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_TURN_TO_DIRT, block.getWorld().getName()))
@@ -77,10 +81,14 @@ public class BlockModule extends EHMModule
 
         // falling block
         FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
-        fallingBlock.setDropItem(true);
+        fallingBlock.setDropItem(false);
+        if (damageEntities)
+            entityModule.markForProcessing(fallingBlock);
 
         // remove original block
         block.setType(Material.AIR);
+
+        return fallingBlock.getUniqueId();
     }
 
     /**
@@ -166,7 +174,7 @@ public class BlockModule extends EHMModule
 
     /**
      * All horizontal Blockfaces including diagonal onea
-     * @return
+     * @return Blockfaces[]
      */
     public BlockFace[] getHorizontalAdjacentFaces()
     {
@@ -181,6 +189,58 @@ public class BlockModule extends EHMModule
                 BlockFace.SOUTH_WEST
         };
     }
+
+    /**
+     * Get all the blocks in a specific area centered around the Location passed in
+     *
+     * @param loc Center of the search area
+     * @param height how many blocks up to check
+     * @param radius of the search (cubic search radius)
+     * @param type of Material to search for
+     *
+     * @return all the Block with the given Type in the specified radius
+     */
+    public Block[] getBlocksInArea (Location loc, int height, int radius, Material type)
+    {
+        List<Block> blocks = new ArrayList<Block>();
+        //Height
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = -radius; x < radius; x++)
+            {
+                for (int z = -radius; z < radius; z++)
+                {
+                    Block checkBlock = loc.getBlock().getRelative(x,y,z);
+                    if (checkBlock.getType().equals(type))
+                    {
+                        blocks.add(checkBlock);
+                    }
+                }
+            }
+        }
+        return blocks.toArray(new Block[blocks.size()]);
+    }
+
+    /**
+     * Will a FallingBlock which lands on this Material break and drop to the ground?
+     * @param mat to check
+     * @return boolean
+     */
+    public boolean breaksFallingBlock (Material mat)
+    {
+        return      mat.name().contains("TORCH") //redstone torches aswell
+                ||  mat.name().endsWith("STEP")  //all SLABS (steps)
+                ||  mat.name().contains("RAIL")  //all RAILS
+                ||  mat == Material.RED_ROSE
+                ||  mat == Material.YELLOW_FLOWER
+                ||  mat == Material.BROWN_MUSHROOM
+                ||  mat == Material.SIGN
+                ||  mat == Material.TRAP_DOOR
+                ||  mat == Material.DEAD_BUSH
+                ||  mat == Material.LONG_GRASS
+                ||  mat == Material.WEB;
+    }
+
     @Override
     public void starting(){/*ignored*/}
     @Override

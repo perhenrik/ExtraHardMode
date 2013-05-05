@@ -28,7 +28,26 @@ public class TestRootConfig
 
     public TestRootConfig()
     {
-        generateAdvancedCfg();
+        cfg.set("world", RootNode.WEAK_FOOD_CROPS, true);
+        cfg.set("pvp", RootNode.WEAK_FOOD_CROPS, false);
+        cfg.set("world_the_end", RootNode.WEAK_FOOD_CROPS, false);
+        cfg.set("miningWorld", RootNode.WEAK_FOOD_CROPS, true);
+
+        cfg.set("world", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, false);
+        cfg.set("world_nether", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, true);
+        cfg.set("worlds", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, true);
+
+
+        cfg.set("world_nether", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
+        cfg.set("worlds", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
+        cfg.set("pvp", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
+        cfg.set("world_the_end", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
+
+        cfg.set("world", RootNode.IRON_DURABILITY_PENALTY, 24);
+        cfg.set("world_nether", RootNode.IRON_DURABILITY_PENALTY, 22);
+        cfg.set("worlds", RootNode.IRON_DURABILITY_PENALTY, 22);
+        cfg.set("pvp", RootNode.IRON_DURABILITY_PENALTY, 80);
+        cfg.set("world_the_end", RootNode.IRON_DURABILITY_PENALTY, 80);
     }
 
     /**
@@ -121,29 +140,5 @@ public class TestRootConfig
         HashSet<String> expectedWorlds = new HashSet<String>(Arrays.asList(new String[]{"world", "pvp", "world_the_end", "miningWorld", "world_nether", "worlds"}));
         HashSet<String> inputWorlds = new HashSet<String>(Arrays.asList(cfg.getEnabledWorlds()));
         assertTrue(expectedWorlds.equals(inputWorlds));
-    }
-
-    public void generateAdvancedCfg()
-    {
-        cfg.set("world", RootNode.WEAK_FOOD_CROPS, true);
-        cfg.set("pvp", RootNode.WEAK_FOOD_CROPS, false);
-        cfg.set("world_the_end", RootNode.WEAK_FOOD_CROPS, false);
-        cfg.set("miningWorld", RootNode.WEAK_FOOD_CROPS, true);
-
-        cfg.set("world", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, false);
-        cfg.set("world_nether", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, true);
-        cfg.set("worlds", RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, true);
-
-
-        cfg.set("world_nether", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
-        cfg.set("worlds", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
-        cfg.set("pvp", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
-        cfg.set("world_the_end", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
-
-        cfg.set("world", RootNode.IRON_DURABILITY_PENALTY, 24);
-        cfg.set("world_nether", RootNode.IRON_DURABILITY_PENALTY, 22);
-        cfg.set("worlds", RootNode.IRON_DURABILITY_PENALTY, 22);
-        cfg.set("pvp", RootNode.IRON_DURABILITY_PENALTY, 80);
-        cfg.set("world_the_end", RootNode.IRON_DURABILITY_PENALTY, 80);
     }
 }

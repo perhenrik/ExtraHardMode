@@ -2,6 +2,7 @@ package me.ryanhamshire.ExtraHardMode.features;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
+import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.mocks.MockBlock;
 import me.ryanhamshire.ExtraHardMode.mocks.MockExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.mocks.MockLocation;
@@ -15,6 +16,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -26,14 +28,21 @@ public class TestAntiGrinder
     RootConfig CFG = new RootConfig();
     Antigrinder module = new Antigrinder(CFG, new EntityModule(plugin), new BlockModule(plugin), new UtilityModule(plugin));
 
+    @Before
+    public void prepare()
+    {
+        //Enable AntiGrinder in the Config
+        CFG.set("world", RootNode.INHIBIT_MONSTER_GRINDERS, true);
+    }
+
     @Test
     public void spawnerSpawns()
     {
         CreatureSpawnEvent event = new MockCreatureSpawnEvent(EntityType.BLAZE, "world", CreatureSpawnEvent.SpawnReason.SPAWNER).get();
-        assertFalse("Spawners drop no exp", module.onEntitySpawn(event));
+        assertFalse("Spawners should drop no exp", module.onEntitySpawn(event));
 
         event = new MockCreatureSpawnEvent(EntityType.ENDERMAN, "world", CreatureSpawnEvent.SpawnReason.SPAWNER).get();
-        assertFalse("Normal Spawns not blocked", module.onEntitySpawn(event));
+        assertFalse("Spawners should drop no exp", module.onEntitySpawn(event));
     }
 
     @Test
@@ -52,11 +61,11 @@ public class TestAntiGrinder
         relative.setMaterial(Material.DIRT);
         block.setRelative(BlockFace.DOWN, relative.get());
 
-        //Set the Environment to OVERWORLD
+        //Set the Environment to OverWorld
         MockWorld world = event.getWorld();
         world.setEnvironment(World.Environment.NORMAL);
 
-        assertTrue("Zombie spawn suceeds", module.onEntitySpawn(event.get()));
+        assertTrue("Zombie spawn succeeds", module.onEntitySpawn(event.get()));
     }
 
     @Test
@@ -82,19 +91,21 @@ public class TestAntiGrinder
         assertTrue( "Natural spawn in the Nether failed", module.onEntitySpawn(event.get()));
 
 
+        world.setEnvironment(World.Environment.NETHER);
+
         //Cobble is not natural for the nether
         relative.setMaterial(Material.COBBLESTONE);
         block.setRelative(BlockFace.DOWN, relative.get());
 
-        assertFalse( "Natural spawn in a not natural Location suceeded", module.onEntitySpawn(event.get()));
+        assertFalse( "Natural spawn in a not natural Location succeeded", module.onEntitySpawn(event.get()));
 
 
-        //Netherrack doesnt spawn in the OverWorld
+        //NetherRack doesn't spawn in the OverWorld
         relative.setMaterial(Material.NETHERRACK);
         block.setRelative(BlockFace.DOWN, relative.get());
 
         world.setEnvironment(World.Environment.NORMAL);
 
-        assertFalse( "Spawn on Netherrack in the OverWorld should have failed", module.onEntitySpawn(event.get()));
+        assertFalse( "Spawn on NetherRack in the OverWorld should have failed", module.onEntitySpawn(event.get()));
     }
 }

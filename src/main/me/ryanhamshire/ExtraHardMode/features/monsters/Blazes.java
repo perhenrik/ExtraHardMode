@@ -60,7 +60,7 @@ public class Blazes implements Listener
         // FEATURE: more blazes in nether
         if (entityType == EntityType.PIG_ZOMBIE)
         {
-            if (plugin.random(bonusNetherBlazeSpawnPercent) && world.getEnvironment() == World.Environment.NETHER)
+            if (plugin.random(bonusNetherBlazeSpawnPercent))
             {
                 event.setCancelled(true);
                 entityType = EntityType.BLAZE;

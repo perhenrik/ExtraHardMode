@@ -25,7 +25,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -88,7 +87,7 @@ public class BlockPhysicsCheckTask implements Runnable
                 || fallingBlocks.contains(material.name()))
                 && CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, block.getWorld().getName()))
         {
-            module.applyPhysics(block);
+            module.applyPhysics(block, false);
             fall = true;
         }
 

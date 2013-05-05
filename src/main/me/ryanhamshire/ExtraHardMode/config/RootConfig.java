@@ -1,7 +1,7 @@
 package me.ryanhamshire.ExtraHardMode.config;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
-import me.ryanhamshire.ExtraHardMode.service.*;
+import me.ryanhamshire.ExtraHardMode.service.Response;
 import me.ryanhamshire.ExtraHardMode.service.config.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

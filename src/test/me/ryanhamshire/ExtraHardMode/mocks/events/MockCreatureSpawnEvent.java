@@ -4,13 +4,7 @@ import me.ryanhamshire.ExtraHardMode.mocks.MockBlock;
 import me.ryanhamshire.ExtraHardMode.mocks.MockLivingEntity;
 import me.ryanhamshire.ExtraHardMode.mocks.MockLocation;
 import me.ryanhamshire.ExtraHardMode.mocks.MockWorld;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import static org.mockito.Mockito.mock;
