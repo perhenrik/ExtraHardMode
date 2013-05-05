@@ -51,7 +51,6 @@ public class UtilityModule extends EHMModule
      * Generates a Firework with random colors/velocity and the given Firework Type
      *
      * @param type The type of firework
-     * @return nothing
      */
     public void fireWorkRandomColors(FireworkEffect.Type type, Location location)
     {
@@ -290,8 +289,7 @@ public class UtilityModule extends EHMModule
     /**
      * Send the player an informative message to explain what he's doing wrong.
      * Play an optional sound aswell
-     * <p/>
-     * TODO might want to move this out to a module. Yes indeed and move all logging methods and ways to send messages in there.
+     * <p>
      *
      * @param player     to send msg to
      * @param perm       permission to silence the message

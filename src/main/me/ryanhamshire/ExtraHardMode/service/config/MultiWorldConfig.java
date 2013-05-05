@@ -75,7 +75,7 @@ public abstract class MultiWorldConfig extends EHMModule
      * Load the given Files in a List as Config Objects, which hold the reference to the File and the loaded FileConfiguration
      * Ignores files that don't have the RootNode in them.
      * @param files
-     * @return a Hashmap<fileName, FileConfiguration>, containing all valid FileConfigurations and config.yml
+     * @return a HashMap containing all valid FileConfigurations and config.yml
      */
     protected List<Config> loadFilesFromDisk (File[] files)
     {

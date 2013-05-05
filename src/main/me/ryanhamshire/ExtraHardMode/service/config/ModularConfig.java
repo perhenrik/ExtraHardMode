@@ -102,7 +102,7 @@ public abstract class ModularConfig extends EHMModule
 
     /**
      * Force set the value for the given configuration node.
-     * <p/>
+     * <p>
      * Note, there is no type checking with this method.
      *
      * @param node - ConfigNode path to use.
