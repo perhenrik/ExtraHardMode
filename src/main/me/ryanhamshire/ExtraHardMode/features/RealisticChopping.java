@@ -22,11 +22,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
-<<<<<<< Updated upstream
-=======
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
->>>>>>> Stashed changes
 
 import java.util.List;
 
