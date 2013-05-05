@@ -43,6 +43,11 @@ public class DataStoreModule extends EHMModule
     private final List<SimpleEntry<Player, Location>> previousLocations = new CopyOnWriteArrayList<SimpleEntry<Player, Location>>();
 
     /**
+     * List of FallingBlocks that need custom handling
+     */
+    /*private Map <UUID, FallingBlockData> looseLogs = new HashMap<UUID, FallingBlockData>();*/
+
+    /**
      * Constructor.
      *
      * @param plugin - Plugin instance.

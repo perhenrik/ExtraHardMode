@@ -733,6 +733,7 @@ public enum RootNode implements ConfigNode
      * Get the Object that will disable this option
      * @return Object that will disable this option in the plugin
      */
+    @Override
     public Object getValueToDisable ()
     {
         Object obj;

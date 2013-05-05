@@ -1,13 +1,14 @@
 package me.ryanhamshire.ExtraHardMode.config;
 
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
+import me.ryanhamshire.ExtraHardMode.mocks.MockExtraHardMode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class TestRootConfig
 {
     //Mock Plugin
-    ExtraHardMode plugin = PowerMockito.mock(ExtraHardMode.class);
+    ExtraHardMode plugin = new MockExtraHardMode().get();
     RootConfig cfg = new RootConfig(plugin);
 
     public TestRootConfig()
@@ -77,15 +78,15 @@ public class TestRootConfig
     public void testNotExisting()
     {
         //Integer
-        assertEquals(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT.getDefaultValue(), cfg.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, "test123"));
+        assertEquals(0, cfg.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, "test123"));
         //Boolean
-        assertEquals(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS.getDefaultValue(), cfg.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, "test123"));
+        assertEquals(false, cfg.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, "test123"));
         //String
-        assertEquals(RootNode.MODE.getDefaultValue(), cfg.getString(RootNode.MODE, "test123"));
+        assertEquals("", cfg.getString(RootNode.MODE, "test123"));
         //Double
-        assertEquals(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS.getDefaultValue(), cfg.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, "test123"));
+        assertEquals(0.0, cfg.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, "test123"), 0.0);
         //StringList
-        assertEquals(RootNode.MORE_FALLING_BLOCKS.getDefaultValue(), cfg.getStringList(RootNode.MORE_FALLING_BLOCKS, "test123"));
+        assertEquals(Collections.<String>emptyList(), cfg.getStringList(RootNode.MORE_FALLING_BLOCKS, "test123"));
     }
 
     /**

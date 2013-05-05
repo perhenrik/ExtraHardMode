@@ -26,7 +26,7 @@ public class TestAntiGrinder
 {
     ExtraHardMode plugin = new MockExtraHardMode().get();
     RootConfig CFG = new RootConfig();
-    Antigrinder module = new Antigrinder(CFG, new EntityModule(plugin), new BlockModule(plugin), new UtilityModule(plugin));
+    AntiGrinder module = new AntiGrinder(CFG, new EntityModule(plugin), new BlockModule(plugin), new UtilityModule(plugin));
 
     @Before
     public void prepare()
