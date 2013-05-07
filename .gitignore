@@ -167,3 +167,6 @@ pip-log.txt
 
 #outputdir
 artifacts
+
+#IntelliJ
+.idea
