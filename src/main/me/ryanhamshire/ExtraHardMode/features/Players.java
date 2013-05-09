@@ -115,11 +115,11 @@ public class Players implements Listener
         }
 
         final boolean enhancedEnvironmentalDmg = CFG.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE, world.getName());
-        final boolean playerPerm = player != null ? !player.hasPermission(PermissionNode.BYPASS.getNode())
+        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                    || player.getGameMode().equals(GameMode.CREATIVE) : true;
 
         // FEATURE: extra damage and effects from environmental damage
-        if (enhancedEnvironmentalDmg &&! playerPerm)
+        if (enhancedEnvironmentalDmg &&! playerHasBypass)
         {
             EntityDamageEvent.DamageCause cause = event.getCause();
 

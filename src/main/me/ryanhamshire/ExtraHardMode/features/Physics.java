@@ -65,19 +65,19 @@ public class Physics implements Listener
 
         final boolean moreFallingBlocksEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName());
         final int netherRackFirePercent = CFG.getInt(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT, world.getName());
-        final boolean playerPerm = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
+        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                    || player.getGameMode().equals(GameMode.CREATIVE) : true;
 
 
 
         // FEATURE: more falling blocks
-        if (moreFallingBlocksEnabled &&! playerPerm)
+        if (moreFallingBlocksEnabled &&! playerHasBypass)
         {
             blockModule.physicsCheck(block, 0, true);
         }
 
         // FEATURE: breaking netherrack may start a fire
-        if (netherRackFirePercent > 0 && block.getType() == Material.NETHERRACK &&! playerPerm)
+        if (netherRackFirePercent > 0 && block.getType() == Material.NETHERRACK &&! playerHasBypass)
         {
             Block underBlock = block.getRelative(BlockFace.DOWN);
             if (underBlock.getType() == Material.NETHERRACK && plugin.random(netherRackFirePercent))

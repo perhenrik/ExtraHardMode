@@ -42,11 +42,11 @@ public class Torches implements Listener
         final boolean limitedTorchPlacement = CFG.getBoolean(RootNode.LIMITED_TORCH_PLACEMENT, world.getName());
         final boolean soundFizzEnabled = CFG.getBoolean(RootNode.SOUNDS_TORCH_FIZZ, world.getName());
         final int torchMinY = CFG.getInt(RootNode.STANDARD_TORCH_MIN_Y, world.getName());
-        final boolean playerPerm = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
+        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                    || player.getGameMode().equals(GameMode.CREATIVE) : true;
 
         // FEATURE: players can't attach torches to common "soft" blocks
-        if (block.getType().equals(Material.TORCH) && limitedTorchPlacement &&! playerPerm)
+        if (block.getType().equals(Material.TORCH) && limitedTorchPlacement &&! playerHasBypass)
         {
             Torch torch = new Torch(Material.TORCH, block.getData());
             Material attachmentMaterial = block.getRelative(torch.getAttachedFace()).getType();
@@ -63,7 +63,7 @@ public class Torches implements Listener
         }
 
         // FEATURE: no standard torches, jack o lanterns, or fire on top of netherrack near diamond level
-        if (torchMinY > 0 &&! playerPerm)
+        if (torchMinY > 0 &&! playerHasBypass)
         {
             if (world.getEnvironment() == World.Environment.NORMAL
                     && block.getY() < torchMinY

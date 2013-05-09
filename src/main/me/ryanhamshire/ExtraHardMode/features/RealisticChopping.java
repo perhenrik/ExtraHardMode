@@ -79,11 +79,11 @@ public class RealisticChopping implements Listener
         Player player = breakEvent.getPlayer();
 
         final boolean betterTreeChoppingEnabled = CFG.getBoolean(RootNode.BETTER_TREE_CHOPPING, world.getName());
-        final boolean playerPerm = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
+        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                 || player.getGameMode().equals(GameMode.CREATIVE) : true;
 
         // FEATURE: trees chop more naturally
-        if (block.getType() == Material.LOG && betterTreeChoppingEnabled &&! playerPerm)
+        if (block.getType() == Material.LOG && betterTreeChoppingEnabled &&! playerHasBypass)
         {
             //Are there any leaves above the log? -> tree
             boolean isTree = false;

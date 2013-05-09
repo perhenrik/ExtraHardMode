@@ -108,10 +108,10 @@ public class AntiFarming implements Listener
         World world = block.getWorld();
 
         final boolean noFarmingNetherWart = CFG.getBoolean(RootNode.NO_FARMING_NETHER_WART, world.getName());
-        final boolean permAntiFarming = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
+        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
 
         // FEATURE: no nether wart farming (always drops exactly 1 nether wart when broken)
-        if (!permAntiFarming && noFarmingNetherWart)
+        if (!playerHasBypass && noFarmingNetherWart)
         {
             if (block.getType() == Material.NETHER_WARTS)
             {
@@ -134,10 +134,10 @@ public class AntiFarming implements Listener
         World world = block.getWorld();
 
         final boolean noFarmingNetherWart = CFG.getBoolean(RootNode.NO_FARMING_NETHER_WART, world.getName());
-        final boolean permAntiFarming = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
+        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
 
         // FEATURE: no farming/placing nether wart
-        if (!permAntiFarming && noFarmingNetherWart && block.getType() == Material.NETHER_WARTS)
+        if (!playerHasBypass && noFarmingNetherWart && block.getType() == Material.NETHER_WARTS)
         {
             placeEvent.setCancelled(true);
             return;
@@ -311,12 +311,12 @@ public class AntiFarming implements Listener
         }
 
         final boolean cantCraftMelons = world != null && CFG.getBoolean(RootNode.CANT_CRAFT_MELONSEEDS, world.getName());
-        final boolean permAntiFarming = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
+        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
 
         MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
 
-        if (!permAntiFarming && cantCraftMelons)
+        if (!playerHasBypass && cantCraftMelons)
         {
             // FEATURE: no crafting melon seeds
             if (cantCraftMelons && (result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS))
@@ -381,11 +381,11 @@ public class AntiFarming implements Listener
         World world = player.getWorld();
 
         final boolean dontMoveWaterEnabled = CFG.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, world.getName());
-        final boolean permAntiFarming = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
+        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
                                         || player.getGameMode().equals(GameMode.CREATIVE) : true; //true = has bypass won't run if no player
 
         // FEATURE: can't move water source blocks
-        if (!permAntiFarming && dontMoveWaterEnabled && player.getItemInHand().getType().equals(Material.WATER_BUCKET))
+        if (!playerHasBypass && dontMoveWaterEnabled && player.getItemInHand().getType().equals(Material.WATER_BUCKET))
         {
             // plan to change this block into a non-source block on the next tick
             Block block = event.getBlockClicked().getRelative(event.getBlockFace());
