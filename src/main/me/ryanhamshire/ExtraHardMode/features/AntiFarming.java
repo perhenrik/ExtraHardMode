@@ -334,7 +334,7 @@ public class AntiFarming implements Listener
      * @param event - Event that occurred.
      */
     @EventHandler(priority = EventPriority.NORMAL)
-    void onPlayerEmptyBucket(PlayerBucketEmptyEvent event)
+    public void onPlayerEmptyBucket(PlayerBucketEmptyEvent event)
     {
         Player player = event.getPlayer();
         World world = player.getWorld();

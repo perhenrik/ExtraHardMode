@@ -149,7 +149,7 @@ public enum RootNode implements ConfigNode
      * How fast do you drown, 100 (percent) = you drown no chance, 25 there is a chance you'll drown
      */
     NO_SWIMMING_IN_ARMOR_DROWN_RATE
-            (baseNode()+".Player.No Swimming When Too Heavy.Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 25),
+            (baseNode()+".Player.No Swimming When Too Heavy.Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 35),
     /**
      * How much do you drown faster per weight over the max
      */

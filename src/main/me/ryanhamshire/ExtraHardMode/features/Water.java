@@ -77,31 +77,22 @@ public class Water implements Listener
             {
                 DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
                 // only when in water
-                if (fromBlock.isLiquid() && toBlock.isLiquid() &&
-                        //Water Elevators, there is usually one wide and dont have water on the sides
-                        (      toBlock.getRelative(BlockFace.WEST).getType().equals(Material.WATER)
-                                && toBlock.getRelative(BlockFace.NORTH).getType().equals(Material.WATER)
-                                && toBlock.getRelative(BlockFace.EAST).getType().equals(Material.WATER)
-                                && toBlock.getRelative(BlockFace.SOUTH).getType().equals(Material.WATER) ) )
+                Block underFromBlock = fromBlock.getRelative(BlockFace.DOWN);
+                if (fromBlock.getType() == Material.STATIONARY_WATER && toBlock.getType() == Material.STATIONARY_WATER && underFromBlock.getType() == Material.STATIONARY_WATER && underFromBlock.getRelative(BlockFace.DOWN).getType() == Material.STATIONARY_WATER)
                 {
-                    // only when in 1 deep water
-                    Block underFromBlock = fromBlock.getRelative(BlockFace.DOWN);
-                    if (underFromBlock.isLiquid())
+                    // if no cached value, calculate
+                    if (playerData.cachedWeightStatus <= 0)
                     {
-                        // if no cached value, calculate
-                        if (playerData.cachedWeightStatus <= 0)
-                        {
-                            playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
-                        }
-                        // if too heavy let player feel the weight by pulling them down, if in boat can always swim
-                        if (playerData.cachedWeightStatus > maxWeight &&! player.isInsideVehicle())
-                        {
-                            drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel, overwaterDrownVel);
-                        }
+                        playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
+                    }
+                    // if too heavy let player feel the weight by pulling them down, if in boat can always swim
+                    if (playerData.cachedWeightStatus > maxWeight &&! player.isInsideVehicle())
+                    {
+                        drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel, overwaterDrownVel);
                     }
                 }
                 //when you swim up waterfalls and basically are flying with only a tip of your body in water
-                else if (blockWaterElevators &&! utils.isPlayerOnLadder(player) &&! player.isInsideVehicle())
+                else if (blockWaterElevators &&! utils.isPlayerOnLadder(player) &&! player.isInsideVehicle() &&! player.isFlying())
                 {
                     if (playerData.cachedWeightStatus <= 0)
                     {
