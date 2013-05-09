@@ -88,7 +88,7 @@ public class Zombies implements Listener
         }
 
         final boolean zombiesSlowPlayers = CFG.getBoolean(RootNode.ZOMBIES_DEBILITATE_PLAYERS, world.getName());
-        final boolean playerPerm = player != null ? !player.hasPermission(PermissionNode.BYPASS.getNode()) : false;
+        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : false;
 
         // is this an entity damaged by entity event?
         EntityDamageByEntityEvent damageByEntityEvent = null;
@@ -98,7 +98,7 @@ public class Zombies implements Listener
         }
 
         // FEATURE: zombies can apply a debilitating effect
-        if (zombiesSlowPlayers &&! playerPerm)
+        if (zombiesSlowPlayers && player != null &&! playerHasBypass)
         {
             if (damageByEntityEvent != null && damageByEntityEvent.getDamager() instanceof Zombie)
             {

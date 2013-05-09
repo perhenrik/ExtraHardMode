@@ -177,7 +177,7 @@ public class AntiGrinder implements Listener
 
                         for (Block adjacentBlock : adjacentBlocks)
                         {
-                            if (adjacentBlock.getType() == Material.WATER || adjacentBlock.getType() == Material.STATIONARY_WATER)
+                            if (adjacentBlock != null && (adjacentBlock.getType() == Material.WATER || adjacentBlock.getType() == Material.STATIONARY_WATER))
                                 return clearDrops(event);
                         }
 
