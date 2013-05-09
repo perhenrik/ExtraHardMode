@@ -47,9 +47,9 @@ public class EvaporateWaterTask implements Runnable
     @Override
     public void run()
     {
-        if (this.block.getType() == Material.STATIONARY_WATER)
+        if (block.getType() == Material.STATIONARY_WATER || block.getType() == Material.WATER)
         {
-            this.block.setData((byte) 1);
+            block.setData((byte) 1);
         }
     }
 }

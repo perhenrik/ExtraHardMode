@@ -327,47 +327,6 @@ public class AntiFarming implements Listener
             }
         }
     }
-    /**
-     * when a player fills a bucket...
-     *
-     * @param event - Event that occurred.
-     */
-    @EventHandler(priority = EventPriority.LOW)
-    void onPlayerFillBucket(PlayerBucketFillEvent event)
-    {
-        Player player = event.getPlayer();
-        World world = player.getWorld();
-        Block block = event.getBlockClicked();
-
-        final boolean dontMoveWaterEnabled = CFG.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, world.getName())
-                                             &&! player.hasPermission(PermissionNode.BYPASS.getNode()); //PlayerEvent so Player won't be null, right? right?....
-
-        // FEATURE: can't move water source blocks
-        if (dontMoveWaterEnabled)
-        {
-            // only care about stationary (source) water
-            if (block.getType() == Material.STATIONARY_WATER)
-            {
-                // cancel the event so that the water doesn't get removed
-                event.setCancelled(true);
-
-                // fill the player's bucket anyway
-                // (beware, player may have a stack of empty buckets, and filled
-                // buckets DON'T stack)
-                int extraBuckets = player.getItemInHand().getAmount() - 1;
-                player.getItemInHand().setType(Material.WATER_BUCKET);
-                player.getItemInHand().setAmount(1);
-                if (extraBuckets > 0)
-                {
-                    player.getInventory().addItem(new ItemStack(Material.BUCKET, extraBuckets));
-                }
-
-                // send the player data so that his client doesn't incorrectly show
-                // the water as missing
-                player.sendBlockChange(block.getLocation(), block.getTypeId(), block.getData());
-            }
-        }
-    }
 
     /**
      * when a player empties a bucket...
@@ -389,8 +348,9 @@ public class AntiFarming implements Listener
         {
             // plan to change this block into a non-source block on the next tick
             Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-            EvaporateWaterTask task = new EvaporateWaterTask(block);
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 15L);
+            block.setData((byte) 1);
+            /*EvaporateWaterTask task = new EvaporateWaterTask(block);
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L); */
         }
     }
 }
