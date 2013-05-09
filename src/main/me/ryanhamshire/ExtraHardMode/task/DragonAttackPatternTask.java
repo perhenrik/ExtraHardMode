@@ -22,6 +22,7 @@ package me.ryanhamshire.ExtraHardMode.task;
 import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -52,9 +53,9 @@ public class DragonAttackPatternTask implements Runnable
      */
     private LivingEntity dragon;
     /**
-     * List of players fighting the dragon.
+     * We save the Players fighting the dragon here
      */
-    private final List<String> playersFightingDragon = new ArrayList<String>();
+    DataStoreModule data;
 
     /**
      * Constructor.
@@ -70,7 +71,7 @@ public class DragonAttackPatternTask implements Runnable
         CFG = plugin.getModuleForClass(RootConfig.class);
         this.dragon = dragon;
         this.player = player;
-        this.playersFightingDragon.addAll(playersFightingDragon);
+        data = plugin.getModuleForClass(DataStoreModule.class);
     }
 
     @Override
@@ -86,13 +87,6 @@ public class DragonAttackPatternTask implements Runnable
         // if the player has been defeated
         if (!this.player.isOnline() || world != this.player.getWorld() || this.player.isDead())
         {
-            // announce the combat result
-            this.playersFightingDragon.remove(this.player.getName());
-            if (dragonAnnouncements && !this.player.isDead())
-            {
-                plugin.getServer().broadcastMessage(this.player.getName() + " has been defeated by the dragon!");
-            }
-
             // restore some of the dragon's health
             int newHealth = (int) (this.dragon.getHealth() + this.dragon.getMaxHealth() * .25);
             if (newHealth > this.dragon.getMaxHealth())

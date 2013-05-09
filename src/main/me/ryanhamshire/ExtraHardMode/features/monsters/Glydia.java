@@ -6,13 +6,12 @@ import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageConfig;
 import me.ryanhamshire.ExtraHardMode.config.messages.MessageNode;
+import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
 import me.ryanhamshire.ExtraHardMode.module.EntityModule;
+import me.ryanhamshire.ExtraHardMode.service.PermissionNode;
 import me.ryanhamshire.ExtraHardMode.task.DragonAttackPatternTask;
 import me.ryanhamshire.ExtraHardMode.task.DragonAttackTask;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -26,15 +25,13 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.List;
-
 public class Glydia implements Listener
 {
     ExtraHardMode plugin = null;
     RootConfig CFG = null;
     MessageConfig messages;
     EntityModule entityModule;
-    List <String> playersFightingDragon;
+    DataStoreModule data;
 
     public Glydia(ExtraHardMode plugin)
     {
@@ -42,8 +39,14 @@ public class Glydia implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
+        data = plugin.getModuleForClass(DataStoreModule.class);
     }
 
+    /**
+     * When a Block is broken in the End
+     *
+     * @param breakEvent
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
     {
@@ -52,11 +55,12 @@ public class Glydia implements Listener
         Player player = breakEvent.getPlayer();
 
         final boolean endNoBuilding = CFG.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING, world.getName());
+        final boolean playerBypass = player.hasPermission(PermissionNode.BYPASS.getNode()) || player.getGameMode() == GameMode.CREATIVE;
 
         // FEATURE: very limited building in the end
         // players are allowed to break only end stone, and only to create a stair
         // up to ground level
-        if (endNoBuilding && world.getEnvironment() == World.Environment.THE_END)
+        if (endNoBuilding && world.getEnvironment() == World.Environment.THE_END &&! playerBypass)
         {
             if (block.getType() != Material.ENDER_STONE)
             {
@@ -83,6 +87,11 @@ public class Glydia implements Listener
         }
     }
 
+    /**
+     * When a Block is placed
+     *
+     * @param placeEvent
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent placeEvent)
     {
@@ -91,9 +100,10 @@ public class Glydia implements Listener
         World world = block.getWorld();
 
         final boolean enderDragonNoBuilding = CFG.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING, world.getName());
+        final boolean playerBypass = player.hasPermission(PermissionNode.BYPASS.getNode()) || player.getGameMode() == GameMode.CREATIVE;
 
         // FEATURE: very limited building in the end players are allowed to break only end stone, and only to create a stair up to ground level
-        if (enderDragonNoBuilding && world.getEnvironment() == World.Environment.THE_END)
+        if (enderDragonNoBuilding && world.getEnvironment() == World.Environment.THE_END &&! playerBypass)
         {
             placeEvent.setCancelled(true);
             plugin.sendMessage(player, messages.getString(MessageNode.LIMITED_END_BUILDING));
@@ -101,6 +111,11 @@ public class Glydia implements Listener
         }
     }
 
+    /**
+     * When the Dragon dies
+     *
+     * @param event
+     */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
     {
@@ -128,7 +143,7 @@ public class Glydia implements Listener
             if (announcements)
             {
                 StringBuilder builder = new StringBuilder("The dragon has been defeated!  ( By: ");
-                for (String player : this.playersFightingDragon)
+                for (String player : data.getPlayers())
                 {
                     builder.append(player).append(" ");
                 }
@@ -139,7 +154,7 @@ public class Glydia implements Listener
 
             if (endNoBuilding)
             {
-                for (String player : this.playersFightingDragon)
+                for (String player : data.getPlayers())
                 {
                     if (plugin.getServer().getPlayer(player) != null)
                     {
@@ -149,10 +164,56 @@ public class Glydia implements Listener
                 }
             }
 
-            this.playersFightingDragon.clear();
+            data.getPlayers().clear();
         }
     }
 
+    /**
+     * When the Player dies while fighting the dragon
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerDeath (PlayerDeathEvent event)
+    {
+        Player player = event.getEntity();
+
+        final boolean dragonAnnouncements = CFG.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, event.getEntity().getWorld().getName());
+
+        // announce the combat result
+        data.getPlayers().remove(player.getName());
+        if (dragonAnnouncements && !player.isDead())
+        {
+            plugin.getServer().broadcastMessage(player.getName() + " was killed while fighting the dragon!");
+        }
+    }
+
+    /**
+     * When the Player changes World while fighting the Dragon, remove him from the Players fighting the Dragon
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerTpOut (PlayerChangedWorldEvent event)
+    {
+        String playerName = event.getPlayer().getName();
+        if (event.getFrom().getEnvironment() == World.Environment.THE_END && data.getPlayers().contains(playerName))
+            data.getPlayers().remove(playerName);
+    }
+
+    /**
+     * When a Player enters the End and the Portal is in the air, try to build a bridge
+     */
+    @EventHandler
+    public void onPlayerEnter (PlayerChangedWorldEvent event)
+    {
+    }
+
+    /**
+     * When the Dragon is damaged
+     *
+     * @param event
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
     {
@@ -188,11 +249,11 @@ public class Glydia implements Listener
 
             if (damager != null)
             {
-                if (!this.playersFightingDragon.contains(damager))
+                if (!data.getPlayers().contains(damager.getName()))
                 {
-                    this.playersFightingDragon.add(damager.getName());
+                    data.getPlayers().add(damager.getName());
 
-                    DragonAttackPatternTask task = new DragonAttackPatternTask(plugin, (LivingEntity) entity, damager, this.playersFightingDragon);
+                    DragonAttackPatternTask task = new DragonAttackPatternTask(plugin, (LivingEntity) entity, damager, data.getPlayers());
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);
 
                     if (dragonAnnouncements)
@@ -222,7 +283,7 @@ public class Glydia implements Listener
     }
 
     /**
-     * when a player changes worlds...
+     * when a player changes from the End to another world, clean up if End empty
      *
      * @param event - Event that occurred.
      */
@@ -308,6 +369,10 @@ public class Glydia implements Listener
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     @EventHandler
     public void onExplosion(EntityExplodeEvent event)
     {

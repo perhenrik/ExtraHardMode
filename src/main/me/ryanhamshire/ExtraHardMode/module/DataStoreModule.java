@@ -21,6 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,9 +44,9 @@ public class DataStoreModule extends EHMModule
     private final List<SimpleEntry<Player, Location>> previousLocations = new CopyOnWriteArrayList<SimpleEntry<Player, Location>>();
 
     /**
-     * List of FallingBlocks that need custom handling
+     * List of Players fighting the dragon
      */
-    /*private Map <UUID, FallingBlockData> looseLogs = new HashMap<UUID, FallingBlockData>();*/
+    List <String> playersFightingDragon = new ArrayList<String>();
 
     /**
      * Constructor.
@@ -87,6 +88,15 @@ public class DataStoreModule extends EHMModule
     public List<SimpleEntry<Player, Location>> getPreviousLocations()
     {
         return previousLocations;
+    }
+
+    /**
+     * Gets all Players fighting the Dragon
+     * @return List containing all Playernames
+     */
+    public List<String> getPlayers()
+    {
+        return playersFightingDragon;
     }
 
     @Override
