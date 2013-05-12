@@ -56,15 +56,19 @@ public class FallingLogsTask implements Runnable
             //Clear the area below of leaves
             Block below = block;
             List<Block> looseLogs = new ArrayList<Block>();
+            List<Block> tempBlocks = new ArrayList<Block>();
             looseLogs.add(block);
-            checkBelow : while (below.getY() > 0)
+            checkBelow : for (int i = 0; below.getY() > 0; i++)
             {
                 below = below.getRelative(BlockFace.DOWN);
                 switch (below.getType())
                 {
                     case AIR:
                     {
-                        //ignore and go one down
+                        //go one down
+                        //All blocks above this can fall now that there is an air block
+                        looseLogs.addAll(tempBlocks);
+                        tempBlocks.clear();
                         break;
                     }
                     case LEAVES:
@@ -78,7 +82,7 @@ public class FallingLogsTask implements Runnable
                         switch (below.getRelative(BlockFace.DOWN).getType())
                         {
                             case AIR:case LEAVES:
-                                looseLogs.add(below);
+                                tempBlocks.add(below);
                         }
                         break;
                     }
@@ -95,9 +99,17 @@ public class FallingLogsTask implements Runnable
                     }
                 }
             }
-            for (Block looseLog : looseLogs)
+
+            for (int i = 0; i < looseLogs.size(); i++)
             {
-                blockModule.applyPhysics(looseLog, true);
+                final Block looseLog = looseLogs.get(i);
+                plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        blockModule.applyPhysics(looseLog, true);
+                    }
+                }, /*delay*/ i);
+
             }
         }
     }

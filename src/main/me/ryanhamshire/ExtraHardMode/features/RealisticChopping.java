@@ -97,7 +97,7 @@ public class RealisticChopping implements Listener
                         isTree = true;
                         break checkers;
                     }
-                    case AIR:case LOG:
+                    case AIR: case LOG:
                     {
                         break; //skip to next iteration
                     }
@@ -120,7 +120,9 @@ public class RealisticChopping implements Listener
                             Block[] logs = blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 5, Material.LOG);
                             for (Block log : logs)
                             {
-                                plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, log), 1L);
+                                //check 2 blocks down for air
+                                if (log.getRelative(BlockFace.DOWN).getType() != Material.LOG && log.getRelative(BlockFace.DOWN, 2).getType() != Material.LOG)
+                                    plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, log), 1L);
                             }
                             break; //can air fall?
                         }

@@ -295,7 +295,7 @@ public class Glydia implements Listener
         final boolean respawnDragon = CFG.getBoolean(RootNode.RESPAWN_ENDER_DRAGON, world.getName());
 
         // FEATURE: respawn the ender dragon when the last player leaves the end
-        if (respawnDragon && world.getEnvironment() == World.Environment.THE_END && world.getPlayers().size() == 0) //Once everyone has left
+        if (world.getEnvironment() == World.Environment.THE_END && world.getPlayers().size() == 0) //Once everyone has left
         {
             // look for an ender dragon
             EnderDragon enderDragon = null;
@@ -323,7 +323,7 @@ public class Glydia implements Listener
             }
 
             // otherwise, spawn one
-            else
+            else if (respawnDragon)
             {
                 entityModule.spawn(new Location(world, 0, world.getMaxHeight() - 1, 0), EntityType.ENDER_DRAGON);
             }
