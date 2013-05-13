@@ -25,6 +25,8 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.List;
+
 public class Glydia implements Listener
 {
     ExtraHardMode plugin = null;
@@ -181,10 +183,11 @@ public class Glydia implements Listener
         final boolean dragonAnnouncements = CFG.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, event.getEntity().getWorld().getName());
 
         // announce the combat result
-        data.getPlayers().remove(player.getName());
-        if (dragonAnnouncements && !player.isDead())
+        List<String> playersFightingDragon = data.getPlayers();
+        if (dragonAnnouncements && playersFightingDragon.contains(player.getName()))
         {
             plugin.getServer().broadcastMessage(player.getName() + " was killed while fighting the dragon!");
+            data.getPlayers().remove(player.getName());
         }
     }
 

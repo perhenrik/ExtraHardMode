@@ -21,7 +21,7 @@
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/</srcDir>
         <!--Jenkins Build Number-->
-        <buildNumber>${env.BUILD_NUMBER}</buildNumber>
+        <buildNumber><!--jenkins build number-->${env.BUILD_NUMBER}</buildNumber>
     </properties>
 
     <!-- Build instructions -->
