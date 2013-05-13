@@ -4,6 +4,8 @@ import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.config.ExplosionType;
 import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
+import me.ryanhamshire.ExtraHardMode.module.EntityModule;
+import me.ryanhamshire.ExtraHardMode.service.HackCreeper;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
 /**
  * Creates Explosions. The type determines the power, if there should be fire and the blockDmg. The size of the explosion
  * is determined by the y-level. There are basically 2 settings for every explosion, below and above the specified y-level.
+ *
+ * Fires an Explosion Event before every Event with a creeper as Entity
  */
 public class CreateExplosionTask implements Runnable
 {
@@ -37,6 +41,10 @@ public class CreateExplosionTask implements Runnable
      */
     private RootConfig CFG;
     /**
+     * Entity specific stuff like marking our Entity as to be ignored
+     */
+    EntityModule entityModule;
+    /**
      * Instance of a the Entity which caused the Explosion
      */
     private Creeper creeper; private TNTPrimed tnt; private ExplosiveMinecart minecartTnt;
@@ -53,6 +61,7 @@ public class CreateExplosionTask implements Runnable
         this.type = type;
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
+        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -211,8 +220,14 @@ public class CreateExplosionTask implements Runnable
                     isSafe = !suicide.isCancelled();
                 }
                 break;
-            default:
-                //sssss
+            default: //mark all Explosions as Creeper Explosions
+                Creeper mockCreeper = new HackCreeper(loc);
+                entityModule.flagIgnore(mockCreeper);
+
+                EntityExplodeEvent suicide = new EntityExplodeEvent(mockCreeper, loc, boundaries, 1);
+                plugin.getServer().getPluginManager().callEvent(suicide);
+                mockCreeper.remove();
+                isSafe = !suicide.isCancelled();
                 break;
         }
         return isSafe;
