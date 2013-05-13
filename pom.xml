@@ -20,6 +20,8 @@
         <snapshot></snapshot>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/</srcDir>
+        <!--Jenkins Build Number-->
+        <buildNumber>${env.BUILD_NUMBER}</buildNumber>
     </properties>
 
     <!-- Build instructions -->
@@ -59,22 +61,14 @@
                 <version>2.4</version>
                 <configuration>
                     <outputDirectory>${outputdir}</outputDirectory>
+                    <archive>
+                        <manifestEntries>
+                            <Build-Number>${buildNumber}</Build-Number>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
 
-            <!--<plugin>
-                <configuration><outputDirectory>${build.outputDirectory}/docs/</outputDirectory></configuration>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
         </plugins>
     </build>
 
