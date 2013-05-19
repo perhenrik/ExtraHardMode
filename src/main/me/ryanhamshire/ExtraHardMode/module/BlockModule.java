@@ -26,6 +26,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +76,8 @@ public class BlockModule extends EHMModule
      *
      * @param block - Block to apply physics to.
      * @param damageEntities - if Entities should be damaged
+     * @param player that is responsible for this FallingBlock
+     *
      * @return the UUID of this FallingBlock
      */
     public UUID applyPhysics (Block block , boolean damageEntities)
@@ -84,7 +88,8 @@ public class BlockModule extends EHMModule
             block.setType(Material.DIRT);
         }
 
-        // falling block
+        /* First of all make logging plugins see the FallingBlocks and secondly prevent griefing on borders of protected areas */
+
         FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
         fallingBlock.setDropItem(false);
         if (damageEntities)
@@ -97,10 +102,27 @@ public class BlockModule extends EHMModule
     }
 
     /**
+     * This method fires a BlockBreakEvent for the Player and the given Block
+     * Only call this if you intend to break the Block as the Event will e registered by logging plugins.
+     *
+     * @param toBreak Block to test
+     * @param player which will break the Block
+     *
+     * @return if Player is able to break the Block
+     */
+    public boolean mayPlayerBreak (Block toBreak, Player player)
+    {
+        //TODO flagIgnore
+        BlockBreakEvent event = new BlockBreakEvent(toBreak, player);
+        return !event.isCancelled();
+    }
+
+    /**
      * Check if the given plant at the block should die.
      *
      * @param block        - Block to check.
      * @param newDataValue - Data value to replace.
+     *
      * @return True if plant should die, else false.
      */
     public boolean plantDies(Block block, byte newDataValue)
@@ -211,9 +233,9 @@ public class BlockModule extends EHMModule
         //Height
         for (int y = 0; y < height; y++)
         {
-            for (int x = -radius; x < radius; x++)
+            for (int x = -radius; x <= radius; x++)
             {
-                for (int z = -radius; z < radius; z++)
+                for (int z = -radius; z <= radius; z++)
                 {
                     Block checkBlock = loc.getBlock().getRelative(x,y,z);
                     if (checkBlock.getType().equals(type))

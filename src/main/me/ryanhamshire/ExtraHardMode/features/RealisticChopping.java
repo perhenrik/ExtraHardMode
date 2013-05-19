@@ -26,6 +26,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * When chopping down trees the logs fall down and loose logs fall down on the side and can injure you
@@ -117,12 +118,12 @@ public class RealisticChopping implements Listener
                     {
                         case AIR:
                         {
-                            Block[] logs = blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 5, Material.LOG);
+                            Block[] logs = blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 4, Material.LOG);
                             for (Block log : logs)
                             {
-                                //check 2 blocks down for air
+                                //check 2 blocks down for logs to see if it it's a stem
                                 if (log.getRelative(BlockFace.DOWN).getType() != Material.LOG && log.getRelative(BlockFace.DOWN, 2).getType() != Material.LOG)
-                                    plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, log), 1L);
+                                    plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, log), plugin.getRandom().nextInt(50/*so they don't fall at once*/));
                             }
                             break; //can air fall?
                         }
@@ -165,31 +166,9 @@ public class RealisticChopping implements Listener
                     LivingEntity entityWithDamagedHead = (LivingEntity) ent;
                     //Frighten the player
                     entityWithDamagedHead.damage(damageAmount, entity);
-                    entityWithDamagedHead.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 100, 10));
+                    entityWithDamagedHead.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 250, 10));
                 }
             }
         }
     }
-
-    /**
-     * When a Falling Block is destroyed
-     * @param event
-     */
-    /*@EventHandler
-    public void fallingBlockDestroyed (ItemSpawnEvent event)
-    {
-        Location loc = event.getLocation();
-        Entity entity = event.getEntity();
-
-        if (entity instanceof Item && ((Item)entity).getItemStack().getType().equals(Material.LOG))
-        {
-            Block newBlock = loc.getBlock().getRelative(BlockFace.DOWN);
-            if (dataStoreModule.isBlockFallingAtLoc(loc))
-            {
-                if (blockModule.breaksFallingBlock(newBlock.getType()))
-                    newBlock.breakNaturally();
-                dataStoreModule.rmFallLogsByLoc(loc);
-            }
-        }
-    } */
 }

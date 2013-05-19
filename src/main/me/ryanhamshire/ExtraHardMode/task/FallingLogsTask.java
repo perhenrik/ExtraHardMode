@@ -5,6 +5,7 @@ import me.ryanhamshire.ExtraHardMode.ExtraHardMode;
 import me.ryanhamshire.ExtraHardMode.module.BlockModule;
 import me.ryanhamshire.ExtraHardMode.module.DataStoreModule;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
@@ -53,63 +54,67 @@ public class FallingLogsTask implements Runnable
     {
         if (block != null)
         {
-            //Clear the area below of leaves
-            Block below = block;
-            List<Block> looseLogs = new ArrayList<Block>();
-            List<Block> tempBlocks = new ArrayList<Block>();
-            looseLogs.add(block);
-            checkBelow : for (int i = 0; below.getY() > 0; i++)
+            /* Prevent wooden structures near trees from being affected*/
+            if (blockModule.getBlocksInArea(block.getLocation(), 2, 1, Material.LEAVES).length > 4)
             {
-                below = below.getRelative(BlockFace.DOWN);
-                switch (below.getType())
+                //Clear the area below of leaves
+                Block below = block;
+                List<Block> looseLogs = new ArrayList<Block>();
+                List<Block> tempBlocks = new ArrayList<Block>();
+                looseLogs.add(block);
+                checkBelow : for (int i = 0; below.getY() > 0; i++)
                 {
-                    case AIR:
+                    below = below.getRelative(BlockFace.DOWN);
+                    switch (below.getType())
                     {
-                        //go one down
-                        //All blocks above this can fall now that there is an air block
-                        looseLogs.addAll(tempBlocks);
-                        tempBlocks.clear();
-                        break;
-                    }
-                    case LEAVES:
-                    {
-                        below.breakNaturally();
-                        break;
-                    }
-                    case LOG:
-                    {
-                        //Prevent Logs on adjacent sides (Jungle Tree) from turning to FallingBlocks and some of them turning into items
-                        switch (below.getRelative(BlockFace.DOWN).getType())
+                        case AIR:
                         {
-                            case AIR:case LEAVES:
-                                tempBlocks.add(below);
+                            //go one down
+                            //All blocks above this can fall now that there is an air block
+                            looseLogs.addAll(tempBlocks);
+                            tempBlocks.clear();
+                            break;
                         }
-                        break;
-                    }
-                    default: //we hit the block where the FallingBlock will land
-                    {
-                        if (blockModule.breaksFallingBlock(below.getType()))
+                        case LEAVES:
                         {
                             below.breakNaturally();
+                            break;
                         }
-                        else
+                        case LOG:
                         {
-                            break checkBelow;
+                            //Prevent Logs on adjacent sides (Jungle Tree) from turning to FallingBlocks and some of them turning into items
+                            switch (below.getRelative(BlockFace.DOWN).getType())
+                            {
+                                case AIR:case LEAVES:
+                                    tempBlocks.add(below);
+                            }
+                            break;
+                        }
+                        default: //we hit the block where the FallingBlock will land
+                        {
+                            if (blockModule.breaksFallingBlock(below.getType()))
+                            {
+                                below.breakNaturally();
+                            }
+                            else
+                            {
+                                break checkBelow;
+                            }
                         }
                     }
                 }
-            }
 
-            for (int i = 0; i < looseLogs.size(); i++)
-            {
-                final Block looseLog = looseLogs.get(i);
-                plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        blockModule.applyPhysics(looseLog, true);
-                    }
-                }, /*delay*/ i);
+                for (int i = 0; i < looseLogs.size(); i++)
+                {
+                    final Block looseLog = looseLogs.get(i);
+                    plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            blockModule.applyPhysics(looseLog, true);
+                        }
+                    }, i /*delay to prevent FallingBlock collision*/);
 
+                }
             }
         }
     }

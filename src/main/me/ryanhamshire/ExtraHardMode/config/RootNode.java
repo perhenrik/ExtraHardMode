@@ -88,7 +88,7 @@ public enum RootNode implements ConfigNode
      * How much damage loose Falling Logs do to Players and Animals
      */
     BETTER_TREE_CHOPPING_DMG
-            (baseNode()+".World Rules.Better Tree Felling.Dmg Amount" , VarType.INTEGER, 5),
+            (baseNode()+".World Rules.Better Tree Felling.Dmg Amount" , VarType.INTEGER, 2.5),
 
     /**
      * whether players take additional damage and/or debuffs from environmental injuries
