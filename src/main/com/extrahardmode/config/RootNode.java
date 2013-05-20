@@ -428,11 +428,6 @@ public enum RootNode implements ConfigNode
     MORE_FALLING_BLOCKS_DMG_AMOUNT
             (baseNode()+".Additional Falling Blocks.Dmg Amount When Hitting Players" , VarType.INTEGER, 2),
     /**
-     * How many blocks should be checked for loose falling blocks
-     */
-    MORE_FALLING_BLOCKS_CASCADING_DEPTH
-            (baseNode()+".Additional Falling Blocks.Cascading Block Depth", VarType.INTEGER, 5),
-    /**
      * wheter falling grass/mycel turns into dirt
      */
     MORE_FALLING_BLOCKS_TURN_TO_DIRT
@@ -847,7 +842,6 @@ public enum RootNode implements ConfigNode
             this.add(Material.COBBLESTONE.toString());
             this.add(Material.MOSSY_COBBLESTONE.toString());
             this.add(Material.MYCEL.toString());
-            this.add(Material.JACK_O_LANTERN.toString());
         }
     }
 }
