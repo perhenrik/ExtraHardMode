@@ -2,8 +2,8 @@ package com.extrahardmode.features.monsters;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;

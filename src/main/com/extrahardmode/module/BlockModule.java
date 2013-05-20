@@ -15,10 +15,10 @@
 package com.extrahardmode.module;
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.service.EHMModule;
 import com.extrahardmode.task.BlockPhysicsCheckTask;
-import com.extrahardmode.config.RootConfig;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;

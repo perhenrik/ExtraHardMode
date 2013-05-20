@@ -19,11 +19,11 @@
 package com.extrahardmode.task;
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.RootNode;
-import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.service.PermissionNode;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

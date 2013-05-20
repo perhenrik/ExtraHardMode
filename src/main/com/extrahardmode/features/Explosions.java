@@ -2,14 +2,14 @@ package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.RootNode;
-import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
+import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Location;
 import org.bukkit.Material;

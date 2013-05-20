@@ -19,11 +19,11 @@
 
 package com.extrahardmode;
 
-import com.extrahardmode.features.*;
-import com.extrahardmode.features.monsters.*;
 import com.extrahardmode.command.Commander;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
+import com.extrahardmode.features.*;
+import com.extrahardmode.features.monsters.*;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.DataStoreModule.PlayerData;

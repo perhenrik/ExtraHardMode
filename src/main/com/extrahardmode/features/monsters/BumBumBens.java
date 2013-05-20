@@ -1,12 +1,12 @@
 package com.extrahardmode.features.monsters;
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.RootNode;
-import com.extrahardmode.service.PermissionNode;
-import com.extrahardmode.task.CoolCreeperExplosion;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.service.PermissionNode;
+import com.extrahardmode.task.CoolCreeperExplosion;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Effect;
 import org.bukkit.World;

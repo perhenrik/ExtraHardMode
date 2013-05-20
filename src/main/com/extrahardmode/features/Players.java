@@ -1,14 +1,14 @@
 package com.extrahardmode.features;
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
+import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
-import com.extrahardmode.config.RootConfig;
-import com.extrahardmode.module.DataStoreModule;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;

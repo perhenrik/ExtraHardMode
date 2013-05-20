@@ -1,11 +1,11 @@
 package com.extrahardmode.features;
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.service.PermissionNode;
-import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.service.PermissionNode;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -115,7 +115,7 @@ public class Physics implements Listener
         //Only when Block has been marked to deal damage
         if (entity.getType().equals(EntityType.FALLING_BLOCK) && damageAmount > 0 && entityModule.isMarkedForProcessing(entity))
         {
-            List<Entity> entities =  entity.getNearbyEntities(0.1, 1, 0.1);
+            List<Entity> entities =  entity.getNearbyEntities(0, 1, 0);
             for (Entity ent : entities)
             {
                 if (ent instanceof LivingEntity)
