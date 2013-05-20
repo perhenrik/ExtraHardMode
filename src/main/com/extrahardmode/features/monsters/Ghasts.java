@@ -1,9 +1,9 @@
 package com.extrahardmode.features.monsters;
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.service.PermissionNode;
-import com.extrahardmode.config.RootConfig;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;

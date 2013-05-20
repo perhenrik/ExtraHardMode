@@ -14,8 +14,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 package com.extrahardmode.service.config;
 
-import com.extrahardmode.service.EHMModule;
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.service.EHMModule;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

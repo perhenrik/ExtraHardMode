@@ -15,10 +15,10 @@
 package com.extrahardmode.module;
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.service.EHMModule;
 import com.extrahardmode.service.PermissionNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;

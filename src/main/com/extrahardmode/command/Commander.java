@@ -2,8 +2,8 @@ package com.extrahardmode.command;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.CommandHandler;
-import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.service.ICommand;
+import com.extrahardmode.service.PermissionNode;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

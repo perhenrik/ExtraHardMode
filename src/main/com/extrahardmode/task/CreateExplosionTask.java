@@ -1,9 +1,9 @@
 package com.extrahardmode.task;
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.service.HackCreeper;
 import org.bukkit.Location;

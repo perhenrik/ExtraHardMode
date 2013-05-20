@@ -1,8 +1,8 @@
 package com.extrahardmode.features;
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.DataStoreModule;

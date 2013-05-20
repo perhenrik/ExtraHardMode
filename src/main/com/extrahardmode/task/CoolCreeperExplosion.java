@@ -19,9 +19,9 @@
 package com.extrahardmode.task;
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.UtilityModule;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
