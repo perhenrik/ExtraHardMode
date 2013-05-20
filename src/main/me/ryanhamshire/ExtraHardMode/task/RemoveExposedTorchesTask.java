@@ -1,3 +1,4 @@
+
 /*
     ExtraHardMode Server Plugin for Minecraft
     Copyright (C) 2012 Ryan Hamshire
@@ -25,14 +26,12 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Task to remove exposed torches.
  */
 public class RemoveExposedTorchesTask implements Runnable
 {
-
     /**
      * Plugin instance.
      */
@@ -65,42 +64,49 @@ public class RemoveExposedTorchesTask implements Runnable
         final boolean rainBreaksTorches = CFG.getBoolean(RootNode.RAIN_BREAKS_TORCHES, this.chunk.getWorld().getName());
         final boolean snowBreaksCrops = CFG.getBoolean(RootNode.SNOW_BREAKS_CROPS, this.chunk.getWorld().getName());
 
+        long time = System.currentTimeMillis();
+
         if (this.chunk.getWorld().hasStorm())
         {
             for (int x = 0; x < 16; x++)
             {
                 for (int z = 0; z < 16; z++)
                 {
-                    for (int y = chunk.getWorld().getMaxHeight() - 1; y > 0; y--)
+                    /* Biome is saved on a per column basis */
+                    Biome biome = chunk.getBlock(x, z, 1).getBiome();
+                    loopDown : for (int y = chunk.getWorld().getMaxHeight() - 1; y > 0; y--)
                     {
                         Block block = chunk.getBlock(x, y, z);
                         Material blockType = block.getType();
 
-                        if (blockType == Material.AIR)
+                        switch (blockType)
                         {
-                            if (rainBreaksTorches && blockType == Material.TORCH)
+                            case AIR: /* we continue down until we hit something which isn't AIR */
+                                continue loopDown;
+                            case TORCH:
                             {
-                                Biome biome = block.getBiome();
-                                if (biome != Biome.DESERT || biome != Biome.DESERT_HILLS)
+                                if (rainBreaksTorches && biome != Biome.DESERT && biome != Biome.DESERT_HILLS)
                                 {
-                                    block.setType(Material.AIR);
-                                    chunk.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.TORCH, 1));
+                                    /* Reduce lag by torches lying on the ground */
+                                    if (plugin.getRandom().nextInt(5) == 1) {
+                                        block.breakNaturally();
+                                    }
+                                    else {
+                                        block.setType(Material.AIR);
+                                    }
                                 }
+                                break loopDown;
                             }
-                            if (snowBreaksCrops &&
-                            (       blockType == Material.CROPS
-                                    || blockType == Material.MELON_STEM
-                                    || blockType == Material.CARROT
-                                    || blockType == Material.PUMPKIN_STEM
-                                    || blockType == Material.POTATO
-                                    || blockType == Material.RED_ROSE
-                                    || blockType == Material.YELLOW_FLOWER
-                                    || blockType == Material.LONG_GRASS))
+                            case CROPS: case MELON_STEM: case CARROT:case PUMPKIN_STEM: case POTATO: case RED_ROSE: case YELLOW_FLOWER: case LONG_GRASS:
+                        {
+                            if (snowBreaksCrops)
                             {
-                                Biome biome = block.getBiome();
-                                if (biome == Biome.FROZEN_OCEAN || biome == Biome.FROZEN_RIVER || biome == Biome.ICE_MOUNTAINS || biome == Biome.ICE_PLAINS
-                                        || biome == Biome.TAIGA || biome == Biome.TAIGA_HILLS)
+                                switch (biome)
                                 {
+                                    case FROZEN_OCEAN: case FROZEN_RIVER: case ICE_MOUNTAINS: case ICE_PLAINS: case TAIGA: case TAIGA_HILLS:
+                                {
+                                    if (plugin.getRandom().nextInt(5) == 1)
+                                        block.breakNaturally();
                                     block.setType(Material.SNOW);
                                     if (plugin.getRandom().nextBoolean())
                                     {
@@ -111,10 +117,13 @@ public class RemoveExposedTorchesTask implements Runnable
                                         block.setData((byte) 2);
                                     }
                                 }
+                                }
                             }
-                            else
+                            break loopDown;
+                        }
+                            default: /* Anything which isn't AIR will protect torches and Crops */
                             {
-                                break;
+                                break loopDown;
                             }
                         }
                     }

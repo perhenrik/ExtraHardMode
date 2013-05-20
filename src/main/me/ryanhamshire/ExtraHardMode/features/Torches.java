@@ -32,7 +32,7 @@ public class Torches implements Listener
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
-    @EventHandler
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOW)
     public void onBlockPlace (BlockPlaceEvent placeEvent)
     {
         Player player = placeEvent.getPlayer();
@@ -104,7 +104,7 @@ public class Torches implements Listener
                         Chunk chunk = chunks[(startOffset + i) % chunks.length];
 
                         RemoveExposedTorchesTask task = new RemoveExposedTorchesTask(plugin, chunk);
-                        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, i * 20L);
+                        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, i * 15L);
                     }
                 }
             }
