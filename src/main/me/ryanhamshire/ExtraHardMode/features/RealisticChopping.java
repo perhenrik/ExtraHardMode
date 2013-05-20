@@ -140,35 +140,4 @@ public class RealisticChopping implements Listener
             }
         }
     }
-
-    /**
-     * Called when an Entity forms a Block
-     * - Damage Player when a FallingBlock hits him
-     * @param event
-     */
-    @EventHandler
-    public void whenBlockLands(EntityChangeBlockEvent event)
-    {
-        Entity entity = event.getEntity();
-        Material to = event.getTo();
-        World world = entity.getWorld();
-
-        final int damageAmount = CFG.getInt(RootNode.BETTER_TREE_CHOPPING_DMG, world.getName());
-
-        //Only when Block has been marked to deal damage
-        if (entity.getType().equals(EntityType.FALLING_BLOCK) && to.equals(Material.LOG) && damageAmount > 0 && entityModule.isMarkedForProcessing(entity))
-        {
-            List<Entity> entities =  entity.getNearbyEntities(0.1, 1, 0.1);
-            for (Entity ent : entities)
-            {
-                if (ent instanceof LivingEntity)
-                {
-                    LivingEntity entityWithDamagedHead = (LivingEntity) ent;
-                    //Frighten the player
-                    entityWithDamagedHead.damage(damageAmount, entity);
-                    entityWithDamagedHead.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 250, 10));
-                }
-            }
-        }
-    }
 }

@@ -83,13 +83,7 @@ public enum RootNode implements ConfigNode
      * whether tree logs respect gravity
      */
     BETTER_TREE_CHOPPING
-            (baseNode()+".World Rules.Better Tree Felling.Enable", VarType.BOOLEAN, true),
-    /**
-     * How much damage loose Falling Logs do to Players and Animals
-     */
-    BETTER_TREE_CHOPPING_DMG
-            (baseNode()+".World Rules.Better Tree Felling.Dmg Amount" , VarType.INTEGER, 2.5),
-
+            (baseNode()+".World Rules.Better Tree Felling", VarType.BOOLEAN, true),
     /**
      * whether players take additional damage and/or debuffs from environmental injuries
      */
@@ -320,12 +314,6 @@ public enum RootNode implements ConfigNode
     LIGHTNING_SPAWNS_PIGMEN
             (baseNode()+".PigZombies.Spawn on Lighting Strikes.Enable", VarType.BOOLEAN, true),
     /**
-     * PigMen get spawned when lighting strikes
-     */
-    /*THUNDER_PERCENT_INCREASE
-            (baseNode()+".PigZombies.Spawn on Lighting Strikes.Thunder Percent Increase", VarType.INTEGER, 20),*/
-
-    /**
      * whether ghasts should deflect arrows and drop extra loot
      * percentage like skeleton deflect
      */
@@ -434,6 +422,16 @@ public enum RootNode implements ConfigNode
      */
     MORE_FALLING_BLOCKS_ENABLE
             (baseNode()+".Additional Falling Blocks.Enable", VarType.BOOLEAN, true),
+    /**
+     * How much damage loose Falling Logs do to Players and Animals
+     */
+    MORE_FALLING_BLOCKS_DMG_AMOUNT
+            (baseNode()+".Additional Falling Blocks.Dmg Amount When Hitting Players" , VarType.INTEGER, 2),
+    /**
+     * How many blocks should be checked for loose falling blocks
+     */
+    MORE_FALLING_BLOCKS_CASCADING_DEPTH
+            (baseNode()+".Additional Falling Blocks.Cascading Block Depth", VarType.INTEGER, 5),
     /**
      * wheter falling grass/mycel turns into dirt
      */
