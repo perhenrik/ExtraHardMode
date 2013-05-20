@@ -19,6 +19,7 @@ import me.ryanhamshire.ExtraHardMode.config.RootConfig;
 import me.ryanhamshire.ExtraHardMode.config.RootNode;
 import me.ryanhamshire.ExtraHardMode.service.EHMModule;
 import me.ryanhamshire.ExtraHardMode.task.BlockPhysicsCheckTask;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -59,11 +60,12 @@ public class BlockModule extends EHMModule
      *
      * @param block           - Target block.
      * @param recursionCount  - Number of times to execute.
-     * @param skipCenterBlock - Whether to skip the center block or not.
+     * @param forceCheck      - Whether to force adjacent blocks to be checked for the first iteration
+     * @param wait            - how many ticks to wait before the next task, mainly to prevent crashes when FallingBlocks collide
      */
-    public void physicsCheck(Block block, int recursionCount, boolean skipCenterBlock)
+    public void physicsCheck(Block block, int recursionCount, boolean forceCheck, int wait)
     {
-        int id = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new BlockPhysicsCheckTask(plugin, block, recursionCount), 5L);
+        int id = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new BlockPhysicsCheckTask(plugin, block, recursionCount, forceCheck), wait);
         // check if it was scheduled. If not, notify in console.
         if (id == -1)
         {
@@ -72,49 +74,36 @@ public class BlockModule extends EHMModule
     }
 
     /**
-     * Makes a block subject to gravity
+     * Makes one single block subject to gravity
      *
      * @param block - Block to apply physics to.
      * @param damageEntities - if Entities should be damaged
-     * @param player that is responsible for this FallingBlock
      *
      * @return the UUID of this FallingBlock
      */
     public UUID applyPhysics (Block block , boolean damageEntities)
     {
+        /* Spawning Falling Blocks with type = AIR crashes the Minecraft client */
+        Validate.isTrue(block.getType() != Material.AIR, "Tried to spawn a FallingBlock with type = AIR");
+
         // grass and mycel become dirt when they fall
         if ((block.getType() == Material.GRASS || block.getType() == Material.MYCEL) && CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_TURN_TO_DIRT, block.getWorld().getName()))
         {
             block.setType(Material.DIRT);
         }
 
-        /* First of all make logging plugins see the FallingBlocks and secondly prevent griefing on borders of protected areas */
-
         FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
         fallingBlock.setDropItem(false);
-        if (damageEntities)
-            entityModule.markForProcessing(fallingBlock);
-
         // remove original block
         block.setType(Material.AIR);
 
-        return fallingBlock.getUniqueId();
-    }
+        if (damageEntities)
+        {
+            entityModule.markForProcessing(fallingBlock);
+        }
 
-    /**
-     * This method fires a BlockBreakEvent for the Player and the given Block
-     * Only call this if you intend to break the Block as the Event will e registered by logging plugins.
-     *
-     * @param toBreak Block to test
-     * @param player which will break the Block
-     *
-     * @return if Player is able to break the Block
-     */
-    public boolean mayPlayerBreak (Block toBreak, Player player)
-    {
-        //TODO flagIgnore
-        BlockBreakEvent event = new BlockBreakEvent(toBreak, player);
-        return !event.isCancelled();
+
+        return fallingBlock.getUniqueId();
     }
 
     /**

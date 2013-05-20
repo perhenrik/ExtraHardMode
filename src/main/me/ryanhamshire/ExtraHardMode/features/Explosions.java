@@ -27,6 +27,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.*;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class Explosions implements Listener
@@ -60,6 +61,7 @@ public class Explosions implements Listener
         World world = event.getLocation().getWorld();
         Entity entity = event.getEntity();
 
+        final boolean fallingBlocksDamage = CFG.getInt(RootNode.MORE_FALLING_BLOCKS_DMG_AMOUNT, world.getName()) > 0;
         final boolean customTntExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ENABLE, world.getName());
         final boolean customGhastExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_GHASTS_ENABLE, world.getName());
         final boolean multipleExplosions = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
@@ -95,24 +97,24 @@ public class Explosions implements Listener
             }
         }
 
-
-
         // FEATURE: in hardened stone mode, TNT only softens stone to cobble
         if (turnStoneToCobble)
         {
             List<Block> blocks = event.blockList();
-            for (int i = 0; i < blocks.size(); i++)
+            Iterator<Block> iter = blocks.iterator();
+            while (iter.hasNext())
             {
-                Block block = blocks.get(i);
+                Block block = iter.next();
                 if (block.getType() == Material.STONE)
                 {
                     block.setType(Material.COBBLESTONE);
-                    blocks.remove(i--);
+                    iter.remove();
                 }
 
                 // FEATURE: more falling blocks
                 BlockModule physics = plugin.getModuleForClass(BlockModule.class);
-                physics.physicsCheck(block, 0, true);
+                if (block.getType() != Material.AIR)
+                    physics.applyPhysics(block, fallingBlocksDamage);
             }
         }
 
