@@ -14,14 +14,13 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +37,11 @@ public class Players implements Listener
     UtilityModule utils = null;
     EntityModule entityModule = null;
 
+    /**
+     * Constructor
+     *
+     * @param plugin
+     */
     public Players (ExtraHardMode plugin)
     {
         this.plugin = plugin;
@@ -75,21 +79,20 @@ public class Players implements Listener
 
     /**
      * When a Player dies he looses a percentage of his inventory
+     *
      * @param event
      */
-    @EventHandler
-    public void onEntityDeath(EntityDeathEvent event)
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDeath(PlayerDeathEvent event)
     {
-        LivingEntity entity = event.getEntity();
-        World world = entity.getWorld();
-        Player player = null;
-        if (entity instanceof Player) player = (Player) entity;
+        Player player = event.getEntity();
+        World world = player.getWorld();
 
         final int deathLossPercent = CFG.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT, world.getName());
-        final boolean playerPerm = player != null ? player.hasPermission(PermissionNode.BYPASS_INVENTORY.getNode()) : true; //true: will cause the code not to run
+        final boolean playerHasBypass = player.hasPermission(PermissionNode.BYPASS_INVENTORY.getNode());
 
         // FEATURE: some portion of player inventory is permanently lost on death
-        if (!playerPerm)
+        if (!playerHasBypass)
         {
             List<ItemStack> drops = event.getDrops();
             int numberOfStacksToRemove = (int) (drops.size() * (deathLossPercent / 100f));
@@ -103,6 +106,11 @@ public class Players implements Listener
 
     }
 
+    /**
+     * Environmental effects when player is damaged
+     *
+     * @param event
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)//so we know if the event got cancelled
     public void onEntityDamage(EntityDamageEvent event)
     {
