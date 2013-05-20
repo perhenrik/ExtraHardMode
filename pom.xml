@@ -13,7 +13,7 @@
     <!-- Properties -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.mainclass>me.ryanhamshire.ExtraHardMode.ExtraHardMode</project.mainclass>
+        <project.mainclass>com.extrahardmode.ExtraHardMode</project.mainclass>
         <outputdir>${project.build.outputDirectory}</outputdir><!--Use a profile to overwrite this-->
         <mc-version>1.5.2</mc-version>
         <bukkit-ver>R0.1</bukkit-ver>
