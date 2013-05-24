@@ -5,6 +5,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
+import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.RemoveExposedTorchesTask;
@@ -21,15 +22,17 @@ import org.bukkit.material.Torch;
 
 public class Torches implements Listener
 {
-    ExtraHardMode plugin = null;
-    RootConfig CFG = null;
-    UtilityModule utils = null;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final UtilityModule utils;
+    private final MessagingModule messenger;
 
     public Torches(ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
+        messenger = plugin.getModuleForClass(MessagingModule.class);
     }
 
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOW)
@@ -56,7 +59,7 @@ public class Torches implements Listener
             {
                 if (soundFizzEnabled)
                 {
-                    utils.notifyPlayer(player, MessageNode.LIMITED_TORCH_PLACEMENTS, PermissionNode.SILENT_LIMITED_TORCH_PLACEMENT, Sound.FIZZ, 20);
+                    messenger.notifyPlayer(player, MessageNode.LIMITED_TORCH_PLACEMENTS, PermissionNode.SILENT_LIMITED_TORCH_PLACEMENT, Sound.FIZZ, 20);
                 }
                 placeEvent.setCancelled(true);
             }
@@ -70,7 +73,7 @@ public class Torches implements Listener
                     && (block.getType() == Material.TORCH || block.getType() == Material.JACK_O_LANTERN || (block.getType() == Material.FIRE && block
                     .getRelative(BlockFace.DOWN).getType() == Material.NETHERRACK)))
             {
-                utils.notifyPlayer(player, MessageNode.NO_TORCHES_HERE, PermissionNode.SILENT_NO_TORCHES_HERE, Sound.FIZZ, 20);
+                messenger.notifyPlayer(player, MessageNode.NO_TORCHES_HERE, PermissionNode.SILENT_NO_TORCHES_HERE, Sound.FIZZ, 20);
                 placeEvent.setCancelled(true);
                 return;
             }

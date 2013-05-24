@@ -112,7 +112,7 @@ public class MessageConfig extends ModularConfig
     {
         for (MessageNode node : MessageNode.values())
         {
-            updateOption(node);
+            updateOption(node, config);
         }
     }
 

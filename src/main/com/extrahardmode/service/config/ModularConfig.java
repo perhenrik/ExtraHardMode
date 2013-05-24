@@ -53,9 +53,8 @@ public abstract class ModularConfig extends EHMModule
      * @param node - ConfigNode to update.
      */
     @SuppressWarnings("unchecked")
-    public void updateOption(final ConfigNode node)
+    public void updateOption(final ConfigNode node, final ConfigurationSection config)
     {
-        final ConfigurationSection config = plugin.getConfig();
         switch (node.getVarType())
         {
             case LIST:

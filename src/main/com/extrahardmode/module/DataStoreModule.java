@@ -16,6 +16,7 @@
 package com.extrahardmode.module;
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.service.EHMModule;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -119,7 +120,7 @@ public class DataStoreModule extends EHMModule
         /**
          * Last message sent.
          */
-        public String lastMessageSent = "";
+        public MessageNode lastMessageSent = null;
         /**
          * Last message timestamp.
          */

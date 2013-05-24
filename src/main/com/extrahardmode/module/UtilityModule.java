@@ -15,11 +15,11 @@
 package com.extrahardmode.module;
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.messages.MessageConfig;
-import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.service.EHMModule;
-import com.extrahardmode.service.PermissionNode;
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -284,32 +284,6 @@ public class UtilityModule extends EHMModule
             int amountToAdd = (amountAfter - amountBefore) * (this.amountToAdd);
             inv.addItem(new ItemStack(material, amountToAdd));
         }
-    }
-
-    /**
-     * Send the player an informative message to explain what he's doing wrong.
-     * Play an optional sound aswell
-     * <p>
-     *
-     * @param player     to send msg to
-     * @param perm       permission to silence the message
-     * @param sound      errorsound to play after the event got cancelled
-     * @param soundPitch 20-35 is good
-     */
-    public void notifyPlayer(Player player, MessageNode node, PermissionNode perm, Sound sound, float soundPitch)
-    {
-        if (!player.hasPermission(perm.getNode()))
-        {
-            MessageConfig config = plugin.getModuleForClass(MessageConfig.class);
-            plugin.sendMessage(player, config.getString(node));
-            if (sound != null)
-                player.playSound(player.getLocation(), sound, 1, soundPitch);
-        }
-    }
-
-    public void notifyPlayer(Player player, MessageNode node, PermissionNode perm)
-    {
-        notifyPlayer(player, node, perm, null, 0);
     }
 
     @Override

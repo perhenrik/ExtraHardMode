@@ -24,18 +24,12 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.features.*;
 import com.extrahardmode.features.monsters.*;
-import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.DataStoreModule;
-import com.extrahardmode.module.DataStoreModule.PlayerData;
-import com.extrahardmode.module.EntityModule;
-import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.module.*;
 import com.extrahardmode.service.IModule;
 import com.extrahardmode.task.MoreMonstersTask;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -70,6 +64,7 @@ public class ExtraHardMode extends JavaPlugin
         // Register modules
         registerModule(RootConfig.class, new RootConfig(this));
         registerModule(MessageConfig.class, new MessageConfig(this));
+        registerModule(MessagingModule.class, new MessagingModule(this));
         registerModule(DataStoreModule.class, new DataStoreModule(this));
         registerModule(EntityModule.class, new EntityModule(this));
         registerModule(BlockModule.class, new BlockModule(this));
@@ -112,33 +107,6 @@ public class ExtraHardMode extends JavaPlugin
         // TODO Once this feature is fleshed out make it customizable
         //TODO if cfg = 0, disable task
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 1200L, 1200L);
-    }
-
-    /**
-     * Sends a message to a player. Attempts to not spam the player with
-     * messages.
-     *
-     * @param player  - Target player.
-     * @param message - Message to send.
-     */
-    public void sendMessage(Player player, String message)
-    {
-        if (player == null)
-        {
-            getLogger().warning("Could not send the following message: " + message);
-        }
-        else
-        {
-            // FEATURE: don't spam messages
-            PlayerData playerData = getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-            long now = Calendar.getInstance().getTimeInMillis();
-            if (!message.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
-            {
-                player.sendMessage(message);
-                playerData.lastMessageSent = message;
-                playerData.lastMessageTimestamp = now;
-            }
-        }
     }
 
     /**

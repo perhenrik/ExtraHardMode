@@ -5,6 +5,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
+import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.GameMode;
@@ -20,15 +21,17 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public class LimitedBuilding implements Listener
 {
-    ExtraHardMode plugin = null;
-    RootConfig CFG = null;
-    UtilityModule utils = null;
+    ExtraHardMode plugin;
+    RootConfig CFG;
+    UtilityModule utils;
+    MessagingModule messenger;
 
     public LimitedBuilding (ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
+        messenger = plugin.getModuleForClass(MessagingModule.class);
     }
 
     /**
@@ -54,7 +57,7 @@ public class LimitedBuilding implements Listener
                 && block.getZ() == player.getLocation().getBlockZ()
                 && block.getY() < player.getLocation().getBlockY())
             {
-                utils.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
+                messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
                 return;
             }
@@ -66,7 +69,7 @@ public class LimitedBuilding implements Listener
             if((underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
                     && (!playerBlock.getType().name().contains("STEP") && !playerBlock.getType().name().contains("STAIRS")))
             {
-                utils.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
+                messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
                 return;
             }
@@ -79,7 +82,7 @@ public class LimitedBuilding implements Listener
                 // if over lava or more air, prevent placement
                 if (underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
                 {
-                    utils.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
+                    messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                     placeEvent.setCancelled(true);
                     return;
                 }

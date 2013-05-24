@@ -8,12 +8,14 @@ import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.DragonAttackPatternTask;
 import com.extrahardmode.task.DragonAttackTask;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.libs.com.google.gson.internal.Pair;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,6 +36,7 @@ public class Glydia implements Listener
     MessageConfig messages;
     EntityModule entityModule;
     DataStoreModule data;
+    MessagingModule messenger;
 
     public Glydia(ExtraHardMode plugin)
     {
@@ -42,6 +45,7 @@ public class Glydia implements Listener
         messages = plugin.getModuleForClass(MessageConfig.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
         data = plugin.getModuleForClass(DataStoreModule.class);
+        messenger = plugin.getModuleForClass(MessagingModule.class);
     }
 
     /**
@@ -67,8 +71,7 @@ public class Glydia implements Listener
             if (block.getType() != Material.ENDER_STONE)
             {
                 breakEvent.setCancelled(true);
-                plugin.sendMessage(player, messages.getString(MessageNode.LIMITED_END_BUILDING));
-                return;
+                messenger.sendMessage(player, MessageNode.LIMITED_END_BUILDING);
             }
             else
             {
@@ -82,8 +85,7 @@ public class Glydia implements Listener
                 if (block.getY() < player.getLocation().getBlockY() + absoluteDistanceFromBlock)
                 {
                     breakEvent.setCancelled(true);
-                    plugin.sendMessage(player, messages.getString(MessageNode.LIMITED_END_BUILDING));
-                    return;
+                    messenger.sendMessage(player, MessageNode.LIMITED_END_BUILDING);
                 }
             }
         }
@@ -108,7 +110,7 @@ public class Glydia implements Listener
         if (enderDragonNoBuilding && world.getEnvironment() == World.Environment.THE_END &&! playerBypass)
         {
             placeEvent.setCancelled(true);
-            plugin.sendMessage(player, messages.getString(MessageNode.LIMITED_END_BUILDING));
+            messenger.sendMessage(player, MessageNode.LIMITED_END_BUILDING);
             return;
         }
     }
@@ -144,14 +146,13 @@ public class Glydia implements Listener
 
             if (announcements)
             {
-                StringBuilder builder = new StringBuilder("The dragon has been defeated!  ( By: ");
+                StringBuilder builder = new StringBuilder();
                 for (String player : data.getPlayers())
                 {
-                    builder.append(player).append(" ");
+                    builder.append(player).append(", ");
                 }
-                builder.append(")");
 
-                plugin.getServer().broadcastMessage(builder.toString());
+                messenger.broadcast(MessageNode.END_DRAGON_KILLED, new Pair(MessageNode.variables.PLAYERS.getVarName(), builder.toString()));
             }
 
             if (endNoBuilding)
@@ -161,7 +162,7 @@ public class Glydia implements Listener
                     if (plugin.getServer().getPlayer(player) != null)
                     {
                         Player player1 = plugin.getServer().getPlayer(player);
-                        plugin.sendMessage(player1, messages.getString(MessageNode.DRAGON_FOUNTAIN_TIP));
+                        messenger.sendMessage(player1, MessageNode.DRAGON_FOUNTAIN_TIP);
                     }
                 }
             }
@@ -186,7 +187,7 @@ public class Glydia implements Listener
         List<String> playersFightingDragon = data.getPlayers();
         if (dragonAnnouncements && playersFightingDragon.contains(player.getName()))
         {
-            plugin.getServer().broadcastMessage(player.getName() + " was killed while fighting the dragon!");
+            messenger.broadcast(MessageNode.END_DRAGON_PLAYER_KILLED, new Pair(MessageNode.variables.PLAYER.getVarName(), player.getName()));
             data.getPlayers().remove(player.getName());
         }
     }
@@ -261,7 +262,7 @@ public class Glydia implements Listener
 
                     if (dragonAnnouncements)
                     {
-                        plugin.getServer().broadcastMessage(damager.getName() + " is challenging the dragon!");
+                        messenger.broadcast(MessageNode.END_DRAGON_PLAYER_CHALLENGING, new Pair(MessageNode.variables.PLAYER.getVarName(), damager.getName()));
                     }
                 }
 

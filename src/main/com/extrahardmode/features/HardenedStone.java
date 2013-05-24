@@ -4,9 +4,9 @@ package com.extrahardmode.features;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.BlockModule;
+import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.GameMode;
@@ -32,7 +32,7 @@ public class HardenedStone implements Listener
     ExtraHardMode plugin;
     RootConfig CFG;
     UtilityModule utils;
-    MessageConfig messages;
+    MessagingModule messenger;
     BlockModule blockModule;
 
     public HardenedStone (ExtraHardMode plugin)
@@ -40,7 +40,7 @@ public class HardenedStone implements Listener
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
-        messages = plugin.getModuleForClass(MessageConfig.class);
+        messenger = plugin.getModuleForClass(MessagingModule.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
     }
 
@@ -73,7 +73,7 @@ public class HardenedStone implements Listener
                 Material tool = inHandStack.getType();
                 if (tool != Material.IRON_PICKAXE && tool != Material.DIAMOND_PICKAXE)
                 {
-                    utils.notifyPlayer(player, MessageNode.STONE_MINING_HELP, PermissionNode.SILENT_STONE_MINING_HELP);
+                    messenger.notifyPlayer(player, MessageNode.STONE_MINING_HELP, PermissionNode.SILENT_STONE_MINING_HELP);
                     event.setCancelled(true);
                     return;
                 }
@@ -141,7 +141,7 @@ public class HardenedStone implements Listener
             {
                 if (adjacentBlock.getType() == Material.STONE)
                 {
-                    plugin.sendMessage(player, messages.getString(MessageNode.NO_PLACING_ORE_AGAINST_STONE));
+                    messenger.sendMessage(player, MessageNode.NO_PLACING_ORE_AGAINST_STONE);
                     placeEvent.setCancelled(true);
                     return;
                 }

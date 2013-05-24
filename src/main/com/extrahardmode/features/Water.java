@@ -6,6 +6,7 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.DataStoreModule;
+import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.GameMode;
@@ -31,12 +32,14 @@ public class Water implements Listener
     ExtraHardMode plugin;
     RootConfig CFG;
     UtilityModule utils;
+    MessagingModule messenger;
 
     public Water (ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
+        messenger = plugin.getModuleForClass(MessagingModule.class);
     }
     /**
      * when a player moves...
@@ -146,7 +149,7 @@ public class Water implements Listener
                 else  //when under water
                     vec.setY(normalDrownVel);
                 player.setVelocity(vec);
-                plugin.sendMessage(player, messages.getString(MessageNode.NO_SWIMMING_IN_ARMOR));
+                messenger.sendMessage(player, MessageNode.NO_SWIMMING_IN_ARMOR);
             }
         }
     }
