@@ -19,7 +19,6 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.service.EHMModule;
 import com.extrahardmode.task.BlockPhysicsCheckTask;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -82,7 +81,8 @@ public class BlockModule extends EHMModule
     public UUID applyPhysics (Block block , boolean damageEntities)
     {
         /* Spawning Falling Blocks with type = AIR crashes the Minecraft client */
-        Validate.isTrue(block.getType() != Material.AIR, "Tried to spawn a FallingBlock with type = AIR");
+        if (block.getType() == Material.AIR)
+            return null;
 
         // grass and mycel become dirt when they fall
         if ((block.getType() == Material.GRASS || block.getType() == Material.MYCEL) && CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_TURN_TO_DIRT, block.getWorld().getName()))

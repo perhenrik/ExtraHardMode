@@ -55,7 +55,7 @@ public class FallingLogsTask implements Runnable
         if (block != null)
         {
             /* Prevent wooden structures near trees from being affected*/
-            if (blockModule.getBlocksInArea(block.getLocation(), 2, 1, Material.LEAVES).length > 4)
+            if (blockModule.getBlocksInArea(block.getLocation(), 2, 1, Material.LEAVES).length > 3)
             {
                 //Clear the area below of leaves
                 Block below = block;
