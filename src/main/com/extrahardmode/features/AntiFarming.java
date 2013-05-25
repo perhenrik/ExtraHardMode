@@ -348,9 +348,8 @@ public class AntiFarming implements Listener
         {
             // plan to change this block into a non-source block on the next tick
             Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-            block.setData((byte) 1);
-            /*EvaporateWaterTask task = new EvaporateWaterTask(block);
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L); */
+            EvaporateWaterTask task = new EvaporateWaterTask(block);
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L);
         }
     }
 }
