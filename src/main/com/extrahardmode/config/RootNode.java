@@ -841,6 +841,7 @@ public enum RootNode implements ConfigNode
             this.add(Material.GRASS.toString());
             this.add(Material.COBBLESTONE.toString());
             this.add(Material.MOSSY_COBBLESTONE.toString());
+            this.add(Material.DOUBLE_STEP.toString() + "@3"); //cobble double halfslabs
             this.add(Material.MYCEL.toString());
         }
     }

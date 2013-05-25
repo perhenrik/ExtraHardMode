@@ -10,6 +10,10 @@ public enum Status
      */
     ADJUSTED,
     /**
+     * This value should be rewritten back to config, but hasn't been adjusted yet, or needs to be adjusted by another method
+     */
+    NEEDS_TO_BE_ADJUSTED,
+    /**
      * Config hasn't been altered and doesn't need to be saved
      */
     OK,

@@ -9,13 +9,13 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.service.FindAndReplace;
 import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.DragonAttackPatternTask;
 import com.extrahardmode.task.DragonAttackTask;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.libs.com.google.gson.internal.Pair;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -152,7 +152,7 @@ public class Glydia implements Listener
                     builder.append(player).append(", ");
                 }
 
-                messenger.broadcast(MessageNode.END_DRAGON_KILLED, new Pair(MessageNode.variables.PLAYERS.getVarName(), builder.toString()));
+                messenger.broadcast(MessageNode.END_DRAGON_KILLED, new FindAndReplace(MessageNode.variables.PLAYERS.getVarName(), builder.toString()));
             }
 
             if (endNoBuilding)
@@ -187,7 +187,7 @@ public class Glydia implements Listener
         List<String> playersFightingDragon = data.getPlayers();
         if (dragonAnnouncements && playersFightingDragon.contains(player.getName()))
         {
-            messenger.broadcast(MessageNode.END_DRAGON_PLAYER_KILLED, new Pair(MessageNode.variables.PLAYER.getVarName(), player.getName()));
+            messenger.broadcast(MessageNode.END_DRAGON_PLAYER_KILLED, new FindAndReplace (MessageNode.variables.PLAYER.getVarName(), player.getName()));
             data.getPlayers().remove(player.getName());
         }
     }
@@ -262,7 +262,7 @@ public class Glydia implements Listener
 
                     if (dragonAnnouncements)
                     {
-                        messenger.broadcast(MessageNode.END_DRAGON_PLAYER_CHALLENGING, new Pair(MessageNode.variables.PLAYER.getVarName(), damager.getName()));
+                        messenger.broadcast(MessageNode.END_DRAGON_PLAYER_CHALLENGING, new FindAndReplace(MessageNode.variables.PLAYER.getVarName(), damager.getName()));
                     }
                 }
 

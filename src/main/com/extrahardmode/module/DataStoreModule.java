@@ -16,6 +16,7 @@
 package com.extrahardmode.module;
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.service.EHMModule;
 import org.bukkit.Location;
@@ -50,6 +51,11 @@ public class DataStoreModule extends EHMModule
     List <String> playersFightingDragon = new ArrayList<String>();
 
     /**
+     * Config
+     */
+    RootConfig CFG;
+
+    /**
      * Constructor.
      *
      * @param plugin - Plugin instance.
@@ -57,6 +63,20 @@ public class DataStoreModule extends EHMModule
     public DataStoreModule(ExtraHardMode plugin)
     {
         super(plugin);
+        CFG = plugin.getModuleForClass(RootConfig.class);
+    }
+
+    /**
+     * Constructor for dependency injection
+     * for testing purposes
+     *
+     * @param plugin Plugin instance
+     * @param CFG configinstance
+     */
+    public DataStoreModule(ExtraHardMode plugin, RootConfig CFG)
+    {
+        super(plugin);
+        this.CFG = CFG;
     }
 
     /**

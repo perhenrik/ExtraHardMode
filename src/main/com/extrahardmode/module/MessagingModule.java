@@ -4,9 +4,9 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.service.EHMModule;
+import com.extrahardmode.service.FindAndReplace;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.libs.com.google.gson.internal.Pair;
 import org.bukkit.entity.Player;
 
 import java.util.Calendar;
@@ -78,12 +78,12 @@ public class MessagingModule extends EHMModule
      * @param message to send
      * @param args variables to fill in
      */
-    public void sendMessage (Player player, MessageNode message, Pair <String, String> ... args)
+    public void sendMessage (Player player, MessageNode message, FindAndReplace ... args)
     {
         String msgText = null;
-        for (Pair<String, String> pair : args)
+        for (FindAndReplace far : args)
         {   /* Replace the placeholder with the actual value */
-            msgText = messages.getString(message).replaceAll (pair.first, pair.second);
+            msgText = messages.getString(message).replaceAll (far.getSearchWord(), far.getReplaceWith());
         }
         sendAndSave(player, message, msgText);
     }
@@ -116,12 +116,12 @@ public class MessagingModule extends EHMModule
     /**
      * Broadcast a message to the whole server
      */
-    public void broadcast(MessageNode message, Pair<String, String> ... vars)
+    public void broadcast(MessageNode message, FindAndReplace ... vars)
     {
         String msgText = null;
-        for (Pair <String, String> pair : vars)
+        for (FindAndReplace pair : vars)
         {
-            msgText = messages.getString(message).replace(pair.first, pair.second);
+            msgText = messages.getString(message).replace(pair.getSearchWord(), pair.getReplaceWith());
         }
         plugin.getServer().broadcastMessage(msgText);
     }

@@ -1,6 +1,7 @@
 package com.extrahardmode.config;
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.service.BlockItemMetaParser;
 import com.extrahardmode.service.Response;
 import com.extrahardmode.service.config.*;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,24 +10,28 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  */
 public class RootConfig extends MultiWorldConfig
 {
+    /**
+     * Contains Info about Blocks which fall and their Metadata
+     */
+    private final Map <String/*world name*/, Map<Integer/*Block id*/, List<Byte>/*Block Id* (-1 for no id)*/>> fallingBlocks = new HashMap<String, Map<Integer, List<Byte>>>();
+
+    /**
+     * Constructor
+     * @param plugin
+     */
     public RootConfig (ExtraHardMode plugin)
     {
         super(plugin);
-    }
-
-    /**
-     * ONLY for Testing - Constructor
-     */
-    public RootConfig ()
-    {
-        super(null);
     }
 
     @Override
@@ -37,6 +42,11 @@ public class RootConfig extends MultiWorldConfig
 
     @Override
     public void closing (){}
+
+    public Map<Integer, List<Byte>> getFallingBlocks (String world)
+    {
+        return fallingBlocks.containsKey(world) ? fallingBlocks.get(world) : Collections.EMPTY_MAP;
+    }
 
     @Override
     public void load()
@@ -256,10 +266,32 @@ public class RootConfig extends MultiWorldConfig
             }
 
             //the Mode should always reflect in the yml file
-            if (node == RootNode.MODE && (response.getContent() instanceof String) &&! ((String)response.getContent()) .equalsIgnoreCase (config.getMode().name()))
+            /* Special node handling */
+            switch (node)
             {
-                response.setContent(config.getMode().name());
-                config.setStatus(Status.ADJUSTED);
+                case MODE:
+                {
+                    /* Make sure that the mode we used is the same in the config */
+                    if ((response.getContent() instanceof String) &&! ((String) response.getContent()) .equalsIgnoreCase (config.getMode().name()))
+                    {
+                        response.setContent(config.getMode().name());
+                        config.setStatus(Status.ADJUSTED);
+                    }
+                    break;
+                }
+                case MORE_FALLING_BLOCKS:
+                {
+                    if (response.getContent() instanceof List)
+                    {
+                        Response parsedBlocks = BlockItemMetaParser.parse((List<String>) response.getContent());
+                        if (parsedBlocks.getStatusCode() == Status.NEEDS_TO_BE_ADJUSTED) config.setStatus(Status.ADJUSTED);
+                        for (String world : worlds)
+                        {
+                            fallingBlocks.put(world, (Map<Integer, List<Byte>>) parsedBlocks.getContent());
+                        }
+                    }
+                    break;
+                }
             }
 
             config.getConfig().set (node.getPath(), response.getContent()); //has to be before we get the actual values
@@ -302,7 +334,18 @@ public class RootConfig extends MultiWorldConfig
         FileConfiguration reorderedConfig = new YamlConfiguration();
         for (RootNode node : RootNode.values())
         {
-            reorderedConfig.set(node.getPath(), config.getConfig().get(node.getPath()));
+            switch (node)
+            {
+                case MORE_FALLING_BLOCKS:
+                {
+                    reorderedConfig.set(node.getPath(),
+                            BlockItemMetaParser.getStringsFor(
+                                    BlockItemMetaParser.parse(config.getConfig().getStringList(node.getPath())).getContent()));
+                    break;
+                }
+                default:
+                    reorderedConfig.set(node.getPath(), config.getConfig().get(node.getPath()));
+            }
         }
         config.setConfig(reorderedConfig);
 

@@ -26,6 +26,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Called to apply physics to a block and its neighbors if necessary.
@@ -80,13 +81,15 @@ public class BlockPhysicsCheckTask implements Runnable
         boolean fall = false;
 
         final boolean fallingBlocksEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, block.getWorld().getName());
-        final List<String> fallingBlocks = CFG.getStringList(RootNode.MORE_FALLING_BLOCKS, block.getWorld().getName());
+        final Map<Integer, List<Byte>> fallingBlocks = CFG.getFallingBlocks(block.getWorld().getName());
 
         Material material = block.getType();
         Block underBlock = block.getRelative(BlockFace.DOWN);
 
         if ((underBlock.getType() == Material.AIR || underBlock.isLiquid() || underBlock.getType() == Material.TORCH)
-                && (material == Material.SAND || material == Material.GRAVEL || fallingBlocks.contains(material.name()))
+                && (material == Material.SAND || material == Material.GRAVEL ||
+                /* Our extra blocks */
+                (fallingBlocks.containsKey(material.getId()) && (fallingBlocks.get(material.getId()).isEmpty() || fallingBlocks.get(material.getId()).contains(block.getData()))))
                 && fallingBlocksEnabled && material != Material.AIR)
         {
             module.applyPhysics(block, true);

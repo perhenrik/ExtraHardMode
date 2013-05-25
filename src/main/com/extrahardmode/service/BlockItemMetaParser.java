@@ -1,0 +1,177 @@
+package com.extrahardmode.service;
+
+import com.extrahardmode.service.config.Status;
+import org.bukkit.Material;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Parses a given StringList into a Map containing the block ids and metadatavalues if existing
+ * The supported input can be formatted like this
+ *
+ * 13:1,2,3 | COBBLESTONE.2.3.4 | 13:3.4.5
+ *
+ * The first number/string is always expected to be the string
+ * everything after that can be seperated by any symbol which isn't a number/character
+ *
+ * So 13:1@4%3
+ * -> [13]{1,3,4}
+ * 13 is the blockid
+ * and 1,3,4 is the blockmetadatavalues which are allowed
+ *
+ * @author Max
+ */
+public class BlockItemMetaParser
+{
+
+    /**
+     * Parse a given List of Strings which represent Blocks and their Metadata
+     *
+     * @param stringlist of representing blocks
+     *
+     * @return a Map which is usable by a plugin and the StatusCode. <br>
+     *      OK = the input has been completely valid, <br>
+     *      NEEDS_TO_BE_ADJUSTED = input not valid but has been corrected and can be written back to config
+     */
+    public static Response<Map<Integer/*block id*/, List<Byte>>> parse (List<String> stringList)
+    {
+        Status status = Status.OK;
+
+        Map<Integer, List<Byte>> myFallingBlocks = new HashMap<Integer, List<Byte>>();
+
+        for (String blockString : stringList)
+        {
+            /* Use Pattern because it's 25% faster than String.replaceAll() */
+            Pattern whitespace = Pattern.compile("\\s"); //Includes tabs/newline characters
+            if (whitespace.matcher(blockString).find())
+            {
+                blockString = whitespace.matcher(blockString).replaceAll("");
+                status = Status.NEEDS_TO_BE_ADJUSTED;
+            }
+
+            List<Byte> meta = new ArrayList<Byte>();
+
+            /* String will be in this format 34:4 / ANVIL / LOG:1,2,3 */
+            /* any non letters/digits/underscores means there is meta*/
+            Pattern seperators = Pattern.compile("[^A-Za-z0-9_]");
+            Matcher mSeperators = seperators.matcher(blockString);
+
+            Pattern onlyNumbers = Pattern.compile("[^0-9]");
+
+            if (mSeperators.find())
+            {
+                /* So we know if we should rewrite the config */
+                Pattern invalidSeperators = Pattern.compile("[^A-Za-z0-9_@,]");
+                Matcher mInvalidSeperators = invalidSeperators.matcher(blockString);
+                if (mInvalidSeperators.find())
+                {
+                    status = Status.NEEDS_TO_BE_ADJUSTED;
+                }
+
+                String [] splitted = seperators.split(blockString);
+
+                for (int i = 1; i < splitted.length; i++)
+                {
+                    /* Meta can only be numbers */
+                    splitted[i] = onlyNumbers.matcher(splitted[i]).replaceAll("");
+
+                    if (!splitted[i].isEmpty())
+                    {
+                        /* Prevent out of range errors */
+                        int metaInt = Integer.parseInt(splitted[i]);
+                            if (metaInt < Byte.MIN_VALUE)
+                            {
+                                metaInt = Byte.MIN_VALUE;
+                                status = Status.NEEDS_TO_BE_ADJUSTED;
+                            }
+                            else if (metaInt > Byte.MAX_VALUE)
+                            {
+                                metaInt = Byte.MAX_VALUE;
+                                status= Status.NEEDS_TO_BE_ADJUSTED;
+                            }
+                        meta.add((byte) metaInt);
+                    }
+                }
+            }
+
+            String blockId = seperators.split(blockString)[0];
+            Material material = Material.matchMaterial(blockId);
+
+            /* couldn't be matched by enum constant */
+            if (material == null)
+            {
+                /* try as number (blockId) */
+                String tempId = onlyNumbers.matcher(blockId).replaceAll("");
+                if (!tempId.isEmpty())
+                {
+                    material = Material.getMaterial(tempId);
+                }
+                /* still fail -> try as enum again but strip numbers */
+                if (material == null)
+                {
+                    Pattern onlyLetters = Pattern.compile("[^a-zA-Z_]");
+                    material = Material.matchMaterial(onlyLetters.matcher(blockId).replaceAll(""));
+                }
+                /* we identified the block, but we should save it correctly so we don't have to do it again */
+                if (material != null)
+                {
+                    status = Status.NEEDS_TO_BE_ADJUSTED;
+                }
+            }
+
+            String onlyNums = onlyNumbers.matcher(blockId).replaceAll("") .length() > 0
+                    ? onlyNumbers.matcher(blockId).replaceAll("")
+                    : "0";
+            int blockNumber = material != null ? material.getId() : Integer.parseInt(onlyNums);
+
+            /* merge data if the block is in here already */
+            if (myFallingBlocks.containsKey(blockNumber))
+            {
+                List<Byte> oldMeta = myFallingBlocks.get(material.getId());
+                meta.addAll(oldMeta);
+                Collections.sort(meta);
+                status = Status.NEEDS_TO_BE_ADJUSTED;
+            }
+
+            if (blockNumber != 0) //AIR can't fall and 0 will be default if parsing failed
+                myFallingBlocks.put(blockNumber, meta);
+
+        }
+
+        return new Response<Map<Integer, List<Byte>>>(status, myFallingBlocks);
+    }
+
+    /**
+     * Turn a given Representation of Blocks and their metaData into a human readable form
+     *
+     * @param blocksWithMeta
+     * @return List to be written to config
+     */
+    public static List<String> getStringsFor (Map<Integer, List<Byte>> blocksWithMeta)
+    {
+        List <String> blockList = new ArrayList<String>(blocksWithMeta.size());
+
+        for (Map.Entry<Integer, List<Byte>> metaBlock : blocksWithMeta.entrySet())
+        {
+            StringBuilder builder = new StringBuilder();
+            Material material = Material.getMaterial(metaBlock.getKey());
+            builder.append(material != null ? material.name() : metaBlock.getKey());
+
+            List <Byte> metaData = metaBlock.getValue();
+            metaData = metaData == null ? Collections.<Byte>emptyList() : metaData;
+            for (int i = 0; i < metaData.size(); i++)
+            {
+                if (i == 0)
+                    builder.append('@');
+                else
+                    builder.append(',');
+                builder.append(metaData.get(i));
+            }
+            blockList.add(builder.toString());
+        }
+
+        return blockList;
+    }
+}

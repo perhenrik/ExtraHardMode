@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 public class TestAntiGrinder
 {
     ExtraHardMode plugin = new MockExtraHardMode().get();
-    RootConfig CFG = new RootConfig();
+    RootConfig CFG = new RootConfig(plugin);
     AntiGrinder module = new AntiGrinder(CFG, new EntityModule(plugin), new BlockModule(plugin), new UtilityModule(plugin));
 
     @Before
