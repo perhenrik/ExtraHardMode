@@ -6,7 +6,6 @@ import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
-import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.PermissionNode;
@@ -70,7 +69,8 @@ public class Explosions implements Listener
         // FEATURE: bigger TNT booms, all explosions have 100% block yield
         if (customTntExplosion)
         {
-            event.setYield(1);
+            if (entity != null && (entity.getType() == EntityType.CREEPER || entity.getType() == EntityType.PRIMED_TNT))
+                event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
 
             if (entity != null && entity.getType() == EntityType.PRIMED_TNT)
             {
@@ -112,9 +112,9 @@ public class Explosions implements Listener
                 }
 
                 // FEATURE: more falling blocks
-                BlockModule physics = plugin.getModuleForClass(BlockModule.class);
+                /*BlockModule physics = plugin.getModuleForClass(BlockModule.class);
                 if (block.getType() != Material.AIR)
-                    physics.applyPhysics(block, fallingBlocksDamage);
+                    physics.applyPhysics(block, fallingBlocksDamage); */
             }
         }
 
