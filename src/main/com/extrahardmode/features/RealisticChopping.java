@@ -111,7 +111,7 @@ public class RealisticChopping implements Listener
                     {
                         case AIR:
                         {
-                            Block[] logs = blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 4, Material.LOG);
+                            Block[] logs = blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 5, Material.LOG);
                             for (Block log : logs)
                             {
                                 //check 2 blocks down for logs to see if it it's a stem
