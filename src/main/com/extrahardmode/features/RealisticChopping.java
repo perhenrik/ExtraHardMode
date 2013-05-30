@@ -8,7 +8,6 @@ import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.FallingLogsTask;
-import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -68,7 +67,6 @@ public class RealisticChopping implements Listener
     public void onBlockBreak(BlockBreakEvent breakEvent)
     {
         Block block = breakEvent.getBlock();
-        Validate.isTrue(block.getType() != Material.AIR, "WELL here we go...");
         World world = block.getWorld();
         Player player = breakEvent.getPlayer();
 
