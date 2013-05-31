@@ -94,7 +94,8 @@ public class UtilityModule extends EHMModule
                 || material.equals(Material.BOW)
                 || material.equals(Material.FISHING_ROD)
                 || material.equals(Material.WATCH)
-                || material.equals(Material.COMPASS);
+                || material.equals(Material.COMPASS)
+                || material.equals(Material.FLINT_AND_STEEL);
     }
 
     /**
@@ -154,7 +155,7 @@ public class UtilityModule extends EHMModule
      * @param player
      * @param armorPoints Points per piece of worn armor
      * @param inventoryPoints Points per full stack of one item
-     * @param toolPoints Points per tool which doesn't stack
+     * @param toolPoints Points per tool (which doesn't stack)
      * @return
      */
     public float inventoryWeight (Player player, float armorPoints, float inventoryPoints, float toolPoints)
