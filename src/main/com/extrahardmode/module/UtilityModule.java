@@ -165,7 +165,7 @@ public class UtilityModule extends EHMModule
         ItemStack[] armor = inventory.getArmorContents();
         for (ItemStack armorPiece : armor)
         {
-            if (armorPiece != null || armorPiece.getType() != Material.AIR)
+            if (armorPiece != null && armorPiece.getType() != Material.AIR)
             {
                 weight += armorPoints;
             }
