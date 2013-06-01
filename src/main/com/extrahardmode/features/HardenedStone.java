@@ -5,6 +5,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
+import com.extrahardmode.events.EhmHardenedStoneEvent;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.UtilityModule;
@@ -60,18 +61,29 @@ public class HardenedStone implements Listener
         final int stoneBlocksIron = CFG.getInt(RootNode.IRON_DURABILITY_PENALTY, world.getName());
         final int stoneBlocksDiamond = CFG.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
 
-        // FEATURE: stone breaks tools much more quickly
-        if (hardStoneEnabled &&! player.getGameMode().equals(GameMode.CREATIVE))
+        // FEATURE: stone breaks tools much quicker
+        if (hardStoneEnabled && block.getType() == Material.STONE &&! player.getGameMode().equals(GameMode.CREATIVE))
         {
             ItemStack inHandStack = player.getItemInHand();
 
-            // if breaking stone with an item in hand and the player does NOT have the bypass permission
-            //TODO Config for endstone
-            if ((block.getType() == Material.STONE || block.getType() == Material.ENDER_STONE) && inHandStack != null)
+            if (inHandStack != null)
             {
-                // if not using an iron or diamond pickaxe, don't allow breakage and explain to the player
-                Material tool = inHandStack.getType();
-                if (tool != Material.IRON_PICKAXE && tool != Material.DIAMOND_PICKAXE)
+                EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, 0);
+
+                switch (inHandStack.getType())
+                {
+                    case IRON_PICKAXE:
+                        hardEvent.setNumOfBlocks(stoneBlocksIron);
+                        break;
+                    case DIAMOND_PICKAXE:
+                        hardEvent.setNumOfBlocks(stoneBlocksDiamond);
+                        break;
+                }
+
+                /* Broadcast an Event for other Plugins to change the tools */
+                plugin.getServer().getPluginManager().callEvent(hardEvent);
+
+                if (hardEvent.getNumOfBlocks() == 0)
                 {
                     messenger.notifyPlayer(player, MessageNode.STONE_MINING_HELP, PermissionNode.SILENT_STONE_MINING_HELP);
                     event.setCancelled(true);
@@ -79,26 +91,16 @@ public class HardenedStone implements Listener
                 }
 
                 // otherwise, drastically reduce tool durability when breaking stone
-                else
+                else if (hardEvent.getNumOfBlocks() > 0)
                 {
-                    int amount;
 
-                    if (tool == Material.IRON_PICKAXE)
-                        amount = stoneBlocksIron;
-                    else
-                        amount = stoneBlocksDiamond;
-
-                    int maxDurability = 0;
-                    if (amount != 0)
-                        maxDurability = tool.getMaxDurability();
-                    else return;
-                    int damagePerBlock = maxDurability / amount;
+                    int maxDurability = inHandStack.getType().getMaxDurability();
+                    int damagePerBlock = maxDurability / hardEvent.getNumOfBlocks();
 
                     inHandStack.setDurability((short) (inHandStack.getDurability() + damagePerBlock));
 
-                    // For cases where a remainder causes the tool to be viable for an extra use,
-                    //   eat up the remainder of thet durability
-                    if ( maxDurability - inHandStack.getDurability() < tool.getMaxDurability() / amount )
+                    // For cases where a remainder causes the tool to be viable for an extra use, eat up the remainder of thet durability
+                    if ( maxDurability - inHandStack.getDurability() < inHandStack.getType().getMaxDurability() / damagePerBlock)
                         inHandStack.setDurability((short) maxDurability);
                 }
             }
