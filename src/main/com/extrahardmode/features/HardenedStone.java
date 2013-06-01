@@ -97,11 +97,14 @@ public class HardenedStone implements Listener
                     int maxDurability = inHandStack.getType().getMaxDurability();
                     int damagePerBlock = maxDurability / hardEvent.getNumOfBlocks();
 
-                    inHandStack.setDurability((short) (inHandStack.getDurability() + damagePerBlock));
+                    if (maxDurability > 0 && damagePerBlock > 0)
+                    {
+                        inHandStack.setDurability((short) (inHandStack.getDurability() + damagePerBlock));
 
-                    // For cases where a remainder causes the tool to be viable for an extra use, eat up the remainder of thet durability
-                    if ( maxDurability - inHandStack.getDurability() < inHandStack.getType().getMaxDurability() / damagePerBlock)
-                        inHandStack.setDurability((short) maxDurability);
+                        // For cases where a remainder causes the tool to be viable for an extra use, eat up the remainder of thet durability
+                        if ( maxDurability - inHandStack.getDurability() < inHandStack.getType().getMaxDurability() / damagePerBlock)
+                            inHandStack.setDurability((short) maxDurability);
+                    }
                 }
             }
         }
