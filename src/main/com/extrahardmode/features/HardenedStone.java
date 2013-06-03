@@ -59,11 +59,11 @@ import java.util.List;
  */
 public class HardenedStone implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    UtilityModule utils;
-    MessagingModule messenger;
-    BlockModule blockModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final UtilityModule utils;
+    private final MessagingModule messenger;
+    private final BlockModule blockModule;
 
     public HardenedStone (ExtraHardMode plugin)
     {

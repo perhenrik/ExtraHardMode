@@ -46,9 +46,9 @@ import java.util.List;
  */
 public class Ghasts implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    PlayerModule playerModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final PlayerModule playerModule;
 
     public Ghasts (ExtraHardMode plugin)
     {

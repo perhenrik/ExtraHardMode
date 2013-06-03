@@ -47,27 +47,27 @@ public class RealisticChopping implements Listener
     /**
      * Plugin-Reference to get modules
      */
-    ExtraHardMode plugin;
+    private final ExtraHardMode plugin;
     /**
      * Config Instance
      */
-    RootConfig CFG;
+    private final RootConfig CFG;
     /**
      * Stuff like FallingBlocks etc.
      */
-    BlockModule blockModule;
+    private final BlockModule blockModule;
     /**
      * Temporarily store data
      */
-    DataStoreModule dataStoreModule;
+    private final DataStoreModule dataStoreModule;
     /**
      * Stuff with Entities like MetaData
      */
-    EntityModule entityModule;
+    private final EntityModule entityModule;
     /**
      * Permissions etc.
      */
-    PlayerModule playerModule;
+    private final PlayerModule playerModule;
 
     /**
      * Constructor

@@ -64,13 +64,13 @@ public enum ExplosionType
             (0, false, false, 0, false, false)
     ;
 
-    private int powerB;
-    private boolean fireB;
-    private boolean allowBlockDamageB;
+    private final int powerB;
+    private final boolean fireB;
+    private final boolean allowBlockDamageB;
 
-    private int powerA;
-    private boolean fireA;
-    private boolean allowBlockDamageA;
+    private final int powerA;
+    private final boolean fireA;
+    private final boolean allowBlockDamageA;
 
     ExplosionType(int powerA, boolean fireA, boolean allowBlockDamageA, int powerB, boolean fireB, boolean allowBlockDamageB)
     {

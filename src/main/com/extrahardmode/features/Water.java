@@ -52,11 +52,11 @@ import org.bukkit.util.Vector;
  */
 public class Water implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    UtilityModule utils;
-    MessagingModule messenger;
-    PlayerModule playerModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final UtilityModule utils;
+    private final MessagingModule messenger;
+    private final PlayerModule playerModule;
 
     public Water (ExtraHardMode plugin)
     {
@@ -94,8 +94,8 @@ public class Water implements Listener
         final int drowningRate = CFG.getInt(RootNode.NO_SWIMMING_IN_ARMOR_DROWN_RATE, world.getName());
         final int overEncumbranceExtra = CFG.getInt(RootNode.NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA, world.getName());
 
-        final float normalDrownVel = -.5F;
-        final float overwaterDrownVel = -.7F;
+        final float normalDrownVel = -0.5F;
+        final float overwaterDrownVel = -0.7F;
 
         // FEATURE: no swimming while heavy, only enabled worlds, players without bypass permission and not in creative
         if (noSwimingInArmor &&! playerBypasses)
@@ -156,7 +156,7 @@ public class Water implements Listener
     /**
      * Drowns the player at the given rate
      */
-    public void drown (Player player, int drowningRate, int overEncumbranceExtra, float cachedWeightStatus, float maxWeight, float normalDrownVel, float overwaterDrownVel)
+    void drown(Player player, int drowningRate, int overEncumbranceExtra, float cachedWeightStatus, float maxWeight, float normalDrownVel, float overwaterDrownVel)
     {
         if (cachedWeightStatus > maxWeight)
         {
@@ -165,7 +165,7 @@ public class Water implements Listener
             MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
             float rdm = plugin.getRandom().nextFloat(); //how expensive is this
             //drownrate + extra when overencumbered
-            float drownPercent = ((float)drowningRate / 500F) + ((cachedWeightStatus - maxWeight) * overEncumbranceExtra) / 500F;
+            float drownPercent = ((float)drowningRate / 500.0F) + ((cachedWeightStatus - maxWeight) * overEncumbranceExtra) / 500.0F;
             if (rdm < drownPercent)
             {
                 Vector vec = player.getVelocity();
@@ -192,7 +192,7 @@ public class Water implements Listener
         // FEATURE: players can't swim when they're carrying a lot of weight
         Player player = event.getPlayer();
         DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-        playerData.cachedWeightStatus = -1F;
+        playerData.cachedWeightStatus = -1.0F;
     }
 
     /**
@@ -206,7 +206,7 @@ public class Water implements Listener
         // FEATURE: players can't swim when they're carrying a lot of weight
         Player player = event.getPlayer();
         DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-        playerData.cachedWeightStatus = -1F;
+        playerData.cachedWeightStatus = -1.0F;
     }
 
     /**
@@ -223,7 +223,7 @@ public class Water implements Listener
         {
             Player player = (Player) humanEntity;
             DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-            playerData.cachedWeightStatus = -1F;
+            playerData.cachedWeightStatus = -1.0F;
         }
     }
 }

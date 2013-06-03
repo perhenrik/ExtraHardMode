@@ -36,11 +36,11 @@ class DropItemsTask implements Runnable
     /**
      * Items to drop.
      */
-    private List<ItemStack> itemsToDrop;
+    private final List<ItemStack> itemsToDrop;
     /**
      * Location of item drop.
      */
-    private Location location;
+    private final Location location;
 
     /**
      * Constructor.

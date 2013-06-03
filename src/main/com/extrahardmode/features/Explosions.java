@@ -58,12 +58,12 @@ import java.util.List;
  */
 public class Explosions implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    MessageConfig messages;
-    UtilityModule utils;
-    EntityModule entityModule;
-    PlayerModule playerModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final MessageConfig messages;
+    private final UtilityModule utils;
+    private final EntityModule entityModule;
+    private final PlayerModule playerModule;
 
     /**
      * Your constructor of choice
@@ -239,7 +239,7 @@ public class Explosions implements Listener
                         //ShiftClick only causes this event to be called once
                         if (event.isShiftClick())
                         {
-                            int amountBefore = utils.countInvItem(inv, Material.TNT);
+                            int amountBefore = UtilityModule.countInvItem(inv, Material.TNT);
                             //Add the missing tnt 1 tick later, we count what has been added by shiftclicking and multiply it
                             UtilityModule.addExtraItemsLater task = new UtilityModule.addExtraItemsLater(inv, amountBefore, Material.TNT, multiplier -1);
                             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);

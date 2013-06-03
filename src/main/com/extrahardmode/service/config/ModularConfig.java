@@ -56,14 +56,14 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Cache of options for the config.
      */
-    protected final Map<ConfigNode, Object> OPTIONS = new ConcurrentHashMap<ConfigNode, Object>();
+    private final Map<ConfigNode, Object> OPTIONS = new ConcurrentHashMap<ConfigNode, Object>();
 
     /**
      * Constructor.
      *
      * @param plugin - plugin instance.
      */
-    public ModularConfig(ExtraHardMode plugin)
+    protected ModularConfig(ExtraHardMode plugin)
     {
         super(plugin);
     }
@@ -74,7 +74,7 @@ public abstract class ModularConfig extends EHMModule
      * @param node - ConfigNode to update.
      */
     @SuppressWarnings("unchecked")
-    public void updateOption(final ConfigNode node, final ConfigurationSection config)
+    protected void updateOption(final ConfigNode node, final ConfigurationSection config)
     {
         switch (node.getVarType())
         {
@@ -139,7 +139,7 @@ public abstract class ModularConfig extends EHMModule
      * @param path - Path to use.
      * @param value - Value to use.
      */
-    public abstract void set(final String path, final Object value);
+    protected abstract void set(final String path, final Object value);
 
     /**
      * Get the integer value of the node.
@@ -156,10 +156,10 @@ public abstract class ModularConfig extends EHMModule
             {
                 try
                 {
-                    i = ((Integer) OPTIONS.get(node)).intValue();
+                    i = (Integer) OPTIONS.get(node);
                 } catch (NullPointerException npe)
                 {
-                    i = ((Integer) node.getDefaultValue()).intValue();
+                    i = (Integer) node.getDefaultValue();
                 }
                 break;
             }
@@ -177,7 +177,7 @@ public abstract class ModularConfig extends EHMModule
      * @param node - Node to use.
      * @return Value of the node. Returns and empty string if unknown.
      */
-    public String getString(final ConfigNode node)
+    protected String getString(final ConfigNode node)
     {
         String out = "";
         switch (node.getVarType())
@@ -244,10 +244,10 @@ public abstract class ModularConfig extends EHMModule
             {
                 try
                 {
-                    d = ((Double) OPTIONS.get(node)).doubleValue();
+                    d = (Double) OPTIONS.get(node);
                 } catch (NullPointerException npe)
                 {
-                    d = ((Double) node.getDefaultValue()).doubleValue();
+                    d = (Double) node.getDefaultValue();
                 }
                 break;
             }
@@ -267,12 +267,12 @@ public abstract class ModularConfig extends EHMModule
      */
     public boolean getBoolean(final ConfigNode node)
     {
-        boolean b = false;
+        boolean bool = false;
         switch (node.getVarType())
         {
             case BOOLEAN:
             {
-                b = ((Boolean) OPTIONS.get(node)).booleanValue();
+                bool = (Boolean) OPTIONS.get(node);
                 break;
             }
             default:
@@ -280,7 +280,7 @@ public abstract class ModularConfig extends EHMModule
                 throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a boolean.");
             }
         }
-        return b;
+        return bool;
     }
 
     /**

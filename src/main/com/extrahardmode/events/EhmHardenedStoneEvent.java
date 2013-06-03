@@ -40,7 +40,7 @@ public class EhmHardenedStoneEvent extends Event
     /**
      * Player who broke the Stone
      */
-    Player player;
+    private final Player player;
     /**
      * The Tool which broke the block
      */
@@ -112,15 +112,15 @@ public class EhmHardenedStoneEvent extends Event
         return numOfBlocks;
     }
 
-    private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList HANDLERS = new HandlerList();
 
     public HandlerList getHandlers()
     {
-        return handlers;
+        return HANDLERS;
     }
 
     public static HandlerList getHandlerList()
     {
-        return handlers;
+        return HANDLERS;
     }
 }

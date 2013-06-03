@@ -37,15 +37,15 @@ public class DragonAttackTask implements Runnable
     /**
      * Plugin instance.
      */
-    private ExtraHardMode plugin;
+    private final ExtraHardMode plugin;
     /**
      * Target player.
      */
-    private Player player;
+    private final Player player;
     /**
      * Attacking dragon.
      */
-    private Entity dragon;
+    private final Entity dragon;
 
     /**
      * Constructor.

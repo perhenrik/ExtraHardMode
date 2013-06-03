@@ -51,16 +51,16 @@ public class MoreMonstersTask implements Runnable
     /**
      * Plugin instance.
      */
-    private ExtraHardMode plugin;
+    private final ExtraHardMode plugin;
     /**
      * Config instanz
      */
-    private RootConfig CFG;
+    private final RootConfig CFG;
     /**
      * module to check if spawnlocation is safe etc.
      */
-    private EntityModule entityModule;
-    private PlayerModule playerModule;
+    private final EntityModule entityModule;
+    private final PlayerModule playerModule;
     /**
      * Constructor.
      *

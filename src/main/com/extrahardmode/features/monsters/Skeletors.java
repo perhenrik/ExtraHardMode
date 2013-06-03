@@ -43,9 +43,9 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
  */
 public class Skeletors implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    EntityModule entityModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final EntityModule entityModule;
 
     public Skeletors(ExtraHardMode plugin)
     {
@@ -102,7 +102,7 @@ public class Skeletors implements Listener
                     // note that .6 and 12 were the unexplained recommended values
                     // for speed and spread, reflectively, in the bukkit wiki
                     arrow.remove();
-                    world.spawnArrow(arrow.getLocation().add((arrow.getVelocity().normalize()).multiply(2)), arrow.getVelocity(), .6f, 12f);
+                    world.spawnArrow(arrow.getLocation().add((arrow.getVelocity().normalize()).multiply(2)), arrow.getVelocity(), 0.6f, 12.0f);
                 }
             }
         }
@@ -163,7 +163,7 @@ public class Skeletors implements Listener
                 // replace with silverfish, quarter velocity of arrow, wants to attack
                 // same target as skeleton
                 Creature silverFish = (Creature) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0, 1.5, 0), EntityType.SILVERFISH);
-                silverFish.setVelocity(arrow.getVelocity().multiply(.25));
+                silverFish.setVelocity(arrow.getVelocity().multiply(0.25));
                 silverFish.setTarget(skeleton.getTarget());
                 module.markLootLess(silverFish); // this silverfish doesn't drop loot
             }

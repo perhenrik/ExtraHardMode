@@ -34,8 +34,8 @@ import static org.junit.Assert.assertEquals;
  */
 public class TestBlockModule
 {
-    ExtraHardMode plugin;
-    BlockModule module;
+    private final ExtraHardMode plugin;
+    private final BlockModule module;
 
     public TestBlockModule()
     {

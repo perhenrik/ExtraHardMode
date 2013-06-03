@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  */
 public class MockPlayer
 {
-    Player myPlayer = mock(Player.class);
+    private final Player myPlayer = mock(Player.class);
 
     /**
      * Mock a Player with some basic methods

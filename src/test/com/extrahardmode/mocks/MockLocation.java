@@ -40,7 +40,7 @@ public class MockLocation
     /**
      * Location Object
      */
-    private Location loc = mock(Location.class);
+    private final Location loc = mock(Location.class);
 
     /**
      * Block that resides at this Location

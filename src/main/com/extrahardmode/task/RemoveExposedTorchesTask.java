@@ -38,15 +38,15 @@ public class RemoveExposedTorchesTask implements Runnable
     /**
      * Plugin instance.
      */
-    private ExtraHardMode plugin;
+    private final ExtraHardMode plugin;
     /**
      * Chunk to iterate over.
      */
-    private Chunk chunk;
+    private final Chunk chunk;
     /**
      * Config instance
      */
-    private RootConfig CFG;
+    private final RootConfig CFG;
 
     /**
      * Constructor.

@@ -45,8 +45,8 @@ import java.util.UUID;
 public class BlockModule extends EHMModule
 {
 
-    private RootConfig CFG;
-    private EntityModule entityModule;
+    private final RootConfig CFG;
+    private final EntityModule entityModule;
 
     /**
      * Constructor.

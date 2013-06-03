@@ -33,15 +33,15 @@ public class SetPlayerHealthAndFoodTask implements Runnable
     /**
      * Target player.
      */
-    private Player player;
+    private final Player player;
     /**
      * Health level.
      */
-    private int health;
+    private final int health;
     /**
      * Food level.
      */
-    private int food;
+    private final int food;
 
     /**
      * Constructor.

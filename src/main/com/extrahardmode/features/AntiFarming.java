@@ -59,10 +59,10 @@ import org.bukkit.util.Vector;
  */
 public class AntiFarming implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    UtilityModule utils;
-    PlayerModule playerModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final UtilityModule utils;
+    private final PlayerModule playerModule;
 
     public AntiFarming (ExtraHardMode plugin)
     {
@@ -240,21 +240,21 @@ public class AntiFarming implements Listener
                 // plan to evaporate the water next tick
                 Block block;
                 Vector velocity = event.getVelocity();
-                if (velocity.getX() > 0)
+                if (velocity.getX() > 0.0)
                 {
-                    block = event.getBlock().getLocation().add(1, 0, 0).getBlock();
+                    block = event.getBlock().getLocation().add(1.0, 0.0, 0.0).getBlock();
                 }
-                else if (velocity.getX() < 0)
+                else if (velocity.getX() < 0.0)
                 {
-                    block = event.getBlock().getLocation().add(-1, 0, 0).getBlock();
+                    block = event.getBlock().getLocation().add(-1.0, 0.0, 0.0).getBlock();
                 }
-                else if (velocity.getZ() > 0)
+                else if (velocity.getZ() > 0.0)
                 {
-                    block = event.getBlock().getLocation().add(0, 0, 1).getBlock();
+                    block = event.getBlock().getLocation().add(0.0, 0.0, 1.0).getBlock();
                 }
                 else
                 {
-                    block = event.getBlock().getLocation().add(0, 0, -1).getBlock();
+                    block = event.getBlock().getLocation().add(0.0, 0.0, -1.0).getBlock();
                 }
 
                 EvaporateWaterTask task = new EvaporateWaterTask(block);

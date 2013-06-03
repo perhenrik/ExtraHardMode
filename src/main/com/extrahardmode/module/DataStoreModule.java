@@ -54,12 +54,12 @@ public class DataStoreModule extends EHMModule
     /**
      * List of Players fighting the dragon
      */
-    List <String> playersFightingDragon = new ArrayList<String>();
+    private final List <String> playersFightingDragon = new ArrayList<String>();
 
     /**
      * Config
      */
-    RootConfig CFG;
+    private final RootConfig CFG;
 
     /**
      * Constructor.

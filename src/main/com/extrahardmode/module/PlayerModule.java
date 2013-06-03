@@ -37,7 +37,7 @@ import org.bukkit.entity.Player;
  */
 public class PlayerModule extends EHMModule
 {
-    RootConfig CFG;
+    private final RootConfig CFG;
 
     /**
      * Constructor

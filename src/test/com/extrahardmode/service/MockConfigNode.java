@@ -57,11 +57,11 @@ public enum MockConfigNode implements ConfigNode
     INT_HP_1        ("hp01", VarType.INTEGER, SubType.HEALTH, 5),
     ;
 
-    String path;
-    VarType type;
-    SubType subType = null; //initialize because this is optional
-    Object defaultValue;
-    Disable disableValue;
+    private final String path;
+    private final VarType type;
+    private SubType subType = null; //initialize because this is optional
+    private final Object defaultValue;
+    private Disable disableValue;
 
     private MockConfigNode (String path, VarType type, Object defaultValue)
     {
@@ -192,7 +192,7 @@ public enum MockConfigNode implements ConfigNode
             disable = obj;
         }
 
-        Object disable;
+        final Object disable;
 
         public Object get()
         {

@@ -35,7 +35,7 @@ public class EvaporateWaterTask implements Runnable
     /**
      * Target block.
      */
-    private Block block;
+    private final Block block;
 
     /**
      * Constructor.

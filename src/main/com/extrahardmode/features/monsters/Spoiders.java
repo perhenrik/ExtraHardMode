@@ -50,9 +50,9 @@ import java.util.List;
  */
 public class Spoiders implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    EntityModule entityModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final EntityModule entityModule;
 
     public Spoiders(ExtraHardMode plugin)
     {

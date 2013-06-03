@@ -59,12 +59,12 @@ import java.util.List;
  */
 public class Players implements Listener
 {
-    ExtraHardMode plugin = null;
-    RootConfig CFG = null;
-    MessageConfig messages;
-    UtilityModule utils = null;
-    EntityModule entityModule = null;
-    PlayerModule playerModule;
+    private ExtraHardMode plugin = null;
+    private RootConfig CFG = null;
+    private final MessageConfig messages;
+    private UtilityModule utils = null;
+    private EntityModule entityModule = null;
+    private final PlayerModule playerModule;
 
     /**
      * Constructor
@@ -107,7 +107,7 @@ public class Players implements Listener
         }
         // FEATURE: players can't swim when they're carrying a lot of weight, reset the cached value
         DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-        playerData.cachedWeightStatus = -1F;
+        playerData.cachedWeightStatus = -1.0F;
     }
 
     /**
@@ -129,7 +129,7 @@ public class Players implements Listener
         {
             //TODO HIGH EhmPlayerInvetoryLossEvent after computation
             List<ItemStack> drops = event.getDrops();
-            int numberOfStacksToRemove = (int) (drops.size() * (deathLossPercent / 100f));
+            int numberOfStacksToRemove = (int) (drops.size() * (deathLossPercent / 100.0f));
             for (int i = 0; i < numberOfStacksToRemove && drops.size() > 0; i++)
             {
                 int indexOfStackToRemove = plugin.getRandom().nextInt(drops.size());

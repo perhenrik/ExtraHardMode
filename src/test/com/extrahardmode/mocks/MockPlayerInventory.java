@@ -38,19 +38,19 @@ public class MockPlayerInventory
     /**
      * Inventory instance
      */
-    private PlayerInventory inv = mock(PlayerInventory.class);
+    private final PlayerInventory inv = mock(PlayerInventory.class);
     /**
      * InventoryHolder
      */
-    private Player player;
+    private final Player player;
     /**
      * Armor worn by player
      */
-    ItemStack [] armorContents;
+    private final ItemStack [] armorContents;
     /**
      * Rest of the inventory
      */
-    ItemStack [] inventory;
+    private final ItemStack [] inventory;
 
     /**
      * Constructor

@@ -40,23 +40,23 @@ public class DragonAttackPatternTask implements Runnable
     /**
      * Plugin instance.
      */
-    private ExtraHardMode plugin;
+    private final ExtraHardMode plugin;
     /**
      * Config instance
      */
-    private RootConfig CFG;
+    private final RootConfig CFG;
     /**
      * Target player.
      */
-    private Player player;
+    private final Player player;
     /**
      * Dragon entity.
      */
-    private LivingEntity dragon;
+    private final LivingEntity dragon;
     /**
      * We save the Players fighting the dragon here
      */
-    DataStoreModule data;
+    private final DataStoreModule data;
 
     /**
      * Constructor.
@@ -89,7 +89,7 @@ public class DragonAttackPatternTask implements Runnable
         if (!this.player.isOnline() || world != this.player.getWorld() || this.player.isDead())
         {
             // restore some of the dragon's health
-            int newHealth = (int) (this.dragon.getHealth() + this.dragon.getMaxHealth() * .25);
+            int newHealth = (int) ((double) this.dragon.getHealth() + (double) this.dragon.getMaxHealth() * 0.25);
             if (newHealth > this.dragon.getMaxHealth())
             {
                 this.dragon.setHealth(this.dragon.getMaxHealth());
@@ -105,9 +105,9 @@ public class DragonAttackPatternTask implements Runnable
         for (int i = 0; i < 3; i++)
         {
             DragonAttackTask task = new DragonAttackTask(plugin, this.dragon, this.player);
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 20L * i + (plugin.getRandom().nextInt(20)));
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 20L * (long) i + (long) (plugin.getRandom().nextInt(20)));
         }
 
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, 20L * 30);
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, 20L * 30L);
     }
 }

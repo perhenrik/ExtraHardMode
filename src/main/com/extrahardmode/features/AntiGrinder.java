@@ -47,12 +47,12 @@ import org.bukkit.event.entity.EntityDeathEvent;
  */
 public class AntiGrinder implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    MessageConfig messages;
-    EntityModule entityModule;
-    BlockModule blockModule;
-    UtilityModule utils;
+    private ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private MessageConfig messages;
+    private final EntityModule entityModule;
+    private final BlockModule blockModule;
+    private final UtilityModule utils;
 
     /**
      * For Testing Purposes
@@ -222,12 +222,12 @@ public class AntiGrinder implements Listener
 
                             // interpolate locations
                             Location[] locations = new Location[]{
-                                    new Location(monsterEyeLocation.getWorld(), .2 * monsterEyeLocation.getX() + .8 * playerEyeLocation.getX(),
-                                            monsterEyeLocation.getY(), .2 * monsterEyeLocation.getZ() + .8 * playerEyeLocation.getZ()),
-                                    new Location(monsterEyeLocation.getWorld(), .5 * monsterEyeLocation.getX() + .5 * playerEyeLocation.getX(),
-                                            monsterEyeLocation.getY(), .5 * monsterEyeLocation.getZ() + .5 * playerEyeLocation.getZ()),
-                                    new Location(monsterEyeLocation.getWorld(), .8 * monsterEyeLocation.getX() + .2 * playerEyeLocation.getX(),
-                                            monsterEyeLocation.getY(), .8 * monsterEyeLocation.getZ() + .2 * playerEyeLocation.getZ()),};
+                                    new Location(monsterEyeLocation.getWorld(), 0.2 * monsterEyeLocation.getX() + 0.8 * playerEyeLocation.getX(),
+                                            monsterEyeLocation.getY(), 0.2 * monsterEyeLocation.getZ() + 0.8 * playerEyeLocation.getZ()),
+                                    new Location(monsterEyeLocation.getWorld(), 0.5 * monsterEyeLocation.getX() + 0.5 * playerEyeLocation.getX(),
+                                            monsterEyeLocation.getY(), 0.5 * monsterEyeLocation.getZ() + 0.5 * playerEyeLocation.getZ()),
+                                    new Location(monsterEyeLocation.getWorld(), 0.8 * monsterEyeLocation.getX() + 0.2 * playerEyeLocation.getX(),
+                                            monsterEyeLocation.getY(), 0.8 * monsterEyeLocation.getZ() + 0.2 * playerEyeLocation.getZ()),};
 
                             for (Location middleLocation : locations)
                             {

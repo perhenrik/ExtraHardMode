@@ -92,7 +92,7 @@ public class UtilityModule extends EHMModule
     /**
      * Is the given material a tool, e.g. doesn't stack
      */
-    public boolean isTool (Material material)
+    boolean isTool(Material material)
     {
         return     material.name().endsWith("AXE") //axe & pickaxe
                 || material.name().endsWith("SPADE")
@@ -170,7 +170,7 @@ public class UtilityModule extends EHMModule
     {
         // count worn clothing
         PlayerInventory inventory = player.getInventory();
-        float weight = 0F;
+        float weight = 0.0F;
         ItemStack[] armor = inventory.getArmorContents();
         for (ItemStack armorPiece : armor)
         {
@@ -220,7 +220,7 @@ public class UtilityModule extends EHMModule
         return counter;
     }
 
-    public boolean isSameShape(ArrayList<ItemStack> recipe1, ArrayList<ItemStack> recipe2)
+    boolean isSameShape(ArrayList<ItemStack> recipe1, ArrayList<ItemStack> recipe2)
     {
         //compare recipes
         boolean isSame = true;
@@ -259,7 +259,7 @@ public class UtilityModule extends EHMModule
         return craftRecipe;
     }
 
-    public String strArrToStr (String [] arr)
+    String strArrToStr(String[] arr)
     {
         StringBuilder builder = new StringBuilder();
         for(String s : arr) {
@@ -275,7 +275,7 @@ public class UtilityModule extends EHMModule
     {
         int amountBefore = 0;
         int amountToAdd = 0;
-        Material material;
+        final Material material;
         PlayerInventory inv = null;
 
         public addExtraItemsLater (PlayerInventory inventory, int amountBefore, Material toCompare, int amountToAdd)

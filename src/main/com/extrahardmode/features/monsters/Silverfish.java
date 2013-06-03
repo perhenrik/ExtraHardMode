@@ -45,8 +45,8 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Silverfish implements Listener
 {
-    ExtraHardMode plugin = null;
-    RootConfig CFG = null;
+    private ExtraHardMode plugin = null;
+    private RootConfig CFG = null;
 
     public Silverfish (ExtraHardMode plugin)
     {

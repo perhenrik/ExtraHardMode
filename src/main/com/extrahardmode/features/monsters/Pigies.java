@@ -53,8 +53,8 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Pigies implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
 
     public Pigies(ExtraHardMode plugin)
     {

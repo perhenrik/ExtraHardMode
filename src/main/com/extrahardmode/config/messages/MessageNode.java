@@ -128,11 +128,11 @@ public enum MessageNode implements ConfigNode
         PLAYER ("$PLAYER"),
         PLAYERS ("$PLAYERS");
 
-        private final String var;
+        private final String variable;
 
-        private variables(String var)
+        private variables(String variable)
         {
-            this.var = var;
+            this.variable = variable;
         }
 
         /**
@@ -140,7 +140,7 @@ public enum MessageNode implements ConfigNode
          */
         public String getVarName()
         {
-            return var;
+            return variable;
         }
     }
 

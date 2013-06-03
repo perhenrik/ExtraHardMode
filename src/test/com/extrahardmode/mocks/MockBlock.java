@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
  */
 public class MockBlock
 {
-    private Block block = mock(Block.class);
+    private final Block block = mock(Block.class);
 
     public MockBlock (World world)
     {

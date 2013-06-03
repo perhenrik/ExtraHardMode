@@ -39,15 +39,15 @@ public class RespawnZombieTask implements Runnable
     /**
      * Plugin instance.
      */
-    private ExtraHardMode plugin;
+    private final ExtraHardMode plugin;
     /**
      * Respawn location.
      */
-    private Location location;
+    private final Location location;
     /**
      * Target player.
      */
-    private Player player;
+    private final Player player;
 
     /**
      * Constructor.

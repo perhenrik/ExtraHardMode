@@ -49,11 +49,11 @@ public class HackCreeper implements Creeper
     /**
      * Location where this Creeper has exploded, e.g. the Location of the Explosion
      */
-    private Location loc;
+    private final Location loc;
     /**
      * Metadata to mark this Explosion to be ignored by EHM
      */
-    private Map</*metaDataKey*/String, List<MetadataValue>> meta = new HashMap<String, List<MetadataValue>>();
+    private final Map</*metaDataKey*/String, List<MetadataValue>> meta = new HashMap<String, List<MetadataValue>>();
 
     /**
      * Constructor to "mock" most methods for use with other plugins
@@ -82,7 +82,7 @@ public class HackCreeper implements Creeper
 
     @Override
     public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-        List metaValue = meta.get(metadataKey) != null ? meta.get(metadataKey) : new ArrayList<MetadataValue>();
+        List<MetadataValue> metaValue = meta.get(metadataKey) != null ? meta.get(metadataKey) : new ArrayList<MetadataValue>();
         metaValue.add(newMetadataValue);
         meta.put(metadataKey, metaValue);
     }

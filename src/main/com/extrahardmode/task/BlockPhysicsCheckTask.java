@@ -57,7 +57,7 @@ public class BlockPhysicsCheckTask implements Runnable
     /**
      * Config Reference
      */
-    final RootConfig CFG;
+    private final RootConfig CFG;
 
     /**
      * Constructor.

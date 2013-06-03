@@ -32,14 +32,14 @@ public abstract class EHMModule implements IModule
     /**
      * Plugin reference.
      */
-    protected ExtraHardMode plugin;
+    protected final ExtraHardMode plugin;
 
     /**
      * Constructor.
      *
      * @param plugin - Plugin instance.
      */
-    public EHMModule(ExtraHardMode plugin)
+    protected EHMModule(ExtraHardMode plugin)
     {
         this.plugin = plugin;
     }

@@ -48,10 +48,10 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class BumBumBens implements Listener
 {
-    ExtraHardMode plugin = null;
-    RootConfig CFG = null;
-    EntityModule entityModule = null;
-    PlayerModule playerModule;
+    private ExtraHardMode plugin = null;
+    private RootConfig CFG = null;
+    private EntityModule entityModule = null;
+    private final PlayerModule playerModule;
 
     public BumBumBens(ExtraHardMode plugin)
     {

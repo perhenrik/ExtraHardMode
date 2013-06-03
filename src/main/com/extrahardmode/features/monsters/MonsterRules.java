@@ -47,11 +47,11 @@ import org.bukkit.event.entity.EntityTargetEvent;
  */
 public class MonsterRules implements Listener
 {
-    ExtraHardMode plugin = null;
-    RootConfig CFG = null;
-    MessageConfig messages;
-    UtilityModule utils = null;
-    EntityModule entityModule = null;
+    private ExtraHardMode plugin = null;
+    private RootConfig CFG = null;
+    private final MessageConfig messages;
+    private UtilityModule utils = null;
+    private EntityModule entityModule = null;
 
     public MonsterRules(ExtraHardMode plugin)
     {

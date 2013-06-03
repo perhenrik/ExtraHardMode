@@ -36,18 +36,18 @@ import org.bukkit.util.Vector;
  */
 public class CoolCreeperExplosion implements Runnable
 {
-    private Creeper creeper;
-    private Location loc;
-    private ExtraHardMode plugin;
-    private UtilityModule utils;
-    private BukkitScheduler scheduler;
-    private RootConfig CFG;
+    private final Creeper creeper;
+    private final Location loc;
+    private final ExtraHardMode plugin;
+    private final UtilityModule utils;
+    private final BukkitScheduler scheduler;
+    private final RootConfig CFG;
 
     private int numOfFireworks = 3;
     private final int ticksBetweenFireworks = 5;
     private final int ticksBeforeCatapult = 3;
     private final int ticksBeforeSuicide = 8;
-    private long mainDelay = 0;
+    private long mainDelay = 0L;
     private double creeperAscendSpeed = 0.5;
 
     public CoolCreeperExplosion(Creeper entity, ExtraHardMode plugin)
@@ -74,11 +74,11 @@ public class CoolCreeperExplosion implements Runnable
         //Everyone loves fireworks
         for (int i = 0; i < numOfFireworks; i++)
         {
-            mainDelay += ticksBetweenFireworks;
+            mainDelay += (long) ticksBetweenFireworks;
             scheduler.runTaskLater(plugin, new Firework(), mainDelay);
         }
         //Catapult into air and explode midair
-        mainDelay += ticksBeforeCatapult;
+        mainDelay += (long) ticksBeforeCatapult;
         scheduler.runTaskLater(plugin, new AscendToHeaven(), mainDelay) ;
     }
 
@@ -106,10 +106,10 @@ public class CoolCreeperExplosion implements Runnable
                 creeper.setTarget(null);
                 for (int i = 0; i < 10; i++)
                 {
-                    scheduler.runTaskLater(plugin, new RiseToGlory(), ticksInbetween);
+                    scheduler.runTaskLater(plugin, new RiseToGlory(), (long) ticksInbetween);
                     ticksInbetween += ticksInbetween;
                 }
-                scheduler.runTaskLater(plugin, new Suicide(), ticksBeforeSuicide);
+                scheduler.runTaskLater(plugin, new Suicide(), (long) ticksBeforeSuicide);
             }
         }
     }

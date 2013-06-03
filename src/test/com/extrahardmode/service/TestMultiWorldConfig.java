@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
 @PrepareForTest({MultiWorldConfig.class, JavaPlugin.class, PluginLogger.class})
 public class TestMultiWorldConfig
 {
-    ExtraHardMode plugin = new MockExtraHardMode().get();
+    private final ExtraHardMode plugin = new MockExtraHardMode().get();
 
     //Because MultiworldConfig has a constructor and is an interface
     private class Mock extends MultiWorldConfig{
@@ -66,7 +66,7 @@ public class TestMultiWorldConfig
      * </pre>
      * @return a config
      */
-    FileConfiguration config = new YamlConfiguration();
+    private final FileConfiguration config = new YamlConfiguration();
     @Before
     public void prepare()
     {
@@ -85,7 +85,7 @@ public class TestMultiWorldConfig
         config.set(MockConfigNode.INHERITS_LIST.getPath(), Mode.INHERIT.name().toLowerCase());
     }
 
-    MultiWorldConfig module = new Mock(plugin);
+    private final MultiWorldConfig module = new Mock(plugin);
 
     /**
      * Test if normal retrieval of nodes which are present int the config is possible

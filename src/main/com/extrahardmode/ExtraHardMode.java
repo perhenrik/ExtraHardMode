@@ -144,7 +144,7 @@ public class ExtraHardMode extends JavaPlugin
      * @param module - Module instance.
      * @throws IllegalArgumentException - Thrown if an argument is null.
      */
-    public <T extends IModule> void registerModule(Class<T> clazz, T module)
+    <T extends IModule> void registerModule(Class<T> clazz, T module)
     {
         // Check arguments.
         if (clazz == null)

@@ -59,11 +59,11 @@ import org.bukkit.util.Vector;
  */
 public class Blazes implements Listener
 {
-    ExtraHardMode plugin = null;
-    RootConfig CFG = null;
-    MessageConfig messages;
-    UtilityModule utils = null;
-    EntityModule entityModule = null;
+    private ExtraHardMode plugin = null;
+    private RootConfig CFG = null;
+    private final MessageConfig messages;
+    private UtilityModule utils = null;
+    private EntityModule entityModule = null;
 
     public Blazes (ExtraHardMode plugin)
     {
@@ -173,7 +173,7 @@ public class Blazes implements Listener
             // fire a fireball straight up in normal worlds
             Fireball fireball = (Fireball) world.spawnEntity(entity.getLocation(), EntityType.FIREBALL);
             fireball.setDirection(new Vector(0, 10, 0));
-            fireball.setYield(1);
+            fireball.setYield(1.0F);
             //TODO EhmBlazeExplodeEvent
         }
 
@@ -221,7 +221,7 @@ public class Blazes implements Listener
         if (magmacubesBlazeOnDmg && entityType == EntityType.MAGMA_CUBE  && !entity.isDead())
         {
             entity.remove(); // remove magma cube
-            entityModule.spawn(entity.getLocation().add(0, 2, 0), EntityType.BLAZE); // replace with blaze
+            entityModule.spawn(entity.getLocation().add(0.0, 2.0, 0.0), EntityType.BLAZE); // replace with blaze
             new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.MAGMACUBE_FIRE).run(); // fiery explosion for effect
             //TODO EhmMagmaCubeExplodeEvent
         }

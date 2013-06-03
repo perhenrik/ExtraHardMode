@@ -35,17 +35,17 @@ import static org.junit.Assert.assertFalse;
  */
 public class TestHackCreeper
 {
-    MockExtraHardMode plugin = new MockExtraHardMode();
-    HackCreeper creeps;
+    private final MockExtraHardMode plugin = new MockExtraHardMode();
+    private HackCreeper creeps;
 
-    String myKey = "MockingRules";
-    Object obj = 0;
-    FixedMetadataValue meta = new FixedMetadataValue(plugin.get(), obj);
+    private final String myKey = "MockingRules";
+    private final Object obj = 0;
+    private final FixedMetadataValue meta = new FixedMetadataValue(plugin.get(), obj);
 
     /**
      * Call this every time so we have a fresh Object
      */
-    public void init ()
+    void init()
     {
         MockWorld world = new MockWorld("world");
         MockLocation loc = new MockLocation(world.get());

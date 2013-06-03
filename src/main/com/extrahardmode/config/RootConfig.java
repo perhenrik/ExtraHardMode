@@ -84,7 +84,7 @@ public class RootConfig extends MultiWorldConfig
      * loads all other Config's based on the Mode specified in the ConfigFile
      * @param configs FileName + respective FileConfiguration
      */
-    public void load (List <Config> configs)
+    void load(List<Config> configs)
     {
         configs = loadMain(configs);
 
@@ -185,7 +185,7 @@ public class RootConfig extends MultiWorldConfig
      * @param configs to process
      * @return all configs and the main config marked as processed
      */
-    public List<Config> loadMain (List <Config> configs)
+    List<Config> loadMain(List<Config> configs)
     {
         Config main = null;
 
@@ -349,7 +349,7 @@ public class RootConfig extends MultiWorldConfig
      *
      * @param config Config to save
      */
-    public void saveConfig (Config config)
+    void saveConfig(Config config)
     {
         //Reorder
         FileConfiguration reorderedConfig = new YamlConfiguration();

@@ -179,11 +179,7 @@ public class EntityModule extends EHMModule
         Validate.notNull(entity, "Entity can't be null");
         List<MetadataValue> meta = entity.getMetadata(PROCESS_ENTITY);
 
-        if (entity.hasMetadata(PROCESS_ENTITY) && meta != null)
-        {
-            return true;
-        }
-        return false;
+        return entity.hasMetadata(PROCESS_ENTITY) && meta != null;
     }
 
     /**

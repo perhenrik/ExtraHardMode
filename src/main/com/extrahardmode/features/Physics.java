@@ -55,11 +55,11 @@ import java.util.List;
  */
 public class Physics implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    BlockModule blockModule;
-    EntityModule entityModule;
-    PlayerModule playerModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final BlockModule blockModule;
+    private final EntityModule entityModule;
+    private final PlayerModule playerModule;
 
     public Physics (ExtraHardMode plugin)
     {

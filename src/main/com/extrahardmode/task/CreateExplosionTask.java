@@ -48,23 +48,23 @@ public class CreateExplosionTask implements Runnable
     /**
      * Plugin reference to get the server etc.
      */
-    private ExtraHardMode plugin;
+    private final ExtraHardMode plugin;
     /**
      * Location of explosion.
      */
-    private Location location;
+    private final Location location;
     /**
      * Type that holds information about size and things like blockDmg and Fire
      */
-    private ExplosionType type;
+    private final ExplosionType type;
     /**
      * Config
      */
-    private RootConfig CFG;
+    private final RootConfig CFG;
     /**
      * Entity specific stuff like marking our Entity as to be ignored
      */
-    EntityModule entityModule;
+    private final EntityModule entityModule;
     /**
      * Instance of a the Entity which caused the Explosion
      */
@@ -128,7 +128,7 @@ public class CreateExplosionTask implements Runnable
     /**
      * Creates a Explosion, can be different above/below a certain y-level
      */
-    public void createExplosion(Location loc, ExplosionType type)
+    void createExplosion(Location loc, ExplosionType type)
     {
         int power = type.getPowerA();
         boolean setFire = type.isFireA();
@@ -137,7 +137,7 @@ public class CreateExplosionTask implements Runnable
 
         final int border = CFG.getInt(RootNode.EXPLOSIONS_Y, loc.getWorld().getName());
 
-        if (loc.getY() <= border)
+        if (loc.getY() <= (double) border)
         {
             switch (type)
             {
@@ -172,7 +172,7 @@ public class CreateExplosionTask implements Runnable
                     damageWorld = type.allowBlockDmgB();
             }
         }
-        else if (loc.getY() > border)
+        else if (loc.getY() > (double) border)
         {
             switch (type)
             {
@@ -210,7 +210,7 @@ public class CreateExplosionTask implements Runnable
 
         if (validateLocationSafe(loc, type))
         {
-            loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, damageWorld);
+            loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), (float) power, setFire, damageWorld);
         }
     }
 
@@ -219,11 +219,11 @@ public class CreateExplosionTask implements Runnable
      * @param loc The Location
      * @param type ExplosionType determining the size of the Explosion and size of the area to check
      */
-    public boolean validateLocationSafe(Location loc, ExplosionType type)
+    boolean validateLocationSafe(Location loc, ExplosionType type)
     {
         boolean isSafe = true;
         int boomSize;
-        if (loc.getY() < CFG.getInt(RootNode.EXPLOSIONS_Y, loc.getWorld().getName()))
+        if (loc.getY() < (double) CFG.getInt(RootNode.EXPLOSIONS_Y, loc.getWorld().getName()))
             boomSize = type.getPowerB();
         else
             boomSize = type.getPowerA();
@@ -235,7 +235,7 @@ public class CreateExplosionTask implements Runnable
             case CREEPER: case CREEPER_CHARGED:
                 if (creeper != null)
                 {
-                    EntityExplodeEvent suicide = new EntityExplodeEvent(creeper, loc, boundaries, 1);
+                    EntityExplodeEvent suicide = new EntityExplodeEvent(creeper, loc, boundaries, 1.0F);
                     plugin.getServer().getPluginManager().callEvent(suicide);
                     creeper.remove();
                     isSafe = !suicide.isCancelled();
@@ -245,7 +245,7 @@ public class CreateExplosionTask implements Runnable
                 Creeper mockCreeper = new HackCreeper(loc);
                 entityModule.flagIgnore(mockCreeper);
 
-                EntityExplodeEvent suicide = new EntityExplodeEvent(mockCreeper, loc, boundaries, 1);
+                EntityExplodeEvent suicide = new EntityExplodeEvent(mockCreeper, loc, boundaries, 1.0F);
                 plugin.getServer().getPluginManager().callEvent(suicide);
                 mockCreeper.remove();
                 isSafe = !suicide.isCancelled();
@@ -272,28 +272,28 @@ public class CreateExplosionTask implements Runnable
                 switch (i)
                 {
                     case 0:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() + boomSize, loc.getY() + j, loc.getZ() + boomSize);
+                        cubeLoc = new Location (loc.getWorld(), loc.getX() + (double) boomSize, loc.getY() + (double) j, loc.getZ() + (double) boomSize);
                         break;
                     case 1:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - boomSize, loc.getY() + j, loc.getZ() + boomSize);
+                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) boomSize, loc.getY() + (double) j, loc.getZ() + (double) boomSize);
                         break;
                     case 2:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() + boomSize, loc.getY() + j, loc.getZ() - boomSize);
+                        cubeLoc = new Location (loc.getWorld(), loc.getX() + (double) boomSize, loc.getY() + (double) j, loc.getZ() - (double) boomSize);
                         break;
                     case 3:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - boomSize, loc.getY() + j, loc.getZ() - boomSize);
+                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) boomSize, loc.getY() + (double) j, loc.getZ() - (double) boomSize);
                         break;
                     case 4: //Locations in the middle inbetween the corners. Needed if explosion bigger than claim
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - boomSize/2, loc.getY() + j, loc.getZ() - boomSize/2);
+                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
                         break;
                     case 5:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - boomSize/2, loc.getY() + j, loc.getZ() - boomSize/2);
+                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
                         break;
                     case 6:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - boomSize/2, loc.getY() + j, loc.getZ() - boomSize/2);
+                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
                         break;
                     case 7:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - boomSize/2, loc.getY() + j, loc.getZ() - boomSize/2);
+                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
                         break;
                 }
                 boundaries.add(cubeLoc.getBlock());

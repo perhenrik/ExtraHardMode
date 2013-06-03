@@ -46,8 +46,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
  */
 public class Bobs implements Listener
 {
-    ExtraHardMode plugin = null;
-    RootConfig CFG = null;
+    private ExtraHardMode plugin = null;
+    private RootConfig CFG = null;
 
     public Bobs(ExtraHardMode plugin)
     {
@@ -98,7 +98,7 @@ public class Bobs implements Listener
                 int distanceSquared = (int) player.getLocation().distanceSquared(enderman.getLocation());
 
                 // play sound at old location
-                world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1, 1);
+                world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
                 Block destinationBlock;
 
                 // if the player is far away
@@ -125,7 +125,7 @@ public class Bobs implements Listener
                 //TODO EhmEndermanTeleportEvent
 
                 // play sound at new location
-                world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1, 1);
+                world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
             }
         }
     }

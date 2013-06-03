@@ -49,11 +49,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
  */
 public class LimitedBuilding implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    UtilityModule utils;
-    MessagingModule messenger;
-    PlayerModule playerModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final UtilityModule utils;
+    private final MessagingModule messenger;
+    private final PlayerModule playerModule;
 
     public LimitedBuilding (ExtraHardMode plugin)
     {

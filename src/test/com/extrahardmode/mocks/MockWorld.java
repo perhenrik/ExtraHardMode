@@ -37,7 +37,7 @@ public class MockWorld
     /**
      * Our mocked World Object
      */
-    private World world = mock (World.class);
+    private final World world = mock (World.class);
     /**
      * Environment of this world NORMAL/NETHER/END
      */

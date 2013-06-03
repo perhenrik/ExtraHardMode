@@ -45,7 +45,7 @@ public class MockCreatureSpawnEvent
     /**
      * Our mocked Event Object
      */
-    private CreatureSpawnEvent cse = mock(CreatureSpawnEvent.class);
+    private final CreatureSpawnEvent cse = mock(CreatureSpawnEvent.class);
     /**
      * World where this event occurred
      */

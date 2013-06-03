@@ -66,13 +66,13 @@ import java.util.List;
  */
 public class Glydia implements Listener
 {
-    ExtraHardMode plugin = null;
-    RootConfig CFG = null;
-    MessageConfig messages;
-    EntityModule entityModule;
-    DataStoreModule data;
-    MessagingModule messenger;
-    PlayerModule playerModule;
+    private ExtraHardMode plugin = null;
+    private RootConfig CFG = null;
+    private final MessageConfig messages;
+    private final EntityModule entityModule;
+    private final DataStoreModule data;
+    private final MessagingModule messenger;
+    private final PlayerModule playerModule;
 
     public Glydia(ExtraHardMode plugin)
     {

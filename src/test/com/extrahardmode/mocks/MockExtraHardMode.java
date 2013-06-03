@@ -30,7 +30,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  */
 public class MockExtraHardMode
 {
-    ExtraHardMode ehm;
+    private ExtraHardMode ehm;
 
     public ExtraHardMode get ()
     {

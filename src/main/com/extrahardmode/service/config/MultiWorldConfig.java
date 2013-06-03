@@ -63,7 +63,7 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Inits Objects and deletes old ones at the same time
      */
-    public void init ()
+    protected void init()
     {
         OPTIONS = HashBasedTable.create();
     }
@@ -370,13 +370,13 @@ public abstract class MultiWorldConfig extends EHMModule
      */
     public boolean getBoolean (final ConfigNode node, final String world)
     {
-        boolean b = false;
+        boolean bool = false;
         switch (node.getVarType())
         {
             case BOOLEAN:
             {
                 Object obj = OPTIONS.get(world, node);
-                b = obj instanceof Boolean ? (Boolean) obj : (Boolean) node.getValueToDisable();
+                bool = obj instanceof Boolean ? (Boolean) obj : (Boolean) node.getValueToDisable();
                 break;
             }
             default:
@@ -384,7 +384,7 @@ public abstract class MultiWorldConfig extends EHMModule
                 throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a boolean.");
             }
         }
-        return b;
+        return bool;
     }
 
     /**
@@ -451,7 +451,7 @@ public abstract class MultiWorldConfig extends EHMModule
      */
     public Response<Integer> validateInt (final ConfigNode node, Object value)
     {
-        Response response = new Response (Status.NOT_FOUND, value);
+        Response response = new Response <Object>(Status.NOT_FOUND, value);
 
         if (node.getVarType() == (ConfigNode.VarType.INTEGER))
         {
@@ -490,7 +490,7 @@ public abstract class MultiWorldConfig extends EHMModule
             }
             else
             {
-                response = new Response(Status.ADJUSTED, (Integer)node.getDefaultValue());
+                response = new Response<Object>(Status.ADJUSTED, (Integer)node.getDefaultValue());
             }
         }
         else
@@ -510,7 +510,7 @@ public abstract class MultiWorldConfig extends EHMModule
      *
      * @return a Response containing either the original value or adjusted if out of bounds and the Status
      */
-    public Response validateYCoordinate (ConfigNode node, List<String> worlds, Integer value)
+    Response validateYCoordinate(ConfigNode node, List<String> worlds, Integer value)
     {
         //Either 255 or the height of the first world loaded is the default max height
         Status status = Status.OK;
@@ -545,7 +545,7 @@ public abstract class MultiWorldConfig extends EHMModule
      *
      * @return a Response containing either the original value or adjusted if out of bounds and the Status
      */
-    public Response validatePercentage (ConfigNode node, Integer value)
+    Response validatePercentage(ConfigNode node, Integer value)
     {
         Status status = Status.OK;
         if (value < 0)
@@ -575,7 +575,7 @@ public abstract class MultiWorldConfig extends EHMModule
      *
      * @return a Response containing either the original value or adjusted if out of bounds and the Status
      */
-    public Response validateCustomBounds (ConfigNode node, int minVal, int maxVal, Integer value)
+    Response validateCustomBounds(ConfigNode node, int minVal, int maxVal, Integer value)
     {
         Status status = Status.OK;
         if (value < minVal)

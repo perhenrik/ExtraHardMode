@@ -43,27 +43,27 @@ public abstract class CommandHandler implements CommandExecutor
     /**
      * Registered commands for this handler.
      */
-    protected final Map<String, ICommand> registeredCommands = new HashMap<String, ICommand>();
+    private final Map<String, ICommand> registeredCommands = new HashMap<String, ICommand>();
     /**
      * Registered subcommands and the handler associated with it.
      */
-    protected final Map<String, CommandHandler> registeredHandlers = new HashMap<String, CommandHandler>();
+    private final Map<String, CommandHandler> registeredHandlers = new HashMap<String, CommandHandler>();
     /**
      * Root plugin so that commands and handlers have access to the information.
      */
-    protected ExtraHardMode plugin;
+    protected final ExtraHardMode plugin;
 
     /**
      * Command name.
      */
-    protected String cmd;
+    private final String cmd;
 
     /**
      * Constructor.
      *
      * @param plugin - Root plugin.
      */
-    public CommandHandler(ExtraHardMode plugin, String cmd)
+    protected CommandHandler(ExtraHardMode plugin, String cmd)
     {
         this.plugin = plugin;
         this.cmd = cmd;
@@ -76,7 +76,7 @@ public abstract class CommandHandler implements CommandExecutor
      * @param command - Execution handler that will handle the logic behind the
      *                command.
      */
-    public void registerCommand(String label, ICommand command)
+    protected void registerCommand(String label, ICommand command)
     {
         if (registeredCommands.containsKey(label))
         {
@@ -167,7 +167,7 @@ public abstract class CommandHandler implements CommandExecutor
      * @param label   - Command label.
      * @return True if handled. Should not need to return false...
      */
-    public abstract boolean noArgs(CommandSender sender, Command command, String label);
+    protected abstract boolean noArgs(CommandSender sender, Command command, String label);
 
     /**
      * Allow for the command handler to have special logic for unknown commands.
@@ -180,7 +180,7 @@ public abstract class CommandHandler implements CommandExecutor
      * @param args    - Arguments.
      * @return True if handled. Should not need to return false...
      */
-    public abstract boolean unknownCommand(CommandSender sender, Command command, String label, String[] args);
+    protected abstract boolean unknownCommand(CommandSender sender, Command command, String label, String[] args);
 
     /**
      * Shortens the given string array by removing the first entry.
@@ -188,7 +188,7 @@ public abstract class CommandHandler implements CommandExecutor
      * @param args - Array to shorten.
      * @return Shortened array.
      */
-    protected String[] shortenArgs(String[] args)
+    String[] shortenArgs(String[] args)
     {
         if (args.length == 0)
         {
@@ -207,7 +207,7 @@ public abstract class CommandHandler implements CommandExecutor
      *
      * @return Command
      */
-    public String getCommand()
+    String getCommand()
     {
         return cmd;
     }

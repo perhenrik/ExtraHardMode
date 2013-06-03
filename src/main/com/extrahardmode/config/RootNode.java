@@ -681,11 +681,11 @@ public enum RootNode implements ConfigNode
     /**
      * Path.
      */
-    private String path;
+    private final String path;
     /**
      * Variable type.
      */
-    private VarType type;
+    private final VarType type;
     /**
      * Subtype like percentage, y-value, health
      */
@@ -693,7 +693,7 @@ public enum RootNode implements ConfigNode
     /**
      * Default value.
      */
-    private Object defaultValue;
+    private final Object defaultValue;
     /**
      * The value that will disable this option
      */
@@ -849,7 +849,7 @@ public enum RootNode implements ConfigNode
             disable = obj;
         }
 
-        Object disable;
+        final Object disable;
 
         public Object get()
         {

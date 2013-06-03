@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
  */
 public class MockLivingEntity
 {
-    LivingEntity entity;
+    private LivingEntity entity;
 
     /**
      * Basic constructor

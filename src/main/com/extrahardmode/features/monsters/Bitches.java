@@ -47,9 +47,9 @@ import org.bukkit.event.entity.PotionSplashEvent;
  */
 public class Bitches implements Listener
 {
-    ExtraHardMode plugin;
-    RootConfig CFG;
-    EntityModule entityModule;
+    private final ExtraHardMode plugin;
+    private final RootConfig CFG;
+    private final EntityModule entityModule;
 
     public Bitches (ExtraHardMode plugin)
     {
@@ -166,7 +166,7 @@ public class Bitches implements Listener
                 {
                     if (target.getType() != EntityType.PLAYER)
                     {
-                        event.setIntensity(target, 0);
+                        event.setIntensity(target, 0.0);
                     }
                 }
             }
