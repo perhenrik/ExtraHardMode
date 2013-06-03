@@ -39,6 +39,11 @@ import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 
+/**
+ * Changes to Enderman including:
+ *
+ * Teleportation of the Player towards the Enderman ,
+ */
 public class Bobs implements Listener
 {
     ExtraHardMode plugin = null;
@@ -117,6 +122,7 @@ public class Bobs implements Listener
                 }
 
                 player.teleport(destinationBlock.getLocation(), PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
+                //TODO EhmEndermanTeleportEvent
 
                 // play sound at new location
                 world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1, 1);

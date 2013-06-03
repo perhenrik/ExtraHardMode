@@ -40,6 +40,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+/**
+ * Limited building restricts building forcing players to think a bit harder:
+ *
+ * No straight pillaring up ,
+ * No building while shifting over a corner ,
+ * No building while jumping
+ */
 public class LimitedBuilding implements Listener
 {
     ExtraHardMode plugin;
@@ -79,6 +86,7 @@ public class LimitedBuilding implements Listener
                 && block.getZ() == player.getLocation().getBlockZ()
                 && block.getY() < player.getLocation().getBlockY())
             {
+                //TODO EhmLimitedBuildingEvent Case.BENEATH_PLAYER
                 messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
                 return;
@@ -91,6 +99,7 @@ public class LimitedBuilding implements Listener
             if((underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
                     && (!playerBlock.getType().name().contains("STEP") && !playerBlock.getType().name().contains("STAIRS")))
             {
+                //TODO EhmLimitedBuildingEvent Case.PLAYER_ABOVE_UNSAFE_LOC
                 messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
                 return;
@@ -104,6 +113,7 @@ public class LimitedBuilding implements Listener
                 // if over lava or more air, prevent placement
                 if (underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
                 {
+                    //TODO EhmLimitedBuildingEvent Case.FLYING (not sure)
                     messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                     placeEvent.setCancelled(true);
                     return;

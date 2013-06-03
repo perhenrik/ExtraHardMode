@@ -44,11 +44,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: max
- * Date: 3/15/13
- * Time: 1:21 AM
- * To change this template use File | Settings | File Templates.
+ * Changes to Spoiders include:
+ *
+ * More spiders in caves
  */
 public class Spoiders implements Listener
 {
@@ -64,8 +62,9 @@ public class Spoiders implements Listener
     }
 
     /**
+     * When a creature spawns
+     *
      * More spiders in caves
-     * @param event
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -90,8 +89,9 @@ public class Spoiders implements Listener
     }
 
     /**
-     * drop web on death
-     * @param event
+     * When an Entity dies
+     *
+     * spiders drop web on death
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
@@ -101,6 +101,7 @@ public class Spoiders implements Listener
 
         final boolean spidersDropWebOnDeath= CFG.getBoolean(RootNode.SPIDERS_DROP_WEB_ON_DEATH, world.getName());
 
+        //TODO EhmSpiderDropWebEvent
         // FEATURE: spiders drop web on death
         if (spidersDropWebOnDeath)
         {

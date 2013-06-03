@@ -40,6 +40,10 @@ import org.bukkit.event.entity.PotionSplashEvent;
 
 /**
  * All the changes to Witches
+ *
+ * including:
+ *
+ * New Attacks like Explosion potions, spawning of zombies
  */
 public class Bitches implements Listener
 {
@@ -57,7 +61,8 @@ public class Bitches implements Listener
     /**
      * When an Entity spawns:
      * Spawn a Witch above ground sometimes instead of a Zombie
-     * @param event
+     *
+     * @param event which occurred
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -83,7 +88,7 @@ public class Bitches implements Listener
 
     /**
      * When a potion breaks
-     * atm this is used for witches. When they throw a potion we sometimes spawn explosions or monsters
+     * When Witches throw a potion we sometimes spawn explosions or monsters
      *
      * @param event - Event that occurred.
      */

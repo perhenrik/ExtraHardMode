@@ -45,6 +45,18 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+/**
+ * Changes to Blazes including:
+ * <p/>
+ * spawn in the Nether everywhere ,
+ * multiply on death ,
+ * more loot ,
+ * magmacubes explode on death and turn into Blazes
+ * <p/>
+ * spawn at lavalevel in the OverWorld ,
+ * explode on death in the Overworld ,
+ * no blazerods in the OverWorld
+ */
 public class Blazes implements Listener
 {
     ExtraHardMode plugin = null;
@@ -63,7 +75,10 @@ public class Blazes implements Listener
     }
 
     /**
-     * When an Entity spawns, handles all the extra spawns for Blazes in the OverWorld and Nether
+     * When an Entity spawns,
+     * <p/>
+     * handles all the extra spawns for Blazes in the OverWorld and Nether
+     *
      * @param event
      */
     @EventHandler(priority = EventPriority.LOW)
@@ -93,6 +108,7 @@ public class Blazes implements Listener
                     cube.setSize(1);
                 }
                 entityModule.spawn(location, entityType);
+                //TODO EhmBlazeSpawnEvent (Nether)
             }
         }
 
@@ -104,12 +120,17 @@ public class Blazes implements Listener
                 event.setCancelled(true);
                 entityType = EntityType.BLAZE;
                 entityModule.spawn(location, entityType);
+                //TODO EhmBlazeSpawnEvent (OverWorld)
             }
         }
     }
 
     /**
-     * When a Blaze dies, exlode in OverWorld and multiply in the Nether
+     * When a Blaze dies,
+     *
+     * exlode in OverWorld ,
+     * multiply in the Nether
+     *
      * @param event
      */
     @EventHandler
@@ -153,28 +174,7 @@ public class Blazes implements Listener
             Fireball fireball = (Fireball) world.spawnEntity(entity.getLocation(), EntityType.FIREBALL);
             fireball.setDirection(new Vector(0, 10, 0));
             fireball.setYield(1);
-        }
-
-        // FEATURE: nether blazes drop extra loot (glowstone and gunpowder)
-        if (bonusLoot && entity instanceof Blaze)
-        {
-            if (world.getEnvironment() == World.Environment.NETHER)
-            {
-                // 50% chance of each
-                if (plugin.getRandom().nextInt(2) == 0)
-                {
-                    event.getDrops().add(new ItemStack(Material.SULPHUR, 2));
-                }
-                else
-                {
-                    event.getDrops().add(new ItemStack(Material.GLOWSTONE_DUST, 2));
-                }
-            }
-            else // no drops in the normal world (restricting blaze rods to the
-            // nether)
-            {
-                event.getDrops().clear();
-            }
+            //TODO EhmBlazeExplodeEvent
         }
 
         // FEATURE: nether blazes may multiply on death
@@ -182,6 +182,7 @@ public class Blazes implements Listener
         {
             if (plugin.random(blazeSplitPercent))
             {
+                //TODO EhmBlazeSplitEvent
                 Entity firstNewBlaze = entityModule.spawn(entity.getLocation(), EntityType.BLAZE);
                 firstNewBlaze.setVelocity(new Vector(1, 0, 1));
 
@@ -198,6 +199,14 @@ public class Blazes implements Listener
         }
     }
 
+    /**
+     * When an Entity takes damage
+     *
+     * Magmacubes turn into blazes ,
+     * Blazes drop fire when hit ,
+     *
+     * @param event
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
     {
@@ -214,6 +223,7 @@ public class Blazes implements Listener
             entity.remove(); // remove magma cube
             entityModule.spawn(entity.getLocation().add(0, 2, 0), EntityType.BLAZE); // replace with blaze
             new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.MAGMACUBE_FIRE).run(); // fiery explosion for effect
+            //TODO EhmMagmaCubeExplodeEvent
         }
 
         // FEATURE: blazes drop fire on hit, also in nether

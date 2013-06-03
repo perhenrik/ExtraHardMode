@@ -40,6 +40,11 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 
+/**
+ * Changes to how Monsters spawn including:
+ *
+ *
+ */
 public class MonsterRules implements Listener
 {
     ExtraHardMode plugin = null;
@@ -57,6 +62,13 @@ public class MonsterRules implements Listener
         entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
+    /**
+     * When an Entity spawns
+     *
+     * more Monsters in caves
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
     {
@@ -84,6 +96,7 @@ public class MonsterRules implements Listener
                     {
                         for (int i = 1; i < multiplier; i++)
                         {
+                            //TODO spawn random monsters
                             Entity newEntity = entityModule.spawn(event.getLocation(), entityType);
                             if (entityModule.isLootLess(entity))
                             {
@@ -107,10 +120,10 @@ public class MonsterRules implements Listener
         Entity entity = event.getEntity();
         World world = entity.getWorld();
 
-        //TODO ENABLED WORLDS
+        final boolean websEnabled = CFG.getBoolean(RootNode.SPIDERS_DROP_WEB_ON_DEATH, world.getName());
 
         // FEATURE: a monster which gains a target breaks out of any webbing it might have been trapped within
-        if (entity instanceof Monster)
+        if (entity instanceof Monster && websEnabled)
         {
             entityModule.clearWebbing(entity);
         }
@@ -129,10 +142,10 @@ public class MonsterRules implements Listener
         EntityType entityType = entity.getType();
         World world = entity.getWorld();
 
-        //TODO WORLDS
+        //TODO Remove
 
         // FEATURE: don't allow explosions to destroy items on the ground
-        // REASONS: charged creepers explode twice, enhanced TNT explodes 5 times
+        // REASONS: enhanced TNT explodes 5 times
         if (entityType == EntityType.DROPPED_ITEM)
         {
             event.setCancelled(true);

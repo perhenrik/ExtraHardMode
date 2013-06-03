@@ -56,7 +56,13 @@ public class AntiGrinder implements Listener
 
     /**
      * For Testing Purposes
-     * Constructor to allow dependency injection
+     *
+     * Dependency Injection Constructor
+     *
+     * @param CFG instantiated RootConfig
+     * @param entityModule EntityModule
+     * @param blockModule BlockModule
+     * @param utils UtilityModule
      */
     public AntiGrinder(RootConfig CFG, EntityModule entityModule, BlockModule blockModule, UtilityModule utils)
     {
@@ -68,6 +74,7 @@ public class AntiGrinder implements Listener
 
     /**
      * Your basic constructor of choice
+     *
      * @param plugin
      */
     public AntiGrinder(ExtraHardMode plugin)
@@ -82,7 +89,9 @@ public class AntiGrinder implements Listener
 
     /**
      * When an Animal/Monster spawns check if the Location is "natural"
+     *
      * @param event
+     *
      * @return true succeeded and false if cancelled or marked lootless
      */
     @EventHandler(priority = EventPriority.LOW)
@@ -122,7 +131,7 @@ public class AntiGrinder implements Listener
                             }
                             break;
                         case NETHER:
-                            if (!utils.isNaturalNetherSpawnMaterial(underBlockType))
+                            if (!utils.isNaturalNetherSpawn(underBlockType))
                             {
                                 event.setCancelled(true);
                                 return false;
@@ -146,7 +155,9 @@ public class AntiGrinder implements Listener
 
     /**
      * When an entity dies check if loot should be blocked due to AntiGrinder
+     *
      * @param event
+     *
      * @return true if drops loot, false if loot was blocked
      */
     @EventHandler
@@ -249,7 +260,7 @@ public class AntiGrinder implements Listener
 
     /**
      * Utility method to clear the drops
-     * @return false which means that the drops have been cleared, there are no drops
+     * @return false which means that the drops have been cleared
      */
     private boolean clearDrops(EntityDeathEvent event)
     {
@@ -260,6 +271,9 @@ public class AntiGrinder implements Listener
 
     /**
      * When an entity takes damage
+     *
+     * check if the damage is environmental or from a player
+     *
      * @param event
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)

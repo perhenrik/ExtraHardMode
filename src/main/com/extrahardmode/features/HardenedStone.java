@@ -49,6 +49,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Hardened Stone is there to make branchmining harder/impossible
+ *
+ * Only Iron/Diamond Picks can break stone ,
+ * Tools break faster when breaking stone ,
+ * Breaking ore causes surounding stone to fall ,
+ * Various Fixes to prevent working around the hardened stone
+ */
 public class HardenedStone implements Listener
 {
     ExtraHardMode plugin;
@@ -101,7 +109,7 @@ public class HardenedStone implements Listener
                         break;
                 }
 
-                /* Broadcast an Event for other Plugins to change the tools */
+                /* Broadcast an Event for other Plugins to change if the tool can break stone and the amount of blocks */
                 plugin.getServer().getPluginManager().callEvent(hardEvent);
 
                 if (hardEvent.getNumOfBlocks() == 0)
@@ -133,6 +141,7 @@ public class HardenedStone implements Listener
         // when ore is broken, it softens adjacent stone important to ensure players can reach the ore they break
         if (hardStonePhysix && ((block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES"))))
         {
+            //TODO HIGH EhmOrePhysicsEvent
             for (BlockFace face : blockModule.getTouchingFaces())
             {
                 Block adjacentBlock = block.getRelative(face);
@@ -155,6 +164,7 @@ public class HardenedStone implements Listener
         final boolean hardstoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName())
                                          &&! player.getGameMode().equals(GameMode.CREATIVE);
 
+        //TODO EhmBlockOrePlacementEvent
         if (hardstoneEnabled && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES")))
         {
             ArrayList<Block> adjacentBlocks = new ArrayList<Block>();
@@ -190,6 +200,7 @@ public class HardenedStone implements Listener
 
         final boolean superHardStone = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
 
+        //TODO EhmBlockOrePlacementEvent
         if (superHardStone)
         {
             // which blocks are being pushed?
@@ -220,6 +231,7 @@ public class HardenedStone implements Listener
 
         final boolean hardStoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
 
+        //TODO EhmBlockOrePlacementEvent
         // we only care about sticky pistons
         if (event.isSticky() && hardStoneEnabled)
         {

@@ -139,7 +139,7 @@ public class UtilityModule extends EHMModule
      * Is this a natural block for netherspawning?
      */
     //TODO name too long
-    public boolean isNaturalNetherSpawnMaterial (Material material)
+    public boolean isNaturalNetherSpawn(Material material)
     {
         return     material == Material.NETHERRACK
                 || material == Material.NETHER_BRICK

@@ -36,11 +36,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 /**
- * Created with IntelliJ IDEA.
- * User: max
- * Date: 3/15/13
- * Time: 1:19 AM
- * To change this template use File | Settings | File Templates.
+ * Changes to Skeletons include:
+ *
+ * Immunity to arrows ,
+ *
  */
 public class Skeletors implements Listener
 {
@@ -58,7 +57,9 @@ public class Skeletors implements Listener
 
     /**
      * When an entity takes damage
+     *
      * skeletons are immune to arrows
+     *
      * @param event
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -83,7 +84,7 @@ public class Skeletors implements Listener
         if (entityType == EntityType.SKELETON && damageByEntityEvent != null && deflect > 0)
         {
             Entity damageSource = damageByEntityEvent.getDamager();
-
+            //TODO EhmSkeletonDeflectArrowEvent
             // only arrows
             if (damageSource instanceof Arrow)
             {
@@ -120,7 +121,7 @@ public class Skeletors implements Listener
                         {
                             // cut damage in half
                             event.setDamage(event.getDamage() / 2);
-
+                            //TODO EhmSkeletonKnockbackEvent
                             // knock back target with half the arrow's velocity
                             entity.setVelocity(arrow.getVelocity());
                         }
@@ -132,7 +133,8 @@ public class Skeletors implements Listener
 
     /**
      * when an entity shoots a bow...
-     * Skeletors: Knockback-arrows, silverfish
+     *
+     * skeletons shoot silverfish
      *
      * @param event - Event that occurred.
      */
@@ -149,7 +151,7 @@ public class Skeletors implements Listener
         if (event.getEntity() != null && entityType == EntityType.ARROW)
         {
             Arrow arrow = (Arrow) event.getEntity();
-
+            //TODO EhmSkeletonSilverfishEvent
             LivingEntity shooter = arrow.getShooter();
             if (shooter != null && shooter.getType() == EntityType.SKELETON && plugin.random(silverfishShootPercent))
             {

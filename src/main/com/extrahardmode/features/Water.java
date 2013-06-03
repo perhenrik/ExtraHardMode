@@ -47,6 +47,9 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.util.Vector;
 
 
+/**
+ * Swimming in water will pull you down if you are carrying too much
+ */
 public class Water implements Listener
 {
     ExtraHardMode plugin;
@@ -63,6 +66,7 @@ public class Water implements Listener
         messenger = plugin.getModuleForClass(MessagingModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
+
     /**
      * when a player moves...
      *
@@ -156,6 +160,8 @@ public class Water implements Listener
     {
         if (cachedWeightStatus > maxWeight)
         {
+            //TODO EhmDrownEvent
+            //TODO HIGH EhmPreDrownEvent warn player that he is carrying too much and give him a chance to exit the water
             MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
             float rdm = plugin.getRandom().nextFloat(); //how expensive is this
             //drownrate + extra when overencumbered

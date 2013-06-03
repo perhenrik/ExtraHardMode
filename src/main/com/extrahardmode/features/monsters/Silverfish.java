@@ -37,6 +37,12 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Changes to SilverFish including:
+ *
+ * Block entering of blocks
+ * Drop cobble when slain
+ */
 public class Silverfish implements Listener
 {
     ExtraHardMode plugin = null;

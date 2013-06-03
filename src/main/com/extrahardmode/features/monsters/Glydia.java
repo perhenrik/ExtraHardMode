@@ -54,6 +54,16 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 
+/**
+ * Glydia is the Enderdragon
+ * changes to her include:
+ *
+ * additional attacks ,
+ * more loot including villager eggs and dragon egg ,
+ * messages when challenging the dragon and dying ,
+ * Limited Building in the End ,
+ * Blazes, Zombies, aggro Enderman
+ */
 public class Glydia implements Listener
 {
     ExtraHardMode plugin = null;
@@ -78,6 +88,8 @@ public class Glydia implements Listener
     /**
      * When a Block is broken in the End
      *
+     * Limited building in the end
+     *
      * @param breakEvent
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -90,9 +102,7 @@ public class Glydia implements Listener
         final boolean endNoBuilding = CFG.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING, world.getName());
         final boolean playerBypass = playerModule.playerBypasses(player, Feature.MONSTER_GLYDIA);
 
-        // FEATURE: very limited building in the end
-        // players are allowed to break only end stone, and only to create a stair
-        // up to ground level
+        // FEATURE: very limited building in the end, players are allowed to break only end stone, and only to create a stair up to ground level
         if (endNoBuilding && world.getEnvironment() == World.Environment.THE_END &&! playerBypass)
         {
             if (block.getType() != Material.ENDER_STONE)
@@ -112,6 +122,7 @@ public class Glydia implements Listener
                 if (block.getY() < player.getLocation().getBlockY() + absoluteDistanceFromBlock)
                 {
                     breakEvent.setCancelled(true);
+                    //TODO EhmLimitedBuildingEvent End
                     messenger.sendMessage(player, MessageNode.LIMITED_END_BUILDING);
                 }
             }
@@ -120,6 +131,8 @@ public class Glydia implements Listener
 
     /**
      * When a Block is placed
+     *
+     * Limited building in the end
      *
      * @param placeEvent
      */
@@ -137,13 +150,18 @@ public class Glydia implements Listener
         if (enderDragonNoBuilding && world.getEnvironment() == World.Environment.THE_END &&! playerBypass)
         {
             placeEvent.setCancelled(true);
+            //TODO EhmLimitedBuildingEvent End
             messenger.sendMessage(player, MessageNode.LIMITED_END_BUILDING);
             return;
         }
     }
 
     /**
-     * When the Dragon dies
+     * When an Entity dies (Glydia)
+     *
+     * drop villager eggs ,
+     * drop a dragon egg ,
+     * announce the killers
      *
      * @param event
      */
@@ -153,14 +171,14 @@ public class Glydia implements Listener
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean endNoBuilding = CFG.getBoolean(RootNode.ENDER_DRAGON_DROPS_VILLAGER_EGGS, world.getName());
+        final boolean glydiaDropsEggs = CFG.getBoolean(RootNode.ENDER_DRAGON_DROPS_VILLAGER_EGGS, world.getName());
         final boolean enderDragonDropsEggs = CFG.getBoolean(RootNode.ENDER_DRAGON_DROPS_EGG, world.getName());
         final boolean announcements = CFG.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, world.getName());
 
         // FEATURE: ender dragon drops prizes on death
         if (entity instanceof EnderDragon)
         {
-            if (endNoBuilding)
+            if (glydiaDropsEggs)
             {
                 ItemStack itemStack = new ItemStack(Material.MONSTER_EGG, 2, (short) 120);
                 world.dropItemNaturally(entity.getLocation().add(10, 0, 0), itemStack);
@@ -182,7 +200,7 @@ public class Glydia implements Listener
                 messenger.broadcast(MessageNode.END_DRAGON_KILLED, new FindAndReplace(MessageNode.variables.PLAYERS.getVarName(), builder.toString()));
             }
 
-            if (endNoBuilding)
+            if (glydiaDropsEggs)
             {
                 for (String player : data.getPlayers())
                 {
@@ -200,6 +218,8 @@ public class Glydia implements Listener
 
     /**
      * When the Player dies while fighting the dragon
+     *
+     * announce his death
      *
      * @param event
      */
@@ -220,7 +240,9 @@ public class Glydia implements Listener
     }
 
     /**
-     * When the Player changes World while fighting the Dragon, remove him from the Players fighting the Dragon
+     * When the Player changes World while fighting the Dragon,
+     *
+     * remove him from the Players fighting the Dragon
      *
      * @param event
      */
@@ -233,15 +255,9 @@ public class Glydia implements Listener
     }
 
     /**
-     * When a Player enters the End and the Portal is in the air, try to build a bridge
-     */
-    @EventHandler
-    public void onPlayerEnter (PlayerChangedWorldEvent event)
-    {
-    }
-
-    /**
      * When the Dragon is damaged
+     *
+     * initiate the additional attacks
      *
      * @param event
      */
@@ -372,9 +388,7 @@ public class Glydia implements Listener
         // FEATURE: fountain effect from dragon fireball explosions sometimes causes fire to drop as an item. this is the fix for that.
         //Note: eeeeeeh Feature?!
         Item item = event.getEntity();
-        World world = item.getWorld();
 
-        //TODO add method to test if activated for world
         if (item.getItemStack().getType() == Material.FIRE)
         {
             event.setCancelled(true);
@@ -392,7 +406,6 @@ public class Glydia implements Listener
         Entity entity = event.getEntity();
         World world = entity.getWorld();
 
-        //TODO method for activated in world
         // FEATURE: monsters don't target the ender dragon
         if (event.getTarget() != null && event.getTarget() instanceof EnderDragon)
         {
@@ -401,6 +414,9 @@ public class Glydia implements Listener
     }
 
     /**
+     * When an explosion occurs
+     *
+     * Spawn monsters when the dragon shoots fireballs ,
      *
      * @param event
      */

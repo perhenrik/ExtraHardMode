@@ -46,6 +46,13 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
+/**
+ * Physics include
+ *
+ * More FallingBlocks ,
+ * Breaking Netherrack causes fires ,
+ * Players get damaged by FallingBlocks when hit
+ */
 public class Physics implements Listener
 {
     ExtraHardMode plugin;
@@ -62,8 +69,11 @@ public class Physics implements Listener
         entityModule = plugin.getModuleForClass(EntityModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
+
     /**
      * When a player places a block...
+     *
+     * Check the surrounding blocks for gravity
      *
      * @param placeEvent - Event that occurred
      */
@@ -79,12 +89,15 @@ public class Physics implements Listener
 
         if (physixEnabled &&! playerBypasses)
         {
+            //TODO EhmPhysicCheckEvent
             blockModule.physicsCheck(block, 10, true, 0);
         }
     }
 
     /**
      * When a player breaks a block...
+     *
+     * Check if the surrounding blocks should fall
      *
      * @param breakEvent - Event that occurred.
      */
@@ -104,6 +117,7 @@ public class Physics implements Listener
         // FEATURE: more falling blocks
         if (moreFallingBlocksEnabled &&! playerBypasses)
         {
+            //TODO EhmPhysicCheckEvent
             blockModule.physicsCheck(block, 10, true, 5);
         }
 
@@ -113,6 +127,7 @@ public class Physics implements Listener
             Block underBlock = block.getRelative(BlockFace.DOWN);
             if (underBlock.getType() == Material.NETHERRACK && plugin.random(netherRackFirePercent))
             {
+                //TODO EhmNetherrackFireEvent
                 breakEvent.setCancelled(true);
                 block.setType(Material.FIRE);
             }
@@ -140,6 +155,7 @@ public class Physics implements Listener
             {
                 if (ent instanceof LivingEntity)
                 {
+                    //TODO EhmEnvironmentalDamageEvent FallingBlock
                     LivingEntity entityWithDamagedHead = (LivingEntity) ent;
                     //Frighten the player
                     entityWithDamagedHead.damage(damageAmount, entity);

@@ -52,6 +52,11 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+/**
+ * Antifarming module
+ *
+ *
+ */
 public class AntiFarming implements Listener
 {
     ExtraHardMode plugin;
@@ -69,6 +74,9 @@ public class AntiFarming implements Listener
 
     /**
      * when a player interacts with the world
+     *
+     * No bonemeal on mushrooms ,
+     * bonemeal doesn't always succeed
      *
      * @param event - Event that occurred.
      */
@@ -119,7 +127,7 @@ public class AntiFarming implements Listener
     /**
      * When a player breaks a block...
      *
-     * @param breakEvent - Event that occurred.
+     * no netherwart farming
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
@@ -144,8 +152,8 @@ public class AntiFarming implements Listener
 
     /**
      * When a player places a block...
+     *
      * no farming nether wart
-     * @param placeEvent
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent placeEvent)
@@ -167,9 +175,8 @@ public class AntiFarming implements Listener
 
     /**
      * When a block grows...
-     * fewer seeds = shrinking crops. when a plant grows to its full size, it may be replaced by a dead shrub
      *
-     * @param event - Event that occurred.
+     * fewer seeds = shrinking crops. when a plant grows to its full size, it may be replaced by a dead shrub
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockGrow(BlockGrowEvent event)
@@ -188,6 +195,7 @@ public class AntiFarming implements Listener
 
     /**
      * when a tree or mushroom grows...
+     *
      * no big plant growth in deserts
      *
      * @param event - Event that occurred.

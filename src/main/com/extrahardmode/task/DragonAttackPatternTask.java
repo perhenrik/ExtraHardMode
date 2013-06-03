@@ -35,7 +35,6 @@ import java.util.List;
 /**
  * Task to handle the dragon's attack pattern.
  */
-//TODO move to dragon class
 public class DragonAttackPatternTask implements Runnable
 {
     /**

@@ -49,6 +49,14 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
+/**
+ * Playerchanges include
+ *
+ * less health/food on respawn ,
+ * loss of some of their inventory ,
+ * enhanced environmental damage ,
+ * catching the player on fire if extinguishing fires by hand
+ */
 public class Players implements Listener
 {
     ExtraHardMode plugin = null;
@@ -93,6 +101,7 @@ public class Players implements Listener
 
         if (respawnFood < player.getMaxHealth() || respawnHealth < player.getMaxHealth()) //maxHealth and maxFoodLevel are both 20, but there is no method for maxFoodLevel
         {
+            //TODO HIGH EhmPlayerRespawnEvent
             SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, respawnHealth, respawnFood);
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L); // half-second delay
         }
@@ -118,13 +127,14 @@ public class Players implements Listener
         // FEATURE: some portion of player inventory is permanently lost on death
         if (!playerBypasses)
         {
+            //TODO HIGH EhmPlayerInvetoryLossEvent after computation
             List<ItemStack> drops = event.getDrops();
             int numberOfStacksToRemove = (int) (drops.size() * (deathLossPercent / 100f));
             for (int i = 0; i < numberOfStacksToRemove && drops.size() > 0; i++)
             {
                 int indexOfStackToRemove = plugin.getRandom().nextInt(drops.size());
                 drops.remove(indexOfStackToRemove);
-                //TODO tools percentage, damage etc.
+                //TODO HIGH tools percentage, damage etc.
             }
         }
 
@@ -156,6 +166,7 @@ public class Players implements Listener
                 {
                     case BLOCK_EXPLOSION:
                     case ENTITY_EXPLOSION:
+                        //TODO EhmPlayerEnvironmentalDamageEvent for each type
                         if (event.getDamage() > 2)
                             player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 3));
                         break;
@@ -202,6 +213,7 @@ public class Players implements Listener
         {
             if (block.getRelative(event.getBlockFace()).getType() == Material.FIRE)
             {
+                //TODO EhmPlayerExtinguishFireEvent
                 player.setFireTicks(100); // 20L ~ 1 seconds; 100L ~ 5 seconds
             }
         }

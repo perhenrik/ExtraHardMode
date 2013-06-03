@@ -45,11 +45,11 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Created with IntelliJ IDEA.
- * User: max
- * Date: 3/15/13
- * Time: 1:20 AM
- * To change this template use File | Settings | File Templates.
+ * Changes to ZombiePigmen including:
+ *
+ * Always angry ,
+ * drop netherwart in the nether ,
+ * spawn on lighting strikes
  */
 public class Pigies implements Listener
 {
@@ -62,6 +62,13 @@ public class Pigies implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
+    /**
+     * When an Entity dies (Piggie)
+     *
+     * Drop netherwart in fortresses and elsewhere in the nether
+     *
+     * @param event
+     */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
     {
@@ -89,6 +96,13 @@ public class Pigies implements Listener
         }
     }
 
+    /**
+     * When an Entity spawns
+     *
+     * Makes Pigmen always angry
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
     {
@@ -138,7 +152,8 @@ public class Pigies implements Listener
 
     /**
      * When a lightning strikes
-     * spawn a pigmen
+     *
+     * spawn pigmen
      */
     @EventHandler
     public void onLightingStrike(LightningStrikeEvent event)
@@ -162,17 +177,21 @@ public class Pigies implements Listener
                     amount = 2;
                     break;
                 }
-                case 2:case 3://20%
+                case 2:case 3: //20%
                 {
                     amount = 3;
+                    break;
                 }
-                default:
+                default:       //60%
                 {
                     amount = 1;
                 }
             }
             for (int i = 0; i < amount; i++)
-                world.spawn(loc, PigZombie.class);
+            {
+                PigZombie pigZombie = world.spawn(loc, PigZombie.class);
+                pigZombie.setAnger(Integer.MAX_VALUE);
+            }
         }
     }
 }

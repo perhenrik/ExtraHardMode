@@ -45,6 +45,12 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.material.Torch;
 
+/**
+ * Torches
+ *
+ * can't be attached to loose blocks ,
+ * get washed away when it rains
+ */
 public class Torches implements Listener
 {
     private final ExtraHardMode plugin;
@@ -62,6 +68,13 @@ public class Torches implements Listener
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+    /**
+     * When a block is placed
+     *
+     * players can't attach torches to loose blocks like sand/dirt
+     *
+     * @param placeEvent
+     */
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOW)
     public void onBlockPlace (BlockPlaceEvent placeEvent)
     {

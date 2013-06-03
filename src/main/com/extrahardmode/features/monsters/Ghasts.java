@@ -39,11 +39,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: max
- * Date: 3/15/13
- * Time: 1:20 AM
- * To change this template use File | Settings | File Templates.
+ * All changes to Ghasts including:
+ *
+ * Increase loot for Ghasts drastically
+ * Ghasts don't take damage from arrows
  */
 public class Ghasts implements Listener
 {
@@ -58,6 +57,13 @@ public class Ghasts implements Listener
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+    /**
+     * When an Entity dies
+     *
+     * Increase loot for Ghasts drastically
+     *
+     * @param event
+     */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
     {
@@ -81,6 +87,13 @@ public class Ghasts implements Listener
         }
     }
 
+    /**
+     * When an Entity takes damage
+     *
+     * Ghasts don't take damage from arrows
+     *
+     * @param event
+     */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
     {

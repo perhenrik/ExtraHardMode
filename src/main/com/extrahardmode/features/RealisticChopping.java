@@ -136,6 +136,7 @@ public class RealisticChopping implements Listener
                             Block[] logs = blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 5, Material.LOG);
                             for (Block log : logs)
                             {
+                                //TODO EhmRealisticChoppingLooseLogEvent
                                 //check 2 blocks down for logs to see if it it's a stem
                                 if (log.getRelative(BlockFace.DOWN).getType() != Material.LOG && log.getRelative(BlockFace.DOWN, 2).getType() != Material.LOG)
                                     plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, log), plugin.getRandom().nextInt(50/*so they don't fall at once*/));

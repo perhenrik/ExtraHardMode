@@ -39,11 +39,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
- * Created with IntelliJ IDEA.
- * User: max
- * Date: 3/15/13
- * Time: 1:20 AM
- * To change this template use File | Settings | File Templates.
+ * Zombies
+ * <p>
+ * can resurrect themselves ,
+ * make players slow when hit
+ * </p>
  */
 public class Zombies implements Listener
 {
@@ -59,8 +59,9 @@ public class Zombies implements Listener
     }
 
     /**
-     * When a zombie dies sometimes reanimate the zombie
-     * @param event
+     * When a zombie dies
+     *
+     * sometimes reanimate the zombie
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
@@ -85,7 +86,7 @@ public class Zombies implements Listener
                     {
                         playerTarget = (Player) target;
                     }
-
+                    //TODO EhmZombieResurrectEvent check dictionray lol
                     RespawnZombieTask task = new RespawnZombieTask(plugin, entity.getLocation(), playerTarget);
                     int respawnSeconds = plugin.getRandom().nextInt(6) + 3; // 3-8 seconds
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 20L * respawnSeconds); // /20L
@@ -96,8 +97,9 @@ public class Zombies implements Listener
     }
 
     /**
-     * When a player is damaged by a zombie
-     * @param event
+     * When an Entity is damaged
+     *
+     * When a player is damaged by a zombie make him slow
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
@@ -124,6 +126,7 @@ public class Zombies implements Listener
             {
                 if (damageByEntityEvent != null && damageByEntityEvent.getDamager() instanceof Zombie)
                 {
+                    //TODO EhmZombieSlowEvent
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 10, 3));
                 }
             }

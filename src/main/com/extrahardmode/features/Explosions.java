@@ -31,6 +31,7 @@ import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.task.CreateExplosionTask;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -50,6 +51,11 @@ import org.bukkit.inventory.*;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Various changes to Explosions including:
+ *
+ *
+ */
 public class Explosions implements Listener
 {
     ExtraHardMode plugin;
@@ -59,6 +65,11 @@ public class Explosions implements Listener
     EntityModule entityModule;
     PlayerModule playerModule;
 
+    /**
+     * Your constructor of choice
+     *
+     * @param plugin
+     */
     public Explosions (ExtraHardMode plugin)
     {
         this.plugin = plugin;
@@ -71,9 +82,9 @@ public class Explosions implements Listener
 
     /**
      * Handles all of EHM's custom explosions,
-     * this includes bigger random tnt explosions,
-     * bigger ghast explosion
-     * turn stone into cobble in hardened stone mode
+     * this includes bigger random tnt explosions ,
+     * bigger ghast explosion ,
+     * turn stone into cobble in hardened stone mode ,
      *
      * @param event - Event that occurred.
      */
@@ -83,7 +94,6 @@ public class Explosions implements Listener
         World world = event.getLocation().getWorld();
         Entity entity = event.getEntity();
 
-        final boolean fallingBlocksDamage = CFG.getInt(RootNode.MORE_FALLING_BLOCKS_DMG_AMOUNT, world.getName()) > 0;
         final boolean customTntExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ENABLE, world.getName());
         final boolean customGhastExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_GHASTS_ENABLE, world.getName());
         final boolean multipleExplosions = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
@@ -125,6 +135,7 @@ public class Explosions implements Listener
         {
             List<Block> blocks = event.blockList();
             Iterator<Block> iter = blocks.iterator();
+            //TODO LOW EhmSoftenStoneEvent
             while (iter.hasNext())
             {
                 Block block = iter.next();
@@ -133,11 +144,6 @@ public class Explosions implements Listener
                     block.setType(Material.COBBLESTONE);
                     iter.remove();
                 }
-
-                // FEATURE: more falling blocks
-                /*BlockModule physics = plugin.getModuleForClass(BlockModule.class);
-                if (block.getType() != Material.AIR)
-                    physics.applyPhysics(block, fallingBlocksDamage); */
             }
         }
 
@@ -180,6 +186,7 @@ public class Explosions implements Listener
                 default:
                     if (event.getRecipe().getResult().getType().equals(Material.TNT))
                     {
+                        //TODO LOW EhmMoreTntEvent
                         //Recipe in CraftingGrid
                         ShapedRecipe craftRecipe = (ShapedRecipe) event.getRecipe();
                         CraftingInventory craftInv = event.getInventory();
@@ -208,39 +215,36 @@ public class Explosions implements Listener
     public void onItemCrafted(CraftItemEvent event)
     {
         InventoryHolder human = event.getInventory().getHolder();
-        Player player = null;
 
         if (human instanceof Player)
         {
-            player = (Player)human;
+            Player player = (Player)human;
 
             World world = player.getWorld();
 
             final int multiplier = CFG.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
             final boolean playerBypasses = playerModule.playerBypasses(player, Feature.EXPLOSIONS);
 
-            if (!playerBypasses)
+            //Are we crafting tnt and is more tnt enabled, from BeforeCraftEvent
+            if (event.getRecipe().getResult().equals(new ItemStack (Material.TNT, multiplier)) &&! playerBypasses)
             {
-                //Are we crafting tnt and is more tnt enabled, from BeforeCraftEvent
-                if (event.getRecipe().getResult().equals(new ItemStack (Material.TNT, multiplier)))
+                switch (multiplier)
                 {
-                    switch (multiplier)
-                    {
-                        case 0:
-                            event.setCancelled(true); //Feature disable tnt crafting
-                            break;
-                        default: //doesnt check for negative values
-                            PlayerInventory inv = player.getInventory();
-                            //ShiftClick only causes this event to be called once
-                            if (event.isShiftClick())
-                            {
-                                int amountBefore = utils.countInvItem(inv, Material.TNT);
-                                //Add the missing tnt 1 tick later, we count what has been added by shiftclicking and multiply it
-                                UtilityModule.addExtraItemsLater task = new UtilityModule.addExtraItemsLater(inv, amountBefore, Material.TNT, multiplier -1);
-                                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);
-                            }
-                            break;
-                    }
+                    case 0:
+                        event.setCancelled(true); //Feature disable tnt crafting
+                        break;
+                    default:
+                        Validate.isTrue(multiplier > 0, "Multiplier for tnt can't be negative");
+                        PlayerInventory inv = player.getInventory();
+                        //ShiftClick only causes this event to be called once
+                        if (event.isShiftClick())
+                        {
+                            int amountBefore = utils.countInvItem(inv, Material.TNT);
+                            //Add the missing tnt 1 tick later, we count what has been added by shiftclicking and multiply it
+                            UtilityModule.addExtraItemsLater task = new UtilityModule.addExtraItemsLater(inv, amountBefore, Material.TNT, multiplier -1);
+                            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);
+                        }
+                        break;
                 }
             }
         }
