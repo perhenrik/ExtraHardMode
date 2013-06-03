@@ -3,7 +3,8 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.service.PermissionNode;
+import com.extrahardmode.features.Feature;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.task.RespawnZombieTask;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -27,11 +28,13 @@ public class Zombies implements Listener
 {
     ExtraHardMode plugin;
     RootConfig CFG;
+    PlayerModule playerModule;
 
     public Zombies (ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     /**
@@ -79,30 +82,29 @@ public class Zombies implements Listener
     public void onEntityDamage(EntityDamageEvent event)
     {
         Entity entity = event.getEntity();
-        World world = null;
-        if (entity != null) world = entity.getWorld();
-        Player player = null;
+        World world = entity.getWorld();
+
         if (entity instanceof Player)
         {
-            player = (Player) entity;
-        }
+            Player player = (Player) entity;
 
-        final boolean zombiesSlowPlayers = CFG.getBoolean(RootNode.ZOMBIES_DEBILITATE_PLAYERS, world.getName());
-        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : false;
+            final boolean zombiesSlowPlayers = CFG.getBoolean(RootNode.ZOMBIES_DEBILITATE_PLAYERS, world.getName());
+            final boolean playerBypasses = playerModule.playerBypasses(player, Feature.MONSTER_ZOMBIES);
 
-        // is this an entity damaged by entity event?
-        EntityDamageByEntityEvent damageByEntityEvent = null;
-        if (event instanceof EntityDamageByEntityEvent)
-        {
-            damageByEntityEvent = (EntityDamageByEntityEvent) event;
-        }
-
-        // FEATURE: zombies can apply a debilitating effect
-        if (zombiesSlowPlayers && player != null &&! playerHasBypass)
-        {
-            if (damageByEntityEvent != null && damageByEntityEvent.getDamager() instanceof Zombie)
+            // is this an entity damaged by entity event?
+            EntityDamageByEntityEvent damageByEntityEvent = null;
+            if (event instanceof EntityDamageByEntityEvent)
             {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 10, 3));
+                damageByEntityEvent = (EntityDamageByEntityEvent) event;
+            }
+
+            // FEATURE: zombies can apply a debilitating effect
+            if (zombiesSlowPlayers && player != null &&! playerBypasses)
+            {
+                if (damageByEntityEvent != null && damageByEntityEvent.getDamager() instanceof Zombie)
+                {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 10, 3));
+                }
             }
         }
     }

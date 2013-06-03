@@ -16,7 +16,6 @@ import java.util.Calendar;
  */
 public class MessagingModule extends EHMModule
 {
-    private final ExtraHardMode plugin;
     private final MessageConfig messages;
 
     /**
@@ -27,7 +26,6 @@ public class MessagingModule extends EHMModule
     public MessagingModule(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
         messages = plugin.getModuleForClass(MessageConfig.class);
     }
 

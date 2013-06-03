@@ -6,14 +6,18 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
+import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.FindAndReplace;
-import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.DragonAttackPatternTask;
 import com.extrahardmode.task.DragonAttackTask;
-import org.bukkit.*;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -37,6 +41,7 @@ public class Glydia implements Listener
     EntityModule entityModule;
     DataStoreModule data;
     MessagingModule messenger;
+    PlayerModule playerModule;
 
     public Glydia(ExtraHardMode plugin)
     {
@@ -46,6 +51,7 @@ public class Glydia implements Listener
         entityModule = plugin.getModuleForClass(EntityModule.class);
         data = plugin.getModuleForClass(DataStoreModule.class);
         messenger = plugin.getModuleForClass(MessagingModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     /**
@@ -61,7 +67,7 @@ public class Glydia implements Listener
         Player player = breakEvent.getPlayer();
 
         final boolean endNoBuilding = CFG.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING, world.getName());
-        final boolean playerBypass = player.hasPermission(PermissionNode.BYPASS.getNode()) || player.getGameMode() == GameMode.CREATIVE;
+        final boolean playerBypass = playerModule.playerBypasses(player, Feature.MONSTER_GLYDIA);
 
         // FEATURE: very limited building in the end
         // players are allowed to break only end stone, and only to create a stair
@@ -104,7 +110,7 @@ public class Glydia implements Listener
         World world = block.getWorld();
 
         final boolean enderDragonNoBuilding = CFG.getBoolean(RootNode.ENDER_DRAGON_NO_BUILDING, world.getName());
-        final boolean playerBypass = player.hasPermission(PermissionNode.BYPASS.getNode()) || player.getGameMode() == GameMode.CREATIVE;
+        final boolean playerBypass = playerModule.playerBypasses(player, Feature.MONSTER_GLYDIA);
 
         // FEATURE: very limited building in the end players are allowed to break only end stone, and only to create a stair up to ground level
         if (enderDragonNoBuilding && world.getEnvironment() == World.Environment.THE_END &&! playerBypass)

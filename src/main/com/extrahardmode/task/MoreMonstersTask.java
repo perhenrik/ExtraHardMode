@@ -21,11 +21,11 @@ package com.extrahardmode.task;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
+import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityModule;
-import com.extrahardmode.service.PermissionNode;
+import com.extrahardmode.module.PlayerModule;
 import org.bukkit.Chunk;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -57,6 +57,7 @@ public class MoreMonstersTask implements Runnable
      * module to check if spawnlocation is safe etc.
      */
     private EntityModule entityModule;
+    private PlayerModule playerModule;
     /**
      * Constructor.
      *
@@ -68,6 +69,7 @@ public class MoreMonstersTask implements Runnable
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     @Override
@@ -152,7 +154,7 @@ public class MoreMonstersTask implements Runnable
         {
             Location verifiedLocation = null;
             //only if player hasn't got bypass and is in survival check location
-            if (!player.hasPermission(PermissionNode.BYPASS.getNode()) && player.getGameMode() == GameMode.SURVIVAL)
+            if (!playerModule.playerBypasses(player, Feature.MONSTERRULES))
                 verifiedLocation = verifyLocation(player.getLocation());
             if (verifiedLocation != null)
                 dataStore.getPreviousLocations().add(new SimpleEntry<Player, Location>(player, verifiedLocation));

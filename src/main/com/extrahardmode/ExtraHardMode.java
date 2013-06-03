@@ -69,6 +69,7 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(EntityModule.class, new EntityModule(this));
         registerModule(BlockModule.class, new BlockModule(this));
         registerModule(UtilityModule.class, new UtilityModule(this));
+        registerModule(PlayerModule.class, new PlayerModule(this));
 
         //Register command
         getCommand("ehm").setExecutor(new Commander(this));

@@ -4,8 +4,9 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
+import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.EntityModule;
-import com.extrahardmode.service.PermissionNode;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.task.CoolCreeperExplosion;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Effect;
@@ -23,12 +24,14 @@ public class BumBumBens implements Listener
     ExtraHardMode plugin = null;
     RootConfig CFG = null;
     EntityModule entityModule = null;
+    PlayerModule playerModule;
 
     public BumBumBens(ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -92,6 +95,7 @@ public class BumBumBens implements Listener
         final boolean flamingCreepersExplode = CFG.getBoolean(RootNode.FLAMING_CREEPERS_EXPLODE, world.getName());
         final boolean customCharged = CFG.getBoolean(RootNode.EXPLOSIONS_CHARGED_CREEPERS_ENABLE, world.getName());
 
+
         // FEATURE: charged creepers explode on hit
         if (chargedExplodeOnHit)
         {
@@ -107,7 +111,7 @@ public class BumBumBens implements Listener
                         if (damageByEntityEvent.getDamager() instanceof Player)
                         {   //Normal Damage from a player
                             damager = (Player) damageByEntityEvent.getDamager();
-                            if (damager != null && damager.hasPermission(PermissionNode.BYPASS_CREEPERS.getNode()))
+                            if (damager != null && playerModule.playerBypasses(damager, Feature.MONSTER_BUMBUMBENS))
                                 return;
                         }
                         else if (damageByEntityEvent.getDamager() instanceof Projectile)
@@ -115,7 +119,7 @@ public class BumBumBens implements Listener
                             Projectile bullet = (Projectile) damageByEntityEvent.getDamager();
                             if (bullet.getShooter() instanceof Player)//otherwise skeli/dispenser etc.
                                 damager = (Player) bullet.getShooter();
-                            if (damager != null && damager.hasPermission(PermissionNode.BYPASS_CREEPERS.getNode()))
+                            if (damager != null && playerModule.playerBypasses(damager, Feature.MONSTER_BUMBUMBENS))
                                 return;
                         }
                     }

@@ -7,8 +7,8 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
-import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,6 +36,7 @@ public class Explosions implements Listener
     MessageConfig messages;
     UtilityModule utils;
     EntityModule entityModule;
+    PlayerModule playerModule;
 
     public Explosions (ExtraHardMode plugin)
     {
@@ -44,6 +45,7 @@ public class Explosions implements Listener
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     /**
@@ -194,9 +196,9 @@ public class Explosions implements Listener
             World world = player.getWorld();
 
             final int multiplier = CFG.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
-            final boolean playerHasBypass = player.hasPermission(PermissionNode.BYPASS.getNode());
+            final boolean playerBypasses = playerModule.playerBypasses(player, Feature.EXPLOSIONS);
 
-            if (!playerHasBypass)
+            if (!playerBypasses)
             {
                 //Are we crafting tnt and is more tnt enabled, from BeforeCraftEvent
                 if (event.getRecipe().getResult().equals(new ItemStack (Material.TNT, multiplier)))

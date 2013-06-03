@@ -6,10 +6,9 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
-import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -36,6 +35,7 @@ public class Players implements Listener
     MessageConfig messages;
     UtilityModule utils = null;
     EntityModule entityModule = null;
+    PlayerModule playerModule;
 
     /**
      * Constructor
@@ -49,6 +49,7 @@ public class Players implements Listener
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     /**
@@ -60,11 +61,13 @@ public class Players implements Listener
     public void onPlayerRespawn(PlayerRespawnEvent respawnEvent)
     {
         Player player = respawnEvent.getPlayer();
-        World world = respawnEvent.getPlayer().getWorld();
+        World world = player.getWorld();
 
-        final int respawnHealth = player.hasPermission(PermissionNode.BYPASS.getNode()) ? player.getMaxHealth()
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.RESPAWN_FOOD_HEALTH);
+
+        final int respawnHealth = playerBypasses ? player.getMaxHealth()
                                   : CFG.getInt(RootNode.PLAYER_RESPAWN_HEALTH, world.getName());
-        final int respawnFood = player.hasPermission(PermissionNode.BYPASS.getNode()) ? player.getMaxHealth()
+        final int respawnFood = playerBypasses ? player.getMaxHealth()
                                 : CFG.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, world.getName());
 
         if (respawnFood < player.getMaxHealth() || respawnHealth < player.getMaxHealth()) //maxHealth and maxFoodLevel are both 20, but there is no method for maxFoodLevel
@@ -89,10 +92,10 @@ public class Players implements Listener
         World world = player.getWorld();
 
         final int deathLossPercent = CFG.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT, world.getName());
-        final boolean playerHasBypass = player.hasPermission(PermissionNode.BYPASS_INVENTORY.getNode());
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.DEATH_INV_LOSS);
 
         // FEATURE: some portion of player inventory is permanently lost on death
-        if (!playerHasBypass)
+        if (!playerBypasses)
         {
             List<ItemStack> drops = event.getDrops();
             int numberOfStacksToRemove = (int) (drops.size() * (deathLossPercent / 100f));
@@ -116,43 +119,43 @@ public class Players implements Listener
     {
         Entity entity = event.getEntity();
         World world = entity.getWorld();
-        Player player = null;
+
         if (entity instanceof Player)
         {
-            player = (Player) entity;
-        }
+            Player player = (Player) entity;
+            final boolean enhancedEnvironmentalDmg = CFG.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE, world.getName());
+            final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ENVIRONMENTAL_EFFECTS);
 
-        final boolean enhancedEnvironmentalDmg = CFG.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE, world.getName());
-        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
-                                   || player.getGameMode().equals(GameMode.CREATIVE) : true;
-
-        // FEATURE: extra damage and effects from environmental damage
-        if (enhancedEnvironmentalDmg &&! playerHasBypass)
-        {
-            EntityDamageEvent.DamageCause cause = event.getCause();
-
-            switch (cause)
+            // FEATURE: extra damage and effects from environmental damage
+            if (enhancedEnvironmentalDmg &&! playerBypasses)
             {
-                case BLOCK_EXPLOSION:
-                case ENTITY_EXPLOSION:
-                    if (event.getDamage() > 2)
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 3));
-                    break;
-                case FALL:
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * event.getDamage(), 4));
-                    event.setDamage(event.getDamage() * 2);
-                    break;
-                case SUFFOCATION:
-                    event.setDamage(event.getDamage() * 5);
-                    break;
-                case LAVA:
-                    event.setDamage(event.getDamage() * 2);
-                    break;
-                case FIRE_TICK:
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
-                    break;
+                EntityDamageEvent.DamageCause cause = event.getCause();
+
+                switch (cause)
+                {
+                    case BLOCK_EXPLOSION:
+                    case ENTITY_EXPLOSION:
+                        if (event.getDamage() > 2)
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 3));
+                        break;
+                    case FALL:
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * event.getDamage(), 4));
+                        event.setDamage(event.getDamage() * 2);
+                        break;
+                    case SUFFOCATION:
+                        event.setDamage(event.getDamage() * 5);
+                        break;
+                    case LAVA:
+                        event.setDamage(event.getDamage() * 2);
+                        break;
+                    case FIRE_TICK:
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
+                        break;
+                }
             }
         }
+
+
     }
 
     /**
@@ -168,11 +171,12 @@ public class Players implements Listener
         Block block = event.getClickedBlock();
         Action action = event.getAction();
 
-        final boolean extinguishingFireIgnites = CFG.getBoolean(RootNode.EXTINGUISHING_FIRE_IGNITES_PLAYERS, world.getName())
-                                                 &&! player.hasPermission(PermissionNode.BYPASS.getNode());
+        final boolean extinguishingFireIgnites = CFG.getBoolean(RootNode.EXTINGUISHING_FIRE_IGNITES_PLAYERS, world.getName());
+
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.DANGEROUS_FIRES);
 
         // FEATURE: putting out fire up close catches the player on fire
-        if (extinguishingFireIgnites && block != null && block.getType() != Material.AIR &&
+        if (extinguishingFireIgnites &&! playerBypasses && block != null && block.getType() != Material.AIR &&
                 (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)))
         {
             if (block.getRelative(event.getBlockFace()).getType() == Material.FIRE)

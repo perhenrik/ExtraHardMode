@@ -6,9 +6,8 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityModule;
-import com.extrahardmode.service.PermissionNode;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.task.FallingLogsTask;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -37,13 +36,17 @@ public class RealisticChopping implements Listener
      */
     BlockModule blockModule;
     /**
-     * Temporarily store data like logs that are supposed to fall
+     * Temporarily store data
      */
     DataStoreModule dataStoreModule;
     /**
      * Stuff with Entities like MetaData
      */
     EntityModule entityModule;
+    /**
+     * Permissions etc.
+     */
+    PlayerModule playerModule;
 
     /**
      * Constructor
@@ -56,6 +59,7 @@ public class RealisticChopping implements Listener
         blockModule = plugin.getModuleForClass(BlockModule.class);
         dataStoreModule = plugin.getModuleForClass(DataStoreModule.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     /**
@@ -71,8 +75,7 @@ public class RealisticChopping implements Listener
         Player player = breakEvent.getPlayer();
 
         final boolean betterTreeChoppingEnabled = CFG.getBoolean(RootNode.BETTER_TREE_CHOPPING, world.getName());
-        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
-                || player.getGameMode().equals(GameMode.CREATIVE) : true;
+        final boolean playerHasBypass = playerModule.playerBypasses(player, Feature.REALISTIC_CHOPPING);
 
         // FEATURE: trees chop more naturally
         if (block.getType() == Material.LOG && betterTreeChoppingEnabled &&! playerHasBypass)

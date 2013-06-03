@@ -6,9 +6,9 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.PermissionNode;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -25,6 +25,7 @@ public class LimitedBuilding implements Listener
     RootConfig CFG;
     UtilityModule utils;
     MessagingModule messenger;
+    PlayerModule playerModule;
 
     public LimitedBuilding (ExtraHardMode plugin)
     {
@@ -32,6 +33,7 @@ public class LimitedBuilding implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         messenger = plugin.getModuleForClass(MessagingModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     /**
@@ -48,10 +50,9 @@ public class LimitedBuilding implements Listener
         World world = block.getWorld();
 
         final boolean limitedBlockPlacement = CFG.getBoolean(RootNode.LIMITED_BLOCK_PLACEMENT, world.getName());
-        final boolean permLimitedBlockPlace = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
-                                              || player.getGameMode().equals(GameMode.CREATIVE) : true; //Player might be null if Blocks placed by other plugin
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.LIMITED_BUILDING);
 
-        if (!permLimitedBlockPlace && limitedBlockPlacement)
+        if (!playerBypasses && limitedBlockPlacement)
         {
             if (block.getX() == player.getLocation().getBlockX()
                 && block.getZ() == player.getLocation().getBlockZ()

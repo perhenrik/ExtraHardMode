@@ -7,9 +7,8 @@ import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
-import com.extrahardmode.service.PermissionNode;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -33,6 +32,7 @@ public class Water implements Listener
     RootConfig CFG;
     UtilityModule utils;
     MessagingModule messenger;
+    PlayerModule playerModule;
 
     public Water (ExtraHardMode plugin)
     {
@@ -40,6 +40,7 @@ public class Water implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         messenger = plugin.getModuleForClass(MessagingModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
     /**
      * when a player moves...
@@ -56,9 +57,8 @@ public class Water implements Listener
         Block fromBlock = from.getBlock();
         Block toBlock = to.getBlock();
 
-        final boolean noSwimingInArmor = CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, world.getName())
-                                         &&! player.hasPermission(PermissionNode.BYPASS.getNode())
-                                         &&! player.getGameMode().equals(GameMode.CREATIVE);
+        final boolean noSwimingInArmor = CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, world.getName());
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.MONSTER_GLYDIA);
         final boolean blockWaterElevators = CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS, world.getName());
 
         final float maxWeight = (float)CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, world.getName());
@@ -73,7 +73,7 @@ public class Water implements Listener
         final float overwaterDrownVel = -.7F;
 
         // FEATURE: no swimming while heavy, only enabled worlds, players without bypass permission and not in creative
-        if (noSwimingInArmor)
+        if (noSwimingInArmor &&! playerBypasses)
         {
             // only care about moving up
             if (to.getY() > from.getY())

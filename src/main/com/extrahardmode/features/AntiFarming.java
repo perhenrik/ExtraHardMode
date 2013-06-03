@@ -7,11 +7,10 @@ import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
-import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.EvaporateWaterTask;
 import org.bukkit.DyeColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -37,12 +36,14 @@ public class AntiFarming implements Listener
     ExtraHardMode plugin;
     RootConfig CFG;
     UtilityModule utils;
+    PlayerModule playerModule;
 
     public AntiFarming (ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     /**
@@ -57,13 +58,12 @@ public class AntiFarming implements Listener
         World world = event.getPlayer().getWorld();
         Action action = event.getAction();
 
-        final boolean noBonemealOnMushrooms = CFG.getBoolean(RootNode.NO_BONEMEAL_ON_MUSHROOMS, world.getName())
-                                        &&! player.hasPermission(PermissionNode.BYPASS.getNode());
-        final boolean weakFoodCrops = CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName())
-                                &&! player.hasPermission(PermissionNode.BYPASS.getNode());
+        final boolean noBonemealOnMushrooms = CFG.getBoolean(RootNode.NO_BONEMEAL_ON_MUSHROOMS, world.getName());
+        final boolean weakFoodCrops = CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName());
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ANTIFARMING);
 
         // FEATURE: bonemeal doesn't work on mushrooms
-        if (noBonemealOnMushrooms && action == Action.RIGHT_CLICK_BLOCK)
+        if (noBonemealOnMushrooms && action == Action.RIGHT_CLICK_BLOCK &&! playerBypasses)
         {
             Block block = event.getClickedBlock();
             if (block.getType() == Material.RED_MUSHROOM || block.getType() == Material.BROWN_MUSHROOM)
@@ -80,7 +80,7 @@ public class AntiFarming implements Listener
         }
 
         // FEATURE: seed reduction. some plants die even when a player uses bonemeal.
-        if (weakFoodCrops && action.equals(Action.RIGHT_CLICK_BLOCK))
+        if (weakFoodCrops && action.equals(Action.RIGHT_CLICK_BLOCK) &&! playerBypasses)
         {
             Block block = event.getClickedBlock();
             if (utils.isPlant(block.getType()))
@@ -108,10 +108,10 @@ public class AntiFarming implements Listener
         World world = block.getWorld();
 
         final boolean noFarmingNetherWart = CFG.getBoolean(RootNode.NO_FARMING_NETHER_WART, world.getName());
-        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ANTIFARMING);
 
         // FEATURE: no nether wart farming (always drops exactly 1 nether wart when broken)
-        if (!playerHasBypass && noFarmingNetherWart)
+        if (!playerBypasses && noFarmingNetherWart)
         {
             if (block.getType() == Material.NETHER_WARTS)
             {
@@ -134,10 +134,10 @@ public class AntiFarming implements Listener
         World world = block.getWorld();
 
         final boolean noFarmingNetherWart = CFG.getBoolean(RootNode.NO_FARMING_NETHER_WART, world.getName());
-        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ANTIFARMING);
 
         // FEATURE: no farming/placing nether wart
-        if (!playerHasBypass && noFarmingNetherWart && block.getType() == Material.NETHER_WARTS)
+        if (!playerBypasses && noFarmingNetherWart && block.getType() == Material.NETHER_WARTS)
         {
             placeEvent.setCancelled(true);
             return;
@@ -311,12 +311,12 @@ public class AntiFarming implements Listener
         }
 
         final boolean cantCraftMelons = world != null && CFG.getBoolean(RootNode.CANT_CRAFT_MELONSEEDS, world.getName());
-        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode()) : true; //true = has bypass won't run if no player
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ANTIFARMING);
 
         MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
 
 
-        if (!playerHasBypass && cantCraftMelons)
+        if (!playerBypasses && cantCraftMelons)
         {
             // FEATURE: no crafting melon seeds
             if (cantCraftMelons && (result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS))
@@ -340,11 +340,10 @@ public class AntiFarming implements Listener
         World world = player.getWorld();
 
         final boolean dontMoveWaterEnabled = CFG.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, world.getName());
-        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
-                                        || player.getGameMode().equals(GameMode.CREATIVE) : true; //true = has bypass won't run if no player
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ANTIFARMING);
 
         // FEATURE: can't move water source blocks
-        if (!playerHasBypass && dontMoveWaterEnabled && player.getItemInHand().getType().equals(Material.WATER_BUCKET))
+        if (!playerBypasses && dontMoveWaterEnabled && player.getItemInHand().getType().equals(Material.WATER_BUCKET))
         {
             // plan to change this block into a non-source block on the next tick
             Block block = event.getBlockClicked().getRelative(event.getBlockFace());

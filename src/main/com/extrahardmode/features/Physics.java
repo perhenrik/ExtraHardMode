@@ -5,8 +5,7 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.EntityModule;
-import com.extrahardmode.service.PermissionNode;
-import org.bukkit.GameMode;
+import com.extrahardmode.module.PlayerModule;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -32,6 +31,7 @@ public class Physics implements Listener
     RootConfig CFG;
     BlockModule blockModule;
     EntityModule entityModule;
+    PlayerModule playerModule;
 
     public Physics (ExtraHardMode plugin)
     {
@@ -39,6 +39,7 @@ public class Physics implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
         entityModule = plugin.getModuleForClass(EntityModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
     /**
      * When a player places a block...
@@ -52,11 +53,10 @@ public class Physics implements Listener
         Block block = placeEvent.getBlock();
         World world = block.getWorld();
 
-        final boolean physixEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName())
-                                      &&! player.hasPermission(PermissionNode.BYPASS.getNode())
-                                      &&! player.getGameMode().equals(GameMode.CREATIVE);
+        final boolean physixEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName());
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.MORE_FALLING_BLOCKS);
 
-        if (physixEnabled)
+        if (physixEnabled &&! playerBypasses)
         {
             blockModule.physicsCheck(block, 10, true, 0);
         }
@@ -76,19 +76,18 @@ public class Physics implements Listener
 
         final boolean moreFallingBlocksEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName());
         final int netherRackFirePercent = CFG.getInt(RootNode.BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT, world.getName());
-        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
-                                   || player.getGameMode().equals(GameMode.CREATIVE) : true;
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.MORE_FALLING_BLOCKS);
 
 
 
         // FEATURE: more falling blocks
-        if (moreFallingBlocksEnabled &&! playerHasBypass)
+        if (moreFallingBlocksEnabled &&! playerBypasses)
         {
             blockModule.physicsCheck(block, 10, true, 5);
         }
 
         // FEATURE: breaking netherrack may start a fire
-        if (netherRackFirePercent > 0 && block.getType() == Material.NETHERRACK &&! playerHasBypass)
+        if (netherRackFirePercent > 0 && block.getType() == Material.NETHERRACK &&! playerBypasses)
         {
             Block underBlock = block.getRelative(BlockFace.DOWN);
             if (underBlock.getType() == Material.NETHERRACK && plugin.random(netherRackFirePercent))

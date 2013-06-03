@@ -29,20 +29,20 @@ permissions:
         default: op
     ExtraHardMode.bypass.*:
         description: Grants bypass permission for some extra hard mode rules.
-        default: op
+        default: no
         children:
            ExtraHardMode.bypass.creepers: true
            ExtraHardMode.bypass.bypass: true
            ExtraHardMode.bypass.inventory: true
     ExtraHardMode.bypass.bypass:
         description: Old permission that will be replaced by subpermissions
-        default: op
+        default: no
     ExtraHardMode.bypass.creepers:
         description: Player with this permission will bypass all creeper features, but the flaming creepers
-        default: op
+        default: no
     ExtraHardMode.bypass.inventory:
         description: Player with this permission will not lose additional inventory on death
-        default: op
+        default: no
     ExtraHardMode.silent.*:
         description: Grants ALL silent permission nodes
         default: no

@@ -3,7 +3,8 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.service.PermissionNode;
+import com.extrahardmode.features.Feature;
+import com.extrahardmode.module.PlayerModule;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -27,11 +28,13 @@ public class Ghasts implements Listener
 {
     ExtraHardMode plugin;
     RootConfig CFG;
+    PlayerModule playerModule;
 
     public Ghasts (ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     @EventHandler
@@ -90,7 +93,7 @@ public class Ghasts implements Listener
                     {
                         // check permissions when it's shot by a player
                         Player player = (Player) arrow.getShooter();
-                        event.setCancelled(!player.hasPermission(PermissionNode.BYPASS.getNode()));
+                        event.setCancelled(!playerModule.playerBypasses(player, Feature.MONSTER_GHASTS));
                     }
                     else
                     {

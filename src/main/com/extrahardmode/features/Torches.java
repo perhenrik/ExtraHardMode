@@ -6,10 +6,14 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.RemoveExposedTorchesTask;
-import org.bukkit.*;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -26,6 +30,7 @@ public class Torches implements Listener
     private final RootConfig CFG;
     private final UtilityModule utils;
     private final MessagingModule messenger;
+    private final PlayerModule playerModule;
 
     public Torches(ExtraHardMode plugin)
     {
@@ -33,6 +38,7 @@ public class Torches implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         messenger = plugin.getModuleForClass(MessagingModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOW)
@@ -45,11 +51,10 @@ public class Torches implements Listener
         final boolean limitedTorchPlacement = CFG.getBoolean(RootNode.LIMITED_TORCH_PLACEMENT, world.getName());
         final boolean soundFizzEnabled = CFG.getBoolean(RootNode.SOUNDS_TORCH_FIZZ, world.getName());
         final int torchMinY = CFG.getInt(RootNode.STANDARD_TORCH_MIN_Y, world.getName());
-        final boolean playerHasBypass = player != null ? player.hasPermission(PermissionNode.BYPASS.getNode())
-                                   || player.getGameMode().equals(GameMode.CREATIVE) : true;
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.TORCHES);
 
         // FEATURE: players can't attach torches to common "soft" blocks
-        if (block.getType().equals(Material.TORCH) && limitedTorchPlacement &&! playerHasBypass)
+        if (block.getType().equals(Material.TORCH) && limitedTorchPlacement &&! playerBypasses)
         {
             Torch torch = new Torch(Material.TORCH, block.getData());
             Material attachmentMaterial = block.getRelative(torch.getAttachedFace()).getType();
@@ -66,7 +71,7 @@ public class Torches implements Listener
         }
 
         // FEATURE: no standard torches, jack o lanterns, or fire on top of netherrack near diamond level
-        if (torchMinY > 0 &&! playerHasBypass)
+        if (torchMinY > 0 &&! playerBypasses)
         {
             if (world.getEnvironment() == World.Environment.NORMAL
                     && block.getY() < torchMinY
