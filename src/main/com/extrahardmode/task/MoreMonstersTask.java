@@ -33,10 +33,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
 
 /**
  * Task to spawn more monsters.
@@ -46,7 +46,6 @@ public class MoreMonstersTask implements Runnable
 
     //TODO Return to this and make it actually spawn and not just take the old locations
     //TODO if block not valid check random block nearby
-    //TODO check for nearby players, test the distance
 
     /**
      * Plugin instance.
@@ -89,61 +88,20 @@ public class MoreMonstersTask implements Runnable
 
             try
             {
-                // chunk must be loaded, player must not be close, and there must be
-                // no other players in the chunk
-                //TODO CHECK DISTANCE
                 location = verifyLocation(location);
-                if (location != null && location.getChunk().isLoaded() && player.isOnline() && location.distanceSquared(player.getLocation()) > 256)
-                {
-                    boolean playerInChunk = false;
-                    for (Entity entity : chunk.getEntities())
+                if (location != null && location.getChunk().isLoaded())
+                {// spawn random monster(s)
+                    if (world.getEnvironment() == Environment.NORMAL)
                     {
-                        if (entity.getType() == EntityType.PLAYER)
-                        {
-                            playerInChunk = true;
-                            break;
-                        }
-                    }
-
-                    if (!playerInChunk)
-                    {
-                        // spawn random monster(s)
-                        if (world.getEnvironment() == Environment.NORMAL)
-                        {
-                            int randomMonster = plugin.getRandom().nextInt(90);
-                            EntityType monsterType;
-                            int typeMultiplier = 1;
-
-                            // decide which kind and how many
-                            // monsters are more or less evenly distributed
-                            if (randomMonster < 5)
+                        Entity mob = entityModule.spawnRandomMob(location);
+                        //If there are Players nearby don't spawn
+                        List<Entity> entities = mob.getNearbyEntities(16, 16, 16);
+                        for (Entity ent : entities)
+                            if (ent instanceof Player)
                             {
-                                monsterType = EntityType.SILVERFISH; /*5%*/
-                                typeMultiplier = 2;
+                                mob.remove();
+                                break;
                             }
-                            else if (randomMonster < 25)
-                            {
-                                monsterType = EntityType.SKELETON;   /*20%*/
-                            }
-                            else if (randomMonster < 45)
-                            {
-                                monsterType = EntityType.ZOMBIE;     /*20%*/
-                            }
-                            else if (randomMonster < 65)
-                            {
-                                monsterType = EntityType.CREEPER;    /*20%*/
-                            }
-                            else
-                            {
-                                monsterType = EntityType.SPIDER;     /*25%*/
-                            }
-
-                            int totalToSpawn = typeMultiplier;
-                            for (int j = 0; j < totalToSpawn; j++)
-                            {
-                                entityModule.spawn(location, monsterType);
-                            }
-                        }
                     }
                 }
             } catch (IllegalArgumentException ignored)

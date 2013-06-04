@@ -263,6 +263,39 @@ public class EntityModule extends EHMModule
         return entity;
     }
 
+    /**
+     * Spawns a random monster with the probabilities given by the config
+     */
+    public Entity spawnRandomMob(Location loc)
+    {
+        int randomMonster = plugin.getRandom().nextInt(90);
+        EntityType monsterType;
+
+        // decide which kind and how many monsters are more or less evenly distributed
+        if (randomMonster < 5)
+        {
+            monsterType = EntityType.SILVERFISH; /*5%*/
+        }
+        else if (randomMonster < 25)
+        {
+            monsterType = EntityType.SKELETON;   /*20%*/
+        }
+        else if (randomMonster < 45)
+        {
+            monsterType = EntityType.ZOMBIE;     /*20%*/
+        }
+        else if (randomMonster < 65)
+        {
+            monsterType = EntityType.CREEPER;    /*20%*/
+        }
+        else
+        {
+            monsterType = EntityType.SPIDER;     /*25%*/
+        }
+
+        return spawn(loc, monsterType);
+    }
+
     @Override
     public void starting()
     {
