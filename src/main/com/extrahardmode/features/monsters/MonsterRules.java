@@ -89,15 +89,13 @@ public class MonsterRules implements Listener
             // FEATURE: extra monster spawns underground
             if (maxY > 0)
             {
-                if (world.getEnvironment() == World.Environment.NORMAL && event.getLocation() != null
-                        && event.getLocation().getBlockY() < maxY && entityType != null && entity instanceof Monster)
+                if (world.getEnvironment() == World.Environment.NORMAL && event.getLocation().getBlockY() < maxY && entity instanceof Monster)
                 {
                     if (!entityType.equals(EntityType.SILVERFISH)) //no multiple silverfish per block
                     {
                         for (int i = 1; i < multiplier; i++)
                         {
-                            //TODO spawn random monsters
-                            Entity newEntity = entityModule.spawn(event.getLocation(), entityType);
+                            Entity newEntity = entityModule.spawnRandomMob(event.getLocation());
                             if (entityModule.isLootLess(entity))
                             {
                                 entityModule.markLootLess((LivingEntity) newEntity);
