@@ -68,17 +68,14 @@ public class CoolCreeperExplosion implements Runnable
     @Override
     public void run()
     {
-        /*
-            Using Runnables and Asyncs seems to be the only way to introduce delays between actions without blocking the main thread
-         */
         //Everyone loves fireworks
         for (int i = 0; i < numOfFireworks; i++)
         {
-            mainDelay += (long) ticksBetweenFireworks;
+            mainDelay += ticksBetweenFireworks;
             scheduler.runTaskLater(plugin, new Firework(), mainDelay);
         }
         //Catapult into air and explode midair
-        mainDelay += (long) ticksBeforeCatapult;
+        mainDelay += ticksBeforeCatapult;
         scheduler.runTaskLater(plugin, new AscendToHeaven(), mainDelay) ;
     }
 
@@ -109,7 +106,7 @@ public class CoolCreeperExplosion implements Runnable
                     scheduler.runTaskLater(plugin, new RiseToGlory(), (long) ticksInbetween);
                     ticksInbetween += ticksInbetween;
                 }
-                scheduler.runTaskLater(plugin, new Suicide(), (long) ticksBeforeSuicide);
+                scheduler.runTaskLater(plugin, new Suicide(), ticksBeforeSuicide);
             }
         }
     }
@@ -142,7 +139,7 @@ public class CoolCreeperExplosion implements Runnable
             {
                 final boolean creeperExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_CREEPERS_ENABLE, creeper.getWorld().getName());
                 if (creeperExplosion)
-                    new CreateExplosionTask(plugin, creeper.getLocation(), ExplosionType.CREEPER, creeper);
+                    new CreateExplosionTask(plugin, creeper.getLocation(), ExplosionType.CREEPER, creeper).run();
             }
             if (creeper != null)
                 creeper.remove();

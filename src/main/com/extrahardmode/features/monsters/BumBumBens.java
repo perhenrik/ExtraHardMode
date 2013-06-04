@@ -192,13 +192,14 @@ public class BumBumBens implements Listener
         {
             if (entityType.equals(EntityType.CREEPER))
             {
-                if (!entityModule.hasFlagIgnore(entity))
+                Creeper creeper = (Creeper) entity;
+
+                if ((event.getCause().equals(EntityDamageEvent.DamageCause.FIRE)
+                        || event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)
+                        || event.getCause().equals(EntityDamageEvent.DamageCause.LAVA))
+                        &&! creeper.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE))
                 {
-                    Creeper creeper = (Creeper) entity;
-                    if ((event.getCause().equals(EntityDamageEvent.DamageCause.FIRE)
-                            || event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)
-                            || event.getCause().equals(EntityDamageEvent.DamageCause.LAVA))
-                            &&! creeper.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE))
+                    if (!entityModule.hasFlagIgnore(entity))
                     {
                         entityModule.flagIgnore(entity);
                         CoolCreeperExplosion bigBoom = new CoolCreeperExplosion(creeper, plugin);
