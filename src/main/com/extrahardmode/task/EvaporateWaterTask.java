@@ -22,6 +22,8 @@
 
 package com.extrahardmode.task;
 
+import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.module.BlockModule;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
@@ -36,15 +38,20 @@ public class EvaporateWaterTask implements Runnable
      * Target block.
      */
     private final Block block;
+    /**
+     * Module for Metadata
+     */
+    private final BlockModule blockModule;
 
     /**
      * Constructor.
      *
      * @param block - Target block.
      */
-    public EvaporateWaterTask(Block block)
+    public EvaporateWaterTask(Block block, ExtraHardMode plugin)
     {
         this.block = block;
+        blockModule = plugin.getModuleForClass(BlockModule.class);
     }
 
     @Override
@@ -53,6 +60,8 @@ public class EvaporateWaterTask implements Runnable
         if (block.getType() == Material.STATIONARY_WATER || block.getType() == Material.WATER)
         {
             block.setData((byte) 1);
+            //Finished processing
+            blockModule.removeMark(block);
         }
     }
 }

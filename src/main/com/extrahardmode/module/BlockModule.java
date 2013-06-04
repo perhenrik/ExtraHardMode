@@ -34,6 +34,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,10 @@ import java.util.UUID;
  */
 public class BlockModule extends EHMModule
 {
-
+    /**
+     * Marks a block/location for whatever reason... currently used by waterbucket restrictions
+     */
+    private final String MARK = "ExtraHardMode.Mark";
     private final RootConfig CFG;
     private final EntityModule entityModule;
 
@@ -110,6 +114,40 @@ public class BlockModule extends EHMModule
 
 
         return fallingBlock.getUniqueId();
+    }
+
+    /**
+     * Mark this block for whatever reason
+     *
+     * remember to remove the mark as block metadata persists
+     *
+     * @param block to mark
+     */
+    public void mark (Block block)
+    {
+        block.setMetadata(MARK, new FixedMetadataValue(plugin, true));
+    }
+
+    /**
+     * Removes Metadata from the block
+     *
+     * @param block to remove the metadata from
+     */
+    public void removeMark(Block block)
+    {
+        block.removeMetadata(MARK, plugin);
+    }
+
+    /**
+     * Has this block been marked?
+     *
+     * @param block to check
+     *
+     * @return if it has been marked
+     */
+    public boolean isMarked(Block block)
+    {
+        return block.getMetadata(MARK).size() > 0;
     }
 
     /**

@@ -46,6 +46,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.SheepRegrowWoolEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.InventoryHolder;
@@ -63,6 +64,7 @@ public class AntiFarming implements Listener
     private final RootConfig CFG;
     private final UtilityModule utils;
     private final PlayerModule playerModule;
+    private final BlockModule blockModule;
 
     public AntiFarming (ExtraHardMode plugin)
     {
@@ -70,6 +72,7 @@ public class AntiFarming implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
+        blockModule = plugin.getModuleForClass(BlockModule.class);
     }
 
     /**
@@ -257,7 +260,7 @@ public class AntiFarming implements Listener
                     block = event.getBlock().getLocation().add(0.0, 0.0, -1.0).getBlock();
                 }
 
-                EvaporateWaterTask task = new EvaporateWaterTask(block);
+                EvaporateWaterTask task = new EvaporateWaterTask(block, plugin);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);
             }
         }
@@ -376,8 +379,28 @@ public class AntiFarming implements Listener
         {
             // plan to change this block into a non-source block on the next tick
             Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-            EvaporateWaterTask task = new EvaporateWaterTask(block);
+            blockModule.mark(block);
+            EvaporateWaterTask task = new EvaporateWaterTask(block, plugin);
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L);
+        }
+    }
+
+    /**
+     * When a player fills a bucket
+     *
+     * prevent players from quickly picking up buckets again (around lava etc.)
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerFillBucket (PlayerBucketFillEvent event)
+    {
+        Block block = event.getBlockClicked().getRelative(event.getBlockFace());
+        if (blockModule.isMarked(block))
+        {
+            event.setCancelled(true);
+            //Bucket displays as full
+            event.getPlayer().updateInventory();
         }
     }
 }
