@@ -87,6 +87,8 @@ public class HardenedStone implements Listener
 
         final boolean hardStoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
         final boolean hardStonePhysix = CFG.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS, world.getName());
+        final int stoneBlocksStone = CFG.getInt(RootNode.STONE_DURABILITY_PENALTY, world.getName());
+        final int stoneBlocksGold = CFG.getInt(RootNode.GOLD_DURABILITY_PENALTY, world.getName());
         final int stoneBlocksIron = CFG.getInt(RootNode.IRON_DURABILITY_PENALTY, world.getName());
         final int stoneBlocksDiamond = CFG.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
 
@@ -101,6 +103,12 @@ public class HardenedStone implements Listener
 
                 switch (inHandStack.getType())
                 {
+                    case STONE_PICKAXE:
+                        hardEvent.setNumOfBlocks(stoneBlocksStone);
+                        break;
+                    case GOLD_PICKAXE:
+                        hardEvent.setNumOfBlocks(stoneBlocksGold);
+                        break;
                     case IRON_PICKAXE:
                         hardEvent.setNumOfBlocks(stoneBlocksIron);
                         break;
@@ -122,7 +130,6 @@ public class HardenedStone implements Listener
                 // otherwise, drastically reduce tool durability when breaking stone
                 else if (hardEvent.getNumOfBlocks() > 0)
                 {
-
                     int maxDurability = inHandStack.getType().getMaxDurability();
                     int damagePerBlock = maxDurability / hardEvent.getNumOfBlocks();
 

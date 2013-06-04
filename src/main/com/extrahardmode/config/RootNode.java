@@ -68,6 +68,16 @@ public enum RootNode implements ConfigNode
     /**
      * Number of blocks player can mine with an iron pick and hard stone enabled
      */
+    STONE_DURABILITY_PENALTY
+            ("World Rules.Mining.Inhibit Tunneling.Number of Stone Stone Pickaxe Can Mine", VarType.INTEGER, SubType.NATURAL_NUMBER, 0),
+    /**
+     * Number of blocks player can mine with an iron pick and hard stone enabled
+     */
+    GOLD_DURABILITY_PENALTY
+            ("World Rules.Mining.Inhibit Tunneling.Number of Stone Gold Pickaxe Can Mine", VarType.INTEGER, SubType.NATURAL_NUMBER, 0),
+    /**
+     * Number of blocks player can mine with an iron pick and hard stone enabled
+     */
     IRON_DURABILITY_PENALTY
             ("World Rules.Mining.Inhibit Tunneling.Number of Stone Iron Pickaxe Can Mine", VarType.INTEGER, SubType.NATURAL_NUMBER, 32),
     /**
