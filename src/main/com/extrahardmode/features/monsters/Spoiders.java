@@ -105,7 +105,8 @@ public class Spoiders implements Listener
         // FEATURE: spiders drop web on death
         if (spidersDropWebOnDeath)
         {
-            if (entity instanceof Spider)
+            //Reduce amount of web dropped by spiders which die in caves from environmental damage
+            if (entity instanceof Spider && (plugin.getRandom().nextInt(3) == 1 || !entityModule.isLootLess(entity)))
             {
                 // random web placement
                 long serverTime = world.getFullTime();
