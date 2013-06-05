@@ -116,7 +116,8 @@ public class Bobs implements Listener
                     destinationBlock = event.getTo().getBlock();
                 }
 
-                while (destinationBlock.getType() != Material.AIR || destinationBlock.getRelative(BlockFace.UP).getType() != Material.AIR)
+                while (destinationBlock.getType() != Material.AIR || destinationBlock.getRelative(BlockFace.UP).getType() != Material.AIR
+                        && destinationBlock.getY() < destinationBlock.getWorld().getMaxHeight())
                 {
                     destinationBlock = destinationBlock.getRelative(BlockFace.UP);
                 }

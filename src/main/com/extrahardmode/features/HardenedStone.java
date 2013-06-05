@@ -29,9 +29,9 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.events.EhmHardenedStoneEvent;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.PermissionNode;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -64,6 +64,7 @@ public class HardenedStone implements Listener
     private final UtilityModule utils;
     private final MessagingModule messenger;
     private final BlockModule blockModule;
+    private final PlayerModule playerModule;
 
     public HardenedStone (ExtraHardMode plugin)
     {
@@ -72,6 +73,7 @@ public class HardenedStone implements Listener
         utils = plugin.getModuleForClass(UtilityModule.class);
         messenger = plugin.getModuleForClass(MessagingModule.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
+        playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
     /**
@@ -87,13 +89,15 @@ public class HardenedStone implements Listener
 
         final boolean hardStoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
         final boolean hardStonePhysix = CFG.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS, world.getName());
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.HARDENEDSTONE);
+
         final int stoneBlocksStone = CFG.getInt(RootNode.STONE_DURABILITY_PENALTY, world.getName());
         final int stoneBlocksGold = CFG.getInt(RootNode.GOLD_DURABILITY_PENALTY, world.getName());
         final int stoneBlocksIron = CFG.getInt(RootNode.IRON_DURABILITY_PENALTY, world.getName());
         final int stoneBlocksDiamond = CFG.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
 
         // FEATURE: stone breaks tools much quicker
-        if (hardStoneEnabled && block.getType() == Material.STONE &&! player.getGameMode().equals(GameMode.CREATIVE))
+        if (hardStoneEnabled && block.getType() == Material.STONE &&! playerBypasses)
         {
             ItemStack inHandStack = player.getItemInHand();
 
@@ -168,11 +172,11 @@ public class HardenedStone implements Listener
         Block block = placeEvent.getBlock();
         World world = block.getWorld();
 
-        final boolean hardstoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName())
-                                         &&! player.getGameMode().equals(GameMode.CREATIVE);
+        final boolean hardstoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
+        final boolean playerBypasses = playerModule.playerBypasses(player, Feature.HARDENEDSTONE);
 
         //TODO EhmBlockOrePlacementEvent
-        if (hardstoneEnabled && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES")))
+        if (hardstoneEnabled &&! playerBypasses && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES")))
         {
             ArrayList<Block> adjacentBlocks = new ArrayList<Block>();
             for (BlockFace face : blockModule.getTouchingFaces())

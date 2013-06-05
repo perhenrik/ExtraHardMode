@@ -130,13 +130,13 @@ public class Spoiders implements Listener
                         continue;
 
                     // only place web on the ground, not hanging up in the air
-                    do
+                    for (int i = 0; i < 5 || block.getY() < 0; i++)
                     {
                         block = block.getRelative(BlockFace.DOWN);
-                    } while (block.getType() == Material.AIR);
+                    }
 
-                    // don't place web over fluids or stack webs
-                    if (!block.isLiquid() && block.getType() != Material.WEB)
+                    // only place web if Block is empty
+                    if (block.getType() == Material.AIR)
                     {
                         block = block.getRelative(BlockFace.UP);
 
