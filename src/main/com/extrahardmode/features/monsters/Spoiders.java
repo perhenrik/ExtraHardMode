@@ -106,7 +106,7 @@ public class Spoiders implements Listener
         if (spidersDropWebOnDeath)
         {
             //Reduce amount of web dropped by spiders which die in caves from environmental damage
-            if (entity instanceof Spider && (plugin.getRandom().nextInt(3) == 1 || !entityModule.isLootLess(entity)))
+            if (entity instanceof Spider && (!entityModule.isLootLess(entity) || plugin.getRandom().nextInt(3) == 1))
             {
                 // random web placement
                 long serverTime = world.getFullTime();
@@ -132,14 +132,13 @@ public class Spoiders implements Listener
                     // only place web on the ground, not hanging up in the air
                     for (int i = 0; i < 5 || block.getY() < 0; i++)
                     {
-                        block = block.getRelative(BlockFace.DOWN);
+                        if (block.getRelative(BlockFace.DOWN).getType() == Material.AIR)
+                            block = block.getRelative(BlockFace.DOWN);
                     }
 
                     // only place web if Block is empty
-                    if (block.getType() == Material.AIR)
+                    if (block.getRelative(BlockFace.DOWN).getType() != Material.AIR)
                     {
-                        block = block.getRelative(BlockFace.UP);
-
                         // don't place next to cactus, because it will break the
                         // cactus
                         Block[] adjacentBlocks = new Block[]{block.getRelative(BlockFace.EAST), block.getRelative(BlockFace.WEST),
