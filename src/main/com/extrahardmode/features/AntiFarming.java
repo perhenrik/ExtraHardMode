@@ -325,6 +325,23 @@ public class AntiFarming implements Listener
     }
 
     /**
+     * When an Iron Golem dies
+     * @param event
+     */
+    @EventHandler
+    public void onGolemDeath(EntityDeathEvent event)
+    {
+        Entity entity = event.getEntity();
+
+        final boolean golemNerf = CFG.getBoolean(RootNode.IRON_GOLEM_NERF, entity.getWorld().getName());
+
+        if (event.getEntity() instanceof IronGolem && golemNerf)
+        {
+            event.getDrops().clear();
+        }
+    }
+
+    /**
      * when a player crafts something...
      *
      * @param event - Event that occurred.

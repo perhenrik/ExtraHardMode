@@ -465,6 +465,11 @@ public enum RootNode implements ConfigNode
     ANIMAL_EXP_NERF
             ("Farming.Animal Experience Nerf", VarType.BOOLEAN, true),
     /**
+     * Disable drops from Iron Golems, especially iron?
+     */
+    IRON_GOLEM_NERF
+            ("Farming.Iron Golem Nerf", VarType.BOOLEAN, true),
+    /**
      * Wheter More Falling blocks should be enabled
      */
     MORE_FALLING_BLOCKS_ENABLE

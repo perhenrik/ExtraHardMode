@@ -82,31 +82,29 @@ public class LimitedBuilding implements Listener
 
         if (!playerBypasses && limitedBlockPlacement)
         {
-            if (block.getX() == player.getLocation().getBlockX()
-                && block.getZ() == player.getLocation().getBlockZ()
-                && block.getY() < player.getLocation().getBlockY())
+            Block playerBlock = player.getLocation().getBlock();
+            Block underBlock = playerBlock.getRelative(BlockFace.DOWN);
+
+            if (block.getX() == playerBlock.getX()
+                && block.getZ() == playerBlock.getZ()
+                && block.getY() < playerBlock.getY())
             {
                 //TODO EhmLimitedBuildingEvent Case.BENEATH_PLAYER
                 messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
-                return;
             }
 
-            Block playerBlock = player.getLocation().getBlock();
-            Block underBlock = playerBlock.getRelative(BlockFace.DOWN);
-
             // if standing directly over lava, prevent placement
-            if((underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
-                    && (!playerBlock.getType().name().contains("STEP") && !playerBlock.getType().name().contains("STAIRS")))
+            else if((underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
+                    &&! (playerBlock.getType().name().contains("STEP") && playerBlock.getType().name().contains("STAIRS")))
             {
                 //TODO EhmLimitedBuildingEvent Case.PLAYER_ABOVE_UNSAFE_LOC
                 messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
-                return;
             }
 
             // otherwise if hovering over air, check one block lower
-            else if (underBlock.getType() == Material.AIR && (!playerBlock.getType().name().contains("STEP") && !playerBlock.getType().name().contains("STAIRS")))
+            else if (underBlock.getType() == Material.AIR &&! (playerBlock.getType().name().contains("STEP") && playerBlock.getType().name().contains("STAIRS")))
             {
                 underBlock = underBlock.getRelative(BlockFace.DOWN);
 
@@ -116,7 +114,6 @@ public class LimitedBuilding implements Listener
                     //TODO EhmLimitedBuildingEvent Case.FLYING (not sure)
                     messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                     placeEvent.setCancelled(true);
-                    return;
                 }
             }
         }
