@@ -84,6 +84,7 @@ public class LimitedBuilding implements Listener
         {
             Block playerBlock = player.getLocation().getBlock();
             Block underBlock = playerBlock.getRelative(BlockFace.DOWN);
+            Block against = placeEvent.getBlockAgainst();
 
             if (block.getX() == playerBlock.getX()
                 && block.getZ() == playerBlock.getZ()
@@ -115,6 +116,12 @@ public class LimitedBuilding implements Listener
                     messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                     placeEvent.setCancelled(true);
                 }
+            }
+
+            /* Fences and glasspanes are half placed as vertical half blocks allowing the player to build in the air */
+            else if ((against.getType() == Material.FENCE || against.getType() == Material.THIN_GLASS) && underBlock .equals (against))
+            {
+                placeEvent.setCancelled(true);
             }
         }
     }
