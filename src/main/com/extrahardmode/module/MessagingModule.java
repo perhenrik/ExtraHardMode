@@ -69,7 +69,7 @@ public class MessagingModule extends EHMModule
             DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
             long now = Calendar.getInstance().getTimeInMillis();
 
-            if (!message.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
+            if (!node.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
             {
                 player.sendMessage(message);
                 playerData.lastMessageSent = node;
