@@ -146,6 +146,7 @@ public class Physics implements Listener
         World world = entity.getWorld();
 
         final int damageAmount = CFG.getInt(RootNode.MORE_FALLING_BLOCKS_DMG_AMOUNT, world.getName());
+        final boolean environmentalDmg = CFG.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE, world.getName());
 
         //Only when Block has been marked to deal damage
         if (entity.getType().equals(EntityType.FALLING_BLOCK) && damageAmount > 0 && entityModule.isMarkedForProcessing(entity))
@@ -155,11 +156,11 @@ public class Physics implements Listener
             {
                 if (ent instanceof LivingEntity)
                 {
-                    //TODO EhmEnvironmentalDamageEvent FallingBlock
                     LivingEntity entityWithDamagedHead = (LivingEntity) ent;
                     //Frighten the player
                     entityWithDamagedHead.damage(damageAmount, entity);
-                    entityWithDamagedHead.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 140, 10));
+                    if (environmentalDmg)
+                        entityWithDamagedHead.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 140, 10));
                 }
             }
         }
