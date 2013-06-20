@@ -62,12 +62,13 @@ public class AntiGrinder extends ListenerModule
      * @param blockModule BlockModule
      * @param utils UtilityModule
      */
-    public AntiGrinder(RootConfig CFG, BlockModule blockModule, UtilityModule utils)
+    public AntiGrinder(ExtraHardMode plugin, RootConfig CFG, BlockModule blockModule, UtilityModule utils)
     {
-        super(null);
-        this. CFG = CFG;
-        this. blockModule = blockModule;
-        this. utils = utils;
+        super(plugin);
+        this.plugin = plugin;
+        this.CFG = CFG;
+        this.blockModule = blockModule;
+        this.utils = utils;
     }
 
     /**
