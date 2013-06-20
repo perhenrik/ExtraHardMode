@@ -24,7 +24,7 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -159,14 +159,13 @@ public class Pigies implements Listener
     public void onLightingStrike(LightningStrikeEvent event)
     {
         LightningStrike strike = event.getLightning();
-        EntityModule entities = plugin.getModuleForClass(EntityModule.class);
 
         Location loc = strike.getLocation();
         World world = loc.getWorld();
 
         final boolean spawnPigsOnLightning = CFG.getBoolean(RootNode.LIGHTNING_SPAWNS_PIGMEN, world.getName());
 
-        if (spawnPigsOnLightning && entities.simpleIsLocSafeSpawn(loc))
+        if (spawnPigsOnLightning && EntityHelper.simpleIsLocSafeSpawn(loc))
         {
             int rdm = plugin.getRandom().nextInt(10);
             int amount = 1;

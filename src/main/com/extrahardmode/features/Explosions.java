@@ -27,7 +27,6 @@ import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
-import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.task.CreateExplosionTask;
@@ -62,7 +61,6 @@ public class Explosions implements Listener
     private final RootConfig CFG;
     private final MessageConfig messages;
     private final UtilityModule utils;
-    private final EntityModule entityModule;
     private final PlayerModule playerModule;
 
     /**
@@ -76,7 +74,7 @@ public class Explosions implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
+
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 

@@ -26,7 +26,6 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.DataStoreModule;
-import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.task.FallingLogsTask;
 import org.bukkit.Material;
@@ -61,10 +60,6 @@ public class RealisticChopping implements Listener
      */
     private final DataStoreModule dataStoreModule;
     /**
-     * Stuff with Entities like MetaData
-     */
-    private final EntityModule entityModule;
-    /**
      * Permissions etc.
      */
     private final PlayerModule playerModule;
@@ -79,7 +74,6 @@ public class RealisticChopping implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
         dataStoreModule = plugin.getModuleForClass(DataStoreModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 

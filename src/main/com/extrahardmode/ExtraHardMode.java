@@ -69,10 +69,11 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(MessageConfig.class, new MessageConfig(this));
         registerModule(MessagingModule.class, new MessagingModule(this));
         registerModule(DataStoreModule.class, new DataStoreModule(this));
-        registerModule(EntityModule.class, new EntityModule(this));
         registerModule(BlockModule.class, new BlockModule(this));
         registerModule(UtilityModule.class, new UtilityModule(this));
         registerModule(PlayerModule.class, new PlayerModule(this));
+
+        registerModule(Zombies.class, new Zombies(this));
 
         //Register command
         getCommand("ehm").setExecutor(new Commander(this));
@@ -103,7 +104,7 @@ public class ExtraHardMode extends JavaPlugin
         pluginManager.registerEvents(new Silverfish(this), this);
         pluginManager.registerEvents(new Skeletors(this), this);
         pluginManager.registerEvents(new Spoiders(this), this);
-        pluginManager.registerEvents(new Zombies(this), this);
+        //pluginManager.registerEvents(new Zombies(this), this);
 
 
         // FEATURE: monsters spawn in the light under a configurable Y level

@@ -25,7 +25,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -58,7 +58,6 @@ public class Physics implements Listener
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
     private final BlockModule blockModule;
-    private final EntityModule entityModule;
     private final PlayerModule playerModule;
 
     public Physics (ExtraHardMode plugin)
@@ -66,7 +65,7 @@ public class Physics implements Listener
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
+
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
@@ -149,7 +148,7 @@ public class Physics implements Listener
         final boolean environmentalDmg = CFG.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE, world.getName());
 
         //Only when Block has been marked to deal damage
-        if (entity.getType().equals(EntityType.FALLING_BLOCK) && damageAmount > 0 && entityModule.isMarkedForProcessing(entity))
+        if (entity.getType().equals(EntityType.FALLING_BLOCK) && damageAmount > 0 && EntityHelper.isMarkedForProcessing(entity))
         {
             List<Entity> entities =  entity.getNearbyEntities(0, 1, 0);
             for (Entity ent : entities)

@@ -25,7 +25,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.service.HackCreeper;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -62,10 +62,6 @@ public class CreateExplosionTask implements Runnable
      */
     private final RootConfig CFG;
     /**
-     * Entity specific stuff like marking our Entity as to be ignored
-     */
-    private final EntityModule entityModule;
-    /**
      * Instance of a the Entity which caused the Explosion
      */
     private Creeper creeper; private TNTPrimed tnt; private ExplosiveMinecart minecartTnt;
@@ -82,7 +78,6 @@ public class CreateExplosionTask implements Runnable
         this.type = type;
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -243,7 +238,7 @@ public class CreateExplosionTask implements Runnable
                 break;
             default: //mark all Explosions as Creeper Explosions
                 Creeper mockCreeper = new HackCreeper(loc);
-                entityModule.flagIgnore(mockCreeper);
+                EntityHelper.flagIgnore(plugin, mockCreeper);
 
                 EntityExplodeEvent suicide = new EntityExplodeEvent(mockCreeper, loc, boundaries, 1.0F);
                 plugin.getServer().getPluginManager().callEvent(suicide);

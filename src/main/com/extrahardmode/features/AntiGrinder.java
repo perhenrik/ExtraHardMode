@@ -26,7 +26,7 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.UtilityModule;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,7 +50,6 @@ public class AntiGrinder implements Listener
     private ExtraHardMode plugin;
     private final RootConfig CFG;
     private MessageConfig messages;
-    private final EntityModule entityModule;
     private final BlockModule blockModule;
     private final UtilityModule utils;
 
@@ -60,14 +59,12 @@ public class AntiGrinder implements Listener
      * Dependency Injection Constructor
      *
      * @param CFG instantiated RootConfig
-     * @param entityModule EntityModule
      * @param blockModule BlockModule
      * @param utils UtilityModule
      */
-    public AntiGrinder(RootConfig CFG, EntityModule entityModule, BlockModule blockModule, UtilityModule utils)
+    public AntiGrinder(RootConfig CFG, BlockModule blockModule, UtilityModule utils)
     {
         this. CFG = CFG;
-        this. entityModule = entityModule;
         this. blockModule = blockModule;
         this. utils = utils;
     }
@@ -82,7 +79,7 @@ public class AntiGrinder implements Listener
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
+
         blockModule = plugin.getModuleForClass(BlockModule.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
@@ -112,7 +109,7 @@ public class AntiGrinder implements Listener
                 case SPAWNER:
                 {
                     // Block all Spawner drops completely
-                    entityModule.markLootLess(entity);
+                    EntityHelper.markLootLess(plugin, entity);
                     return false;
                 }
                 case NATURAL: case VILLAGE_INVASION:
@@ -171,7 +168,7 @@ public class AntiGrinder implements Listener
         // FEATURE: monsters which take environmental damage or spawn from spawners don't drop loot and exp (monster grinder inhibitor)
         if (inhibitMonsterGrindersEnabled && entity instanceof Monster && entity.getType() != EntityType.SQUID)
         {
-            if (entityModule.isLootLess(entity))
+            if (EntityHelper.isLootLess(entity))
             {
                 clearDrops(event);
                 return false;
@@ -290,7 +287,7 @@ public class AntiGrinder implements Listener
             EntityDamageEvent.DamageCause damageCause = event.getCause();
             if (damageCause != EntityDamageEvent.DamageCause.ENTITY_ATTACK && damageCause != EntityDamageEvent.DamageCause.PROJECTILE && damageCause != EntityDamageEvent.DamageCause.BLOCK_EXPLOSION)
             {
-                entityModule.addEnvironmentalDamage((LivingEntity) entity, event.getDamage());
+                EntityHelper.addEnvironmentalDamage(plugin, (LivingEntity) entity, event.getDamage());
             }
         }
     }

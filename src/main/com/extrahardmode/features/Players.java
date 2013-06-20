@@ -26,7 +26,6 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.DataStoreModule;
-import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
@@ -63,7 +62,6 @@ public class Players implements Listener
     private RootConfig CFG = null;
     private final MessageConfig messages;
     private UtilityModule utils = null;
-    private EntityModule entityModule = null;
     private final PlayerModule playerModule;
 
     /**
@@ -77,7 +75,6 @@ public class Players implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 

@@ -26,12 +26,12 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.PlayerModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.RespawnZombieTask;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -45,7 +45,7 @@ import org.bukkit.potion.PotionEffectType;
  * make players slow when hit
  * </p>
  */
-public class Zombies implements Listener
+public class Zombies extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
@@ -53,6 +53,7 @@ public class Zombies implements Listener
 
     public Zombies (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);

@@ -24,7 +24,7 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -45,13 +45,11 @@ public class Skeletors implements Listener
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
-    private final EntityModule entityModule;
 
     public Skeletors(ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
 
@@ -156,7 +154,6 @@ public class Skeletors implements Listener
             if (shooter != null && shooter.getType() == EntityType.SKELETON && plugin.random(silverfishShootPercent))
             {
                 Skeleton skeleton = (Skeleton) shooter;
-                EntityModule module = plugin.getModuleForClass(EntityModule.class);
                 // cancel arrow fire
                 event.setCancelled(true);
 
@@ -165,7 +162,7 @@ public class Skeletors implements Listener
                 Creature silverFish = (Creature) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0, 1.5, 0), EntityType.SILVERFISH);
                 silverFish.setVelocity(arrow.getVelocity().multiply(0.25));
                 silverFish.setTarget(skeleton.getTarget());
-                module.markLootLess(silverFish); // this silverfish doesn't drop loot
+                EntityHelper.markLootLess(plugin, silverFish); // this silverfish doesn't drop loot
             }
         }
     }

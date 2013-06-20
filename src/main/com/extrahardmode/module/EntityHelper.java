@@ -22,8 +22,6 @@
 
 package com.extrahardmode.module;
 
-import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.service.EHMModule;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,37 +31,29 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Module that contains logic dealing with entities.
  */
-public class EntityModule extends EHMModule
+public class EntityHelper
 {
 
     /**
      * Getter for environmental damage for the specified entity
      */
-    private final String IGNORE = "extrahardmode.ignore.me";
+    private static final String IGNORE = "extrahardmode.ignore.me";
     /**
      * Getter to set a flag to ignore a entity in further processing
      */
-    private final String ENVIRONMENTAL_DAMAGE = "extrahard_environmentalDamage";
+    private static final String ENVIRONMENTAL_DAMAGE = "extrahard_environmentalDamage";
     /**
      * Process this Entity
      */
-    private final String PROCESS_ENTITY = "extrahardmode_process_entity";
-
-    /**
-     * Constructor.
-     *
-     * @param plugin - plugin instance.
-     */
-    public EntityModule(ExtraHardMode plugin)
-    {
-        super(plugin);
-    }
+    private static final String PROCESS_ENTITY = "extrahardmode_process_entity";
 
     /**
      * Marks an entity so that the plugin can remember not to drop loot or
@@ -71,7 +61,7 @@ public class EntityModule extends EHMModule
      *
      * @param entity - Entity to modify.
      */
-    public void markLootLess(LivingEntity entity)
+    public static void markLootLess(Plugin plugin, LivingEntity entity)
     {
         entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, entity.getMaxHealth()));
     }
@@ -82,7 +72,7 @@ public class EntityModule extends EHMModule
      * @param entity - Entity to check.
      * @param damage - Amount of damage.
      */
-    public void addEnvironmentalDamage(LivingEntity entity, int damage)
+    public static void addEnvironmentalDamage(Plugin plugin, LivingEntity entity, int damage)
     {
         int currentTotalDamage = 0;
         List <MetadataValue> meta = entity.getMetadata(ENVIRONMENTAL_DAMAGE);
@@ -97,7 +87,7 @@ public class EntityModule extends EHMModule
      * @param entity - Entity to check.
      * @return True if the entity is lootable, else false.
      */
-    public boolean isLootLess(LivingEntity entity)
+    public static boolean isLootLess(LivingEntity entity)
     {
         int currentTotalDamage = 0;
         List <MetadataValue> meta = entity.getMetadata(ENVIRONMENTAL_DAMAGE);
@@ -113,7 +103,7 @@ public class EntityModule extends EHMModule
      *
      * @param entity - Entity to help.
      */
-    public void clearWebbing(Entity entity)
+    public static void clearWebbing(Entity entity)
     {
         Block feetBlock = entity.getLocation().getBlock();
         Block headBlock = feetBlock.getRelative(BlockFace.UP);
@@ -130,9 +120,10 @@ public class EntityModule extends EHMModule
 
     /**
      * Flag an entity to be ignored in further processing. E.g if an event could be called multiple times
+     * @param plugin
      * @param entity
      */
-    public void flagIgnore(Entity entity)
+    public static void flagIgnore(Plugin plugin, Entity entity)
     {
         if (entity instanceof LivingEntity)
         {
@@ -145,7 +136,7 @@ public class EntityModule extends EHMModule
      * @param entity
      * @return
      */
-    public boolean hasFlagIgnore(Entity entity)
+    public static boolean hasFlagIgnore(Entity entity)
     {
         if (entity instanceof LivingEntity)
         {
@@ -159,9 +150,10 @@ public class EntityModule extends EHMModule
 
     /**
      * Mark an Entity to be processed. E.g when only a small number of Entities should be processed
+     * @param plugin
      * @param entity
      */
-    public void markForProcessing (Entity entity)
+    public static void markForProcessing(Plugin plugin, Entity entity)
     {
         Validate.notNull(entity, "Entity can't be null");
         {
@@ -174,7 +166,7 @@ public class EntityModule extends EHMModule
      * @param entity
      * @return
      */
-    public boolean isMarkedForProcessing(Entity entity)
+    public static boolean isMarkedForProcessing(Entity entity)
     {
         Validate.notNull(entity, "Entity can't be null");
         List<MetadataValue> meta = entity.getMetadata(PROCESS_ENTITY);
@@ -185,7 +177,7 @@ public class EntityModule extends EHMModule
     /**
      * Is the Monster farmable cattle, which drops something on death?
      */
-    public boolean isCattle (Entity entity)
+    public static boolean isCattle(Entity entity)
     {
         return     entity instanceof Cow
                 || entity instanceof Chicken
@@ -197,7 +189,7 @@ public class EntityModule extends EHMModule
      * @param loc
      * @return
      */
-    public boolean simpleIsLocSafeSpawn(Location loc)
+    public static boolean simpleIsLocSafeSpawn(Location loc)
     {
         //quickly check if 2 blocks above this is clear
         Block oneAbove = loc.getBlock();
@@ -209,7 +201,7 @@ public class EntityModule extends EHMModule
      * Checks if Location is safe, if in air will return the a valid Block to spawn on or null
      * @return valid Block or null if no valid Block
      */
-    public Location isLocSafeSpawn(Location location)
+    public static Location isLocSafeSpawn(Location location)
     {
         Block playerBlock = location.getBlock();
 
@@ -248,7 +240,7 @@ public class EntityModule extends EHMModule
      * Spawn Monsters with their gear, use instead of world.spawn()
      * @return a reference to the spawned Entity
      */
-    public Entity spawn (Location loc, EntityType type)
+    public static Entity spawn(Location loc, EntityType type)
     {
         Entity entity = loc.getWorld().spawnEntity(loc, type);
         switch (type)
@@ -266,9 +258,9 @@ public class EntityModule extends EHMModule
     /**
      * Spawns a random monster with the probabilities given by the config
      */
-    public Entity spawnRandomMob(Location loc)
+    public static Entity spawnRandomMob(Location loc)
     {
-        int randomMonster = plugin.getRandom().nextInt(90);
+        int randomMonster = new Random().nextInt(90);
         EntityType monsterType;
 
         // decide which kind and how many monsters are more or less evenly distributed
@@ -294,16 +286,6 @@ public class EntityModule extends EHMModule
         }
 
         return spawn(loc, monsterType);
-    }
-
-    @Override
-    public void starting()
-    {
-    }
-
-    @Override
-    public void closing()
-    {
     }
 
 }

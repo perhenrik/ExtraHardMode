@@ -25,7 +25,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -49,13 +49,11 @@ public class Bitches implements Listener
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
-    private final EntityModule entityModule;
 
     public Bitches (ExtraHardMode plugin)
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -81,7 +79,7 @@ public class Bitches implements Listener
             if (plugin.random(witchSpawnPercent))
             {
                 event.setCancelled(true);
-                entityModule.spawn(location, EntityType.WITCH);
+                EntityHelper.spawn(location, EntityType.WITCH);
             }
         }
     }
@@ -132,7 +130,7 @@ public class Bitches implements Listener
 
                 if (!zombieNearby)
                 {
-                    Zombie zombie = (Zombie) entityModule.spawn(location, EntityType.ZOMBIE);
+                    Zombie zombie = (Zombie) EntityHelper.spawn(location, EntityType.ZOMBIE);
                     zombie.setVillager(true);
                     zombie.setBaby(true);
                     if (zombie.getTarget() != null)
@@ -140,7 +138,7 @@ public class Bitches implements Listener
                         zombie.setTarget(witch.getTarget());
                     }
 
-                    entityModule.markLootLess(zombie);
+                    EntityHelper.markLootLess(plugin, zombie);
                 }
                 else
                 {

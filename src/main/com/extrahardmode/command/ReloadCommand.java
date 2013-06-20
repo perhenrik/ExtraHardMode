@@ -26,7 +26,6 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.DataStoreModule;
-import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.service.ICommand;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.ChatColor;
@@ -52,10 +51,6 @@ public class ReloadCommand implements ICommand
             DataStoreModule dataStore = plugin.getModuleForClass(DataStoreModule.class);
             dataStore.closing();
             dataStore.starting();
-            // Restart entity module.
-            EntityModule entityModule = plugin.getModuleForClass(EntityModule.class);
-            entityModule.closing();
-            entityModule.starting();
             // Restart entity block module.
             BlockModule blockModule = plugin.getModuleForClass(BlockModule.class);
             blockModule.closing();

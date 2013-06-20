@@ -50,7 +50,6 @@ public class BlockModule extends EHMModule
      */
     private final String MARK = "ExtraHardMode.Mark";
     private final RootConfig CFG;
-    private final EntityModule entityModule;
 
     /**
      * Constructor.
@@ -61,7 +60,6 @@ public class BlockModule extends EHMModule
     {
         super(plugin);
         CFG = plugin.getModuleForClass(RootConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -109,7 +107,7 @@ public class BlockModule extends EHMModule
 
         if (damageEntities)
         {
-            entityModule.markForProcessing(fallingBlock);
+            EntityHelper.markForProcessing(plugin, fallingBlock);
         }
 
 

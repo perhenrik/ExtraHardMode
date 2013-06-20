@@ -29,7 +29,7 @@ import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.DataStoreModule;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.FindAndReplace;
@@ -69,7 +69,6 @@ public class Glydia implements Listener
     private ExtraHardMode plugin = null;
     private RootConfig CFG = null;
     private final MessageConfig messages;
-    private final EntityModule entityModule;
     private final DataStoreModule data;
     private final MessagingModule messenger;
     private final PlayerModule playerModule;
@@ -79,7 +78,6 @@ public class Glydia implements Listener
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
         data = plugin.getModuleForClass(DataStoreModule.class);
         messenger = plugin.getModuleForClass(MessagingModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
@@ -372,7 +370,7 @@ public class Glydia implements Listener
             // otherwise, spawn one
             else if (respawnDragon)
             {
-                entityModule.spawn(new Location(world, 0, world.getMaxHeight() - 1, 0), EntityType.ENDER_DRAGON);
+                EntityHelper.spawn(new Location(world, 0, world.getMaxHeight() - 1, 0), EntityType.ENDER_DRAGON);
             }
         }
     }
@@ -481,7 +479,7 @@ public class Glydia implements Listener
                     for (int i = 0; i < 2; i++)
                     {
                         spawnedMonster = entity.getWorld().spawnEntity(entity.getLocation(), EntityType.ZOMBIE);
-                        entityModule.markLootLess((LivingEntity) spawnedMonster);
+                        EntityHelper.markLootLess(plugin, (LivingEntity) spawnedMonster);
                         Zombie zombie = (Zombie) spawnedMonster;
                         zombie.setVillager(true);
                     }
@@ -494,7 +492,7 @@ public class Glydia implements Listener
 
             if (spawnedMonster != null)
             {
-                entityModule.markLootLess((LivingEntity) spawnedMonster);
+                EntityHelper.markLootLess(plugin, (LivingEntity) spawnedMonster);
             }
         }
     }

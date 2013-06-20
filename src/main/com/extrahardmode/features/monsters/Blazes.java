@@ -27,7 +27,7 @@ import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Location;
@@ -63,7 +63,6 @@ public class Blazes implements Listener
     private RootConfig CFG = null;
     private final MessageConfig messages;
     private UtilityModule utils = null;
-    private EntityModule entityModule = null;
 
     public Blazes (ExtraHardMode plugin)
     {
@@ -71,7 +70,6 @@ public class Blazes implements Listener
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -104,10 +102,10 @@ public class Blazes implements Listener
                 // FEATURE: magma cubes spawn with blazes
                 if (plugin.random(bonusNetherBlazeSpawnPercent))
                 {
-                    MagmaCube cube = (MagmaCube) (entityModule.spawn(location, EntityType.MAGMA_CUBE));
+                    MagmaCube cube = (MagmaCube) (EntityHelper.spawn(location, EntityType.MAGMA_CUBE));
                     cube.setSize(1);
                 }
-                entityModule.spawn(location, entityType);
+                EntityHelper.spawn(location, entityType);
                 //TODO EhmBlazeSpawnEvent (Nether)
             }
         }
@@ -119,7 +117,7 @@ public class Blazes implements Listener
             {
                 event.setCancelled(true);
                 entityType = EntityType.BLAZE;
-                entityModule.spawn(location, entityType);
+                EntityHelper.spawn(location, entityType);
                 //TODO EhmBlazeSpawnEvent (OverWorld)
             }
         }
@@ -183,17 +181,17 @@ public class Blazes implements Listener
             if (plugin.random(blazeSplitPercent))
             {
                 //TODO EhmBlazeSplitEvent
-                Entity firstNewBlaze = entityModule.spawn(entity.getLocation(), EntityType.BLAZE);
+                Entity firstNewBlaze = EntityHelper.spawn(entity.getLocation(), EntityType.BLAZE);
                 firstNewBlaze.setVelocity(new Vector(1, 0, 1));
 
-                Entity secondNewBlaze = entityModule.spawn(entity.getLocation(), EntityType.BLAZE);
+                Entity secondNewBlaze = EntityHelper.spawn(entity.getLocation(), EntityType.BLAZE);
                 secondNewBlaze.setVelocity(new Vector(-1, 0, -1));
 
                 // if this blaze was marked lootless, mark the new blazes the same
-                if (entityModule.isLootLess(entity))
+                if (EntityHelper.isLootLess(entity))
                 {
-                    entityModule.markLootLess((LivingEntity) firstNewBlaze);
-                    entityModule.markLootLess((LivingEntity) secondNewBlaze);
+                    EntityHelper.markLootLess(plugin, (LivingEntity) firstNewBlaze);
+                    EntityHelper.markLootLess(plugin, (LivingEntity) secondNewBlaze);
                 }
             }
         }
@@ -221,7 +219,7 @@ public class Blazes implements Listener
         if (magmacubesBlazeOnDmg && entityType == EntityType.MAGMA_CUBE  && !entity.isDead())
         {
             entity.remove(); // remove magma cube
-            entityModule.spawn(entity.getLocation().add(0.0, 2.0, 0.0), EntityType.BLAZE); // replace with blaze
+            EntityHelper.spawn(entity.getLocation().add(0.0, 2.0, 0.0), EntityType.BLAZE); // replace with blaze
             new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.MAGMACUBE_FIRE).run(); // fiery explosion for effect
             //TODO EhmMagmaCubeExplodeEvent
         }
