@@ -24,6 +24,7 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
+import com.extrahardmode.events.EhmZombieRespawnEvent;
 import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.task.RespawnZombieTask;
@@ -78,16 +79,15 @@ public class Zombies implements Listener
             {
                 Zombie zombie = (Zombie) entity;
 
-                if (!zombie.isVillager() && entity.getFireTicks() < 1 && plugin.random(zombiesReanimatePercent))
+                Player player = null;
+                if (zombie.getTarget() instanceof Player)
+                    player = (Player) zombie.getTarget();
+
+                EhmZombieRespawnEvent zombieEvent = new EhmZombieRespawnEvent(player, zombie, zombiesReanimatePercent, !plugin.random(zombiesReanimatePercent));
+                plugin.getServer().getPluginManager().callEvent(zombieEvent);
+                if (!zombie.isVillager() && entity.getFireTicks() < 1 &&! zombieEvent.isCancelled())
                 {
-                    Player playerTarget = null;
-                    Entity target = zombie.getTarget();
-                    if (target instanceof Player)
-                    {
-                        playerTarget = (Player) target;
-                    }
-                    //TODO EhmZombieResurrectEvent check dictionray lol
-                    RespawnZombieTask task = new RespawnZombieTask(plugin, entity.getLocation(), playerTarget);
+                    RespawnZombieTask task = new RespawnZombieTask(plugin, entity.getLocation(), player);
                     int respawnSeconds = plugin.getRandom().nextInt(6) + 3; // 3-8 seconds
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 20L * respawnSeconds); // /20L
                     // ~ 1 second

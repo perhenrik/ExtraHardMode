@@ -25,6 +25,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
+import com.extrahardmode.events.EhmCreeperDropTntEvent;
 import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.PlayerModule;
@@ -110,10 +111,15 @@ public class BumBumBens implements Listener
             if (entity.getType() == EntityType.CREEPER && plugin.random(creeperDropTNTPercent)
                     && creeperDropTntMaxY > entity.getLocation().getBlockY())
             {
-                //TODO EhmCreeperDropTntEvent
-                world.spawnEntity(entity.getLocation(), EntityType.PRIMED_TNT);
-                if (creeperSound)
-                    world.playEffect(entity.getLocation(), Effect.GHAST_SHRIEK, 1, 35);
+                final Player player = entity.getKiller();
+                EhmCreeperDropTntEvent dropTntEvent = new EhmCreeperDropTntEvent(player, (Creeper) entity,entity.getLocation());
+                plugin.getServer().getPluginManager().callEvent(dropTntEvent);
+                if (!dropTntEvent.isCancelled())
+                {
+                    world.spawnEntity(entity.getLocation(), EntityType.PRIMED_TNT);
+                    if (creeperSound)
+                        world.playEffect(entity.getLocation(), Effect.GHAST_SHRIEK, 1, 35);
+                }
             }
         }
     }

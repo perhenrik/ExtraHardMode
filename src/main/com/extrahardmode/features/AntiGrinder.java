@@ -124,14 +124,14 @@ public class AntiGrinder implements Listener
                     switch (environment)
                     {
                         case NORMAL:
-                            if (!utils.isNaturalSpawnMaterial(underBlockType))
+                            if (!blockModule.isNaturalSpawnMaterial(underBlockType))
                             {
                                 event.setCancelled(true);
                                 return false;
                             }
                             break;
                         case NETHER:
-                            if (!utils.isNaturalNetherSpawn(underBlockType))
+                            if (!blockModule.isNaturalNetherSpawn(underBlockType))
                             {
                                 event.setCancelled(true);
                                 return false;

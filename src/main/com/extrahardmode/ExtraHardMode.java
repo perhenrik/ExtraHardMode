@@ -103,6 +103,7 @@ public class ExtraHardMode extends JavaPlugin
         pluginManager.registerEvents(new Silverfish(this), this);
         pluginManager.registerEvents(new Skeletors(this), this);
         pluginManager.registerEvents(new Spoiders(this), this);
+        new Tutorial(this);
         pluginManager.registerEvents(new Zombies(this), this);
 
 

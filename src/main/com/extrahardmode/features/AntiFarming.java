@@ -115,7 +115,7 @@ public class AntiFarming implements Listener
         if (weakFoodCrops && action.equals(Action.RIGHT_CLICK_BLOCK) &&! playerBypasses)
         {
             Block block = event.getClickedBlock();
-            if (utils.isPlant(block.getType()))
+            if (blockModule.isPlant(block.getType()))
             {
                 Material materialInHand = player.getItemInHand().getType();
                 if (materialInHand == Material.INK_SACK && plugin.getModuleForClass(BlockModule.class).plantDies(block, Byte.MAX_VALUE))

@@ -111,7 +111,7 @@ public class Water implements Listener
                     // if no cached value, calculate
                     if (playerData.cachedWeightStatus <= 0)
                     {
-                        playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
+                        playerData.cachedWeightStatus = playerModule.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
                     }
                     // if too heavy let player feel the weight by pulling them down, if in boat can always swim
                     if (playerData.cachedWeightStatus > maxWeight &&! player.isInsideVehicle())
@@ -120,11 +120,11 @@ public class Water implements Listener
                     }
                 }
                 //when you swim up waterfalls and basically are flying with only a tip of your body in water
-                else if (blockWaterElevators &&! utils.isPlayerOnLadder(player) &&! player.isInsideVehicle() &&! player.isFlying())
+                else if (blockWaterElevators &&! playerModule.isPlayerOnLadder(player) &&! player.isInsideVehicle() &&! player.isFlying())
                 {
                     if (playerData.cachedWeightStatus <= 0)
                     {
-                        playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
+                        playerData.cachedWeightStatus = playerModule.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
                     }
                     else if (playerData.cachedWeightStatus > maxWeight)
                     {

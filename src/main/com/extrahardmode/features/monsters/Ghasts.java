@@ -98,7 +98,6 @@ public class Ghasts implements Listener
     public void onEntityDamage(EntityDamageEvent event)
     {
         Entity entity = event.getEntity();
-        EntityType entityType = entity.getType();
         World world = entity.getWorld();
 
         final boolean ghastDeflectArrows = CFG.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
@@ -133,7 +132,6 @@ public class Ghasts implements Listener
                     {
                         // otherwise always deflect
                         event.setCancelled(true);
-                        return;
                     }
                 }
             }

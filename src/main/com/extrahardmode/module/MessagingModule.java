@@ -27,6 +27,8 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.service.EHMModule;
 import com.extrahardmode.service.FindAndReplace;
 import com.extrahardmode.service.PermissionNode;
+import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -51,7 +53,7 @@ public class MessagingModule extends EHMModule
     }
 
     /**
-     * Sends a message and logs the timestamp of the sendmessage to prevent spam
+     * Sends a message and logs the timestamp of the sent message to prevent spam
      *
      * @param player to send the message to
      * @param node to log the message
@@ -143,6 +145,13 @@ public class MessagingModule extends EHMModule
             msgText = messages.getString(message).replace(pair.getSearchWord(), pair.getReplaceWith());
         }
         plugin.getServer().broadcastMessage(msgText);
+    }
+
+    public void sendTutorial(Player player, MessageNode message)
+    {
+        Validate.notNull(player);
+        String msgText = messages.getString(message);
+        player.sendMessage(ChatColor.DARK_RED + plugin.getTag() + ChatColor.WHITE + " " + msgText);
     }
 
     @Override

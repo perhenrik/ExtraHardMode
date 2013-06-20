@@ -30,7 +30,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ShapedRecipe;
@@ -75,149 +74,6 @@ public class UtilityModule extends EHMModule
         fireworkMeta.addEffect(fwEffect);
         fireworkMeta.setPower(1);
         firework.setFireworkMeta(fireworkMeta);
-    }
-
-    /**
-     * Returns if Material is a plant that should be affected by the farming Rules
-     */
-    public boolean isPlant(Material material)
-    {
-        return material.equals(Material.CROPS)
-                || material.equals(Material.POTATO)
-                || material.equals(Material.CARROT)
-                || material.equals(Material.MELON_STEM)
-                || material.equals(Material.PUMPKIN_STEM);
-    }
-
-    /**
-     * Is the given material a tool, e.g. doesn't stack
-     */
-    boolean isTool(Material material)
-    {
-        return     material.name().endsWith("AXE") //axe & pickaxe
-                || material.name().endsWith("SPADE")
-                || material.name().endsWith("SWORD")
-                || material.name().endsWith("HOE")
-                || material.name().endsWith("BUCKET") //water, milk, lava,..
-                || material.equals(Material.BOW)
-                || material.equals(Material.FISHING_ROD)
-                || material.equals(Material.WATCH)
-                || material.equals(Material.COMPASS)
-                || material.equals(Material.FLINT_AND_STEEL);
-    }
-
-    /**
-     * is the given material armor
-     */
-    public boolean isArmor (Material material)
-    {
-        return     material.name().endsWith("HELMET")
-                || material.name().endsWith("CHESTPLATE")
-                || material.name().endsWith("LEGGINGS")
-                || material.name().endsWith("BOOTS");
-    }
-
-    /**
-     * Consider this block a natural block for spawning?
-     */
-    public boolean isNaturalSpawnMaterial (Material material)
-    {
-        return     material == Material.GRASS
-                || material == Material.DIRT
-                || material == Material.STONE
-                || material == Material.SAND
-                || material == Material.GRAVEL
-                || material == Material.MOSSY_COBBLESTONE
-                || material == Material.OBSIDIAN
-                || material == Material.COBBLESTONE
-                || material == Material.BEDROCK
-                || material == Material.AIR      //Ghast, Bat
-                || material == Material.WATER;  //Squid
-    }
-
-    /**
-     * Is this a natural block for netherspawning?
-     */
-    //TODO name too long
-    public boolean isNaturalNetherSpawn(Material material)
-    {
-        return     material == Material.NETHERRACK
-                || material == Material.NETHER_BRICK
-                || material == Material.SOUL_SAND
-                || material == Material.GRAVEL
-                || material == Material.AIR;
-    }
-
-    /**
-     * Is the player currently on a ladder?
-     * @param player
-     * @return
-     */
-    public boolean isPlayerOnLadder(Player player)
-    {
-        return player.getLocation().getBlock().getType().equals(Material.LADDER);
-    }
-
-    /**
-     * Calculates the weight of the players inventory with the given amount of weight per item
-     * @param player
-     * @param armorPoints Points per piece of worn armor
-     * @param inventoryPoints Points per full stack of one item
-     * @param toolPoints Points per tool (which doesn't stack)
-     * @return
-     */
-    public float inventoryWeight (Player player, float armorPoints, float inventoryPoints, float toolPoints)
-    {
-        // count worn clothing
-        PlayerInventory inventory = player.getInventory();
-        float weight = 0.0F;
-        ItemStack[] armor = inventory.getArmorContents();
-        for (ItemStack armorPiece : armor)
-        {
-            if (armorPiece != null && armorPiece.getType() != Material.AIR)
-            {
-                weight += armorPoints;
-            }
-        }
-
-        // count contents
-        for (ItemStack itemStack : inventory.getContents())
-        {
-            if (itemStack != null && itemStack.getType() != Material.AIR)
-            {
-                float addWeight = 0.0F;
-                if (isTool(itemStack.getType()))
-                {
-                    addWeight += toolPoints;
-                }
-                else
-                {
-                    //take stackSize into consideration
-                    addWeight = inventoryPoints * itemStack.getAmount() / itemStack.getMaxStackSize();
-                }
-                weight += addWeight;
-            }
-        }
-        return weight;
-    }
-
-    /**
-     * Counts the number of items of a specific type
-     * @param inv to count in
-     * @param toCount the Material to count
-     * @return the number of items as Integer
-     */
-    public static int countInvItem (PlayerInventory inv, Material toCount)
-    {
-        int counter = 0;
-        for (ItemStack stack : inv.getContents())
-        {
-            if (stack != null && stack.getType().equals(toCount))
-            {
-                counter += stack.getAmount();
-            }
-        }
-        return counter;
     }
 
     boolean isSameShape(ArrayList<ItemStack> recipe1, ArrayList<ItemStack> recipe2)
@@ -289,7 +145,7 @@ public class UtilityModule extends EHMModule
         @Override
         public void run()
         {
-            int amountAfter = countInvItem(inv, material);
+            int amountAfter = PlayerModule.countInvItem(inv, material);
             int amountToAdd = (amountAfter - amountBefore) * (this.amountToAdd);
             inv.addItem(new ItemStack(material, amountToAdd));
         }

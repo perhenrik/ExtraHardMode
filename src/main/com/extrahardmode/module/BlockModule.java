@@ -301,6 +301,77 @@ public class BlockModule extends EHMModule
                 ||  mat == Material.WEB;
     }
 
+    /**
+     * Returns if Material is a plant that should be affected by the farming Rules
+     */
+    public boolean isPlant(Material material)
+    {
+        return material.equals(Material.CROPS)
+                || material.equals(Material.POTATO)
+                || material.equals(Material.CARROT)
+                || material.equals(Material.MELON_STEM)
+                || material.equals(Material.PUMPKIN_STEM);
+    }
+
+    /**
+     * Is the given material a tool, e.g. doesn't stack
+     */
+    boolean isTool(Material material)
+    {
+        return     material.name().endsWith("AXE") //axe & pickaxe
+                || material.name().endsWith("SPADE")
+                || material.name().endsWith("SWORD")
+                || material.name().endsWith("HOE")
+                || material.name().endsWith("BUCKET") //water, milk, lava,..
+                || material.equals(Material.BOW)
+                || material.equals(Material.FISHING_ROD)
+                || material.equals(Material.WATCH)
+                || material.equals(Material.COMPASS)
+                || material.equals(Material.FLINT_AND_STEEL);
+    }
+
+    /**
+     * is the given material armor
+     */
+    public boolean isArmor (Material material)
+    {
+        return     material.name().endsWith("HELMET")
+                || material.name().endsWith("CHESTPLATE")
+                || material.name().endsWith("LEGGINGS")
+                || material.name().endsWith("BOOTS");
+    }
+
+    /**
+     * Consider this block a natural block for spawning?
+     */
+    public boolean isNaturalSpawnMaterial (Material material)
+    {
+        return     material == Material.GRASS
+                || material == Material.DIRT
+                || material == Material.STONE
+                || material == Material.SAND
+                || material == Material.GRAVEL
+                || material == Material.MOSSY_COBBLESTONE
+                || material == Material.OBSIDIAN
+                || material == Material.COBBLESTONE
+                || material == Material.BEDROCK
+                || material == Material.AIR      //Ghast, Bat
+                || material == Material.WATER;  //Squid
+    }
+
+    /**
+     * Is this a natural block for netherspawning?
+     */
+    //TODO name too long
+    public boolean isNaturalNetherSpawn(Material material)
+    {
+        return     material == Material.NETHERRACK
+                || material == Material.NETHER_BRICK
+                || material == Material.SOUL_SAND
+                || material == Material.GRAVEL
+                || material == Material.AIR;
+    }
+
     @Override
     public void starting(){/*ignored*/}
     @Override
