@@ -48,7 +48,7 @@ public class EhmHardenedStoneEvent extends Event
     /**
      * The amount of blocks this tool can mine
      */
-    private int numOfBlocks;
+    private short numOfBlocks;
 
     /**
      * Constructor
@@ -56,7 +56,7 @@ public class EhmHardenedStoneEvent extends Event
      * @param toolId the tool which broke the Stone
      * @param numOfBlocks amount of blocks tool can mine
      */
-    public EhmHardenedStoneEvent(Player player, ItemStack tool, int numOfBlocks)
+    public EhmHardenedStoneEvent(Player player, ItemStack tool, short numOfBlocks)
     {
         this.player = player;
         this.tool = tool;
@@ -97,7 +97,7 @@ public class EhmHardenedStoneEvent extends Event
      * Set the amount of blocks the tool can mine
      * Just set this higher than 0 and ehm will allow the tool to break blocks
      */
-    public void setNumOfBlocks(int blocks)
+    public void setNumOfBlocks(short blocks)
     {
         this.numOfBlocks = blocks;
     }
@@ -107,7 +107,7 @@ public class EhmHardenedStoneEvent extends Event
      * <p>
      * Will be 0 if the tool isn't able to break stone by default.
      */
-    public int getNumOfBlocks()
+    public short getNumOfBlocks()
     {
         return numOfBlocks;
     }

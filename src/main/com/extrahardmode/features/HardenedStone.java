@@ -92,10 +92,10 @@ public class HardenedStone extends ListenerModule
         final boolean hardStonePhysix = CFG.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.HARDENEDSTONE);
 
-        final int stoneBlocksStone = CFG.getInt(RootNode.STONE_DURABILITY_PENALTY, world.getName());
-        final int stoneBlocksGold = CFG.getInt(RootNode.GOLD_DURABILITY_PENALTY, world.getName());
-        final int stoneBlocksIron = CFG.getInt(RootNode.IRON_DURABILITY_PENALTY, world.getName());
-        final int stoneBlocksDiamond = CFG.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
+        final short stoneBlocksStone = (short) CFG.getInt(RootNode.STONE_DURABILITY_PENALTY, world.getName());
+        final short stoneBlocksGold = (short) CFG.getInt(RootNode.GOLD_DURABILITY_PENALTY, world.getName());
+        final short stoneBlocksIron = (short) CFG.getInt(RootNode.IRON_DURABILITY_PENALTY, world.getName());
+        final short stoneBlocksDiamond = (short) CFG.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
 
         // FEATURE: stone breaks tools much quicker
         if (hardStoneEnabled && block.getType() == Material.STONE &&! playerBypasses)
@@ -104,7 +104,7 @@ public class HardenedStone extends ListenerModule
 
             if (inHandStack != null)
             {
-                EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, 0);
+                EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, (short) 0);
 
                 switch (inHandStack.getType())
                 {
@@ -135,7 +135,7 @@ public class HardenedStone extends ListenerModule
                 // otherwise, drastically reduce tool durability when breaking stone
                 else if (hardEvent.getNumOfBlocks() > 0)
                 {
-
+                    player.setItemInHand(UtilityModule.damage(hardEvent.getTool(), hardEvent.getNumOfBlocks()));
                 }
             }
         }
