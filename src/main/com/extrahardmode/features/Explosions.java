@@ -27,9 +27,9 @@ import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
-import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -42,7 +42,6 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -56,13 +55,12 @@ import java.util.List;
  *
  *
  */
-public class Explosions implements Listener
+public class Explosions extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
     private final MessageConfig messages;
     private final UtilityModule utils;
-    private final EntityModule entityModule;
     private final PlayerModule playerModule;
 
     /**
@@ -72,11 +70,12 @@ public class Explosions implements Listener
      */
     public Explosions (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
+
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
@@ -168,39 +167,43 @@ public class Explosions implements Listener
     @EventHandler
     public void beforeCraft (PrepareItemCraftEvent event)
     {
-        InventoryHolder human = event.getInventory().getHolder();
-        Player player = null;
-        if (human instanceof Player)
+        Inventory inv = event.getInventory();
+
+        if (inv != null && inv.getHolder() != null)
         {
-            player = (Player)human;
-            World world = player.getWorld();
-
-            final int multiplier = CFG.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
-
-            switch (multiplier)
+            InventoryHolder human = inv.getHolder();
+            if (human instanceof Player)
             {
-                case 0:
-                    break;
-                case 1:
-                    break;
-                default:
-                    if (event.getRecipe().getResult().getType().equals(Material.TNT))
-                    {
-                        //TODO LOW EhmMoreTntEvent
-                        //Recipe in CraftingGrid
-                        ShapedRecipe craftRecipe = (ShapedRecipe) event.getRecipe();
-                        CraftingInventory craftInv = event.getInventory();
+                Player player = (Player)human;
+                World world = player.getWorld();
 
-                        //The vanilla tnt recipe
-                        ShapedRecipe vanillaTnt = new ShapedRecipe(new ItemStack(Material.TNT)).shape("gsg", "sgs", "gsg").setIngredient('g', Material.SULPHUR).setIngredient('s', Material.SAND);
+                final int multiplier = CFG.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
 
-                        //Multiply the amount of tnt in enabled worlds
-                        if (utils.isSameRecipe(craftRecipe, vanillaTnt))
+                switch (multiplier)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    default:
+                        if (event.getRecipe().getResult().getType().equals(Material.TNT))
                         {
-                            craftInv.setResult(new ItemStack(Material.TNT, multiplier));
+                            //TODO LOW EhmMoreTntEvent
+                            //Recipe in CraftingGrid
+                            ShapedRecipe craftRecipe = (ShapedRecipe) event.getRecipe();
+                            CraftingInventory craftInv = event.getInventory();
+
+                            //The vanilla tnt recipe
+                            ShapedRecipe vanillaTnt = new ShapedRecipe(new ItemStack(Material.TNT)).shape("gsg", "sgs", "gsg").setIngredient('g', Material.SULPHUR).setIngredient('s', Material.SAND);
+
+                            //Multiply the amount of tnt in enabled worlds
+                            if (utils.isSameRecipe(craftRecipe, vanillaTnt))
+                            {
+                                craftInv.setResult(new ItemStack(Material.TNT, multiplier));
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
         }
     }

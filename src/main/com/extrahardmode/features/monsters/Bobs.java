@@ -25,6 +25,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.events.EhmEndermanTeleportEvent;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -34,7 +35,6 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -45,13 +45,14 @@ import org.bukkit.event.player.PlayerTeleportEvent;
  *
  * Teleportation of the Player towards the Enderman ,
  */
-public class Bobs implements Listener
+public class Bobs extends ListenerModule
 {
     private ExtraHardMode plugin = null;
     private RootConfig CFG = null;
 
     public Bobs(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
     }

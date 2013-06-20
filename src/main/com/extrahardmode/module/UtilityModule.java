@@ -24,6 +24,7 @@ package com.extrahardmode.module;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.EHMModule;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -37,6 +38,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Put all the Utility Stuff here that doesn't fit into the other modules
@@ -74,6 +76,38 @@ public class UtilityModule extends EHMModule
         fireworkMeta.addEffect(fwEffect);
         fireworkMeta.setPower(1);
         firework.setFireworkMeta(fireworkMeta);
+    }
+
+    /**
+     * Damage an item based on the amount of Blocks it can mine
+     *
+     * @param item Item to damage
+     * @param blocks amount of blocks the item can break
+     *
+     * @return the damaged Item, can be completely broken
+     */
+    public static ItemStack damage (ItemStack item, short blocks)
+    {
+        short maxDurability = item.getType().getMaxDurability();
+        Validate.isTrue(maxDurability > 1, "This item is not damageable");
+        if (blocks <= 0)
+            return item;
+
+        short damagePerBlock = (short) (maxDurability / blocks);
+        //Because tooldmg is an int we have to sometimes break the tool twice, I couldn't find the flaw in the first formula so oh well....
+        double percent = damagePerBlock > 1 ? (maxDurability % blocks) / (double)maxDurability : ((double) maxDurability / blocks) - damagePerBlock;
+
+        if (damagePerBlock > 0)
+        {
+            int durability =  item.getDurability();
+            durability += damagePerBlock;
+
+            if (new Random().nextDouble() < percent)
+                durability += damagePerBlock;
+
+            item.setDurability((short) durability);
+        }
+        return item;
     }
 
     boolean isSameShape(ArrayList<ItemStack> recipe1, ArrayList<ItemStack> recipe2)

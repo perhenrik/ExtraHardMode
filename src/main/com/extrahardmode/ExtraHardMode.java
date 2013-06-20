@@ -69,7 +69,6 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(MessageConfig.class, new MessageConfig(this));
         registerModule(MessagingModule.class, new MessagingModule(this));
         registerModule(DataStoreModule.class, new DataStoreModule(this));
-        registerModule(EntityModule.class, new EntityModule(this));
         registerModule(BlockModule.class, new BlockModule(this));
         registerModule(UtilityModule.class, new UtilityModule(this));
         registerModule(PlayerModule.class, new PlayerModule(this));
@@ -81,30 +80,30 @@ public class ExtraHardMode extends JavaPlugin
         PluginManager pluginManager = this.getServer().getPluginManager();
 
         // EventHandlers gallore....look away, scroll down
-        pluginManager.registerEvents(new AntiFarming(this), this);
-        pluginManager.registerEvents(new AntiGrinder(this), this);
-        pluginManager.registerEvents(new Explosions(this), this);
-        pluginManager.registerEvents(new HardenedStone(this), this);
-        pluginManager.registerEvents(new LimitedBuilding(this), this);
-        pluginManager.registerEvents(new Physics(this), this);
-        pluginManager.registerEvents(new Players(this), this);
-        pluginManager.registerEvents(new Torches(this), this);
-        pluginManager.registerEvents(new Water(this), this);
+        registerModule(AntiFarming.class, new AntiFarming(this));
+        registerModule(AntiGrinder.class, new AntiGrinder(this));
+        registerModule(Explosions.class, new Explosions(this));
+        registerModule(HardenedStone.class, new HardenedStone(this));
+        registerModule(LimitedBuilding.class, new LimitedBuilding(this));
+        registerModule(Physics.class, new Physics(this));
+        registerModule(Players.class, new Players(this));
+        registerModule(Torches.class, new Torches(this));
+        registerModule(Water.class, new Water(this));
         //monsters
-        pluginManager.registerEvents(new Bitches(this), this);
-        pluginManager.registerEvents(new Blazes(this), this);
-        pluginManager.registerEvents(new BumBumBens(this), this);
-        pluginManager.registerEvents(new Glydia(this), this);
-        pluginManager.registerEvents(new Bobs(this), this);
-        pluginManager.registerEvents(new Ghasts(this), this);
-        pluginManager.registerEvents(new MonsterRules(this), this);
-        pluginManager.registerEvents(new Pigies(this), this);
-        pluginManager.registerEvents(new RealisticChopping(this), this);
-        pluginManager.registerEvents(new Silverfish(this), this);
-        pluginManager.registerEvents(new Skeletors(this), this);
-        pluginManager.registerEvents(new Spoiders(this), this);
+        registerModule(Bitches.class, new Bitches(this));
+        registerModule(Blazes.class, new Blazes(this));
+        registerModule(BumBumBens.class, new BumBumBens(this));
+        registerModule(Glydia.class, new Glydia(this));
+        registerModule(Bobs.class, new Bobs(this));
+        registerModule(Ghasts.class, new Ghasts(this));
+        registerModule(MonsterRules.class, new MonsterRules(this));
+        registerModule(Pigies.class, new Pigies(this));
+        registerModule(RealisticChopping.class, new RealisticChopping(this));
+        registerModule(Silverfish.class, new Silverfish(this));
+        registerModule(Skeletors.class, new Skeletors(this));
+        registerModule(Spoiders.class, new Spoiders(this));
+        registerModule(Zombies.class, new Zombies(this));;
         new Tutorial(this);
-        pluginManager.registerEvents(new Zombies(this), this);
 
 
         // FEATURE: monsters spawn in the light under a configurable Y level

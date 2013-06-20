@@ -26,8 +26,9 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,7 +37,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -45,12 +45,11 @@ import org.bukkit.event.entity.EntityDeathEvent;
  * A MonsterGrinder Inhibitor which disables drops for Monsters which appear to be farmed or which have been killed in
  * conditions where the Player had a clear advantage
  */
-public class AntiGrinder implements Listener
+public class AntiGrinder extends ListenerModule
 {
     private ExtraHardMode plugin;
     private final RootConfig CFG;
     private MessageConfig messages;
-    private final EntityModule entityModule;
     private final BlockModule blockModule;
     private final UtilityModule utils;
 
@@ -60,16 +59,16 @@ public class AntiGrinder implements Listener
      * Dependency Injection Constructor
      *
      * @param CFG instantiated RootConfig
-     * @param entityModule EntityModule
      * @param blockModule BlockModule
      * @param utils UtilityModule
      */
-    public AntiGrinder(RootConfig CFG, EntityModule entityModule, BlockModule blockModule, UtilityModule utils)
+    public AntiGrinder(ExtraHardMode plugin, RootConfig CFG, BlockModule blockModule, UtilityModule utils)
     {
-        this. CFG = CFG;
-        this. entityModule = entityModule;
-        this. blockModule = blockModule;
-        this. utils = utils;
+        super(plugin);
+        this.plugin = plugin;
+        this.CFG = CFG;
+        this.blockModule = blockModule;
+        this.utils = utils;
     }
 
     /**
@@ -79,10 +78,11 @@ public class AntiGrinder implements Listener
      */
     public AntiGrinder(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
+
         blockModule = plugin.getModuleForClass(BlockModule.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
@@ -112,7 +112,7 @@ public class AntiGrinder implements Listener
                 case SPAWNER:
                 {
                     // Block all Spawner drops completely
-                    entityModule.markLootLess(entity);
+                    EntityHelper.markLootLess(plugin, entity);
                     return false;
                 }
                 case NATURAL: case VILLAGE_INVASION:
@@ -171,7 +171,7 @@ public class AntiGrinder implements Listener
         // FEATURE: monsters which take environmental damage or spawn from spawners don't drop loot and exp (monster grinder inhibitor)
         if (inhibitMonsterGrindersEnabled && entity instanceof Monster && entity.getType() != EntityType.SQUID)
         {
-            if (entityModule.isLootLess(entity))
+            if (EntityHelper.isLootLess(entity))
             {
                 clearDrops(event);
                 return false;
@@ -290,7 +290,7 @@ public class AntiGrinder implements Listener
             EntityDamageEvent.DamageCause damageCause = event.getCause();
             if (damageCause != EntityDamageEvent.DamageCause.ENTITY_ATTACK && damageCause != EntityDamageEvent.DamageCause.PROJECTILE && damageCause != EntityDamageEvent.DamageCause.BLOCK_EXPLOSION)
             {
-                entityModule.addEnvironmentalDamage((LivingEntity) entity, event.getDamage());
+                EntityHelper.addEnvironmentalDamage(plugin, (LivingEntity) entity, event.getDamage());
             }
         }
     }

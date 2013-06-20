@@ -26,7 +26,7 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.DataStoreModule;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -55,10 +55,6 @@ public class MoreMonstersTask implements Runnable
      * Config instanz
      */
     private final RootConfig CFG;
-    /**
-     * module to check if spawnlocation is safe etc.
-     */
-    private final EntityModule entityModule;
     private final PlayerModule playerModule;
     /**
      * Constructor.
@@ -70,7 +66,7 @@ public class MoreMonstersTask implements Runnable
     {
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
+
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
@@ -93,7 +89,7 @@ public class MoreMonstersTask implements Runnable
                 {// spawn random monster(s)
                     if (world.getEnvironment() == Environment.NORMAL)
                     {
-                        Entity mob = entityModule.spawnRandomMob(location);
+                        Entity mob = EntityHelper.spawnRandomMob(location);
                         //If there are Players nearby don't spawn
                         List<Entity> entities = mob.getNearbyEntities(16, 16, 16);
                         for (Entity ent : entities)
@@ -138,7 +134,7 @@ public class MoreMonstersTask implements Runnable
         // Only spawn monsters in normal world. End is crowded with endermen and nether is too extreme anyway, add config later
         int lightLvl = location.getBlock().getLightFromSky();
         if (world.getEnvironment() == World.Environment.NORMAL && (location.getY() < maxY && lightLvl < 3))
-            verifiedLoc = entityModule.isLocSafeSpawn(location);
+            verifiedLoc = EntityHelper.isLocSafeSpawn(location);
 
         return verifiedLoc;
     }

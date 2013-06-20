@@ -26,9 +26,9 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.DataStoreModule;
-import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -37,7 +37,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -57,13 +56,12 @@ import java.util.List;
  * enhanced environmental damage ,
  * catching the player on fire if extinguishing fires by hand
  */
-public class Players implements Listener
+public class Players extends ListenerModule
 {
     private ExtraHardMode plugin = null;
     private RootConfig CFG = null;
     private final MessageConfig messages;
     private UtilityModule utils = null;
-    private EntityModule entityModule = null;
     private final PlayerModule playerModule;
 
     /**
@@ -73,11 +71,11 @@ public class Players implements Listener
      */
     public Players (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 

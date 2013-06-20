@@ -27,13 +27,13 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.events.EhmSkeletonDeflectEvent;
 import com.extrahardmode.events.EhmSkeletonKnockbackEvent;
 import com.extrahardmode.events.EhmSkeletonShootSilverfishEvent;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -46,17 +46,16 @@ import org.bukkit.util.Vector;
  * shooting Silverfish
  *
  */
-public class Skeletors implements Listener
+public class Skeletors extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
-    private final EntityModule entityModule;
 
     public Skeletors(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
 
@@ -166,19 +165,19 @@ public class Skeletors implements Listener
             if (shooter != null && shooter.getType() == EntityType.SKELETON && plugin.random(silverfishShootPercent))
             {
                 Skeleton skeleton = (Skeleton) shooter;
+                // cancel arrow fire
+                event.setCancelled(true);
                 if (skeleton.getTarget() instanceof Player) //To prevent tons of Silverfish
                 {
                     final Player player = (Player) skeleton.getTarget();
                     // cancel arrow fire
                     event.setCancelled(true);
-                    EntityModule module = plugin.getModuleForClass(EntityModule.class);
-
+                    
                     // replace with silverfish, quarter velocity of arrow, wants to attack same target as skeleton
                     Creature silverFish = (Creature) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0, 1.5, 0), EntityType.SILVERFISH);
                     silverFish.setVelocity(arrow.getVelocity().multiply(0.25));
                     silverFish.setTarget(skeleton.getTarget());
-                    module.markLootLess(silverFish); // this silverfish doesn't drop loot
-
+                    EntityHelper.markLootLess(plugin, silverFish); // this silverfish doesn't drop loot
                     EhmSkeletonShootSilverfishEvent shootSilverfishEvent = new EhmSkeletonShootSilverfishEvent(player, skeleton, silverFish, silverfishShootPercent);
                     plugin.getServer().getPluginManager().callEvent(shootSilverfishEvent);
 

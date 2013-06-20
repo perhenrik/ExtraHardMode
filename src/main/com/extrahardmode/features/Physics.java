@@ -25,8 +25,9 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -37,7 +38,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -53,20 +53,20 @@ import java.util.List;
  * Breaking Netherrack causes fires ,
  * Players get damaged by FallingBlocks when hit
  */
-public class Physics implements Listener
+public class Physics extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
     private final BlockModule blockModule;
-    private final EntityModule entityModule;
     private final PlayerModule playerModule;
 
     public Physics (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
+
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
@@ -149,7 +149,7 @@ public class Physics implements Listener
         final boolean environmentalDmg = CFG.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE, world.getName());
 
         //Only when Block has been marked to deal damage
-        if (entity.getType().equals(EntityType.FALLING_BLOCK) && damageAmount > 0 && entityModule.isMarkedForProcessing(entity))
+        if (entity.getType().equals(EntityType.FALLING_BLOCK) && damageAmount > 0 && EntityHelper.isMarkedForProcessing(entity))
         {
             List<Entity> entities =  entity.getNearbyEntities(0, 1, 0);
             for (Entity ent : entities)

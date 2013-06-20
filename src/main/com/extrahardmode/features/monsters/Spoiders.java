@@ -24,7 +24,8 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.WebCleanupTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,7 +37,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Spider;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -48,17 +48,16 @@ import java.util.List;
  *
  * More spiders in caves
  */
-public class Spoiders implements Listener
+public class Spoiders extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
-    private final EntityModule entityModule;
 
     public Spoiders(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -83,7 +82,7 @@ public class Spoiders implements Listener
             {
                 event.setCancelled(true);
                 entityType = EntityType.SPIDER;
-                entityModule.spawn(location, entityType);
+                EntityHelper.spawn(location, entityType);
             }
         }
     }
@@ -106,7 +105,7 @@ public class Spoiders implements Listener
         if (spidersDropWebOnDeath)
         {
             //Reduce amount of web dropped by spiders which die in caves from environmental damage
-            if (entity instanceof Spider && (!entityModule.isLootLess(entity) || plugin.getRandom().nextInt(3) == 1))
+            if (entity instanceof Spider && (!EntityHelper.isLootLess(entity) || plugin.getRandom().nextInt(3) == 1))
             {
                 // random web placement
                 long serverTime = world.getFullTime();

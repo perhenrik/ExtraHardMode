@@ -27,8 +27,9 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.events.EhmCreeperDropTntEvent;
 import com.extrahardmode.features.Feature;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CoolCreeperExplosion;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Effect;
@@ -36,7 +37,6 @@ import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.potion.PotionEffectType;
 
@@ -47,18 +47,17 @@ import org.bukkit.potion.PotionEffectType;
  * Charged Creepers exloding on hit ,
  *
  */
-public class BumBumBens implements Listener
+public class BumBumBens extends ListenerModule
 {
     private ExtraHardMode plugin = null;
     private RootConfig CFG = null;
-    private EntityModule entityModule = null;
+    private EntityHelper EntityHelper = null;
     private final PlayerModule playerModule;
-
     public BumBumBens(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
@@ -182,7 +181,7 @@ public class BumBumBens implements Listener
                     {   //If not targetting a player this is an explosion we don't need. Trying to prevent unecessary world damage
                         return;
                     }
-                    entityModule.markLootLess((LivingEntity) entity);
+                    EntityHelper.markLootLess(plugin, (LivingEntity) entity);
                     if (customCharged)
                         new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED, creeper).run(); // equal to a TNT blast
                     entity.remove();
@@ -205,9 +204,9 @@ public class BumBumBens implements Listener
                         || event.getCause().equals(EntityDamageEvent.DamageCause.LAVA))
                         &&! creeper.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE))
                 {
-                    if (!entityModule.hasFlagIgnore(entity))
+                    if (!EntityHelper.hasFlagIgnore(entity))
                     {
-                        entityModule.flagIgnore(entity);
+                        EntityHelper.flagIgnore(plugin, entity);
                         CoolCreeperExplosion bigBoom = new CoolCreeperExplosion(creeper, plugin);
                         bigBoom.run();
                     }
@@ -233,10 +232,10 @@ public class BumBumBens implements Listener
 
         // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
         // Charged creeper explosion is handled in onEntityDamage
-        if (customCreeper && entity instanceof Creeper &&! ((Creeper)entity).isPowered() &&! entityModule.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
+        if (customCreeper && entity instanceof Creeper &&! ((Creeper)entity).isPowered() &&! EntityHelper.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
         {
             event.setCancelled(true);
-            entityModule.flagIgnore(entity);//Ignore this creeper in further calls to this method
+            EntityHelper.flagIgnore(plugin, entity);//Ignore this creeper in further calls to this method
             new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER, entity).run();
         }
     }

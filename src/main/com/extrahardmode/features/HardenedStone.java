@@ -31,6 +31,7 @@ import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -39,7 +40,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
@@ -57,7 +57,7 @@ import java.util.List;
  * Breaking ore causes surounding stone to fall ,
  * Various Fixes to prevent working around the hardened stone
  */
-public class HardenedStone implements Listener
+public class HardenedStone extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
@@ -68,6 +68,7 @@ public class HardenedStone implements Listener
 
     public HardenedStone (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
@@ -91,10 +92,10 @@ public class HardenedStone implements Listener
         final boolean hardStonePhysix = CFG.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.HARDENEDSTONE);
 
-        final int stoneBlocksStone = CFG.getInt(RootNode.STONE_DURABILITY_PENALTY, world.getName());
-        final int stoneBlocksGold = CFG.getInt(RootNode.GOLD_DURABILITY_PENALTY, world.getName());
-        final int stoneBlocksIron = CFG.getInt(RootNode.IRON_DURABILITY_PENALTY, world.getName());
-        final int stoneBlocksDiamond = CFG.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
+        final short stoneBlocksStone = (short) CFG.getInt(RootNode.STONE_DURABILITY_PENALTY, world.getName());
+        final short stoneBlocksGold = (short) CFG.getInt(RootNode.GOLD_DURABILITY_PENALTY, world.getName());
+        final short stoneBlocksIron = (short) CFG.getInt(RootNode.IRON_DURABILITY_PENALTY, world.getName());
+        final short stoneBlocksDiamond = (short) CFG.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
 
         // FEATURE: stone breaks tools much quicker
         if (hardStoneEnabled && block.getType() == Material.STONE &&! playerBypasses)
@@ -103,7 +104,7 @@ public class HardenedStone implements Listener
 
             if (inHandStack != null)
             {
-                EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, 0);
+                EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, (short) 0);
 
                 switch (inHandStack.getType())
                 {
@@ -134,17 +135,7 @@ public class HardenedStone implements Listener
                 // otherwise, drastically reduce tool durability when breaking stone
                 else if (hardEvent.getNumOfBlocks() > 0)
                 {
-                    int maxDurability = inHandStack.getType().getMaxDurability();
-                    int damagePerBlock = maxDurability / hardEvent.getNumOfBlocks();
-
-                    if (maxDurability > 0 && damagePerBlock > 0)
-                    {
-                        inHandStack.setDurability((short) (inHandStack.getDurability() + damagePerBlock));
-
-                        // For cases where a remainder causes the tool to be viable for an extra use, eat up the remainder of thet durability
-                        if ( maxDurability - inHandStack.getDurability() < inHandStack.getType().getMaxDurability() / damagePerBlock)
-                            inHandStack.setDurability((short) maxDurability);
-                    }
+                    player.setItemInHand(UtilityModule.damage(hardEvent.getTool(), hardEvent.getNumOfBlocks()));
                 }
             }
         }

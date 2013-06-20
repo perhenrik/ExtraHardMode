@@ -25,8 +25,9 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
-import com.extrahardmode.module.EntityModule;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -35,7 +36,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -45,21 +45,20 @@ import org.bukkit.event.entity.EntityTargetEvent;
  *
  *
  */
-public class MonsterRules implements Listener
+public class MonsterRules extends ListenerModule
 {
     private ExtraHardMode plugin = null;
     private RootConfig CFG = null;
     private final MessageConfig messages;
     private UtilityModule utils = null;
-    private EntityModule entityModule = null;
 
     public MonsterRules(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
     }
 
     /**
@@ -95,10 +94,10 @@ public class MonsterRules implements Listener
                     {
                         for (int i = 1; i < multiplier; i++)
                         {
-                            Entity newEntity = entityModule.spawnRandomMob(event.getLocation());
-                            if (entityModule.isLootLess(entity))
+                            Entity newEntity = EntityHelper.spawnRandomMob(event.getLocation());
+                            if (EntityHelper.isLootLess(entity))
                             {
-                                entityModule.markLootLess((LivingEntity) newEntity);
+                                EntityHelper.markLootLess(plugin, (LivingEntity) newEntity);
                             }
                         }
                     }
@@ -123,7 +122,7 @@ public class MonsterRules implements Listener
         // FEATURE: a monster which gains a target breaks out of any webbing it might have been trapped within
         if (entity instanceof Monster && websEnabled)
         {
-            entityModule.clearWebbing(entity);
+            EntityHelper.clearWebbing(entity);
         }
     }
 
@@ -152,7 +151,7 @@ public class MonsterRules implements Listener
         // FEATURE: monsters trapped in webbing break out of the webbing when hit
         if (entity instanceof Monster)
         {
-            entityModule.clearWebbing(entity);
+            EntityHelper.clearWebbing(entity);
         }
     }
 }

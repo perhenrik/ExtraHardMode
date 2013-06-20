@@ -30,7 +30,6 @@ import com.extrahardmode.mocks.MockLocation;
 import com.extrahardmode.mocks.MockWorld;
 import com.extrahardmode.mocks.events.MockCreatureSpawnEvent;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.UtilityModule;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -47,7 +46,7 @@ public class TestAntiGrinder
 {
     private final ExtraHardMode plugin = new MockExtraHardMode().get();
     private final RootConfig CFG = new RootConfig(plugin);
-    private final AntiGrinder module = new AntiGrinder(CFG, new EntityModule(plugin), new BlockModule(plugin), new UtilityModule(plugin));
+    private final AntiGrinder module = new AntiGrinder(plugin, CFG, new BlockModule(plugin), new UtilityModule(plugin));
 
     @Before
     public void prepare()

@@ -26,8 +26,8 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.DataStoreModule;
-import com.extrahardmode.module.EntityModule;
 import com.extrahardmode.module.PlayerModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.FallingLogsTask;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,13 +36,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 /**
  * When chopping down trees the logs fall down and loose logs fall down on the side and can injure you
  */
-public class RealisticChopping implements Listener
+public class RealisticChopping extends ListenerModule
 {
     /**
      * Plugin-Reference to get modules
@@ -61,10 +60,6 @@ public class RealisticChopping implements Listener
      */
     private final DataStoreModule dataStoreModule;
     /**
-     * Stuff with Entities like MetaData
-     */
-    private final EntityModule entityModule;
-    /**
      * Permissions etc.
      */
     private final PlayerModule playerModule;
@@ -75,11 +70,11 @@ public class RealisticChopping implements Listener
      */
     public RealisticChopping (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
         dataStoreModule = plugin.getModuleForClass(DataStoreModule.class);
-        entityModule = plugin.getModuleForClass(EntityModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
