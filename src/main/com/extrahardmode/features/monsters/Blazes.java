@@ -29,6 +29,7 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,7 +39,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -57,7 +57,7 @@ import org.bukkit.util.Vector;
  * explode on death in the Overworld ,
  * no blazerods in the OverWorld
  */
-public class Blazes implements Listener
+public class Blazes extends ListenerModule
 {
     private ExtraHardMode plugin = null;
     private RootConfig CFG = null;
@@ -66,6 +66,7 @@ public class Blazes implements Listener
 
     public Blazes (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);

@@ -25,6 +25,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.EntityHelper;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.WebCleanupTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,7 +37,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Spider;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -48,13 +48,14 @@ import java.util.List;
  *
  * More spiders in caves
  */
-public class Spoiders implements Listener
+public class Spoiders extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
 
     public Spoiders(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
     }

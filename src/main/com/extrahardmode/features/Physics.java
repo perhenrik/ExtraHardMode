@@ -27,6 +27,7 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -37,7 +38,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -53,7 +53,7 @@ import java.util.List;
  * Breaking Netherrack causes fires ,
  * Players get damaged by FallingBlocks when hit
  */
-public class Physics implements Listener
+public class Physics extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
@@ -62,6 +62,7 @@ public class Physics implements Listener
 
     public Physics (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);

@@ -30,6 +30,7 @@ import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -39,7 +40,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -50,7 +50,7 @@ import org.bukkit.util.Vector;
 /**
  * Swimming in water will pull you down if you are carrying too much
  */
-public class Water implements Listener
+public class Water extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
@@ -60,6 +60,7 @@ public class Water implements Listener
 
     public Water (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);

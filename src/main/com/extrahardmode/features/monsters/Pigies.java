@@ -25,6 +25,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.EntityHelper;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,7 +38,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
@@ -51,13 +51,14 @@ import org.bukkit.inventory.ItemStack;
  * drop netherwart in the nether ,
  * spawn on lighting strikes
  */
-public class Pigies implements Listener
+public class Pigies extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
 
     public Pigies(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
     }

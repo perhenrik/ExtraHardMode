@@ -28,6 +28,7 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CoolCreeperExplosion;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Effect;
@@ -35,7 +36,6 @@ import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.potion.PotionEffectType;
 
@@ -46,7 +46,7 @@ import org.bukkit.potion.PotionEffectType;
  * Charged Creepers exloding on hit ,
  *
  */
-public class BumBumBens implements Listener
+public class BumBumBens extends ListenerModule
 {
     private ExtraHardMode plugin = null;
     private RootConfig CFG = null;
@@ -54,6 +54,7 @@ public class BumBumBens implements Listener
     private final PlayerModule playerModule;
     public BumBumBens(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);

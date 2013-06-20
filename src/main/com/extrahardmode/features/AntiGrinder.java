@@ -28,6 +28,7 @@ import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,7 +37,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -45,7 +45,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
  * A MonsterGrinder Inhibitor which disables drops for Monsters which appear to be farmed or which have been killed in
  * conditions where the Player had a clear advantage
  */
-public class AntiGrinder implements Listener
+public class AntiGrinder extends ListenerModule
 {
     private ExtraHardMode plugin;
     private final RootConfig CFG;
@@ -64,6 +64,7 @@ public class AntiGrinder implements Listener
      */
     public AntiGrinder(RootConfig CFG, BlockModule blockModule, UtilityModule utils)
     {
+        super(null);
         this. CFG = CFG;
         this. blockModule = blockModule;
         this. utils = utils;
@@ -76,6 +77,7 @@ public class AntiGrinder implements Listener
      */
     public AntiGrinder(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);

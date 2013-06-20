@@ -31,6 +31,7 @@ import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -39,7 +40,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
@@ -57,7 +57,7 @@ import java.util.List;
  * Breaking ore causes surounding stone to fall ,
  * Various Fixes to prevent working around the hardened stone
  */
-public class HardenedStone implements Listener
+public class HardenedStone extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
@@ -68,6 +68,7 @@ public class HardenedStone implements Listener
 
     public HardenedStone (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);

@@ -30,6 +30,7 @@ import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.EvaporateWaterTask;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -39,7 +40,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -58,7 +58,7 @@ import org.bukkit.util.Vector;
  *
  *
  */
-public class AntiFarming implements Listener
+public class AntiFarming extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
@@ -68,6 +68,7 @@ public class AntiFarming implements Listener
 
     public AntiFarming (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);

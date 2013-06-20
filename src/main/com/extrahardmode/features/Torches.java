@@ -29,6 +29,7 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.RemoveExposedTorchesTask;
 import org.bukkit.Chunk;
@@ -40,7 +41,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.material.Torch;
@@ -51,7 +51,7 @@ import org.bukkit.material.Torch;
  * can't be attached to loose blocks ,
  * get washed away when it rains
  */
-public class Torches implements Listener
+public class Torches extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
@@ -61,6 +61,7 @@ public class Torches implements Listener
 
     public Torches(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);

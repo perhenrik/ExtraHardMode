@@ -29,6 +29,7 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -37,7 +38,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
@@ -47,7 +47,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
  * No building while shifting over a corner ,
  * No building while jumping
  */
-public class LimitedBuilding implements Listener
+public class LimitedBuilding extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
@@ -57,6 +57,7 @@ public class LimitedBuilding implements Listener
 
     public LimitedBuilding (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);

@@ -33,6 +33,7 @@ import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.FindAndReplace;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.DragonAttackPatternTask;
 import com.extrahardmode.task.DragonAttackTask;
 import org.bukkit.Chunk;
@@ -44,7 +45,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
@@ -64,7 +64,7 @@ import java.util.List;
  * Limited Building in the End ,
  * Blazes, Zombies, aggro Enderman
  */
-public class Glydia implements Listener
+public class Glydia extends ListenerModule
 {
     private ExtraHardMode plugin = null;
     private RootConfig CFG = null;
@@ -75,6 +75,7 @@ public class Glydia implements Listener
 
     public Glydia(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);

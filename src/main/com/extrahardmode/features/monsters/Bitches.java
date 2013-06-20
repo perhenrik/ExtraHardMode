@@ -26,6 +26,7 @@ import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.EntityHelper;
+import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,7 +35,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 
@@ -45,13 +45,14 @@ import org.bukkit.event.entity.PotionSplashEvent;
  *
  * New Attacks like Explosion potions, spawning of zombies
  */
-public class Bitches implements Listener
+public class Bitches extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
 
     public Bitches (ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
     }

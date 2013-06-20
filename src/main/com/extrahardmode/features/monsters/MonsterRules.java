@@ -27,6 +27,7 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -35,7 +36,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -45,7 +45,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
  *
  *
  */
-public class MonsterRules implements Listener
+public class MonsterRules extends ListenerModule
 {
     private ExtraHardMode plugin = null;
     private RootConfig CFG = null;
@@ -54,6 +54,7 @@ public class MonsterRules implements Listener
 
     public MonsterRules(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);

@@ -25,12 +25,12 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.EntityHelper;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -41,13 +41,14 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
  * Immunity to arrows ,
  *
  */
-public class Skeletors implements Listener
+public class Skeletors extends ListenerModule
 {
     private final ExtraHardMode plugin;
     private final RootConfig CFG;
 
     public Skeletors(ExtraHardMode plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
