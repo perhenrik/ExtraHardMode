@@ -288,11 +288,17 @@ public class MsgPersistModule extends EHMModule
             conn = retrieveConnection();
             Statement statement = conn.createStatement();
 
-            String select = String.format("SELECT %s FROM %s WHERE %s = %s", node.getColumnName(), msgTable, "id", playerId);
+            String select = String.format("SELECT * FROM %s WHERE %s = %s", msgTable, "id", playerId);
 
             ResultSet result = statement.executeQuery(select);
             if (result.next())
                 value = result.getInt(node.getColumnName());
+            else //create the missing row
+            {
+                String newPlayerDataQuery = String.format( //empty row in messages
+                        "INSERT INTO %s (%s) VALUES (%s)", msgTable, "id", playerId);
+                conn.createStatement().executeUpdate(newPlayerDataQuery);
+            }
         } catch (SQLException e)
         {
             e.printStackTrace();
