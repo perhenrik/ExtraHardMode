@@ -39,9 +39,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
-<<<<<<<HEAD
-        =======
-        >>>>>>>dev
 
 /**
  * Main plugin class.
@@ -116,11 +113,7 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Skeletors.class, new Skeletors(this));
         registerModule(Spoiders.class, new Spoiders(this));
         registerModule(Zombies.class, new Zombies(this));
-        <<<<<<<HEAD
-
         new Tutorial(this);
-        =======
-        >>>>>>>dev
 
 
         // FEATURE: monsters spawn in the light under a configurable Y level

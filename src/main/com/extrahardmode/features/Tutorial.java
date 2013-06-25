@@ -1,7 +1,6 @@
 package com.extrahardmode.features;
 
 
-<<<<<<<HEAD
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.events.*;
@@ -9,10 +8,7 @@ import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import org.bukkit.Material;
-=======
-
-        >>>>>>>dev
-        import org.bukkit.World;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creeper;
@@ -57,21 +53,7 @@ public class Tutorial implements Listener
      * Display some warnings to a Player when he is targetted by a dangerous mob
      */
     @EventHandler
-    <<<<<<<HEAD
-
-
     public void onEntityTarget(EntityTargetEvent event)
-
-
-    =======
-
-
-    public void onEntityTarget(EntityTargetLivingEntityEvent event)
-
-
-    >>>>>>>dev
-
-
     {
         if (event.getTarget() instanceof Player)
         {

@@ -129,54 +129,43 @@ public class Water extends ListenerModule
                     }
                 }
                 //when you swim up waterfalls and basically are flying with only a tip of your body in water
-                <<<<<<<HEAD
-                else
-                if (blockWaterElevators && !playerModule.isPlayerOnLadder(player) && !player.isInsideVehicle() && !player.isFlying())
+                else if (blockWaterElevators && !playerModule.isPlayerOnLadder(player) && !player.isInsideVehicle() && !player.isFlying())
                 {
                     if (playerData.cachedWeightStatus <= 0)
                     {
                         playerData.cachedWeightStatus = playerModule.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
                     } else if (playerData.cachedWeightStatus > maxWeight)
-                    =======
-                    else
-                    if (blockWaterElevators && !utils.isPlayerOnLadder(player) && !player.isInsideVehicle() && !player.isFlying())
                     {
-                        if (playerData.cachedWeightStatus <= 0)
+                        //Detect waterfalls
+                        BlockFace[] faces = {
+                                BlockFace.WEST,
+                                BlockFace.NORTH_WEST,
+                                BlockFace.NORTH,
+                                BlockFace.NORTH_EAST,
+                                BlockFace.EAST,
+                                BlockFace.SOUTH_EAST,
+                                BlockFace.SOUTH,
+                                BlockFace.SOUTH_WEST};
+                        Location loc = player.getLocation();
+                        boolean isWaterNear = false;
+                        for (BlockFace face : faces)
                         {
-                            playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
-                        } else if (playerData.cachedWeightStatus > maxWeight)
-                        >>>>>>>dev
-                        {
-                            //Detect waterfalls
-                            BlockFace[] faces = {
-                                    BlockFace.WEST,
-                                    BlockFace.NORTH_WEST,
-                                    BlockFace.NORTH,
-                                    BlockFace.NORTH_EAST,
-                                    BlockFace.EAST,
-                                    BlockFace.SOUTH_EAST,
-                                    BlockFace.SOUTH,
-                                    BlockFace.SOUTH_WEST};
-                            Location loc = player.getLocation();
-                            boolean isWaterNear = false;
-                            for (BlockFace face : faces)
-                            {
-                                Material nearType = loc.getBlock().getRelative(face).getType();
-                                if (nearType.equals(Material.STATIONARY_WATER))
-                                    isWaterNear = true;
-                            }
-                            if (isWaterNear)
-                                drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel + 0.3F, normalDrownVel + 0.3F); //the water flowing down pulls you down
+                            Material nearType = loc.getBlock().getRelative(face).getType();
+                            if (nearType.equals(Material.STATIONARY_WATER))
+                                isWaterNear = true;
                         }
+                        if (isWaterNear)
+                            drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel + 0.3F, normalDrownVel + 0.3F); //the water flowing down pulls you down
                     }
                 }
             }
         }
+    }
 
 
-        /**
-         * Drowns the player at the given rate
-         */
+    /**
+     * Drowns the player at the given rate
+     */
 
 
     void drown(Player player, int drowningRate, int overEncumbranceExtra, float cachedWeightStatus, float maxWeight, float normalDrownVel, float overwaterDrownVel)

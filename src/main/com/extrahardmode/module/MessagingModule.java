@@ -165,7 +165,7 @@ public class MessagingModule extends EHMModule
                 player.playSound(player.getLocation(), sound, 1, soundPitch);
         }
     }
-    
+
 
     public void notifyPlayer(Player player, MessageNode node, PermissionNode perm)
     {
@@ -185,9 +185,6 @@ public class MessagingModule extends EHMModule
         }
         plugin.getServer().broadcastMessage(msgText);
     }
-
-
-    <<<<<<<HEAD
 
 
     public void sendTutorial(Player player, MessageNode message)
@@ -210,6 +207,7 @@ public class MessagingModule extends EHMModule
         } else
             timeouts.remove(player, message);
     }
+
 
     @Override
 

@@ -332,9 +332,6 @@ public class BlockModule extends EHMModule
     }
 
 
-    <<<<<<<HEAD
-
-
     /**
      * Returns if Material is a plant that should be affected by the farming Rules
      */
@@ -411,12 +408,7 @@ public class BlockModule extends EHMModule
     }
 
 
-    =======
-            >>>>>>>dev
-
     @Override
-
-
     public void starting()
     {/*ignored*/}
 

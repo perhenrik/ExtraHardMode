@@ -43,14 +43,7 @@ public class PlayerModule extends EHMModule
 {
     private final RootConfig CFG;
 
-    <<<<<<<HEAD
-
     private final BlockModule blockModule;
-
-    =======
-
-
-            >>>>>>>dev
 
 
     /**
@@ -83,9 +76,6 @@ public class PlayerModule extends EHMModule
 
         return bypasses;
     }
-
-
-    <<<<<<<HEAD
 
 
     /**
@@ -224,9 +214,6 @@ public class PlayerModule extends EHMModule
         return points;
     }
 
-
-    =======
-            >>>>>>>dev
 
     @Override
 
