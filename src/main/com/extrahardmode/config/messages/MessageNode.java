@@ -30,96 +30,102 @@ import com.extrahardmode.service.config.ConfigNode;
 public enum MessageNode implements ConfigNode
 {
     NO_TORCHES_HERE
-            ("NoTorchesHere",
+            ("NoTorchesHere", -1, "torches_underground",
                     "There's not enough air flow down here for permanent flames. Use another method to light your way."),
     STONE_MINING_HELP
-            ("StoneMiningHelp",
+            ("StoneMiningHelp", -1, "hardened_stone",
                     "You'll need an iron or diamond pickaxe to break stone.  Try exploring natural formations for exposed ore like coal, which softens stone around it when broken."),
     NO_PLACING_ORE_AGAINST_STONE
-            ("NoPlacingOreAgainstStone",
+            ("NoPlacingOreAgainstStone", -1, "hardened_stone_ore",
                     "Sorry, you can't place ore next to stone."),
     REALISTIC_BUILDING
-            ("RealisticBuilding",
+            ("RealisticBuilding", -1, "realistic_building",
                     "You can't build while in the air."),
     LIMITED_TORCH_PLACEMENTS
-            ("LimitedTorchPlacements",
+            ("LimitedTorchPlacements", -1, "torches_soft_blocks",
                     "It's too soft there to fasten a torch."),
     NO_CRAFTING_MELON_SEEDS
-            ("NoCraftingMelonSeeds",
+            ("NoCraftingMelonSeeds", -1, "no_crafting_melon_seeds",
                     "That appears to be seedless!"),
     LIMITED_END_BUILDING
-            ("LimitedEndBuilding",
+            ("LimitedEndBuilding", -1, "limited_building_end",
                     "Sorry, building here is very limited.  You may only break blocks to reach ground level."),
     DRAGON_FOUNTAIN_TIP
-            ("DragonFountainTip",
+            ("DragonFountainTip", -1, "dragon_fountain_tip",
                     "Congratulations on defeating the dragon!  If you can't reach the fountain to jump into the portal, throw an ender pearl at it."),
     NO_SWIMMING_IN_ARMOR
-            ("NoSwimmingInArmor",
+            ("NoSwimmingInArmor", -1, "no_swimming_in_armor_warning",
                     "You're carrying too much weight to swim!"),
     END_DRAGON_KILLED
-            ("DragonDefeated",
+            ("DragonDefeated", -1, "end_dragon_killed",
                     "The dragon has been defeated!  ( By: " + variables.PLAYERS.getVarName() + " )"),
     END_DRAGON_PLAYER_KILLED
-            ("PlayerKilledByDragon",
+            ("PlayerKilledByDragon", -1, "player_killed_dragon",
                     variables.PLAYER.getVarName() + " was killed while fighting the dragon!"),
     END_DRAGON_PLAYER_CHALLENGING
-            ("PlayerChallengingDragon",
+            ("PlayerChallengingDragon", -1, "player_challenging_dragon",
                     variables.PLAYER.getVarName() + " is challenging the dragon!"),
 
     //Target Events
     CHARGED_CREEPER_TARGET
-            ("Charged Creeper",
-                    "&cCharged Creeper explode instantly... run!"),
+            ("Charged Creeper", 3, "charged_creeper",
+                    "&cCharged Creepers explode instantly when hit. Run!"),
     BLAZE_TARGET_NORMAL
-            ("Blaze Overworld",
+            ("Blaze Overworld", 5, "blaze_overworld",
                     "&cBlazes spawn near lava and their fiery breath causes a big explosion on death!"),
     BLAZE_TARGET_NETHER
-            ("Blaze Nether",
-                    "&cBlazes spawn Everywhere in the Nether and may split on death!"),
+            ("Blaze Nether", 5, "blaze_nether",
+                    "&cBlazes spawn everywhere in the Nether and may split on death!"),
     MAGMACUBE_TARGET
-            ("Magmacube",
+            ("Magmacube", 3, "magmacube",
                     "&cThese small buggers actually are just disguised blazes!"),
     GHAST_TARGET
-            ("Ghast",
-                    "&cLucifer upgraded his Ghasts with arrow deflective armor! Ghasts drop a lot more loot as well."),
+            ("Ghast", 3, "ghast_warning",
+                    "&cThese fearsome Ghasts wear invisible arrow deflective armor! Ghasts drop a lot more loot as well."),
     PIGZOMBIE_TARGET
-            ("Pig Zombie Always Angry",
+            ("Pig Zombie Always Angry", 3, "pigzombie",
                     "&cRUN! Pig Zombies are always angry and hungry!"),
     PIGZOMBIE_TARGET_WART
-            ("Pig Zombie Drop Netherwart",
-                    "&cYou can get Netherwart from slaying Pig Zombies"),
+            ("Pig Zombie Drop Netherwart", 3, "pigzombie_wart",
+                    "&cYou can get netherwart from slaying Pig Zombies"),
 
     //Various Own Events
     ZOMBIE_RESPAWN
-            ("Zombie Respawn",
+            ("Zombie Respawn", 5, "zombie_respawn",
                     "&cZombies might resurrect if not on fire!"),
     SKELETON_DEFLECT
-            ("Skeleton Deflect Arrows",
+            ("Skeleton Deflect Arrows", 3, "skeleton_deflect_arrow",
                     "&cArrows just pass through Skeletons, you gotta go close combat!"),
     ENDERMAN_GENERAL
-            ("Enderman General",
+            ("Enderman General", 3, "enderman_teleport",
                     "&cEnderman can teleport you too!"),
     ENDERMAN_SUICIDAL
-            ("Enderman Suicidal",
-                    "&cThe Enderman has been deaggroed, you would've died otherwise!"),
+            ("Enderman Suicidal", 1, "enderman_deaggro",
+                    "&cGet better gear if you want to fight an enderman or die trying!"),
+    CREEPER_DROP_TNT
+            ("Creeper Drop Tnt", 2, "creeper_drop_tnt",
+                    "&cCreepers may drop activated tnt on death!"),
+    EXTINGUISH_FIRE
+            ("Extinguish Fire", 3, "extinguish_fire",
+                    "&cPutting out fire with your hand will catch you on fire."),
 
     //Farming
     BUCKET_FILL
-            ("Bucket Fill",
+            ("Bucket Fill", 3, "bucket_fill",
                     "&cYou can pick up water, but once you place it, it evaporates. Get some ice if you want to farm!"),
     ANTIFARMING_UNWATERD
-            ("Antifarming Unwatered",
+            ("Antifarming Unwatered", 3, "antifarm_unwatered",
                     "&cYour crops need sufficient water, otherwise they'll dry out!"),
     ANTIFARMING_NO_LIGHT
-            ("Antifarming Not Enough Light",
+            ("Antifarming Not Enough Light", 3, "antifarm_natural_light",
                     "&cYour crops require natural light to grow!"),
     ANTIFARMING_DESSERT_WARNING
-            ("Antifarming Desert",
+            ("Antifarming Desert", 3, "antifarm_desert",
                     "&cDeserts are really dry and nothing grows here!"),
 
     //General Advice
     NETHER_WARNING
-            ("Nether Warning",
+            ("Nether Warning", 2 ,"nether_warn",
                     "&cThis is a dangerous place. Make sure you come prepared with arrows and good gear.")
     ;
 
@@ -135,15 +141,25 @@ public enum MessageNode implements ConfigNode
      * Messages are always strings.
      */
     private final VarType type = VarType.STRING;
+    /**
+     * Name of the column to be used for persistence
+     */
+    private final String column;
+    /**
+     * How often this msg should be displayed to a Player (0 = off, -1 = infinite)
+     */
+    private final int msgCount;
 
     /**
      * Constructor.
      *
      * @param value - Default Value
      */
-    private MessageNode(String path, String value)
+    private MessageNode(String path, int msgCount, String column, String value)
     {
         this.path = path;
+        this.msgCount = msgCount;
+        this.column = column;
         this.value = value;
     }
 
@@ -175,6 +191,22 @@ public enum MessageNode implements ConfigNode
     public Object getDefaultValue()
     {
         return value;
+    }
+
+    /**
+     * Get the name of the column.
+     * Used by our sqllite db for persistence.
+     *
+     * @return column name. Won't be changed.
+     */
+    public String getColumnName()
+    {
+        return column;
+    }
+
+    public int getMsgCount ()
+    {
+        return msgCount;
     }
 
     /**
