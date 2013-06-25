@@ -68,11 +68,11 @@ public class TestRootConfig
         cfg.set("pvp", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
         cfg.set("world_the_end", RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, false);
 
-        cfg.set("world", RootNode.IRON_DURABILITY_PENALTY, 24);
+        /*cfg.set("world", RootNode.IRON_DURABILITY_PENALTY, 24);
         cfg.set("world_nether", RootNode.IRON_DURABILITY_PENALTY, 22);
         cfg.set("worlds", RootNode.IRON_DURABILITY_PENALTY, 22);
         cfg.set("pvp", RootNode.IRON_DURABILITY_PENALTY, 80);
-        cfg.set("world_the_end", RootNode.IRON_DURABILITY_PENALTY, 80);
+        cfg.set("world_the_end", RootNode.IRON_DURABILITY_PENALTY, 80);*/
     }
 
 
@@ -89,13 +89,13 @@ public class TestRootConfig
     }
 
 
-    @Test
+    /*@Test
     public void testGetInt()
     {
         assertEquals(24, cfg.getInt(RootNode.IRON_DURABILITY_PENALTY, "world"));
         assertEquals(22, cfg.getInt(RootNode.IRON_DURABILITY_PENALTY, "worlds"));
         assertEquals(80, cfg.getInt(RootNode.IRON_DURABILITY_PENALTY, "pvp"));
-    }
+    }*/
 
 
     /**

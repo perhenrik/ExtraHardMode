@@ -67,30 +67,20 @@ public enum RootNode implements ConfigNode
     SUPER_HARD_STONE
             ("World Rules.Mining.Inhibit Tunneling.Enable", VarType.BOOLEAN, true),
     /**
-     * Number of blocks player can mine with an iron pick and hard stone enabled
+     * whether stone is hardened to encourage cave exploration over tunneling
      */
-    STONE_DURABILITY_PENALTY
-            ("World Rules.Mining.Inhibit Tunneling.Number of Stone Stone Pickaxe Can Mine", VarType.INTEGER, SubType.NATURAL_NUMBER, 0),
-    /**
-     * Number of blocks player can mine with an iron pick and hard stone enabled
-     */
-    GOLD_DURABILITY_PENALTY
-            ("World Rules.Mining.Inhibit Tunneling.Number of Stone Gold Pickaxe Can Mine", VarType.INTEGER, SubType.NATURAL_NUMBER, 0),
-    /**
-     * Number of blocks player can mine with an iron pick and hard stone enabled
-     */
-    IRON_DURABILITY_PENALTY
-            ("World Rules.Mining.Inhibit Tunneling.Number of Stone Iron Pickaxe Can Mine", VarType.INTEGER, SubType.NATURAL_NUMBER, 32),
-    /**
-     * Number of blocks player can mine with an diamond pick and hard stone enabled
-     */
-    DIAMOND_DURABILITY_PENALTY
-            ("World Rules.Mining.Inhibit Tunneling.Number of Stone Diamond Pickaxe Can Mine", VarType.INTEGER, SubType.NATURAL_NUMBER, 64),
+    SUPER_HARD_STONE_TOOLS
+            ("World Rules.Mining.Inhibit Tunneling.Amount of Stone Tool Can Mine (Tool@Blocks)", VarType.LIST, new DefaultToolDurabilities()),
     /**
      * Breaking an ore will cause surrounding stone to turn to cobble and fall
      */
     SUPER_HARD_STONE_PHYSICS
-            ("World Rules.Mining.Breaking Ore Softens Adjacent Stone", VarType.BOOLEAN, true),
+            ("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Enable", VarType.BOOLEAN, true),
+    /**
+     * These Blocks will turn surrounding stone into cobblestone
+     */
+    SUPER_HARD_STONE_PHYSICS_BLOCKS
+            ("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Blocks (Block@id,id2)", VarType.LIST, new DefaultPhysicsBlocks()),
     /**
      * maximum y for placing standard torches
      */
@@ -917,6 +907,59 @@ public enum RootNode implements ConfigNode
             this.add(Material.MOSSY_COBBLESTONE.toString());
             this.add(Material.DOUBLE_STEP.toString() + "@3"); //cobble double halfslabs
             this.add(Material.MYCEL.toString());
+        }
+    }
+
+
+    /**
+     * Default list of falling blocks.
+     */
+    private static class DefaultPhysicsBlocks extends ArrayList<String>
+    {
+
+        /**
+         * Serial Version UID.
+         */
+        private static final long serialVersionUID = 1L;
+
+
+        /**
+         * Constructor.
+         */
+        public DefaultPhysicsBlocks()
+        {
+            super();
+            this.add(Material.COAL_ORE.toString());
+            this.add(Material.IRON_ORE.toString());
+            this.add(Material.GOLD_ORE.toString());
+            this.add(Material.LAPIS_ORE.toString());
+            this.add(Material.REDSTONE_ORE.toString());
+            this.add(Material.GLOWING_REDSTONE_ORE.toString());
+            this.add(Material.EMERALD_ORE.toString());
+            this.add(Material.DIAMOND_ORE.toString());
+        }
+    }
+
+    /**
+     * Default list of falling blocks.
+     */
+    private static class DefaultToolDurabilities extends ArrayList<String>
+    {
+
+        /**
+         * Serial Version UID.
+         */
+        private static final long serialVersionUID = 1L;
+
+
+        /**
+         * Constructor.
+         */
+        public DefaultToolDurabilities()
+        {
+            super();
+            this.add(Material.IRON_PICKAXE.toString() + "@32");
+            this.add(Material.DIAMOND_PICKAXE.toString() + "@64");
         }
     }
 }

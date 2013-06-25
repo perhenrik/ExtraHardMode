@@ -26,6 +26,8 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.BlockItemMetaParser;
 import com.extrahardmode.service.Response;
 import com.extrahardmode.service.config.*;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -33,7 +35,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class RootConfig extends MultiWorldConfig
     /**
      * Contains Info about Blocks which fall and their Metadata
      */
-    private final Map<String/*world name*/, Map<Integer/*Block id*/, List<Byte>/*Block Id* (-1 for no id)*/>> fallingBlocks = new HashMap<String, Map<Integer, List<Byte>>>();
+    private final Table<ConfigNode, String/*world name*/, Map<Integer/*Block id*/, List<Byte>/*Block Id* (-1 for no id)*/>> extraSettings = HashBasedTable.create();
 
 
     /**
@@ -67,12 +68,23 @@ public class RootConfig extends MultiWorldConfig
     @Override
     public void closing()
     {
+        extraSettings.clear();
     }
 
 
-    public Map<Integer, List<Byte>> getFallingBlocks(String world)
+    /**
+     * Get a node which has to parsed from a StringList prior to be usable
+     *
+     * @param node
+     *         special node
+     * @param world
+     *         the world where this is activated
+     *
+     * @return a List of Block Ids and MetaData values if found
+     */
+    public Map<Integer, List<Byte>> getMappedNode(ConfigNode node, String world)
     {
-        return fallingBlocks.containsKey(world) ? fallingBlocks.get(world) : Collections.EMPTY_MAP;
+        return extraSettings.contains(node, world) ? extraSettings.get(node, world) : Collections.EMPTY_MAP;
     }
 
 
@@ -321,6 +333,8 @@ public class RootConfig extends MultiWorldConfig
                     break;
                 }
                 case MORE_FALLING_BLOCKS:
+                case SUPER_HARD_STONE_TOOLS:
+                case SUPER_HARD_STONE_PHYSICS_BLOCKS:
                 {
                     if (response.getContent() instanceof List)
                     {
@@ -329,7 +343,7 @@ public class RootConfig extends MultiWorldConfig
                             config.setStatus(Status.ADJUSTED);
                         for (String world : worlds)
                         {
-                            fallingBlocks.put(world, (Map<Integer, List<Byte>>) parsedBlocks.getContent());
+                            extraSettings.put(node, world, (Map<Integer, List<Byte>>) parsedBlocks.getContent());
                         }
                     }
                     break;
