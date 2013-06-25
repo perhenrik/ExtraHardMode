@@ -27,6 +27,11 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.service.EHMModule;
 import com.extrahardmode.service.FindAndReplace;
 import com.extrahardmode.service.PermissionNode;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import me.diemex.sbpopupapi.MessageType;
+import me.diemex.sbpopupapi.SBPopupAPI;
+import me.diemex.sbpopupapi.SBPopupManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -40,6 +45,9 @@ import java.util.Calendar;
 public class MessagingModule extends EHMModule
 {
     private final MessageConfig messages;
+    private final MsgPersistModule persistModule;
+    private SBPopupManager manager;
+    private final Table<String, MessageNode, Long> timeouts = HashBasedTable.create();
 
     /**
      * Constructor
@@ -50,6 +58,13 @@ public class MessagingModule extends EHMModule
     {
         super(plugin);
         messages = plugin.getModuleForClass(MessageConfig.class);
+        persistModule = plugin.getModuleForClass(MsgPersistModule.class);
+        try {
+            if (null != Class.forName("me.diemex.sbpopupapi.SBPopupAPI"))
+                manager = SBPopupAPI.getSBManager();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -73,7 +88,10 @@ public class MessagingModule extends EHMModule
 
             if (!node.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
             {
-                player.sendMessage(message);
+                if (manager != null)
+                    manager.showPopup(player.getName(), MessageType.NOTFICATION, "ExtraHardMode", message);
+                else
+                    player.sendMessage(message);
                 playerData.lastMessageSent = node;
                 playerData.lastMessageTimestamp = now;
             }
@@ -150,8 +168,23 @@ public class MessagingModule extends EHMModule
     public void sendTutorial(Player player, MessageNode message)
     {
         Validate.notNull(player);
-        String msgText = messages.getString(message);
-        player.sendMessage(ChatColor.DARK_RED + plugin.getTag() + ChatColor.WHITE + " " + msgText);
+        if (persistModule.getCountFor(message, player.getName()) < message.getMsgCount())
+        {
+            long now = Calendar.getInstance().getTimeInMillis();
+
+            if (!timeouts.contains(player.getName(), message) || now - timeouts.get(player.getName(), message) > 120000)
+            {
+                timeouts.put(player.getName(), message, now);
+                String msgText = messages.getString(message);
+                if (manager != null)
+                    manager.showPopup(player.getName(), MessageType.WARNING, "ExtraHardMode", msgText);
+                else
+                    player.sendMessage(ChatColor.DARK_RED + plugin.getTag() + ChatColor.WHITE + " " + msgText);
+                persistModule.increment(message, player.getName());
+            }
+        }
+        else
+            timeouts.remove(player, message);
     }
 
     @Override
