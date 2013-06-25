@@ -33,6 +33,7 @@ import com.extrahardmode.task.MoreMonstersTask;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -67,7 +68,13 @@ public class ExtraHardMode extends JavaPlugin
         // Register modules
         registerModule(RootConfig.class, new RootConfig(this));
         registerModule(MessageConfig.class, new MessageConfig(this));
+
+        File rootFolder = new File(getDataFolder().getPath() + File.separator + "persistence" + File.separator);
+        rootFolder.mkdirs();
+        registerModule(MsgPersistModule.class, new MsgPersistModule(this, rootFolder + File.separator + "messages_count.db"));
+
         registerModule(MessagingModule.class, new MessagingModule(this));
+
         registerModule(DataStoreModule.class, new DataStoreModule(this));
         registerModule(BlockModule.class, new BlockModule(this));
         registerModule(UtilityModule.class, new UtilityModule(this));
@@ -102,7 +109,8 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Silverfish.class, new Silverfish(this));
         registerModule(Skeletors.class, new Skeletors(this));
         registerModule(Spoiders.class, new Spoiders(this));
-        registerModule(Zombies.class, new Zombies(this));;
+        registerModule(Zombies.class, new Zombies(this));
+
         new Tutorial(this);
 
 
