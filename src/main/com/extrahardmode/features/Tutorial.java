@@ -2,10 +2,7 @@ package com.extrahardmode.features;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.messages.MessageNode;
-import com.extrahardmode.events.EhmEndermanTeleportEvent;
-import com.extrahardmode.events.EhmSkeletonDeflectEvent;
-import com.extrahardmode.events.EhmSkeletonShootSilverfishEvent;
-import com.extrahardmode.events.EhmZombieRespawnEvent;
+import com.extrahardmode.events.*;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
@@ -174,7 +171,18 @@ public class Tutorial implements Listener
         }
     }
 
-    //TODO CreeperDropTntEvent
+    /**
+     * Inform Players about creepers dropping tnt
+     */
+    @EventHandler
+    public void onCreeperDropTnt (EhmCreeperDropTntEvent event)
+    {
+        final Player player = event.getPlayer();
+        if (player != null)
+        {
+            messenger.sendTutorial(player, MessageNode.CREEPER_DROP_TNT);
+        }
+    }
 
     /**
      * When a Skeleton deflects an arrow
@@ -207,6 +215,7 @@ public class Tutorial implements Listener
     {
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
+        //Too dark
         if (block.getType() == Material.SOIL)
         {
             Block above = block.getRelative(BlockFace.UP);
@@ -239,11 +248,23 @@ public class Tutorial implements Listener
         }
     }
 
+    /**
+     * Inform about Silverfish
+     */
     @EventHandler
     public void onShootSilverfish (EhmSkeletonShootSilverfishEvent event)
     {
         event.getSilverfish().addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 1, 1000));
         //event.getSilverfish().setFireTicks(100);
+    }
+
+    /**
+     * Inform about not being able to extinguish fire with bare hands
+     */
+    @EventHandler
+    public void onExtinguishFire (EhmPlayerExtinguishFireEvent event)
+    {
+        messenger.sendTutorial(event.getPlayer(), MessageNode.EXTINGUISH_FIRE);
     }
 
     //TODO Farming: NetherWart, Mushrooms
