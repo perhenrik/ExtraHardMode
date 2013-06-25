@@ -22,6 +22,7 @@
 
 package com.extrahardmode.config.messages;
 
+
 import com.extrahardmode.service.config.ConfigNode;
 
 /**
@@ -70,19 +71,23 @@ public enum MessageNode implements ConfigNode
      * Path in the Config
      */
     private final String path;
+
     /**
      * Default value
      */
     private final String value;
+
     /**
      * Messages are always strings.
      */
     private final VarType type = VarType.STRING;
 
+
     /**
      * Constructor.
      *
-     * @param value - Default Value
+     * @param value
+     *         - Default Value
      */
     private MessageNode(String path, String value)
     {
@@ -90,11 +95,13 @@ public enum MessageNode implements ConfigNode
         this.value = value;
     }
 
+
     @Override
     public String getPath()
     {
         return path;
     }
+
 
     @Override
     public VarType getVarType()
@@ -102,11 +109,13 @@ public enum MessageNode implements ConfigNode
         return type;
     }
 
+
     @Override
     public SubType getSubType()
     {/*ignored*/
         return null;
     }
+
 
     @Override
     public Object getValueToDisable()
@@ -114,26 +123,30 @@ public enum MessageNode implements ConfigNode
         return null;
     }
 
+
     @Override
     public Object getDefaultValue()
     {
         return value;
     }
 
+
     /**
      * Variables that will be inserted by the plugin
      */
     public enum variables
     {
-        PLAYER ("$PLAYER"),
-        PLAYERS ("$PLAYERS");
+        PLAYER("$PLAYER"),
+        PLAYERS("$PLAYERS");
 
         private final String variable;
+
 
         private variables(String variable)
         {
             this.variable = variable;
         }
+
 
         /**
          * Get the identifier which represents this variable in the String

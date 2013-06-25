@@ -21,6 +21,7 @@
 
 package com.extrahardmode.config;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.mocks.MockExtraHardMode;
 import org.junit.Test;
@@ -37,7 +38,7 @@ import static org.junit.Assert.assertTrue;
 
 
 /**
- *  Test the MultiWorldConfig
+ * Test the MultiWorldConfig
  */
 
 @RunWith(PowerMockRunner.class)
@@ -46,7 +47,9 @@ public class TestRootConfig
 {
     //Mock Plugin
     private final ExtraHardMode plugin = new MockExtraHardMode().get();
+
     private final RootConfig cfg = new RootConfig(plugin);
+
 
     public TestRootConfig()
     {
@@ -72,6 +75,7 @@ public class TestRootConfig
         cfg.set("world_the_end", RootNode.IRON_DURABILITY_PENALTY, 80);
     }
 
+
     /**
      * Do we retrieve the same values we put in the config earlier?
      */
@@ -84,6 +88,7 @@ public class TestRootConfig
         assertEquals(true, cfg.getBoolean(RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, "worlds"));
     }
 
+
     @Test
     public void testGetInt()
     {
@@ -91,6 +96,7 @@ public class TestRootConfig
         assertEquals(22, cfg.getInt(RootNode.IRON_DURABILITY_PENALTY, "worlds"));
         assertEquals(80, cfg.getInt(RootNode.IRON_DURABILITY_PENALTY, "pvp"));
     }
+
 
     /**
      * Test what happens if we query a value that doesn't exist in the config
@@ -110,50 +116,56 @@ public class TestRootConfig
         assertEquals(Collections.<String>emptyList(), cfg.getStringList(RootNode.MORE_FALLING_BLOCKS, "test123"));
     }
 
+
     /**
      * Getting a boolean with an illegal argument
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentBoolean()
     {
         cfg.getBoolean(RootNode.WORLDS, "");
     }
 
+
     /**
      * Getting an int with an illegal argument
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentInt()
     {
         cfg.getInt(RootNode.MORE_FALLING_BLOCKS, "");
     }
 
+
     /**
      * Getting a double with an illegal argument
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentDouble()
     {
         cfg.getDouble(RootNode.ARID_DESSERTS, "");
     }
 
+
     /**
      * Getting a string with an illegal argument
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentString()
     {
         cfg.getString(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, "");
     }
 
+
     /**
      * Getting a list with an illegal argument
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentStringList()
     {
         cfg.getStringList(RootNode.ANIMAL_EXP_NERF, "");
     }
+
 
     @Test
     public void testGetEnabledWorlds()

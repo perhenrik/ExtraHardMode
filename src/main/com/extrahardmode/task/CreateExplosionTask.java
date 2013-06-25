@@ -21,6 +21,7 @@
 
 package com.extrahardmode.task;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
@@ -38,9 +39,10 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import java.util.ArrayList;
 
 /**
- * Creates Explosions. The type determines the power, if there should be fire and the blockDmg. The size of the explosion
- * is determined by the y-level. There are basically 2 settings for every explosion, below and above the specified y-level.
- *
+ * Creates Explosions. The type determines the power, if there should be fire and the blockDmg. The size of the
+ * explosion is determined by the y-level. There are basically 2 settings for every explosion, below and above the
+ * specified y-level.
+ * <p/>
  * Fires an Explosion Event before every Event with a creeper as Entity
  */
 public class CreateExplosionTask implements Runnable
@@ -49,28 +51,39 @@ public class CreateExplosionTask implements Runnable
      * Plugin reference to get the server etc.
      */
     private final ExtraHardMode plugin;
+
     /**
      * Location of explosion.
      */
     private final Location location;
+
     /**
      * Type that holds information about size and things like blockDmg and Fire
      */
     private final ExplosionType type;
+
     /**
      * Config
      */
     private final RootConfig CFG;
+
     /**
      * Instance of a the Entity which caused the Explosion
      */
-    private Creeper creeper; private TNTPrimed tnt; private ExplosiveMinecart minecartTnt;
+    private Creeper creeper;
+
+    private TNTPrimed tnt;
+
+    private ExplosiveMinecart minecartTnt;
+
 
     /**
      * Constructor.
      *
-     * @param location - Location to make explosion occur.
-     * @param type Type that determines size and possible blockdamage or fire of explosion.
+     * @param location
+     *         - Location to make explosion occur.
+     * @param type
+     *         Type that determines size and possible blockdamage or fire of explosion.
      */
     public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type)
     {
@@ -80,12 +93,16 @@ public class CreateExplosionTask implements Runnable
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
+
     /**
      * Constructor.
      *
-     * @param location  - Location to make explosion occur.
-     * @param type      - Type that determines size and possible blockdamage or fire of explosion.
-     * @param entity    - Reference to the Entity that caused this Explosion
+     * @param location
+     *         - Location to make explosion occur.
+     * @param type
+     *         - Type that determines size and possible blockdamage or fire of explosion.
+     * @param entity
+     *         - Reference to the Entity that caused this Explosion
      */
     public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type, Entity entity)
     {
@@ -114,11 +131,13 @@ public class CreateExplosionTask implements Runnable
         }
     }
 
+
     @Override
     public void run()
     {
         createExplosion(location, type);
     }
+
 
     /**
      * Creates a Explosion, can be different above/below a certain y-level
@@ -166,8 +185,7 @@ public class CreateExplosionTask implements Runnable
                     setFire = type.isFireB();
                     damageWorld = type.allowBlockDmgB();
             }
-        }
-        else if (loc.getY() > (double) border)
+        } else if (loc.getY() > (double) border)
         {
             switch (type)
             {
@@ -209,10 +227,14 @@ public class CreateExplosionTask implements Runnable
         }
     }
 
+
     /**
      * Validate if the given Location is not protected by a protection plugin
-     * @param loc The Location
-     * @param type ExplosionType determining the size of the Explosion and size of the area to check
+     *
+     * @param loc
+     *         The Location
+     * @param type
+     *         ExplosionType determining the size of the Explosion and size of the area to check
      */
     boolean validateLocationSafe(Location loc, ExplosionType type)
     {
@@ -227,7 +249,8 @@ public class CreateExplosionTask implements Runnable
 
         switch (type)
         {
-            case CREEPER: case CREEPER_CHARGED:
+            case CREEPER:
+            case CREEPER_CHARGED:
                 if (creeper != null)
                 {
                     EntityExplodeEvent suicide = new EntityExplodeEvent(creeper, loc, boundaries, 1.0F);
@@ -249,11 +272,13 @@ public class CreateExplosionTask implements Runnable
         return isSafe;
     }
 
+
     /**
-     * Check pillars in the 4 outer corners of a virtual cube around the explosion. If the protection plugin uses a cuboid
-      selection system then there is no way that an explosion can reach into a protected area without atleast on corner touching it
+     * Check pillars in the 4 outer corners of a virtual cube around the explosion. If the protection plugin uses a
+     * cuboid selection system then there is no way that an explosion can reach into a protected area without atleast on
+     * corner touching it
      */
-    private ArrayList<Block> getBlockList (Location loc, int boomSize)
+    private ArrayList<Block> getBlockList(Location loc, int boomSize)
     {
         //Doesn't aim to be accurate, just to prevent explosions on the edges of protected land
         ArrayList<Block> boundaries = new ArrayList<Block>();
@@ -262,33 +287,33 @@ public class CreateExplosionTask implements Runnable
         for (int i = 0; i < 8; i++) //4 outer walls
         {
             //10(5*2) blocks per cornerPillar, no matter the size of the explosion. (x+n-1)/n == x/n but always rounds up
-            for (int j = -boomSize; j < boomSize; j+=(boomSize+4)/5)
+            for (int j = -boomSize; j < boomSize; j += (boomSize + 4) / 5)
             {
                 switch (i)
                 {
                     case 0:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() + (double) boomSize, loc.getY() + (double) j, loc.getZ() + (double) boomSize);
+                        cubeLoc = new Location(loc.getWorld(), loc.getX() + (double) boomSize, loc.getY() + (double) j, loc.getZ() + (double) boomSize);
                         break;
                     case 1:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) boomSize, loc.getY() + (double) j, loc.getZ() + (double) boomSize);
+                        cubeLoc = new Location(loc.getWorld(), loc.getX() - (double) boomSize, loc.getY() + (double) j, loc.getZ() + (double) boomSize);
                         break;
                     case 2:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() + (double) boomSize, loc.getY() + (double) j, loc.getZ() - (double) boomSize);
+                        cubeLoc = new Location(loc.getWorld(), loc.getX() + (double) boomSize, loc.getY() + (double) j, loc.getZ() - (double) boomSize);
                         break;
                     case 3:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) boomSize, loc.getY() + (double) j, loc.getZ() - (double) boomSize);
+                        cubeLoc = new Location(loc.getWorld(), loc.getX() - (double) boomSize, loc.getY() + (double) j, loc.getZ() - (double) boomSize);
                         break;
                     case 4: //Locations in the middle inbetween the corners. Needed if explosion bigger than claim
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
+                        cubeLoc = new Location(loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
                         break;
                     case 5:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
+                        cubeLoc = new Location(loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
                         break;
                     case 6:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
+                        cubeLoc = new Location(loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
                         break;
                     case 7:
-                        cubeLoc = new Location (loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
+                        cubeLoc = new Location(loc.getWorld(), loc.getX() - (double) (boomSize / 2), loc.getY() + (double) j, loc.getZ() - (double) (boomSize / 2));
                         break;
                 }
                 boundaries.add(cubeLoc.getBlock());

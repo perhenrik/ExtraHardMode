@@ -22,14 +22,14 @@
 
 package com.extrahardmode.task;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.module.BlockModule;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 /**
- * Changes a water source block to a non-source block, allowing it to spread and
- * evaporate away.
+ * Changes a water source block to a non-source block, allowing it to spread and evaporate away.
  */
 public class EvaporateWaterTask implements Runnable
 {
@@ -38,21 +38,25 @@ public class EvaporateWaterTask implements Runnable
      * Target block.
      */
     private final Block block;
+
     /**
      * Module for Metadata
      */
     private final BlockModule blockModule;
 
+
     /**
      * Constructor.
      *
-     * @param block - Target block.
+     * @param block
+     *         - Target block.
      */
     public EvaporateWaterTask(Block block, ExtraHardMode plugin)
     {
         this.block = block;
         blockModule = plugin.getModuleForClass(BlockModule.class);
     }
+
 
     @Override
     public void run()

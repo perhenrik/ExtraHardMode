@@ -22,6 +22,7 @@
 
 package com.extrahardmode.module;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.EHMModule;
 import org.apache.commons.lang.Validate;
@@ -50,17 +51,20 @@ public class UtilityModule extends EHMModule
     /**
      * Constructor.
      *
-     * @param plugin - Plugin instance.
+     * @param plugin
+     *         - Plugin instance.
      */
     public UtilityModule(ExtraHardMode plugin)
     {
         super(plugin);
     }
 
+
     /**
      * Generates a Firework with random colors/velocity and the given Firework Type
      *
-     * @param type The type of firework
+     * @param type
+     *         The type of firework
      */
     public void fireWorkRandomColors(FireworkEffect.Type type, Location location)
     {
@@ -79,6 +83,7 @@ public class UtilityModule extends EHMModule
         firework.setFireworkMeta(fireworkMeta);
     }
 
+
     /**
      * Returns if Material is a plant that should be affected by the farming Rules
      */
@@ -91,12 +96,13 @@ public class UtilityModule extends EHMModule
                 || material.equals(Material.PUMPKIN_STEM);
     }
 
+
     /**
      * Is the given material a tool, e.g. doesn't stack
      */
     boolean isTool(Material material)
     {
-        return     material.name().endsWith("AXE") //axe & pickaxe
+        return material.name().endsWith("AXE") //axe & pickaxe
                 || material.name().endsWith("SPADE")
                 || material.name().endsWith("SWORD")
                 || material.name().endsWith("HOE")
@@ -108,23 +114,25 @@ public class UtilityModule extends EHMModule
                 || material.equals(Material.FLINT_AND_STEEL);
     }
 
+
     /**
      * is the given material armor
      */
-    public boolean isArmor (Material material)
+    public boolean isArmor(Material material)
     {
-        return     material.name().endsWith("HELMET")
+        return material.name().endsWith("HELMET")
                 || material.name().endsWith("CHESTPLATE")
                 || material.name().endsWith("LEGGINGS")
                 || material.name().endsWith("BOOTS");
     }
 
+
     /**
      * Consider this block a natural block for spawning?
      */
-    public boolean isNaturalSpawnMaterial (Material material)
+    public boolean isNaturalSpawnMaterial(Material material)
     {
-        return     material == Material.GRASS
+        return material == Material.GRASS
                 || material == Material.DIRT
                 || material == Material.STONE
                 || material == Material.SAND
@@ -137,38 +145,41 @@ public class UtilityModule extends EHMModule
                 || material == Material.WATER;  //Squid
     }
 
+
     /**
      * Is this a natural block for netherspawning?
      */
     //TODO name too long
     public boolean isNaturalNetherSpawn(Material material)
     {
-        return     material == Material.NETHERRACK
+        return material == Material.NETHERRACK
                 || material == Material.NETHER_BRICK
                 || material == Material.SOUL_SAND
                 || material == Material.GRAVEL
                 || material == Material.AIR;
     }
 
+
     /**
      * Is the player currently on a ladder?
-     * @param player
-     * @return
      */
     public boolean isPlayerOnLadder(Player player)
     {
         return player.getLocation().getBlock().getType().equals(Material.LADDER);
     }
 
+
     /**
      * Calculates the weight of the players inventory with the given amount of weight per item
-     * @param player
-     * @param armorPoints Points per piece of worn armor
-     * @param inventoryPoints Points per full stack of one item
-     * @param toolPoints Points per tool (which doesn't stack)
-     * @return
+     *
+     * @param armorPoints
+     *         Points per piece of worn armor
+     * @param inventoryPoints
+     *         Points per full stack of one item
+     * @param toolPoints
+     *         Points per tool (which doesn't stack)
      */
-    public float inventoryWeight (Player player, float armorPoints, float inventoryPoints, float toolPoints)
+    public float inventoryWeight(Player player, float armorPoints, float inventoryPoints, float toolPoints)
     {
         // count worn clothing
         PlayerInventory inventory = player.getInventory();
@@ -191,8 +202,7 @@ public class UtilityModule extends EHMModule
                 if (isTool(itemStack.getType()))
                 {
                     addWeight += toolPoints;
-                }
-                else
+                } else
                 {
                     //take stackSize into consideration
                     addWeight = inventoryPoints * itemStack.getAmount() / itemStack.getMaxStackSize();
@@ -203,13 +213,18 @@ public class UtilityModule extends EHMModule
         return weight;
     }
 
+
     /**
      * Counts the number of items of a specific type
-     * @param inv to count in
-     * @param toCount the Material to count
+     *
+     * @param inv
+     *         to count in
+     * @param toCount
+     *         the Material to count
+     *
      * @return the number of items as Integer
      */
-    public static int countInvItem (PlayerInventory inv, Material toCount)
+    public static int countInvItem(PlayerInventory inv, Material toCount)
     {
         int counter = 0;
         for (ItemStack stack : inv.getContents())
@@ -222,15 +237,18 @@ public class UtilityModule extends EHMModule
         return counter;
     }
 
+
     /**
      * Damage an item based on the amount of Blocks it can mine
      *
-     * @param item Item to damage
-     * @param blocks amount of blocks the item can break
+     * @param item
+     *         Item to damage
+     * @param blocks
+     *         amount of blocks the item can break
      *
      * @return the damaged Item, can be completely broken
      */
-    public static ItemStack damage (ItemStack item, short blocks)
+    public static ItemStack damage(ItemStack item, short blocks)
     {
         short maxDurability = item.getType().getMaxDurability();
         Validate.isTrue(maxDurability > 1, "This item is not damageable");
@@ -239,11 +257,11 @@ public class UtilityModule extends EHMModule
 
         short damagePerBlock = (short) (maxDurability / blocks);
         //Because tooldmg is an int we have to sometimes break the tool twice, I couldn't find the flaw in the first formula so oh well....
-        double percent = damagePerBlock > 1 ? (maxDurability % blocks) / (double)maxDurability : ((double) maxDurability / blocks) - damagePerBlock;
+        double percent = damagePerBlock > 1 ? (maxDurability % blocks) / (double) maxDurability : ((double) maxDurability / blocks) - damagePerBlock;
 
         if (damagePerBlock > 0)
         {
-            int durability =  item.getDurability();
+            int durability = item.getDurability();
             durability += damagePerBlock;
 
             if (new Random().nextDouble() < percent)
@@ -253,6 +271,7 @@ public class UtilityModule extends EHMModule
         }
         return item;
     }
+
 
     boolean isSameShape(ArrayList<ItemStack> recipe1, ArrayList<ItemStack> recipe2)
     {
@@ -266,7 +285,8 @@ public class UtilityModule extends EHMModule
         return isSame;
     }
 
-    public boolean isSameRecipe (ShapedRecipe recipe1, ShapedRecipe recipe2)
+
+    public boolean isSameRecipe(ShapedRecipe recipe1, ShapedRecipe recipe2)
     {
         boolean isSameResult = recipe1.getResult().getAmount() == recipe2.getResult().getAmount()
                 && recipe1.getResult().getType().equals(recipe2.getResult().getType());
@@ -274,13 +294,14 @@ public class UtilityModule extends EHMModule
         return isSameShape && isSameResult;
     }
 
+
     private ArrayList<ItemStack> recipeToArrayList(ShapedRecipe recipe)
     {
-        String [] shape = recipe.getShape();
+        String[] shape = recipe.getShape();
         Map<Character, ItemStack> ingredientMap = recipe.getIngredientMap();
 
         //Create an ArrayList with the actual recipe based of the shape and ingredientMap
-        ArrayList <ItemStack> craftRecipe = new ArrayList <ItemStack>();
+        ArrayList<ItemStack> craftRecipe = new ArrayList<ItemStack>();
         String flatShape = strArrToStr(shape);
         for (int i = 0; i < flatShape.length(); i++)
         {
@@ -293,32 +314,41 @@ public class UtilityModule extends EHMModule
         return craftRecipe;
     }
 
+
     String strArrToStr(String[] arr)
     {
         StringBuilder builder = new StringBuilder();
-        for(String s : arr) {
+        for (String s : arr)
+        {
             builder.append(s);
         }
         return builder.toString();
     }
 
+
     /**
-     * Check the inventory after 1 tick and see how many items have been crafted, then add the amount defined by the multiplier
+     * Check the inventory after 1 tick and see how many items have been crafted, then add the amount defined by the
+     * multiplier
      */
     public static class addExtraItemsLater implements Runnable
     {
         int amountBefore = 0;
+
         int amountToAdd = 0;
+
         final Material material;
+
         PlayerInventory inv = null;
 
-        public addExtraItemsLater (PlayerInventory inventory, int amountBefore, Material toCompare, int amountToAdd)
+
+        public addExtraItemsLater(PlayerInventory inventory, int amountBefore, Material toCompare, int amountToAdd)
         {
             this.amountBefore = amountBefore;
             this.amountToAdd = amountToAdd;
             material = toCompare;
             inv = inventory;
         }
+
 
         @Override
         public void run()
@@ -329,10 +359,12 @@ public class UtilityModule extends EHMModule
         }
     }
 
+
     @Override
     public void starting()
     {
     }
+
 
     @Override
     public void closing()

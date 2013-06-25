@@ -21,6 +21,7 @@
 
 package com.extrahardmode.mocks;
 
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -39,25 +40,30 @@ public class MockPlayerInventory
      * Inventory instance
      */
     private final PlayerInventory inv = mock(PlayerInventory.class);
+
     /**
      * InventoryHolder
      */
     private final Player player;
+
     /**
      * Armor worn by player
      */
-    private final ItemStack [] armorContents;
+    private final ItemStack[] armorContents;
+
     /**
      * Rest of the inventory
      */
-    private final ItemStack [] inventory;
+    private final ItemStack[] inventory;
+
 
     /**
      * Constructor
      *
-     * @param player name of the Player to whom this inventory belongs to
+     * @param player
+     *         name of the Player to whom this inventory belongs to
      */
-    public MockPlayerInventory(Player player, ItemStack [] armorContents, ItemStack [] inventoryContents)
+    public MockPlayerInventory(Player player, ItemStack[] armorContents, ItemStack[] inventoryContents)
     {
         this.player = player;
         this.armorContents = armorContents;
@@ -68,6 +74,7 @@ public class MockPlayerInventory
         when(inv.getArmorContents()).thenReturn(this.armorContents);
         when(inv.getContents()).thenReturn(this.inventory);
     }
+
 
     /**
      * Get the actual Inventory with it's mocked methods

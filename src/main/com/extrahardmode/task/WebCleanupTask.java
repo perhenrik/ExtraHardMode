@@ -22,6 +22,7 @@
 
 package com.extrahardmode.task;
 
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
@@ -39,15 +40,18 @@ public class WebCleanupTask implements Runnable
      */
     private final List<Block> webs = new ArrayList<Block>();
 
+
     /**
      * Constructor.
      *
-     * @param changedBlocks - Block to check.
+     * @param changedBlocks
+     *         - Block to check.
      */
     public WebCleanupTask(List<Block> changedBlocks)
     {
         this.webs.addAll(changedBlocks);
     }
+
 
     @Override
     public void run()
@@ -58,8 +62,7 @@ public class WebCleanupTask implements Runnable
             if (!block.getChunk().isLoaded())
             {
                 continue;
-            }
-            else if (block.getType() == Material.WEB)
+            } else if (block.getType() == Material.WEB)
             {
                 // only turn webs to air. there's a chance the web may have been
                 // replaced since it was placed.

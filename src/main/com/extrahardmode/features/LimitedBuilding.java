@@ -42,20 +42,23 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
  * Limited building restricts building forcing players to think a bit harder:
- *
- * No straight pillaring up ,
- * No building while shifting over a corner ,
- * No building while jumping
+ * <p/>
+ * No straight pillaring up , No building while shifting over a corner , No building while jumping
  */
 public class LimitedBuilding extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private final UtilityModule utils;
+
     private final MessagingModule messenger;
+
     private final PlayerModule playerModule;
 
-    public LimitedBuilding (ExtraHardMode plugin)
+
+    public LimitedBuilding(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -65,14 +68,13 @@ public class LimitedBuilding extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
-     * FEATURE: players can't place blocks from weird angles (using shift to
-     * hover over in the air beyond the edge of solid ground)
-     * or directly beneath themselves, for that matter
-     * @param placeEvent
+     * FEATURE: players can't place blocks from weird angles (using shift to hover over in the air beyond the edge of
+     * solid ground) or directly beneath themselves, for that matter
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onBlockPlace (BlockPlaceEvent placeEvent)
+    public void onBlockPlace(BlockPlaceEvent placeEvent)
     {
         Player player = placeEvent.getPlayer();
         Block block = placeEvent.getBlock();
@@ -88,8 +90,8 @@ public class LimitedBuilding extends ListenerModule
             Block against = placeEvent.getBlockAgainst();
 
             if (block.getX() == playerBlock.getX()
-                && block.getZ() == playerBlock.getZ()
-                && block.getY() < playerBlock.getY())
+                    && block.getZ() == playerBlock.getZ()
+                    && block.getY() < playerBlock.getY())
             {
                 //TODO EhmLimitedBuildingEvent Case.BENEATH_PLAYER
                 messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
@@ -97,8 +99,8 @@ public class LimitedBuilding extends ListenerModule
             }
 
             // if standing directly over lava, prevent placement
-            else if((underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
-                    &&! (playerBlock.getType().name().contains("STEP") && playerBlock.getType().name().contains("STAIRS")))
+            else if ((underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
+                    && !(playerBlock.getType().name().contains("STEP") && playerBlock.getType().name().contains("STAIRS")))
             {
                 //TODO EhmLimitedBuildingEvent Case.PLAYER_ABOVE_UNSAFE_LOC
                 messenger.notifyPlayer(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
@@ -106,7 +108,7 @@ public class LimitedBuilding extends ListenerModule
             }
 
             // otherwise if hovering over air, check one block lower
-            else if (underBlock.getType() == Material.AIR &&! (playerBlock.getType().name().contains("STEP") && playerBlock.getType().name().contains("STAIRS")))
+            else if (underBlock.getType() == Material.AIR && !(playerBlock.getType().name().contains("STEP") && playerBlock.getType().name().contains("STAIRS")))
             {
                 underBlock = underBlock.getRelative(BlockFace.DOWN);
 
@@ -120,7 +122,7 @@ public class LimitedBuilding extends ListenerModule
             }
 
             /* Fences and glasspanes are half placed as vertical half blocks allowing the player to build in the air */
-            else if ((against.getType() == Material.FENCE || against.getType() == Material.THIN_GLASS) && underBlock .equals (against))
+            else if ((against.getType() == Material.FENCE || against.getType() == Material.THIN_GLASS) && underBlock.equals(against))
             {
                 placeEvent.setCancelled(true);
             }

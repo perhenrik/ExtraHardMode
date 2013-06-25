@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -45,13 +46,15 @@ import java.util.List;
 
 /**
  * Changes to Spoiders include:
- *
+ * <p/>
  * More spiders in caves
  */
 public class Spoiders extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
 
     public Spoiders(ExtraHardMode plugin)
     {
@@ -60,9 +63,10 @@ public class Spoiders extends ListenerModule
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
+
     /**
      * When a creature spawns
-     *
+     * <p/>
      * More spiders in caves
      */
     @EventHandler(priority = EventPriority.LOW)
@@ -87,9 +91,10 @@ public class Spoiders extends ListenerModule
         }
     }
 
+
     /**
      * When an Entity dies
-     *
+     * <p/>
      * spiders drop web on death
      */
     @EventHandler
@@ -98,7 +103,7 @@ public class Spoiders extends ListenerModule
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean spidersDropWebOnDeath= CFG.getBoolean(RootNode.SPIDERS_DROP_WEB_ON_DEATH, world.getName());
+        final boolean spidersDropWebOnDeath = CFG.getBoolean(RootNode.SPIDERS_DROP_WEB_ON_DEATH, world.getName());
 
         //TODO EhmSpiderDropWebEvent
         // FEATURE: spiders drop web on death

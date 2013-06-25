@@ -21,6 +21,7 @@
 
 package com.extrahardmode.config;
 
+
 /**
  * Holds all the properties for the custom explosions, handles the configuration aswell
  */
@@ -61,16 +62,20 @@ public enum ExplosionType
      * Only visual Explosions, the Explosion effect without any damage
      */
     EFFECT
-            (0, false, false, 0, false, false)
-    ;
+            (0, false, false, 0, false, false);
 
     private final int powerB;
+
     private final boolean fireB;
+
     private final boolean allowBlockDamageB;
 
     private final int powerA;
+
     private final boolean fireA;
+
     private final boolean allowBlockDamageA;
+
 
     ExplosionType(int powerA, boolean fireA, boolean allowBlockDamageA, int powerB, boolean fireB, boolean allowBlockDamageB)
     {
@@ -83,8 +88,10 @@ public enum ExplosionType
         this.allowBlockDamageB = allowBlockDamageB;
     }
 
+
     /**
      * Get the power
+     *
      * @return power of the explosions
      */
     public int getPowerA()
@@ -92,8 +99,10 @@ public enum ExplosionType
         return powerA;
     }
 
+
     /**
      * Get if explosion should set fire
+     *
      * @return if fire should be set
      */
     public boolean isFireA()
@@ -101,8 +110,10 @@ public enum ExplosionType
         return fireA;
     }
 
+
     /**
      * Get if the explosion should damage the world
+     *
      * @return if explosion should damage the world
      */
     public boolean allowBlockDmgA()
@@ -110,8 +121,10 @@ public enum ExplosionType
         return allowBlockDamageA;
     }
 
+
     /**
      * Get the power
+     *
      * @return power of the explosions
      */
     public int getPowerB()
@@ -119,8 +132,10 @@ public enum ExplosionType
         return powerB;
     }
 
+
     /**
      * Get if explosion should set fire
+     *
      * @return if fire should be set
      */
     public boolean isFireB()
@@ -128,8 +143,10 @@ public enum ExplosionType
         return fireB;
     }
 
+
     /**
      * Get if the explosion should damage the world
+     *
      * @return if explosion should damage the world
      */
     public boolean allowBlockDmgB()

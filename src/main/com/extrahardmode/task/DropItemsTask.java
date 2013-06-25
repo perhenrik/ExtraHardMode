@@ -22,6 +22,7 @@
 
 package com.extrahardmode.task;
 
+
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,22 +38,27 @@ class DropItemsTask implements Runnable
      * Items to drop.
      */
     private final List<ItemStack> itemsToDrop;
+
     /**
      * Location of item drop.
      */
     private final Location location;
 
+
     /**
      * Constructor.
      *
-     * @param itemsToDrop - List of items to drop.
-     * @param location    - Drop point location.
+     * @param itemsToDrop
+     *         - List of items to drop.
+     * @param location
+     *         - Drop point location.
      */
     public DropItemsTask(List<ItemStack> itemsToDrop, Location location)
     {
         this.itemsToDrop = itemsToDrop;
         this.location = location;
     }
+
 
     @Override
     public void run()

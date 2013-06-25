@@ -21,11 +21,12 @@
 
 package com.extrahardmode.features;
 
+
 import com.extrahardmode.service.PermissionNode;
 
 /**
- * Holds some information about a given feature
- * like the permission which will bypass it
+ * Holds some information about a given feature like the permission which will bypass it
+ *
  * @author Max
  */
 public enum Feature
@@ -36,7 +37,7 @@ public enum Feature
     MONSTER_BITCHES,
     MONSTER_BLAZES,
     MONSTER_BOBS,
-    MONSTER_BUMBUMBENS (PermissionNode.BYPASS_CREEPERS),
+    MONSTER_BUMBUMBENS(PermissionNode.BYPASS_CREEPERS),
     MONSTER_GHASTS,
     MONSTER_GLYDIA,
     MONSTERRULES,
@@ -55,38 +56,43 @@ public enum Feature
     HARDENEDSTONE,
     LIMITED_BUILDING,
     PHYSICS,
-        MORE_FALLING_BLOCKS,
+    MORE_FALLING_BLOCKS,
     PLAYERS,
-        RESPAWN_FOOD_HEALTH,
-        DEATH_INV_LOSS (PermissionNode.BYPASS_INVENTORY),
-        ENVIRONMENTAL_EFFECTS,
-        DANGEROUS_FIRES,
+    RESPAWN_FOOD_HEALTH,
+    DEATH_INV_LOSS(PermissionNode.BYPASS_INVENTORY),
+    ENVIRONMENTAL_EFFECTS,
+    DANGEROUS_FIRES,
     REALISTIC_CHOPPING,
     TORCHES,
     WATER;
 
     private final PermissionNode node;
 
+
     /**
      * Constructor
-     *
+     * <p/>
      * for Features with no dedicated bypass permission
      */
-    private Feature ()
+    private Feature()
     {
         node = PermissionNode.BYPASS;
     }
 
+
     /**
      * Constructor
-     *
+     * <p/>
      * for Features with a dedicated bypass permission
-     * @param node which will bypass
+     *
+     * @param node
+     *         which will bypass
      */
-    private Feature (PermissionNode node)
+    private Feature(PermissionNode node)
     {
         this.node = node;
     }
+
 
     /**
      * Get the node which will bypass this feature

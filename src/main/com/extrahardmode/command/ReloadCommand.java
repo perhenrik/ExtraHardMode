@@ -47,8 +47,7 @@ public class ReloadCommand implements ICommand
                 module.starting();
             }
             sender.sendMessage(ChatColor.GREEN + plugin.getTag() + " Reloaded " + plugin.getName());
-        }
-        else
+        } else
         {
             sender.sendMessage(ChatColor.RED + plugin.getTag() + " Lack permission: " + PermissionNode.ADMIN.getNode());
         }

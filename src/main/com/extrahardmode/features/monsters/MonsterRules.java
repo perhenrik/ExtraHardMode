@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -42,15 +43,17 @@ import org.bukkit.event.entity.EntityTargetEvent;
 
 /**
  * Changes to how Monsters spawn including:
- *
- *
  */
 public class MonsterRules extends ListenerModule
 {
     private ExtraHardMode plugin = null;
+
     private RootConfig CFG = null;
+
     private final MessageConfig messages;
+
     private UtilityModule utils = null;
+
 
     public MonsterRules(ExtraHardMode plugin)
     {
@@ -61,12 +64,11 @@ public class MonsterRules extends ListenerModule
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
+
     /**
      * When an Entity spawns
-     *
+     * <p/>
      * more Monsters in caves
-     *
-     * @param event
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -106,10 +108,12 @@ public class MonsterRules extends ListenerModule
         }
     }
 
+
     /**
      * when an entity targets something (as in to attack it)...
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler
     public void onEntityTarget(EntityTargetEvent event)
@@ -126,11 +130,12 @@ public class MonsterRules extends ListenerModule
         }
     }
 
+
     /**
-     * when an entity is damaged
-     * handles
+     * when an entity is damaged handles
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)

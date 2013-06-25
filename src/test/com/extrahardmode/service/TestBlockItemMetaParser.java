@@ -21,6 +21,7 @@
 
 package com.extrahardmode.service;
 
+
 import com.extrahardmode.service.config.Status;
 import org.bukkit.Material;
 import org.junit.Assert;
@@ -55,6 +56,7 @@ public class TestBlockItemMetaParser
         assertEquals("No data inserted so we should get no data back", Collections.<Byte>emptyList(), retrievedData.getContent().get(Material.ANVIL.getId()));
     }
 
+
     /**
      * Will whitespace be trimmed?
      */
@@ -62,14 +64,15 @@ public class TestBlockItemMetaParser
     public void whitespaceGetFallingBlocks()
     {
         List<String> fallingBlocks = new ArrayList<String>(1);
-        fallingBlocks.add("   3 4 " );
+        fallingBlocks.add("   3 4 ");
 
-        Response <Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
 
         assertTrue("Will the String be trimmed and still get recognixed", retrievedData.getContent().containsKey(34));
         assertEquals("No data inserted", Collections.<Byte>emptyList(), retrievedData.getContent().get(34));
         Assert.assertSame("Our value has been adjusted", retrievedData.getStatusCode(), Status.NEEDS_TO_BE_ADJUSTED);
     }
+
 
     /**
      * Will enums get converted to the block ids?
@@ -77,12 +80,12 @@ public class TestBlockItemMetaParser
     @Test
     public void convertGetFallingBlocks()
     {
-        
+
         List<String> fallingBlocks = new ArrayList<String>(2);
         fallingBlocks.add(Material.ANVIL.name());
         fallingBlocks.add(Material.BEACON.name());
 
-        Response <Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
 
         assertTrue(retrievedData.getContent().containsKey(Material.ANVIL.getId()));
         assertTrue(retrievedData.getContent().containsKey(Material.BEACON.getId()));
@@ -93,17 +96,18 @@ public class TestBlockItemMetaParser
         assertSame("Nothing has been adjusted", retrievedData.getStatusCode(), Status.OK);
     }
 
+
     /**
      * Will simple metadata be attached correctly
      */
     @Test
     public void metaGetFallingBlocks()
     {
-        
+
         List<String> fallingBlocks = new ArrayList<String>(1);
         fallingBlocks.add(Material.BED.getId() + "@" + "1");
 
-        Response <Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
 
         assertTrue(retrievedData.getContent().containsKey(Material.BED.getId()));
 
@@ -112,6 +116,7 @@ public class TestBlockItemMetaParser
 
         assertSame("Nothing has been adjusted", retrievedData.getStatusCode(), Status.OK);
     }
+
 
     /**
      * More ids per Material
@@ -122,18 +127,19 @@ public class TestBlockItemMetaParser
         List<String> fallingBlocks = new ArrayList<String>(1);
         fallingBlocks.add(Material.BED.getId() + "@1,2,3");
 
-        Response <Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
 
         assertTrue(retrievedData.getContent().containsKey(Material.BED.getId()));
 
         List<Byte> meta = retrievedData.getContent().get(Material.BED.getId());
 
-        assertEquals((byte) 1, (byte)meta.get(0));
-        assertEquals((byte) 2, (byte)meta.get(1));
-        assertEquals((byte) 3, (byte)meta.get(2));
+        assertEquals((byte) 1, (byte) meta.get(0));
+        assertEquals((byte) 2, (byte) meta.get(1));
+        assertEquals((byte) 3, (byte) meta.get(2));
 
         assertSame("Nothing has been adjusted", retrievedData.getStatusCode(), Status.OK);
     }
+
 
     /**
      * Bogus input
@@ -145,7 +151,7 @@ public class TestBlockItemMetaParser
         fallingBlocks.add("34@12fag4");
         fallingBlocks.add("25adsaf:12d");
 
-        Response <Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
 
         assertEquals(true, retrievedData.getContent().containsKey(34));
         assertEquals((byte) 124, (byte) retrievedData.getContent().get(34).get(0));
@@ -156,23 +162,25 @@ public class TestBlockItemMetaParser
         assertSame("All the wrong characters should be stripped", retrievedData.getStatusCode(), Status.NEEDS_TO_BE_ADJUSTED);
     }
 
+
     /**
      * Same block multiple times with different meta
      */
     @Test
-    public void mergeMetaTest ()
+    public void mergeMetaTest()
     {
         List<String> fallingBlocks = new ArrayList<String>();
         fallingBlocks.add("12:1");
         fallingBlocks.add("12:2");
 
-        Response <Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
 
-        assertEquals ((byte)1, (byte) retrievedData.getContent().get(12).get(0));
-        assertEquals ((byte)2, (byte) retrievedData.getContent().get(12).get(1));
+        assertEquals((byte) 1, (byte) retrievedData.getContent().get(12).get(0));
+        assertEquals((byte) 2, (byte) retrievedData.getContent().get(12).get(1));
 
         assertSame("Nothing has been adjusted", retrievedData.getStatusCode(), Status.NEEDS_TO_BE_ADJUSTED);
     }
+
 
     /**
      * BlockIds whic are out of range should be kept
@@ -183,12 +191,13 @@ public class TestBlockItemMetaParser
         List<String> fallingBlocks = new ArrayList<String>();
         fallingBlocks.add("1200");
 
-        Response <Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
 
-        assertTrue ("Keep blockids for mod compatibility", retrievedData.getContent().containsKey(1200));
+        assertTrue("Keep blockids for mod compatibility", retrievedData.getContent().containsKey(1200));
 
         assertSame("Keep blockids for mod compatibility", retrievedData.getStatusCode(), Status.OK);
     }
+
 
     /**
      * BlockIds which are out of range should be kept with their meta
@@ -199,12 +208,13 @@ public class TestBlockItemMetaParser
         List<String> fallingBlocks = new ArrayList<String>();
         fallingBlocks.add("1200:1200");
 
-        Response <Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
 
-        assertEquals ((byte)Byte.MAX_VALUE, (byte) retrievedData.getContent().get(1200).get(0));
+        assertEquals((byte) Byte.MAX_VALUE, (byte) retrievedData.getContent().get(1200).get(0));
 
         assertSame("Keep blockids for mod compatibility", retrievedData.getStatusCode(), Status.NEEDS_TO_BE_ADJUSTED);
     }
+
 
     /**
      * Normal with blockmeta
@@ -213,7 +223,9 @@ public class TestBlockItemMetaParser
     public void getStringsForTest()
     {
         List<Byte> myMeta = new ArrayList<Byte>(3);
-        myMeta.add((byte) 1); myMeta.add((byte) 2); myMeta.add((byte) 3);
+        myMeta.add((byte) 1);
+        myMeta.add((byte) 2);
+        myMeta.add((byte) 3);
 
         Map<Integer, List<Byte>> blocks = new HashMap<Integer, List<Byte>>(1);
         blocks.put(12, myMeta);
@@ -231,7 +243,9 @@ public class TestBlockItemMetaParser
     public void getStringsForNullTest()
     {
         List<Byte> myMeta = new ArrayList<Byte>(3);
-        myMeta.add((byte) 1); myMeta.add((byte) 2); myMeta.add((byte) 3);
+        myMeta.add((byte) 1);
+        myMeta.add((byte) 2);
+        myMeta.add((byte) 3);
 
         Map<Integer, List<Byte>> blocks = new HashMap<Integer, List<Byte>>(1);
         blocks.put(12, null);

@@ -22,6 +22,7 @@
 
 package com.extrahardmode.task;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -39,20 +40,25 @@ public class RemoveExposedTorchesTask implements Runnable
      * Plugin instance.
      */
     private final ExtraHardMode plugin;
+
     /**
      * Chunk to iterate over.
      */
     private final Chunk chunk;
+
     /**
      * Config instance
      */
     private final RootConfig CFG;
 
+
     /**
      * Constructor.
      *
-     * @param plugin - Plugin instance.
-     * @param chunk  - Target chunk.
+     * @param plugin
+     *         - Plugin instance.
+     * @param chunk
+     *         - Target chunk.
      */
     public RemoveExposedTorchesTask(ExtraHardMode plugin, Chunk chunk)
     {
@@ -60,6 +66,7 @@ public class RemoveExposedTorchesTask implements Runnable
         this.chunk = chunk;
         CFG = this.plugin.getModuleForClass(RootConfig.class);
     }
+
 
     @Override
     public void run()
@@ -77,7 +84,8 @@ public class RemoveExposedTorchesTask implements Runnable
                 {
                     /* Biome is saved on a per column basis */
                     Biome biome = chunk.getBlock(x, z, 1).getBiome();
-                    loopDown : for (int y = chunk.getWorld().getMaxHeight() - 1; y > 0; y--)
+                    loopDown:
+                    for (int y = chunk.getWorld().getMaxHeight() - 1; y > 0; y--)
                     {
                         Block block = chunk.getBlock(x, y, z);
                         Material blockType = block.getType();
@@ -91,39 +99,51 @@ public class RemoveExposedTorchesTask implements Runnable
                                 if (rainBreaksTorches && biome != Biome.DESERT && biome != Biome.DESERT_HILLS)
                                 {
                                     /* Reduce lag by torches lying on the ground */
-                                    if (plugin.getRandom().nextInt(5) == 1) {
+                                    if (plugin.getRandom().nextInt(5) == 1)
+                                    {
                                         block.breakNaturally();
-                                    }
-                                    else {
+                                    } else
+                                    {
                                         block.setType(Material.AIR);
                                     }
                                 }
                                 break loopDown;
                             }
-                            case CROPS: case MELON_STEM: case CARROT:case PUMPKIN_STEM: case POTATO: case RED_ROSE: case YELLOW_FLOWER: case LONG_GRASS:
-                        {
-                            if (snowBreaksCrops)
+                            case CROPS:
+                            case MELON_STEM:
+                            case CARROT:
+                            case PUMPKIN_STEM:
+                            case POTATO:
+                            case RED_ROSE:
+                            case YELLOW_FLOWER:
+                            case LONG_GRASS:
                             {
-                                switch (biome)
+                                if (snowBreaksCrops)
                                 {
-                                    case FROZEN_OCEAN: case FROZEN_RIVER: case ICE_MOUNTAINS: case ICE_PLAINS: case TAIGA: case TAIGA_HILLS:
-                                {
-                                    if (plugin.getRandom().nextInt(5) == 1)
-                                        block.breakNaturally();
-                                    block.setType(Material.SNOW);
-                                    if (plugin.getRandom().nextBoolean())
+                                    switch (biome)
                                     {
-                                        block.setData((byte) 1);
-                                    }
-                                    else
-                                    {
-                                        block.setData((byte) 2);
+                                        case FROZEN_OCEAN:
+                                        case FROZEN_RIVER:
+                                        case ICE_MOUNTAINS:
+                                        case ICE_PLAINS:
+                                        case TAIGA:
+                                        case TAIGA_HILLS:
+                                        {
+                                            if (plugin.getRandom().nextInt(5) == 1)
+                                                block.breakNaturally();
+                                            block.setType(Material.SNOW);
+                                            if (plugin.getRandom().nextBoolean())
+                                            {
+                                                block.setData((byte) 1);
+                                            } else
+                                            {
+                                                block.setData((byte) 2);
+                                            }
+                                        }
                                     }
                                 }
-                                }
+                                break loopDown;
                             }
-                            break loopDown;
-                        }
                             default: /* Anything which isn't AIR will protect torches and Crops */
                             {
                                 break loopDown;

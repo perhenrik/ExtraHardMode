@@ -47,17 +47,21 @@ import org.bukkit.material.Torch;
 
 /**
  * Torches
- *
- * can't be attached to loose blocks ,
- * get washed away when it rains
+ * <p/>
+ * can't be attached to loose blocks , get washed away when it rains
  */
 public class Torches extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private final UtilityModule utils;
+
     private final MessagingModule messenger;
+
     private final PlayerModule playerModule;
+
 
     public Torches(ExtraHardMode plugin)
     {
@@ -69,15 +73,14 @@ public class Torches extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * When a block is placed
-     *
+     * <p/>
      * players can't attach torches to loose blocks like sand/dirt
-     *
-     * @param placeEvent
      */
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOW)
-    public void onBlockPlace (BlockPlaceEvent placeEvent)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+    public void onBlockPlace(BlockPlaceEvent placeEvent)
     {
         Player player = placeEvent.getPlayer();
         Block block = placeEvent.getBlock();
@@ -89,7 +92,7 @@ public class Torches extends ListenerModule
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.TORCHES);
 
         // FEATURE: players can't attach torches to common "soft" blocks
-        if (block.getType().equals(Material.TORCH) && limitedTorchPlacement &&! playerBypasses)
+        if (block.getType().equals(Material.TORCH) && limitedTorchPlacement && !playerBypasses)
         {
             Torch torch = new Torch(Material.TORCH, block.getData());
             Material attachmentMaterial = block.getRelative(torch.getAttachedFace()).getType();
@@ -106,7 +109,7 @@ public class Torches extends ListenerModule
         }
 
         // FEATURE: no standard torches, jack o lanterns, or fire on top of netherrack near diamond level
-        if (torchMinY > 0 &&! playerBypasses)
+        if (torchMinY > 0 && !playerBypasses)
         {
             if (world.getEnvironment() == World.Environment.NORMAL
                     && block.getY() < torchMinY
@@ -120,10 +123,12 @@ public class Torches extends ListenerModule
         }
     }
 
+
     /**
-     * When the weather changes...
-     * rainfall breaks exposed torches (exposed to the sky)
-     * @param event - Event that occurred.
+     * When the weather changes... rainfall breaks exposed torches (exposed to the sky)
+     *
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onWeatherChange(WeatherChangeEvent event)

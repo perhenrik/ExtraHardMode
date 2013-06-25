@@ -21,6 +21,7 @@
 
 package com.extrahardmode.command;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.CommandHandler;
 import com.extrahardmode.service.ICommand;
@@ -42,6 +43,7 @@ public class Commander extends CommandHandler
         registerCommand("version", new VersionCommand());
     }
 
+
     @Override
     public boolean noArgs(CommandSender sender, Command command, String label)
     {
@@ -56,12 +58,14 @@ public class Commander extends CommandHandler
         return true;
     }
 
+
     @Override
     public boolean unknownCommand(CommandSender sender, Command command, String label, String[] args)
     {
         sender.sendMessage(ChatColor.YELLOW + plugin.getTag() + " Unknown command: " + ChatColor.WHITE + args[0]);
         return true;
     }
+
 
     private class HelpCommand implements ICommand
     {

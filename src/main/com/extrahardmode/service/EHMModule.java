@@ -22,6 +22,7 @@
 
 package com.extrahardmode.service;
 
+
 import com.extrahardmode.ExtraHardMode;
 
 /**
@@ -34,10 +35,12 @@ public abstract class EHMModule implements IModule
      */
     protected final ExtraHardMode plugin;
 
+
     /**
      * Constructor.
      *
-     * @param plugin - Plugin instance.
+     * @param plugin
+     *         - Plugin instance.
      */
     protected EHMModule(ExtraHardMode plugin)
     {

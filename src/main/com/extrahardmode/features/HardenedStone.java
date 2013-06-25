@@ -51,22 +51,26 @@ import java.util.List;
 
 /**
  * Hardened Stone is there to make branchmining harder/impossible
- *
- * Only Iron/Diamond Picks can break stone ,
- * Tools break faster when breaking stone ,
- * Breaking ore causes surounding stone to fall ,
- * Various Fixes to prevent working around the hardened stone
+ * <p/>
+ * Only Iron/Diamond Picks can break stone , Tools break faster when breaking stone , Breaking ore causes surounding
+ * stone to fall , Various Fixes to prevent working around the hardened stone
  */
 public class HardenedStone extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private final UtilityModule utils;
+
     private final MessagingModule messenger;
+
     private final BlockModule blockModule;
+
     private final PlayerModule playerModule;
 
-    public HardenedStone (ExtraHardMode plugin)
+
+    public HardenedStone(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -77,12 +81,12 @@ public class HardenedStone extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * When a player breaks stone
-     * @param event
      */
     @EventHandler
-    public void onBlockBreak (BlockBreakEvent event)
+    public void onBlockBreak(BlockBreakEvent event)
     {
         Block block = event.getBlock();
         World world = block.getWorld();
@@ -98,7 +102,7 @@ public class HardenedStone extends ListenerModule
         final short stoneBlocksDiamond = (short) CFG.getInt(RootNode.DIAMOND_DURABILITY_PENALTY, world.getName());
 
         // FEATURE: stone breaks tools much quicker
-        if (hardStoneEnabled && block.getType() == Material.STONE &&! playerBypasses)
+        if (hardStoneEnabled && block.getType() == Material.STONE && !playerBypasses)
         {
             ItemStack inHandStack = player.getItemInHand();
 
@@ -153,6 +157,7 @@ public class HardenedStone extends ListenerModule
         }
     }
 
+
     /**
      * FIX: prevent players from placing ore as an exploit to work around the hardened stone rule
      */
@@ -167,7 +172,7 @@ public class HardenedStone extends ListenerModule
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.HARDENEDSTONE);
 
         //TODO EhmBlockOrePlacementEvent
-        if (hardstoneEnabled &&! playerBypasses && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES")))
+        if (hardstoneEnabled && !playerBypasses && (block.getType().name().endsWith("ORE") || block.getType().name().endsWith("ORES")))
         {
             ArrayList<Block> adjacentBlocks = new ArrayList<Block>();
             for (BlockFace face : blockModule.getTouchingFaces())
@@ -187,12 +192,13 @@ public class HardenedStone extends ListenerModule
         }
     }
 
+
     /**
-     * When a piston extends
-     * prevent players from circumventing hardened stone rules by
-     * placing ore, then pushing the ore next to stone before breaking it
+     * When a piston extends prevent players from circumventing hardened stone rules by placing ore, then pushing the
+     * ore next to stone before breaking it
      *
-     * @param event - Event that occurred
+     * @param event
+     *         - Event that occurred
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockPistonExtend(BlockPistonExtendEvent event)
@@ -219,11 +225,13 @@ public class HardenedStone extends ListenerModule
         }
     }
 
+
     /**
-     * When a piston pulls...
-     * prevent players from circumventing hardened stone rules by
-     * placing ore, then pulling the ore next to stone before breaking it
-     * @param event - Event that occurred.
+     * When a piston pulls... prevent players from circumventing hardened stone rules by placing ore, then pulling the
+     * ore next to stone before breaking it
+     *
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockPistonRetract(BlockPistonRetractEvent event)

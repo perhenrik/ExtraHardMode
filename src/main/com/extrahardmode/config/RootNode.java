@@ -21,6 +21,7 @@
 
 package com.extrahardmode.config;
 
+
 import com.extrahardmode.service.config.ConfigNode;
 import org.bukkit.Material;
 
@@ -28,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
-* Configuration options of the root config.yml file.
-*/
+ * Configuration options of the root config.yml file.
+ */
 //Please keep the codestyle, it makes it easier to grasp the structure of the config
 public enum RootNode implements ConfigNode
 {
@@ -361,8 +362,7 @@ public enum RootNode implements ConfigNode
     LIGHTNING_SPAWNS_PIGMEN
             ("PigZombies.Spawn on Lighting Strikes.Enable", VarType.BOOLEAN, true),
     /**
-     * whether ghasts should deflect arrows and drop extra loot
-     * percentage like skeleton deflect
+     * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
     GHASTS_DEFLECT_ARROWS
             ("Ghasts.Immune To Arrows", VarType.BOOLEAN, true),
@@ -478,7 +478,7 @@ public enum RootNode implements ConfigNode
      * How much damage loose Falling Logs do to Players and Animals
      */
     MORE_FALLING_BLOCKS_DMG_AMOUNT
-            ("Additional Falling Blocks.Dmg Amount When Hitting Players" , VarType.INTEGER, 2),
+            ("Additional Falling Blocks.Dmg Amount When Hitting Players", VarType.INTEGER, 2),
     /**
      * wheter falling grass/mycel turns into dirt
      */
@@ -502,8 +502,8 @@ public enum RootNode implements ConfigNode
             ("Explosions.Border Y", VarType.INTEGER, 55),
 
     //WHEN ADDING NEW EXPLOSIONTYPES YOU HAVE TO ADD THE NODES TO EXPLOSIONTYPE AND ALSO UPDATE THE EXPLOSIONTASK
-    /**CREEPER
-     * Enable this custom explosion
+    /**
+     * CREEPER Enable this custom explosion
      */
     EXPLOSIONS_CREEPERS_ENABLE
             ("Explosions.Creeper.Enable Custom Explosion", VarType.BOOLEAN, true),
@@ -526,7 +526,7 @@ public enum RootNode implements ConfigNode
      * Size of Explosion below border
      */
     EXPLOSIONS_CREEPERS_ABOVE_POWER
-            ("Explosions.Creeper.Above Border.Explosion Power", VarType.INTEGER,SubType.NATURAL_NUMBER, 3),
+            ("Explosions.Creeper.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
     /**
      * Set Fire on Explosion below border
      */
@@ -538,8 +538,8 @@ public enum RootNode implements ConfigNode
     EXPLOSIONS_CREEPERS_ABOVE_WORLD_GRIEF
             ("Explosions.Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
 
-    /** Charged CREEPER
-     * Enable?
+    /**
+     * Charged CREEPER Enable?
      */
     EXPLOSIONS_CHARGED_CREEPERS_ENABLE
             ("Explosions.Charged Creeper.Enable Custom Explosion", VarType.BOOLEAN, true),
@@ -574,8 +574,8 @@ public enum RootNode implements ConfigNode
     EXPLOSIONS_CHARGED_CREEPERS_ABOVE_WORLD_GRIEF
             ("Explosions.Charged Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
 
-    /** TNT
-     * Enable Custom Explosion?
+    /**
+     * TNT Enable Custom Explosion?
      */
     EXPLOSIONS_TNT_ENABLE
             ("Explosions.Tnt.Enable Custom Explosion", VarType.BOOLEAN, true),
@@ -620,9 +620,9 @@ public enum RootNode implements ConfigNode
     EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF
             ("Explosions.Tnt.Above Border.World Damage", VarType.BOOLEAN, true),
 
-    /** BLAZE
-    * whether blazes explode and spread fire when they die
-    */
+    /**
+     * BLAZE whether blazes explode and spread fire when they die
+     */
     BLAZES_EXPLODE_ON_DEATH
             ("Explosions.Blazes Explode On Death.Enable", VarType.BOOLEAN, true),
     /**
@@ -656,8 +656,8 @@ public enum RootNode implements ConfigNode
     EXPLOSIONS_BLAZE_ABOVE_WORLD_GRIEF
             ("Explosions.Blazes Explode On Death.Above Border.World Damage", VarType.BOOLEAN, true),
 
-    /** Ghast
-     * Enable custom Explosion?
+    /**
+     * Ghast Enable custom Explosion?
      */
     EXPLOSIONS_GHASTS_ENABLE
             ("Explosions.Ghasts.Enable Custom Explosion", VarType.BOOLEAN, true),
@@ -690,36 +690,43 @@ public enum RootNode implements ConfigNode
      * Damage the world below border
      */
     EXPLOSIONS_GHAST_ABOVE_WORLD_GRIEF
-            ("Explosions.Ghasts.Above Border.World Damage", VarType.BOOLEAN, true),
-    ;
+            ("Explosions.Ghasts.Above Border.World Damage", VarType.BOOLEAN, true),;
 
     /**
      * Path.
      */
     private final String path;
+
     /**
      * Variable type.
      */
     private final VarType type;
+
     /**
      * Subtype like percentage, y-value, health
      */
     private SubType subType = null;
+
     /**
      * Default value.
      */
     private final Object defaultValue;
+
     /**
      * The value that will disable this option
      */
     private Disable disableValue = null;
 
+
     /**
      * Constructor.
      *
-     * @param path - Configuration path.
-     * @param type - Variable type.
-     * @param def  - Default value.
+     * @param path
+     *         - Configuration path.
+     * @param type
+     *         - Variable type.
+     * @param def
+     *         - Default value.
      */
     private RootNode(String path, VarType type, Object def)
     {
@@ -728,6 +735,7 @@ public enum RootNode implements ConfigNode
         this.defaultValue = def;
     }
 
+
     private RootNode(String path, VarType type, SubType subType, Object def)
     {
         this.path = path;
@@ -735,6 +743,7 @@ public enum RootNode implements ConfigNode
         this.defaultValue = def;
         this.subType = subType;
     }
+
 
     private RootNode(String path, VarType type, SubType subType, Disable disable, Object def)
     {
@@ -745,11 +754,13 @@ public enum RootNode implements ConfigNode
         this.disableValue = disable;
     }
 
+
     @Override
     public String getPath()
     {
         return baseNode() + "." + path;
     }
+
 
     @Override
     public VarType getVarType()
@@ -757,11 +768,13 @@ public enum RootNode implements ConfigNode
         return type;
     }
 
+
     @Override
     public Object getDefaultValue()
     {
         return defaultValue;
     }
+
 
     @Override
     public SubType getSubType()
@@ -769,17 +782,20 @@ public enum RootNode implements ConfigNode
         return subType;
     }
 
+
     public static String baseNode()
     {
         return "ExtraHardMode";
     }
 
+
     /**
      * Get the Object that will disable this option
+     *
      * @return Object that will disable this option in the plugin
      */
     @Override
-    public Object getValueToDisable ()
+    public Object getValueToDisable()
     {
         Object obj;
         switch (type)
@@ -845,6 +861,7 @@ public enum RootNode implements ConfigNode
         return obj;
     }
 
+
     /**
      * Contains values for some Nodes which require a special value, which differs from other Nodes with the same type
      */
@@ -853,24 +870,28 @@ public enum RootNode implements ConfigNode
         /**
          * A value of 0 will disable this feature in the plugin
          */
-        ZERO (0),
+        ZERO(0),
         /**
          * A value of 1 will disable this feature in the plugin
          */
-        ONE (1);
+        ONE(1);
 
-        private Disable (Object obj)
+
+        private Disable(Object obj)
         {
             disable = obj;
         }
 
+
         final Object disable;
+
 
         public Object get()
         {
             return disable;
         }
     }
+
 
     /**
      * Default list of falling blocks.
@@ -882,6 +903,7 @@ public enum RootNode implements ConfigNode
          * Serial Version UID.
          */
         private static final long serialVersionUID = 1L;
+
 
         /**
          * Constructor.

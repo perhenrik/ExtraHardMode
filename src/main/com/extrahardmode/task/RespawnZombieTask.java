@@ -22,6 +22,7 @@
 
 package com.extrahardmode.task;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.module.EntityHelper;
 import org.bukkit.Chunk;
@@ -40,21 +41,27 @@ public class RespawnZombieTask implements Runnable
      * Plugin instance.
      */
     private final ExtraHardMode plugin;
+
     /**
      * Respawn location.
      */
     private final Location location;
+
     /**
      * Target player.
      */
     private final Player player;
 
+
     /**
      * Constructor.
      *
-     * @param plugin   - Plugin instance.
-     * @param location - Respawn location.
-     * @param target   - Target player.
+     * @param plugin
+     *         - Plugin instance.
+     * @param location
+     *         - Respawn location.
+     * @param target
+     *         - Target player.
      */
     public RespawnZombieTask(ExtraHardMode plugin, Location location, Player target)
     {
@@ -62,6 +69,7 @@ public class RespawnZombieTask implements Runnable
         this.location = location;
         this.player = target;
     }
+
 
     @Override
     public void run()

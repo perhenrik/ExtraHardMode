@@ -21,6 +21,7 @@
 
 package com.extrahardmode.command;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.ICommand;
 import org.bukkit.ChatColor;
@@ -43,14 +44,18 @@ public class VersionCommand implements ICommand
         //Read buildnumber from manifest if availible
         {
             JarFile pluginFile = null;
-            java.net.URL file =  plugin.getClass().getProtectionDomain().getCodeSource().getLocation();
-            try {
+            java.net.URL file = plugin.getClass().getProtectionDomain().getCodeSource().getLocation();
+            try
+            {
                 pluginFile = new JarFile(file.getFile());
-            } catch (IOException ignored) {}
+            } catch (IOException ignored)
+            {
+            }
 
             if (pluginFile != null)
             {
-                try {
+                try
+                {
                     Manifest manifest = pluginFile.getManifest();
                     if (manifest != null)
                     {
@@ -58,7 +63,9 @@ public class VersionCommand implements ICommand
                         if (buildNumber.length() > 0)
                             sender.sendMessage(ChatColor.BLUE + "Build: " + ChatColor.WHITE + buildNumber);
                     }
-                } catch (IOException ignored) {}
+                } catch (IOException ignored)
+                {
+                }
             }
         }
 

@@ -22,6 +22,7 @@
 
 package com.extrahardmode.module;
 
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,62 +47,72 @@ public class EntityHelper
      * Getter for environmental damage for the specified entity
      */
     private static final String IGNORE = "extrahardmode.ignore.me";
+
     /**
      * Getter to set a flag to ignore a entity in further processing
      */
     private static final String ENVIRONMENTAL_DAMAGE = "extrahard_environmentalDamage";
+
     /**
      * Process this Entity
      */
     private static final String PROCESS_ENTITY = "extrahardmode_process_entity";
 
+
     /**
-     * Marks an entity so that the plugin can remember not to drop loot or
-     * experience if it's killed.
+     * Marks an entity so that the plugin can remember not to drop loot or experience if it's killed.
      *
-     * @param entity - Entity to modify.
+     * @param entity
+     *         - Entity to modify.
      */
     public static void markLootLess(Plugin plugin, LivingEntity entity)
     {
         entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, entity.getMaxHealth()));
     }
 
+
     /**
      * Tracks total environmental damage done to an entity
      *
-     * @param entity - Entity to check.
-     * @param damage - Amount of damage.
+     * @param entity
+     *         - Entity to check.
+     * @param damage
+     *         - Amount of damage.
      */
     public static void addEnvironmentalDamage(Plugin plugin, LivingEntity entity, int damage)
     {
         int currentTotalDamage = 0;
-        List <MetadataValue> meta = entity.getMetadata(ENVIRONMENTAL_DAMAGE);
+        List<MetadataValue> meta = entity.getMetadata(ENVIRONMENTAL_DAMAGE);
         if (meta.size() > 0)
             currentTotalDamage = meta.get(0).asInt();
         entity.setMetadata(ENVIRONMENTAL_DAMAGE, new FixedMetadataValue(plugin, currentTotalDamage + damage));
     }
 
+
     /**
      * Checks whether an entity should drop items when it dies
      *
-     * @param entity - Entity to check.
+     * @param entity
+     *         - Entity to check.
+     *
      * @return True if the entity is lootable, else false.
      */
     public static boolean isLootLess(LivingEntity entity)
     {
         int currentTotalDamage = 0;
-        List <MetadataValue> meta = entity.getMetadata(ENVIRONMENTAL_DAMAGE);
+        List<MetadataValue> meta = entity.getMetadata(ENVIRONMENTAL_DAMAGE);
         if (meta.size() > 0)
             currentTotalDamage = meta.get(0).asInt();
         // wither is exempt. he can't be farmed because creating him requires combining non-farmable components
         return !(entity instanceof Wither) && (currentTotalDamage > entity.getMaxHealth() / 2);
     }
 
+
     /**
-     * Clears any webbing which may be trapping this entity (assumes
-     * two-block-tall entity)
+     * Clears any webbing which may be trapping this entity (assumes two-block-tall entity)
      *
-     * @param entity - Entity to help.
+     * @param entity
+     *         - Entity to help.
      */
     public static void clearWebbing(Entity entity)
     {
@@ -118,10 +129,9 @@ public class EntityHelper
         }
     }
 
+
     /**
      * Flag an entity to be ignored in further processing. E.g if an event could be called multiple times
-     * @param plugin
-     * @param entity
      */
     public static void flagIgnore(Plugin plugin, Entity entity)
     {
@@ -131,10 +141,9 @@ public class EntityHelper
         }
     }
 
+
     /**
      * Check if an entity has been flagged to be ignored
-     * @param entity
-     * @return
      */
     public static boolean hasFlagIgnore(Entity entity)
     {
@@ -148,10 +157,9 @@ public class EntityHelper
         return false;
     }
 
+
     /**
      * Mark an Entity to be processed. E.g when only a small number of Entities should be processed
-     * @param plugin
-     * @param entity
      */
     public static void markForProcessing(Plugin plugin, Entity entity)
     {
@@ -161,10 +169,9 @@ public class EntityHelper
         }
     }
 
+
     /**
      * Check if an entity has been flagged to be processed
-     * @param entity
-     * @return
      */
     public static boolean isMarkedForProcessing(Entity entity)
     {
@@ -174,20 +181,20 @@ public class EntityHelper
         return entity.hasMetadata(PROCESS_ENTITY) && meta != null;
     }
 
+
     /**
      * Is the Monster farmable cattle, which drops something on death?
      */
     public static boolean isCattle(Entity entity)
     {
-        return     entity instanceof Cow
+        return entity instanceof Cow
                 || entity instanceof Chicken
                 || entity instanceof Pig;
     }
 
+
     /**
      * Simple check if there is enough space for a monster to spawn
-     * @param loc
-     * @return
      */
     public static boolean simpleIsLocSafeSpawn(Location loc)
     {
@@ -197,8 +204,10 @@ public class EntityHelper
         return oneAbove.getType().equals(Material.AIR) && twoAbove.getType().equals(Material.AIR);
     }
 
+
     /**
      * Checks if Location is safe, if in air will return the a valid Block to spawn on or null
+     *
      * @return valid Block or null if no valid Block
      */
     public static Location isLocSafeSpawn(Location location)
@@ -218,8 +227,7 @@ public class EntityHelper
                     playerBlock = location.getBlock();
                     // the playerBlock is now the block where the monster
                     // should spawn on, next up: verify block
-                }
-                else
+                } else
                 {
                     break;
                 }
@@ -236,8 +244,10 @@ public class EntityHelper
         return location;
     }
 
+
     /**
      * Spawn Monsters with their gear, use instead of world.spawn()
+     *
      * @return a reference to the spawned Entity
      */
     public static Entity spawn(Location loc, EntityType type)
@@ -246,14 +256,15 @@ public class EntityHelper
         switch (type)
         {
             case SKELETON:
-                ((Skeleton)entity).getEquipment().setItemInHand(new ItemStack(Material.BOW));
+                ((Skeleton) entity).getEquipment().setItemInHand(new ItemStack(Material.BOW));
                 break;
             case PIG_ZOMBIE:
-                ((PigZombie)entity).getEquipment().setItemInHand(new ItemStack(Material.GOLD_SWORD));
+                ((PigZombie) entity).getEquipment().setItemInHand(new ItemStack(Material.GOLD_SWORD));
                 break;
         }
         return entity;
     }
+
 
     /**
      * Spawns a random monster with the probabilities given by the config
@@ -267,20 +278,16 @@ public class EntityHelper
         if (randomMonster < 5)
         {
             monsterType = EntityType.SILVERFISH; /*5%*/
-        }
-        else if (randomMonster < 25)
+        } else if (randomMonster < 25)
         {
             monsterType = EntityType.SKELETON;   /*20%*/
-        }
-        else if (randomMonster < 45)
+        } else if (randomMonster < 45)
         {
             monsterType = EntityType.ZOMBIE;     /*20%*/
-        }
-        else if (randomMonster < 65)
+        } else if (randomMonster < 65)
         {
             monsterType = EntityType.CREEPER;    /*20%*/
-        }
-        else
+        } else
         {
             monsterType = EntityType.SPIDER;     /*25%*/
         }

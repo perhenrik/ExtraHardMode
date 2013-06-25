@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -46,15 +47,15 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Changes to ZombiePigmen including:
- *
- * Always angry ,
- * drop netherwart in the nether ,
- * spawn on lighting strikes
+ * <p/>
+ * Always angry , drop netherwart in the nether , spawn on lighting strikes
  */
 public class Pigies extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
 
     public Pigies(ExtraHardMode plugin)
     {
@@ -63,12 +64,11 @@ public class Pigies extends ListenerModule
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
+
     /**
      * When an Entity dies (Piggie)
-     *
+     * <p/>
      * Drop netherwart in fortresses and elsewhere in the nether
-     *
-     * @param event
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
@@ -77,7 +77,7 @@ public class Pigies extends ListenerModule
         World world = entity.getWorld();
 
         final boolean pigWartFortress = CFG.getBoolean(RootNode.FORTRESS_PIGS_DROP_WART, world.getName());
-        final int  pigWartDropEveryWherePercent = CFG.getInt(RootNode.NETHER_PIGS_DROP_WART, world.getName());
+        final int pigWartDropEveryWherePercent = CFG.getInt(RootNode.NETHER_PIGS_DROP_WART, world.getName());
 
         // FEATURE: pig zombies drop nether wart when slain in nether fortresses
         if (pigWartFortress && world.getEnvironment().equals(World.Environment.NETHER) && entity instanceof PigZombie)
@@ -97,12 +97,11 @@ public class Pigies extends ListenerModule
         }
     }
 
+
     /**
      * When an Entity spawns
-     *
+     * <p/>
      * Makes Pigmen always angry
-     *
-     * @param event
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -123,11 +122,13 @@ public class Pigies extends ListenerModule
             }
         }
     }
+
+
     /**
-     * when a chunk loads...
-     * Always angry pigzombies
+     * when a chunk loads... Always angry pigzombies
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event)
@@ -151,9 +152,10 @@ public class Pigies extends ListenerModule
         }
     }
 
+
     /**
      * When a lightning strikes
-     *
+     * <p/>
      * spawn pigmen
      */
     @EventHandler
@@ -172,12 +174,14 @@ public class Pigies extends ListenerModule
             int amount = 1;
             switch (rdm)
             {
-                case 0:case 1: //20%
+                case 0:
+                case 1: //20%
                 {
                     amount = 2;
                     break;
                 }
-                case 2:case 3: //20%
+                case 2:
+                case 3: //20%
                 {
                     amount = 3;
                     break;

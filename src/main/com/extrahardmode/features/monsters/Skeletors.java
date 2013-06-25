@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -37,14 +38,15 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 /**
  * Changes to Skeletons include:
- *
+ * <p/>
  * Immunity to arrows ,
- *
  */
 public class Skeletors extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
 
     public Skeletors(ExtraHardMode plugin)
     {
@@ -56,10 +58,8 @@ public class Skeletors extends ListenerModule
 
     /**
      * When an entity takes damage
-     *
+     * <p/>
      * skeletons are immune to arrows
-     *
-     * @param event
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
@@ -130,12 +130,14 @@ public class Skeletors extends ListenerModule
         }
     }
 
+
     /**
      * when an entity shoots a bow...
-     *
+     * <p/>
      * skeletons shoot silverfish
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler
     public void onShootProjectile(ProjectileLaunchEvent event)

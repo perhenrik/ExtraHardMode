@@ -21,6 +21,7 @@
 
 package com.extrahardmode.mocks;
 
+
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -47,33 +48,34 @@ public class MockLocation
      */
     private MockBlock block;
 
+
     /**
      * A basic Constructor
-     * @param world
      */
     public MockLocation(World world)
     {
-        when( loc.getWorld()).thenReturn(world);
+        when(loc.getWorld()).thenReturn(world);
     }
+
 
     /**
      * Block at this Location
-     * @return
      */
     public MockBlock getBlock()
     {
         return block;
     }
 
+
     /**
      * Set the Block that is at this Location
-     * @param block
      */
     public void setBlock(MockBlock block)
     {
         this.block = block;
-        when( loc.getBlock()).thenReturn(block.get());
+        when(loc.getBlock()).thenReturn(block.get());
     }
+
 
     public Location get()
     {

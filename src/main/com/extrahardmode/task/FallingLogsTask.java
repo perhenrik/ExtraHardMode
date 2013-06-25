@@ -32,6 +32,7 @@ import org.bukkit.block.BlockFace;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Gradually let's Logs which have been marked as loose fall down.
  */
@@ -41,26 +42,33 @@ public class FallingLogsTask implements Runnable
      * Reference to the plugin using this class
      */
     private final ExtraHardMode plugin;
+
     /**
      * Where our "loose" Logs are stored
      */
     private final DataStoreModule dataStoreModule;
+
     /**
      * BlockModule to spawn FallingBlocks
      */
     private final BlockModule blockModule;
+
     /**
      * Block to apply physics to
      */
     private final Block block;
 
+
     /**
      * Constructor
-     * @param plugin reference to the plugin
-     * @param block to apply physics to
+     *
+     * @param plugin
+     *         reference to the plugin
+     * @param block
+     *         to apply physics to
      */
 
-    public FallingLogsTask (ExtraHardMode plugin, Block block)
+    public FallingLogsTask(ExtraHardMode plugin, Block block)
     {
         Validate.notNull(block, "Block can't be null");
         Validate.notNull(plugin, "Plugin can't be null");
@@ -70,8 +78,10 @@ public class FallingLogsTask implements Runnable
         dataStoreModule = plugin.getModuleForClass(DataStoreModule.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
     }
+
+
     @Override
-    public void run ()
+    public void run()
     {
         if (block != null)
         {
@@ -83,7 +93,8 @@ public class FallingLogsTask implements Runnable
                 List<Block> looseLogs = new ArrayList<Block>();
                 List<Block> tempBlocks = new ArrayList<Block>();
                 looseLogs.add(block);
-                checkBelow : for (int i = 0; below.getY() > 0; i++)
+                checkBelow:
+                for (int i = 0; below.getY() > 0; i++)
                 {
                     below = below.getRelative(BlockFace.DOWN);
                     switch (below.getType())
@@ -106,7 +117,8 @@ public class FallingLogsTask implements Runnable
                             //Prevent Logs on adjacent sides (Jungle Tree) from turning to FallingBlocks and some of them turning into items
                             switch (below.getRelative(BlockFace.DOWN).getType())
                             {
-                                case AIR:case LEAVES:
+                                case AIR:
+                                case LEAVES:
                                     tempBlocks.add(below);
                             }
                             break;
@@ -116,8 +128,7 @@ public class FallingLogsTask implements Runnable
                             if (blockModule.breaksFallingBlock(below.getType()))
                             {
                                 below.breakNaturally();
-                            }
-                            else
+                            } else
                             {
                                 break checkBelow;
                             }
@@ -128,9 +139,11 @@ public class FallingLogsTask implements Runnable
                 for (int i = 0; i < looseLogs.size(); i++)
                 {
                     final Block looseLog = looseLogs.get(i);
-                    plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                    plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
+                    {
                         @Override
-                        public void run() {
+                        public void run()
+                        {
                             blockModule.applyPhysics(looseLog, true);
                         }
                     }, i /*delay to prevent FallingBlock collision*/);

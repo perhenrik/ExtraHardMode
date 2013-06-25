@@ -21,6 +21,7 @@
 
 package com.extrahardmode.mocks;
 
+
 import com.extrahardmode.ExtraHardMode;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -32,7 +33,8 @@ public class MockExtraHardMode
 {
     private ExtraHardMode ehm;
 
-    public ExtraHardMode get ()
+
+    public ExtraHardMode get()
     {
         ehm = mock(ExtraHardMode.class);
         return ehm;

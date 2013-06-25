@@ -18,7 +18,9 @@
  * You should have received a copy of the GNU Affero Public License
  * along with ExtraHardMode.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.extrahardmode.config.messages;
+
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.config.ConfigNode;
@@ -43,15 +45,18 @@ public class MessageConfig extends ModularConfig
      * File reference.
      */
     private final File file;
+
     /**
      * Configuration object reference.
      */
     private final YamlConfiguration config;
 
+
     /**
      * Constructor.
      *
-     * @param plugin - Plugin instance.
+     * @param plugin
+     *         - Plugin instance.
      */
     public MessageConfig(ExtraHardMode plugin)
     {
@@ -59,6 +64,7 @@ public class MessageConfig extends ModularConfig
         file = new File(plugin.getDataFolder().getAbsolutePath() + "/messages.yml");
         config = YamlConfiguration.loadConfiguration(file);
     }
+
 
     @Override
     public void starting()
@@ -68,12 +74,14 @@ public class MessageConfig extends ModularConfig
         reload();
     }
 
+
     @Override
     public void closing()
     {
         reload();
         save();
     }
+
 
     @Override
     public void save()
@@ -87,11 +95,13 @@ public class MessageConfig extends ModularConfig
         }
     }
 
+
     @Override
     public void set(String path, Object value)
     {
         config.set(path, value);
     }
+
 
     @Override
     public void reload()
@@ -113,6 +123,7 @@ public class MessageConfig extends ModularConfig
         }
     }
 
+
     @Override
     public void loadSettings(ConfigurationSection config)
     {
@@ -121,6 +132,7 @@ public class MessageConfig extends ModularConfig
             updateOption(node, config);
         }
     }
+
 
     @Override
     public void loadDefaults(ConfigurationSection config)
@@ -134,16 +146,19 @@ public class MessageConfig extends ModularConfig
         }
     }
 
+
     @Override
     public String getString(ConfigNode node)
     {
         return ChatColor.translateAlternateColorCodes('&', super.getString(node));
     }
 
+
     @Override
     public void boundsCheck()
     {
     }
+
 
     @Override
     public int getInt(ConfigNode node)
@@ -151,17 +166,20 @@ public class MessageConfig extends ModularConfig
         throw new UnsupportedOperationException();
     }
 
+
     @Override
     public List<String> getStringList(ConfigNode node)
     {
         throw new UnsupportedOperationException();
     }
 
+
     @Override
     public double getDouble(ConfigNode node)
     {
         throw new UnsupportedOperationException();
     }
+
 
     @Override
     public boolean getBoolean(ConfigNode node)

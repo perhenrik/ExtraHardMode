@@ -22,6 +22,7 @@
 
 package com.extrahardmode.service;
 
+
 /**
  * All known permission nodes.
  */
@@ -62,15 +63,18 @@ public enum PermissionNode
      */
     private final String node;
 
+
     /**
      * Constructor.
      *
-     * @param subperm - specific permission path.
+     * @param subperm
+     *         - specific permission path.
      */
     private PermissionNode(String subperm)
     {
         this.node = PREFIX + subperm;
     }
+
 
     /**
      * Get the full permission node path.

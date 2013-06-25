@@ -21,6 +21,7 @@
 
 package com.extrahardmode.module;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -39,16 +40,16 @@ public class PlayerModule extends EHMModule
 {
     private final RootConfig CFG;
 
+
     /**
      * Constructor
-     *
-     * @param plugin
      */
-    public PlayerModule (ExtraHardMode plugin)
+    public PlayerModule(ExtraHardMode plugin)
     {
         super(plugin);
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
+
 
     public boolean playerBypasses(Player player, Feature feature)
     {
@@ -70,11 +71,15 @@ public class PlayerModule extends EHMModule
         return bypasses;
     }
 
-    @Override
-    public void starting() {
-    }
 
     @Override
-    public void closing() {
+    public void starting()
+    {
+    }
+
+
+    @Override
+    public void closing()
+    {
     }
 }

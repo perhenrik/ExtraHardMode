@@ -21,6 +21,7 @@
 
 package com.extrahardmode.service.config;
 
+
 /**
  * Represents a configuration node.
  */
@@ -42,8 +43,7 @@ public interface ConfigNode
     public VarType getVarType();
 
     /**
-     * Get the SubType
-     * Used especially for verfification
+     * Get the SubType Used especially for verfification
      *
      * @return SubType
      */
@@ -72,6 +72,7 @@ public interface ConfigNode
         BOOLEAN,
         LIST
     }
+
 
     /**
      * SubTypes, like percentage, y-value, custom etc

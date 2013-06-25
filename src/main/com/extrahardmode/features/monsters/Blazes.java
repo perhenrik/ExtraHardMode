@@ -48,23 +48,22 @@ import org.bukkit.util.Vector;
 /**
  * Changes to Blazes including:
  * <p/>
- * spawn in the Nether everywhere ,
- * multiply on death ,
- * more loot ,
- * magmacubes explode on death and turn into Blazes
+ * spawn in the Nether everywhere , multiply on death , more loot , magmacubes explode on death and turn into Blazes
  * <p/>
- * spawn at lavalevel in the OverWorld ,
- * explode on death in the Overworld ,
- * no blazerods in the OverWorld
+ * spawn at lavalevel in the OverWorld , explode on death in the Overworld , no blazerods in the OverWorld
  */
 public class Blazes extends ListenerModule
 {
     private ExtraHardMode plugin = null;
+
     private RootConfig CFG = null;
+
     private final MessageConfig messages;
+
     private UtilityModule utils = null;
 
-    public Blazes (ExtraHardMode plugin)
+
+    public Blazes(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -73,12 +72,11 @@ public class Blazes extends ListenerModule
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
+
     /**
      * When an Entity spawns,
      * <p/>
      * handles all the extra spawns for Blazes in the OverWorld and Nether
-     *
-     * @param event
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -124,13 +122,11 @@ public class Blazes extends ListenerModule
         }
     }
 
+
     /**
      * When a Blaze dies,
-     *
-     * exlode in OverWorld ,
-     * multiply in the Nether
-     *
-     * @param event
+     * <p/>
+     * exlode in OverWorld , multiply in the Nether
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
@@ -151,13 +147,11 @@ public class Blazes extends ListenerModule
                 if (plugin.getRandom().nextInt(2) == 0)
                 {
                     event.getDrops().add(new ItemStack(Material.SULPHUR, 2));
-                }
-                else
+                } else
                 {
                     event.getDrops().add(new ItemStack(Material.GLOWSTONE_DUST, 2));
                 }
-            }
-            else // no drops in the normal world (restricting blaze rods to the
+            } else // no drops in the normal world (restricting blaze rods to the
             // nether)
             {
                 event.getDrops().clear();
@@ -198,13 +192,11 @@ public class Blazes extends ListenerModule
         }
     }
 
+
     /**
      * When an Entity takes damage
-     *
-     * Magmacubes turn into blazes ,
-     * Blazes drop fire when hit ,
-     *
-     * @param event
+     * <p/>
+     * Magmacubes turn into blazes , Blazes drop fire when hit ,
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
@@ -217,7 +209,7 @@ public class Blazes extends ListenerModule
         final boolean blazeFireOnDmg = CFG.getBoolean(RootNode.BLAZES_DROP_FIRE_ON_DAMAGE, world.getName());
 
         // FEATURE: magma cubes become blazes when they take damage
-        if (magmacubesBlazeOnDmg && entityType == EntityType.MAGMA_CUBE  && !entity.isDead())
+        if (magmacubesBlazeOnDmg && entityType == EntityType.MAGMA_CUBE && !entity.isDead())
         {
             entity.remove(); // remove magma cube
             EntityHelper.spawn(entity.getLocation().add(0.0, 2.0, 0.0), EntityType.BLAZE); // replace with blaze
@@ -243,8 +235,7 @@ public class Blazes extends ListenerModule
                         if (underBlock.getType() == Material.AIR)
                         {
                             underBlock = underBlock.getRelative(BlockFace.DOWN);
-                        }
-                        else break;
+                        } else break;
                     }
                     block = underBlock.getRelative(BlockFace.UP);
                     if (block.getType() == Material.AIR && underBlock.getType() != Material.AIR && !underBlock.isLiquid() && underBlock.getY() > 0)

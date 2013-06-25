@@ -18,7 +18,9 @@
  * You should have received a copy of the GNU Affero Public License
  * along with ExtraHardMode.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.extrahardmode.task;
+
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
@@ -37,18 +39,29 @@ import org.bukkit.util.Vector;
 public class CoolCreeperExplosion implements Runnable
 {
     private final Creeper creeper;
+
     private final Location loc;
+
     private final ExtraHardMode plugin;
+
     private final UtilityModule utils;
+
     private final BukkitScheduler scheduler;
+
     private final RootConfig CFG;
 
     private int numOfFireworks = 3;
+
     private final int ticksBetweenFireworks = 5;
+
     private final int ticksBeforeCatapult = 3;
+
     private final int ticksBeforeSuicide = 8;
+
     private long mainDelay = 0L;
+
     private double creeperAscendSpeed = 0.5;
+
 
     public CoolCreeperExplosion(Creeper entity, ExtraHardMode plugin)
     {
@@ -61,6 +74,7 @@ public class CoolCreeperExplosion implements Runnable
         numOfFireworks = CFG.getInt(RootNode.FLAMING_CREEPERS_FIREWORK, loc.getWorld().getName());
         creeperAscendSpeed = CFG.getDouble(RootNode.FLAMING_CREEPERS_ROCKET, loc.getWorld().getName());
     }
+
 
     /**
      * Contains the mainLogic for creating a cool explosion
@@ -76,8 +90,9 @@ public class CoolCreeperExplosion implements Runnable
         }
         //Catapult into air and explode midair
         mainDelay += ticksBeforeCatapult;
-        scheduler.runTaskLater(plugin, new AscendToHeaven(), mainDelay) ;
+        scheduler.runTaskLater(plugin, new AscendToHeaven(), mainDelay);
     }
+
 
     private class Firework implements Runnable
     {
@@ -88,11 +103,13 @@ public class CoolCreeperExplosion implements Runnable
         }
     }
 
+
     /**
      * Schedules multiple tasks to slowly let a creeper float upwards
      */
     private class AscendToHeaven implements Runnable
     {//Catapult Creeper into sky, afterwards explode in midair
+
 
         @Override
         public void run()
@@ -111,6 +128,7 @@ public class CoolCreeperExplosion implements Runnable
         }
     }
 
+
     /**
      * This task slowly lets a creeper float upwards, it has to be called multiple times
      */
@@ -127,6 +145,7 @@ public class CoolCreeperExplosion implements Runnable
         }
     }
 
+
     /**
      * Creeper explodes in midair
      */
@@ -135,7 +154,7 @@ public class CoolCreeperExplosion implements Runnable
         @Override
         public void run()
         {
-            if (creeper != null &&! creeper.isDead())
+            if (creeper != null && !creeper.isDead())
             {
                 final boolean creeperExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_CREEPERS_ENABLE, creeper.getWorld().getName());
                 if (creeperExplosion)

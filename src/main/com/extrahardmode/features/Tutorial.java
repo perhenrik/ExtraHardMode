@@ -1,5 +1,6 @@
 package com.extrahardmode.features;
 
+
 import org.bukkit.World;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
@@ -14,13 +15,11 @@ public class Tutorial implements Listener
 {
     /**
      * When an Entity targets another Entity
-     *
+     * <p/>
      * Display some warnings to a Player when he is targetted by a dangerous mob
-     *
-     * @param event
      */
     @EventHandler
-    public void onEntityTarget (EntityTargetLivingEntityEvent event)
+    public void onEntityTarget(EntityTargetLivingEntityEvent event)
     {
         if (event.getTarget() instanceof Player)
         {

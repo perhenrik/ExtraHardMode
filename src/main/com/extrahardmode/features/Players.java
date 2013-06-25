@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -50,26 +51,27 @@ import java.util.List;
 
 /**
  * Playerchanges include
- *
- * less health/food on respawn ,
- * loss of some of their inventory ,
- * enhanced environmental damage ,
- * catching the player on fire if extinguishing fires by hand
+ * <p/>
+ * less health/food on respawn , loss of some of their inventory , enhanced environmental damage , catching the player
+ * on fire if extinguishing fires by hand
  */
 public class Players extends ListenerModule
 {
     private ExtraHardMode plugin = null;
+
     private RootConfig CFG = null;
+
     private final MessageConfig messages;
+
     private UtilityModule utils = null;
+
     private final PlayerModule playerModule;
+
 
     /**
      * Constructor
-     *
-     * @param plugin
      */
-    public Players (ExtraHardMode plugin)
+    public Players(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -79,10 +81,12 @@ public class Players extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * FEATURE: respawning players start without full health or food
      *
-     * @param respawnEvent - Event that occurred.
+     * @param respawnEvent
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawn(PlayerRespawnEvent respawnEvent)
@@ -93,9 +97,9 @@ public class Players extends ListenerModule
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.RESPAWN_FOOD_HEALTH);
 
         final int respawnHealth = playerBypasses ? player.getMaxHealth()
-                                  : CFG.getInt(RootNode.PLAYER_RESPAWN_HEALTH, world.getName());
+                : CFG.getInt(RootNode.PLAYER_RESPAWN_HEALTH, world.getName());
         final int respawnFood = playerBypasses ? player.getMaxHealth()
-                                : CFG.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, world.getName());
+                : CFG.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, world.getName());
 
         if (respawnFood < player.getMaxHealth() || respawnHealth < player.getMaxHealth()) //maxHealth and maxFoodLevel are both 20, but there is no method for maxFoodLevel
         {
@@ -108,10 +112,9 @@ public class Players extends ListenerModule
         playerData.cachedWeightStatus = -1.0F;
     }
 
+
     /**
      * When a Player dies he looses a percentage of his inventory
-     *
-     * @param event
      */
     @EventHandler(ignoreCancelled = true)
     public void onEntityDeath(PlayerDeathEvent event)
@@ -138,10 +141,9 @@ public class Players extends ListenerModule
 
     }
 
+
     /**
      * Environmental effects when player is damaged
-     *
-     * @param event
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)//so we know if the event got cancelled
     public void onEntityDamage(EntityDamageEvent event)
@@ -156,7 +158,7 @@ public class Players extends ListenerModule
             final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ENVIRONMENTAL_EFFECTS);
 
             // FEATURE: extra damage and effects from environmental damage
-            if (enhancedEnvironmentalDmg &&! playerBypasses)
+            if (enhancedEnvironmentalDmg && !playerBypasses)
             {
                 EntityDamageEvent.DamageCause cause = event.getCause();
 
@@ -188,10 +190,12 @@ public class Players extends ListenerModule
 
     }
 
+
     /**
      * when a player interacts with the world
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(priority = EventPriority.LOWEST)
     void onPlayerInteract(PlayerInteractEvent event)
@@ -206,7 +210,7 @@ public class Players extends ListenerModule
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.DANGEROUS_FIRES);
 
         // FEATURE: putting out fire up close catches the player on fire
-        if (extinguishingFireIgnites &&! playerBypasses && block != null && block.getType() != Material.AIR &&
+        if (extinguishingFireIgnites && !playerBypasses && block != null && block.getType() != Material.AIR &&
                 (action.equals(Action.LEFT_CLICK_BLOCK) || action.equals(Action.LEFT_CLICK_AIR)))
         {
             if (block.getRelative(event.getBlockFace()).getType() == Material.FIRE)

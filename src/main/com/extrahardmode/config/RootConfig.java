@@ -21,6 +21,7 @@
 
 package com.extrahardmode.config;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.BlockItemMetaParser;
 import com.extrahardmode.service.Response;
@@ -44,45 +45,53 @@ public class RootConfig extends MultiWorldConfig
     /**
      * Contains Info about Blocks which fall and their Metadata
      */
-    private final Map <String/*world name*/, Map<Integer/*Block id*/, List<Byte>/*Block Id* (-1 for no id)*/>> fallingBlocks = new HashMap<String, Map<Integer, List<Byte>>>();
+    private final Map<String/*world name*/, Map<Integer/*Block id*/, List<Byte>/*Block Id* (-1 for no id)*/>> fallingBlocks = new HashMap<String, Map<Integer, List<Byte>>>();
+
 
     /**
      * Constructor
-     * @param plugin
      */
-    public RootConfig (ExtraHardMode plugin)
+    public RootConfig(ExtraHardMode plugin)
     {
         super(plugin);
     }
 
+
     @Override
-    public void starting ()
+    public void starting()
     {
         load();
     }
 
-    @Override
-    public void closing (){}
 
-    public Map<Integer, List<Byte>> getFallingBlocks (String world)
+    @Override
+    public void closing()
+    {
+    }
+
+
+    public Map<Integer, List<Byte>> getFallingBlocks(String world)
     {
         return fallingBlocks.containsKey(world) ? fallingBlocks.get(world) : Collections.EMPTY_MAP;
     }
+
 
     @Override
     public void load()
     {
         init();
         File[] configFiles = getConfigFiles(plugin.getDataFolder());
-        List <Config> configs = loadFilesFromDisk(configFiles);
-        load (configs);
+        List<Config> configs = loadFilesFromDisk(configFiles);
+        load(configs);
     }
 
+
     /**
-     * Loads all FileConfigurations into memory
-     * Insures that there is always a main config.yml
-     * loads all other Config's based on the Mode specified in the ConfigFile
-     * @param configs FileName + respective FileConfiguration
+     * Loads all FileConfigurations into memory Insures that there is always a main config.yml loads all other Config's
+     * based on the Mode specified in the ConfigFile
+     *
+     * @param configs
+     *         FileName + respective FileConfiguration
      */
     void load(List<Config> configs)
     {
@@ -107,8 +116,9 @@ public class RootConfig extends MultiWorldConfig
                 {
                     if (response.getStatusCode() != Status.NOT_FOUND)
                         config.setMode(Mode.valueOf(response.getContent().toUpperCase()));
-                } catch (IllegalArgumentException ignored){}
-                finally
+                } catch (IllegalArgumentException ignored)
+                {
+                } finally
                 {
                     if (config.getMode() == null || config.getMode() == Mode.NOT_SET)
                         config.setMode(Mode.INHERIT);
@@ -122,12 +132,14 @@ public class RootConfig extends MultiWorldConfig
                     //Inherit is the default mode
                     config.setMode(Mode.INHERIT); //fallthrough
                 }
-                case DISABLE: case INHERIT:
+                case DISABLE:
+                case INHERIT:
                 {
                     config = loadConfigToMem(config, defaults);
                     break;
                 }
-                case NOT_SET: default:
+                case NOT_SET:
+                default:
                 {
                     config.setMode(config.getFileName().equals("config.yml") ? Mode.MAIN : Mode.INHERIT);
                     config = loadConfigToMem(config, defaults);
@@ -149,20 +161,20 @@ public class RootConfig extends MultiWorldConfig
                         case INHERIT:
                         {   //floating point arithmetic is inaccurate...
                             if ((thisValue == thatValue) || ((thisValue instanceof Double && thatValue instanceof Double)
-                                    && (BigDecimal.valueOf((Double)thisValue) .equals( BigDecimal.valueOf((Double)thatValue) ))))
+                                    && (BigDecimal.valueOf((Double) thisValue).equals(BigDecimal.valueOf((Double) thatValue)))))
                             {
                                 config.getConfig().set(node.getPath(), config.getMode().name().toLowerCase());
-                                config.setStatus (Status.ADJUSTED);
+                                config.setStatus(Status.ADJUSTED);
                             }
                             break;
                         }
                         case DISABLE:
                         {
                             if ((thisValue == node.getValueToDisable()) || ((thisValue instanceof Double && node.getValueToDisable() instanceof Double)
-                                    && (BigDecimal.valueOf((Double)thisValue) .equals (BigDecimal.valueOf((Double)node.getValueToDisable())) )))
+                                    && (BigDecimal.valueOf((Double) thisValue).equals(BigDecimal.valueOf((Double) node.getValueToDisable())))))
                             {
                                 config.getConfig().set(node.getPath(), config.getMode().name().toLowerCase());
-                                config.setStatus (Status.ADJUSTED);
+                                config.setStatus(Status.ADJUSTED);
                             }
                             break;
                         }
@@ -173,16 +185,20 @@ public class RootConfig extends MultiWorldConfig
                 }
             }
 
-            if (config.getStatus() == Status.ADJUSTED )
+            if (config.getStatus() == Status.ADJUSTED)
             {
                 saveConfig(config);
             }
         }
     }
 
+
     /**
      * Loads the main config.yml
-     * @param configs to process
+     *
+     * @param configs
+     *         to process
+     *
      * @return all configs and the main config marked as processed
      */
     List<Config> loadMain(List<Config> configs)
@@ -217,17 +233,21 @@ public class RootConfig extends MultiWorldConfig
         return configs;
     }
 
+
     /**
      * Store the Options from the FileConfiguration into memory
      *
-     * @param config Config, to load the values from, according to the Mode specified. The Mode determines how not found or same values are treated
-     * @param main main file to use for reference values, can be null if we are loading with Mode.MAIN
+     * @param config
+     *         Config, to load the values from, according to the Mode specified. The Mode determines how not found or
+     *         same values are treated
+     * @param main
+     *         main file to use for reference values, can be null if we are loading with Mode.MAIN
      *
      * @return the passed in config, is marked as Status.ADJUSTED if the Config has been changed
      */
-    private Config loadConfigToMem (Config config, Config main)
+    private Config loadConfigToMem(Config config, Config main)
     {
-        Response<List<String>> myWorlds  = loadNode(config.getConfig(), RootNode.WORLDS, false);
+        Response<List<String>> myWorlds = loadNode(config.getConfig(), RootNode.WORLDS, false);
         List<String> worlds = myWorlds.getContent();
 
         for (RootNode node : RootNode.values())
@@ -261,7 +281,7 @@ public class RootConfig extends MultiWorldConfig
                             config.setStatus(Status.ADJUSTED);
                         }
 
-                        response.setContent (Mode.DISABLE.name().toLowerCase());
+                        response.setContent(Mode.DISABLE.name().toLowerCase());
                         response.setStatus(Status.DISABLES);
                     }
                     break;
@@ -276,7 +296,7 @@ public class RootConfig extends MultiWorldConfig
                             config.setStatus(Status.ADJUSTED);
                         }
                         response.setContent(Mode.INHERIT.name().toLowerCase());
-                        response.setStatus (Status.INHERITS);
+                        response.setStatus(Status.INHERITS);
                     }
                     break;
                 }
@@ -293,7 +313,7 @@ public class RootConfig extends MultiWorldConfig
                 case MODE:
                 {
                     /* Make sure that the mode we used is the same in the config */
-                    if ((response.getContent() instanceof String) &&! ((String) response.getContent()) .equalsIgnoreCase (config.getMode().name()))
+                    if ((response.getContent() instanceof String) && !((String) response.getContent()).equalsIgnoreCase(config.getMode().name()))
                     {
                         response.setContent(config.getMode().name());
                         config.setStatus(Status.ADJUSTED);
@@ -305,7 +325,8 @@ public class RootConfig extends MultiWorldConfig
                     if (response.getContent() instanceof List)
                     {
                         Response parsedBlocks = BlockItemMetaParser.parse((List<String>) response.getContent());
-                        if (parsedBlocks.getStatusCode() == Status.NEEDS_TO_BE_ADJUSTED) config.setStatus(Status.ADJUSTED);
+                        if (parsedBlocks.getStatusCode() == Status.NEEDS_TO_BE_ADJUSTED)
+                            config.setStatus(Status.ADJUSTED);
                         for (String world : worlds)
                         {
                             fallingBlocks.put(world, (Map<Integer, List<Byte>>) parsedBlocks.getContent());
@@ -315,7 +336,7 @@ public class RootConfig extends MultiWorldConfig
                 }
             }
 
-            config.getConfig().set (node.getPath(), response.getContent()); //has to be before we get the actual values
+            config.getConfig().set(node.getPath(), response.getContent()); //has to be before we get the actual values
 
             //the actual values that need to be loaded into memory for the two modes to work
             if (response.getStatusCode() == Status.INHERITS || response.getStatusCode() == Status.DISABLES)
@@ -323,7 +344,7 @@ public class RootConfig extends MultiWorldConfig
                 switch (config.getMode())
                 {
                     case INHERIT: //load the value from the main config
-                        response.setContent(loadNode (main.getConfig(), node, false).getContent());
+                        response.setContent(loadNode(main.getConfig(), node, false).getContent());
                         break;
                     case DISABLE: //get the value to disable this option
                         response.setContent(node.getValueToDisable());
@@ -342,12 +363,13 @@ public class RootConfig extends MultiWorldConfig
         return config;
     }
 
+
     /**
-     * Reorders and saves the config.
-     * Reorders the Config to the order specified by the enum in RootNode.
-     * This assumes that the Config only has valid Entries.
+     * Reorders and saves the config. Reorders the Config to the order specified by the enum in RootNode. This assumes
+     * that the Config only has valid Entries.
      *
-     * @param config Config to save
+     * @param config
+     *         Config to save
      */
     void saveConfig(Config config)
     {
@@ -374,7 +396,7 @@ public class RootConfig extends MultiWorldConfig
         try
         {
             config.getConfig().save(config.getConfigFile());
-        }catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }
