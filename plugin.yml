@@ -7,7 +7,7 @@ dev-url: ${project.url}
 author: Diemex
 authors: [Mitsugaru, MKindy, bigscary]
 #ensure that we are loaded after multiworld plugins
-softdepend: [Multiverse-Core, My Worlds, MystCraft, Transporter]
+softdepend: [Multiverse-Core, My Worlds, MystCraft, Transporter, SBPopupAPI]
 commands:
     ehm:
         description: Root command for ExtraHardMode
