@@ -33,7 +33,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package com.extrahardmode.service.config;
+
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.EHMModule;
@@ -45,8 +47,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Modular configuration class that utilizes a ConfigNode enumeration as easy
- * access and storage of configuration option values.
+ * Modular configuration class that utilizes a ConfigNode enumeration as easy access and storage of configuration option
+ * values.
  *
  * @author Mitsugaru
  */
@@ -58,20 +60,24 @@ public abstract class ModularConfig extends EHMModule
      */
     private final Map<ConfigNode, Object> OPTIONS = new ConcurrentHashMap<ConfigNode, Object>();
 
+
     /**
      * Constructor.
      *
-     * @param plugin - plugin instance.
+     * @param plugin
+     *         - plugin instance.
      */
     protected ModularConfig(ExtraHardMode plugin)
     {
         super(plugin);
     }
 
+
     /**
      * This updates a configuration option from the file.
      *
-     * @param node - ConfigNode to update.
+     * @param node
+     *         - ConfigNode to update.
      */
     @SuppressWarnings("unchecked")
     protected void updateOption(final ConfigNode node, final ConfigurationSection config)
@@ -115,36 +121,46 @@ public abstract class ModularConfig extends EHMModule
         }
     }
 
+
     /**
      * Saves the config.
      */
     public abstract void save();
 
+
     /**
      * Force set the value for the given configuration node.
-     * <p>
+     * <p/>
      * Note, there is no type checking with this method.
      *
-     * @param node - ConfigNode path to use.
-     * @param value - Value to use.
+     * @param node
+     *         - ConfigNode path to use.
+     * @param value
+     *         - Value to use.
      */
     public void set(final ConfigNode node, final Object value)
     {
         set(node.getPath(), value);
     }
 
+
     /**
      * Set the given path for the given value.
      *
-     * @param path - Path to use.
-     * @param value - Value to use.
+     * @param path
+     *         - Path to use.
+     * @param value
+     *         - Value to use.
      */
     protected abstract void set(final String path, final Object value);
+
 
     /**
      * Get the integer value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
+     *
      * @return Value of the node. Returns -1 if unknown.
      */
     public int getInt(final ConfigNode node)
@@ -171,10 +187,13 @@ public abstract class ModularConfig extends EHMModule
         return i;
     }
 
+
     /**
      * Get the string value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
+     *
      * @return Value of the node. Returns and empty string if unknown.
      */
     protected String getString(final ConfigNode node)
@@ -199,10 +218,13 @@ public abstract class ModularConfig extends EHMModule
         return out;
     }
 
+
     /**
      * Get the list value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
+     *
      * @return Value of the node. Returns an empty list if unknown.
      */
     @SuppressWarnings("unchecked")
@@ -229,10 +251,13 @@ public abstract class ModularConfig extends EHMModule
         return list;
     }
 
+
     /**
      * Get the double value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
+     *
      * @return Value of the node. Returns 0 if unknown.
      */
     public double getDouble(final ConfigNode node)
@@ -259,10 +284,13 @@ public abstract class ModularConfig extends EHMModule
         return d;
     }
 
+
     /**
      * Get the boolean value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
+     *
      * @return Value of the node. Returns false if unknown.
      */
     public boolean getBoolean(final ConfigNode node)
@@ -283,6 +311,7 @@ public abstract class ModularConfig extends EHMModule
         return bool;
     }
 
+
     /**
      * Reloads info from yaml file(s).
      */
@@ -291,20 +320,21 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Update settings that can be changed on the fly.
      *
-     * @param config - Main config to load from.
+     * @param config
+     *         - Main config to load from.
      */
     public abstract void loadSettings(final ConfigurationSection config);
 
     /**
      * Load defaults.
      *
-     * @param config - Main config to load to.
+     * @param config
+     *         - Main config to load to.
      */
     public abstract void loadDefaults(final ConfigurationSection config);
 
     /**
-     * Check the bounds on the parameters to make sure that all config variables
-     * are legal and usable by the plugin.
+     * Check the bounds on the parameters to make sure that all config variables are legal and usable by the plugin.
      */
     public abstract void boundsCheck();
 

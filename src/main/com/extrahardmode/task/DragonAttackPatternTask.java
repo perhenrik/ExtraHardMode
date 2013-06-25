@@ -22,6 +22,7 @@
 
 package com.extrahardmode.task;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -41,30 +42,39 @@ public class DragonAttackPatternTask implements Runnable
      * Plugin instance.
      */
     private final ExtraHardMode plugin;
+
     /**
      * Config instance
      */
     private final RootConfig CFG;
+
     /**
      * Target player.
      */
     private final Player player;
+
     /**
      * Dragon entity.
      */
     private final LivingEntity dragon;
+
     /**
      * We save the Players fighting the dragon here
      */
     private final DataStoreModule data;
 
+
     /**
      * Constructor.
      *
-     * @param plugin                - plugin instance.
-     * @param dragon                - Dragon.
-     * @param player                - Target player.
-     * @param playersFightingDragon - All fighting players.
+     * @param plugin
+     *         - plugin instance.
+     * @param dragon
+     *         - Dragon.
+     * @param player
+     *         - Target player.
+     * @param playersFightingDragon
+     *         - All fighting players.
      */
     public DragonAttackPatternTask(ExtraHardMode plugin, LivingEntity dragon, Player player, List<String> playersFightingDragon)
     {
@@ -74,6 +84,7 @@ public class DragonAttackPatternTask implements Runnable
         this.player = player;
         data = plugin.getModuleForClass(DataStoreModule.class);
     }
+
 
     @Override
     public void run()
@@ -93,8 +104,7 @@ public class DragonAttackPatternTask implements Runnable
             if (newHealth > this.dragon.getMaxHealth())
             {
                 this.dragon.setHealth(this.dragon.getMaxHealth());
-            }
-            else
+            } else
             {
                 this.dragon.setHealth(newHealth);
             }

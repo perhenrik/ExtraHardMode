@@ -21,12 +21,10 @@
 
 package com.extrahardmode.command;
 
+
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.RootConfig;
-import com.extrahardmode.config.messages.MessageConfig;
-import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.service.ICommand;
+import com.extrahardmode.service.IModule;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -43,21 +41,13 @@ public class ReloadCommand implements ICommand
     {
         if (sender.hasPermission(PermissionNode.ADMIN.getNode()))
         {
-            RootConfig CFG = plugin.getModuleForClass(RootConfig.class);
-            CFG.closing();
-            CFG.starting();
-            plugin.getModuleForClass(MessageConfig.class).reload();
-            // Restart data store.
-            DataStoreModule dataStore = plugin.getModuleForClass(DataStoreModule.class);
-            dataStore.closing();
-            dataStore.starting();
-            // Restart entity block module.
-            BlockModule blockModule = plugin.getModuleForClass(BlockModule.class);
-            blockModule.closing();
-            blockModule.starting();
+            for (IModule module : plugin.getModules().values())
+            {
+                module.closing();
+                module.starting();
+            }
             sender.sendMessage(ChatColor.GREEN + plugin.getTag() + " Reloaded " + plugin.getName());
-        }
-        else
+        } else
         {
             sender.sendMessage(ChatColor.RED + plugin.getTag() + " Lack permission: " + PermissionNode.ADMIN.getNode());
         }

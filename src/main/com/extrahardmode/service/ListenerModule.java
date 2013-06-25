@@ -21,6 +21,7 @@
 
 package com.extrahardmode.service;
 
+
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -28,18 +29,23 @@ import org.bukkit.plugin.Plugin;
 /**
  * @author Diemex
  */
-public class ListenerModule implements IModule, Listener {
+public class ListenerModule implements IModule, Listener
+{
     private final Plugin plugin;
 
-    public ListenerModule (Plugin plugin)
+
+    public ListenerModule(Plugin plugin)
     {
         this.plugin = plugin;
     }
+
+
     @Override
     public void starting()
     {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
+
 
     @Override
     public void closing()

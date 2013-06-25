@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
@@ -40,28 +41,31 @@ import org.bukkit.event.entity.PotionSplashEvent;
 
 /**
  * All the changes to Witches
- *
+ * <p/>
  * including:
- *
+ * <p/>
  * New Attacks like Explosion potions, spawning of zombies
  */
 public class Bitches extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
 
-    public Bitches (ExtraHardMode plugin)
+
+    public Bitches(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
+
     /**
-     * When an Entity spawns:
-     * Spawn a Witch above ground sometimes instead of a Zombie
+     * When an Entity spawns: Spawn a Witch above ground sometimes instead of a Zombie
      *
-     * @param event which occurred
+     * @param event
+     *         which occurred
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -75,7 +79,7 @@ public class Bitches extends ListenerModule
 
         // FEATURE: more witches above ground (on grass)
         if (entityType == EntityType.ZOMBIE && world.getEnvironment() == World.Environment.NORMAL
-        && entity.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.GRASS)
+                && entity.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.GRASS)
         {
             if (plugin.random(witchSpawnPercent))
             {
@@ -85,11 +89,12 @@ public class Bitches extends ListenerModule
         }
     }
 
+
     /**
-     * When a potion breaks
-     * When Witches throw a potion we sometimes spawn explosions or monsters
+     * When a potion breaks When Witches throw a potion we sometimes spawn explosions or monsters
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onPotionSplash(PotionSplashEvent event)
@@ -140,25 +145,21 @@ public class Bitches extends ListenerModule
                     }
 
                     EntityHelper.markLootLess(plugin, zombie);
-                }
-                else
+                } else
                 {
                     makeExplosion = true;
                 }
-            }
-            else if (random < 60)
+            } else if (random < 60)
             {
                 // 30% teleport
                 event.setCancelled(true);
                 witch.teleport(location);
-            }
-            else if (random < 90)
+            } else if (random < 90)
             {
                 // 30% explosion
                 event.setCancelled(true);
                 makeExplosion = true;
-            }
-            else
+            } else
             {
                 // otherwise poison potion (selective target)
                 for (LivingEntity target : event.getAffectedEntities())

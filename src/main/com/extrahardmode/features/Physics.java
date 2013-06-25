@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -48,19 +49,21 @@ import java.util.List;
 
 /**
  * Physics include
- *
- * More FallingBlocks ,
- * Breaking Netherrack causes fires ,
- * Players get damaged by FallingBlocks when hit
+ * <p/>
+ * More FallingBlocks , Breaking Netherrack causes fires , Players get damaged by FallingBlocks when hit
  */
 public class Physics extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private final BlockModule blockModule;
+
     private final PlayerModule playerModule;
 
-    public Physics (ExtraHardMode plugin)
+
+    public Physics(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -70,12 +73,14 @@ public class Physics extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * When a player places a block...
-     *
+     * <p/>
      * Check the surrounding blocks for gravity
      *
-     * @param placeEvent - Event that occurred
+     * @param placeEvent
+     *         - Event that occurred
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH/*so this gets called after the building limitations*/)
     public void onBlockPlace(BlockPlaceEvent placeEvent)
@@ -87,19 +92,21 @@ public class Physics extends ListenerModule
         final boolean physixEnabled = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.MORE_FALLING_BLOCKS);
 
-        if (physixEnabled &&! playerBypasses)
+        if (physixEnabled && !playerBypasses)
         {
             //TODO EhmPhysicCheckEvent
             blockModule.physicsCheck(block, 10, true, 0);
         }
     }
 
+
     /**
      * When a player breaks a block...
-     *
+     * <p/>
      * Check if the surrounding blocks should fall
      *
-     * @param breakEvent - Event that occurred.
+     * @param breakEvent
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
@@ -113,16 +120,15 @@ public class Physics extends ListenerModule
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.MORE_FALLING_BLOCKS);
 
 
-
         // FEATURE: more falling blocks
-        if (moreFallingBlocksEnabled &&! playerBypasses)
+        if (moreFallingBlocksEnabled && !playerBypasses)
         {
             //TODO EhmPhysicCheckEvent
             blockModule.physicsCheck(block, 10, true, 5);
         }
 
         // FEATURE: breaking netherrack may start a fire
-        if (netherRackFirePercent > 0 && block.getType() == Material.NETHERRACK &&! playerBypasses)
+        if (netherRackFirePercent > 0 && block.getType() == Material.NETHERRACK && !playerBypasses)
         {
             Block underBlock = block.getRelative(BlockFace.DOWN);
             if (underBlock.getType() == Material.NETHERRACK && plugin.random(netherRackFirePercent))
@@ -134,10 +140,9 @@ public class Physics extends ListenerModule
         }
     }
 
+
     /**
-     * Called when an Entity forms a Block
-     * - Damage Player when a FallingBlock hits him
-     * @param event
+     * Called when an Entity forms a Block - Damage Player when a FallingBlock hits him
      */
     @EventHandler
     public void whenBlockLands(EntityChangeBlockEvent event)
@@ -151,7 +156,7 @@ public class Physics extends ListenerModule
         //Only when Block has been marked to deal damage
         if (entity.getType().equals(EntityType.FALLING_BLOCK) && damageAmount > 0 && EntityHelper.isMarkedForProcessing(entity))
         {
-            List<Entity> entities =  entity.getNearbyEntities(0, 1, 0);
+            List<Entity> entities = entity.getNearbyEntities(0, 1, 0);
             for (Entity ent : entities)
             {
                 if (ent instanceof LivingEntity)

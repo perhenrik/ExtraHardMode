@@ -21,6 +21,7 @@
 
 package com.extrahardmode.module;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageNode;
@@ -54,17 +55,19 @@ public class DataStoreModule extends EHMModule
     /**
      * List of Players fighting the dragon
      */
-    private final List <String> playersFightingDragon = new ArrayList<String>();
+    private final List<String> playersFightingDragon = new ArrayList<String>();
 
     /**
      * Config
      */
     private final RootConfig CFG;
 
+
     /**
      * Constructor.
      *
-     * @param plugin - Plugin instance.
+     * @param plugin
+     *         - Plugin instance.
      */
     public DataStoreModule(ExtraHardMode plugin)
     {
@@ -72,12 +75,14 @@ public class DataStoreModule extends EHMModule
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
+
     /**
-     * Constructor for dependency injection
-     * for testing purposes
+     * Constructor for dependency injection for testing purposes
      *
-     * @param plugin Plugin instance
-     * @param CFG configinstance
+     * @param plugin
+     *         Plugin instance
+     * @param CFG
+     *         configinstance
      */
     public DataStoreModule(ExtraHardMode plugin, RootConfig CFG)
     {
@@ -85,10 +90,13 @@ public class DataStoreModule extends EHMModule
         this.CFG = CFG;
     }
 
+
     /**
      * Retrieves player data from memory
      *
-     * @param playerName - Name of player.
+     * @param playerName
+     *         - Name of player.
+     *
      * @return PlayerData associated with it.
      */
     public PlayerData getPlayerData(String playerName)
@@ -107,6 +115,7 @@ public class DataStoreModule extends EHMModule
         return this.playerNameToPlayerDataMap.get(playerName);
     }
 
+
     /**
      * Get the list of previous locations of players.
      *
@@ -117,8 +126,10 @@ public class DataStoreModule extends EHMModule
         return previousLocations;
     }
 
+
     /**
      * Gets all Players fighting the Dragon
+     *
      * @return List containing all Playernames
      */
     public List<String> getPlayers()
@@ -126,10 +137,12 @@ public class DataStoreModule extends EHMModule
         return playersFightingDragon;
     }
 
+
     @Override
     public void starting()
     {
     }
+
 
     @Override
     public void closing()
@@ -137,6 +150,7 @@ public class DataStoreModule extends EHMModule
         playerNameToPlayerDataMap.clear();
         previousLocations.clear();
     }
+
 
     /**
      * Holds all of ExtraHardMode's player-tied data
@@ -147,10 +161,12 @@ public class DataStoreModule extends EHMModule
          * Last message sent.
          */
         public MessageNode lastMessageSent = null;
+
         /**
          * Last message timestamp.
          */
         public long lastMessageTimestamp = 0;
+
         /**
          * Cached weight
          */

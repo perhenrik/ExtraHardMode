@@ -22,6 +22,7 @@
 
 package com.extrahardmode.task;
 
+
 import com.extrahardmode.ExtraHardMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -38,21 +39,27 @@ public class DragonAttackTask implements Runnable
      * Plugin instance.
      */
     private final ExtraHardMode plugin;
+
     /**
      * Target player.
      */
     private final Player player;
+
     /**
      * Attacking dragon.
      */
     private final Entity dragon;
 
+
     /**
      * Constructor.
      *
-     * @param plugin - Plugin instance.
-     * @param dragon - Dragon.
-     * @param player - Target player.
+     * @param plugin
+     *         - Plugin instance.
+     * @param dragon
+     *         - Dragon.
+     * @param player
+     *         - Target player.
      */
     public DragonAttackTask(ExtraHardMode plugin, Entity dragon, Player player)
     {
@@ -60,6 +67,7 @@ public class DragonAttackTask implements Runnable
         this.dragon = dragon;
         this.player = player;
     }
+
 
     @Override
     public void run()
@@ -83,8 +91,7 @@ public class DragonAttackTask implements Runnable
         if (plugin.random(20))
         {
             targetLocation = world.getHighestBlockAt(dragonLocation).getLocation();
-        }
-        else
+        } else
         {
             targetLocation = player.getLocation();
         }

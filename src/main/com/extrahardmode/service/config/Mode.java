@@ -21,6 +21,7 @@
 
 package com.extrahardmode.service.config;
 
+
 /**
  * Determines how to load the specific ConfigFile
  */
@@ -35,7 +36,8 @@ public enum Mode
      */
     INHERIT,
     /**
-     * All options which aren't found default to disabled, this allows to only activate a few things and not having to disable everything else
+     * All options which aren't found default to disabled, this allows to only activate a few things and not having to
+     * disable everything else
      */
     DISABLE,
     /**

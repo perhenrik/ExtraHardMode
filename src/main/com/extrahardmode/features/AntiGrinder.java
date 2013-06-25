@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -48,19 +49,27 @@ import org.bukkit.event.entity.EntityDeathEvent;
 public class AntiGrinder extends ListenerModule
 {
     private ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private MessageConfig messages;
+
     private final BlockModule blockModule;
+
     private final UtilityModule utils;
+
 
     /**
      * For Testing Purposes
-     *
+     * <p/>
      * Dependency Injection Constructor
      *
-     * @param CFG instantiated RootConfig
-     * @param blockModule BlockModule
-     * @param utils UtilityModule
+     * @param CFG
+     *         instantiated RootConfig
+     * @param blockModule
+     *         BlockModule
+     * @param utils
+     *         UtilityModule
      */
     public AntiGrinder(ExtraHardMode plugin, RootConfig CFG, BlockModule blockModule, UtilityModule utils)
     {
@@ -71,10 +80,9 @@ public class AntiGrinder extends ListenerModule
         this.utils = utils;
     }
 
+
     /**
      * Your basic constructor of choice
-     *
-     * @param plugin
      */
     public AntiGrinder(ExtraHardMode plugin)
     {
@@ -87,10 +95,9 @@ public class AntiGrinder extends ListenerModule
         utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
+
     /**
      * When an Animal/Monster spawns check if the Location is "natural"
-     *
-     * @param event
      *
      * @return true succeeded and false if cancelled or marked lootless
      */
@@ -115,7 +122,8 @@ public class AntiGrinder extends ListenerModule
                     EntityHelper.markLootLess(plugin, entity);
                     return false;
                 }
-                case NATURAL: case VILLAGE_INVASION:
+                case NATURAL:
+                case VILLAGE_INVASION:
                 {
                     // consider environment to stop monsters from spawning in non-natural places
                     World.Environment environment = location.getWorld().getEnvironment();
@@ -153,10 +161,9 @@ public class AntiGrinder extends ListenerModule
         return true;
     }
 
+
     /**
      * When an entity dies check if loot should be blocked due to AntiGrinder
-     *
-     * @param event
      *
      * @return true if drops loot, false if loot was blocked
      */
@@ -175,12 +182,12 @@ public class AntiGrinder extends ListenerModule
             {
                 clearDrops(event);
                 return false;
-            }
-            else
+            } else
             {   //Evaluate if this kill was a too easy kill
                 switch (entity.getType())
                 {
-                    case SKELETON:case ENDERMAN:
+                    case SKELETON:
+                    case ENDERMAN:
                     {
                         // tall monsters can get stuck when they spawn like WitherSkeletons
                         if (entity.getEyeLocation().getBlock().getType() != Material.AIR)
@@ -200,11 +207,11 @@ public class AntiGrinder extends ListenerModule
                         adjacentBlocks[0] = block;
                         for (int i = 0; i < adjacentFaces.length; i++)
                         {
-                            adjacentBlocks[i+1] = block.getRelative(adjacentFaces[i]);
+                            adjacentBlocks[i + 1] = block.getRelative(adjacentFaces[i]);
                         }
                         for (int i = 0; i < adjacentFaces.length; i++)
                         {
-                            adjacentBlocks[i+adjacentFaces.length] = underBlock.getRelative(adjacentFaces[i]);
+                            adjacentBlocks[i + adjacentFaces.length] = underBlock.getRelative(adjacentFaces[i]);
                         }
 
                         for (Block adjacentBlock : adjacentBlocks)
@@ -234,7 +241,7 @@ public class AntiGrinder extends ListenerModule
                                 // monster is blocked at eye level, unable to advance toward killer
                                 if (middleLocation.getBlock().getType() != Material.AIR)
                                     return clearDrops(event);
-                                // monster doesn't have room above to hurdle a foot level block, unable to advance toward killer
+                                    // monster doesn't have room above to hurdle a foot level block, unable to advance toward killer
                                 else
                                 {
                                     Block bottom = middleLocation.getBlock().getRelative(BlockFace.DOWN);
@@ -258,8 +265,10 @@ public class AntiGrinder extends ListenerModule
         return true;
     }
 
+
     /**
      * Utility method to clear the drops
+     *
      * @return false which means that the drops have been cleared
      */
     private boolean clearDrops(EntityDeathEvent event)
@@ -269,12 +278,11 @@ public class AntiGrinder extends ListenerModule
         return false;
     }
 
+
     /**
      * When an entity takes damage
-     *
+     * <p/>
      * check if the damage is environmental or from a player
-     *
-     * @param event
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)

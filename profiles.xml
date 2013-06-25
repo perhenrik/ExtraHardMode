@@ -26,9 +26,9 @@
     <profiles>
         <profile>
             <id>local-server</id>
-                <properties>
-                    <outputdir>/home/max/server/plugins</outputdir>
-                </properties>
+            <properties>
+                <outputdir>/home/max/server/plugins</outputdir>
+            </properties>
         </profile>
     </profiles>
 </profilesXml>

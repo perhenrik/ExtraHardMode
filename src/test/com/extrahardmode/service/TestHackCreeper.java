@@ -21,6 +21,7 @@
 
 package com.extrahardmode.service;
 
+
 import com.extrahardmode.mocks.MockExtraHardMode;
 import com.extrahardmode.mocks.MockLocation;
 import com.extrahardmode.mocks.MockWorld;
@@ -36,11 +37,15 @@ import static org.junit.Assert.assertFalse;
 public class TestHackCreeper
 {
     private final MockExtraHardMode plugin = new MockExtraHardMode();
+
     private HackCreeper creeps;
 
     private final String myKey = "MockingRules";
+
     private final Object obj = 0;
+
     private final FixedMetadataValue meta = new FixedMetadataValue(plugin.get(), obj);
+
 
     /**
      * Call this every time so we have a fresh Object
@@ -53,11 +58,12 @@ public class TestHackCreeper
         creeps = new HackCreeper(loc.get());
     }
 
+
     /**
      * Has the MetaData been set successfully?
      */
     @Test
-    public void testMetaDataAdd ()
+    public void testMetaDataAdd()
     {
         init();
         creeps.setMetadata(myKey, meta);
@@ -66,17 +72,19 @@ public class TestHackCreeper
         assertEquals(true, creeps.hasMetadata(myKey));
     }
 
+
     /**
      * Is the returned MetaData the same as the MetaData we set?
      */
     @Test
-    public void testReturnedMeta ()
+    public void testReturnedMeta()
     {
         init();
         creeps.setMetadata(myKey, meta);
 
         assertEquals(obj, creeps.getMetadata(myKey).get(0).asInt());
     }
+
 
     /**
      * Will removing meta previously set actually remove it?

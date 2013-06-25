@@ -52,23 +52,24 @@ import java.util.List;
 
 /**
  * Various changes to Explosions including:
- *
- *
  */
 public class Explosions extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private final MessageConfig messages;
+
     private final UtilityModule utils;
+
     private final PlayerModule playerModule;
+
 
     /**
      * Your constructor of choice
-     *
-     * @param plugin
      */
-    public Explosions (ExtraHardMode plugin)
+    public Explosions(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -79,13 +80,13 @@ public class Explosions extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
-     * Handles all of EHM's custom explosions,
-     * this includes bigger random tnt explosions ,
-     * bigger ghast explosion ,
+     * Handles all of EHM's custom explosions, this includes bigger random tnt explosions , bigger ghast explosion ,
      * turn stone into cobble in hardened stone mode ,
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onExplosion(EntityExplodeEvent event)
@@ -112,12 +113,12 @@ public class Explosions extends ListenerModule
                 int random2 = (int) (serverTime + entity.getLocation().getBlockX()) % 8;
 
                 Location[] locations = new Location[]
-                {
-                    entity.getLocation().add(random1, 1, random2),
-                    entity.getLocation().add(-random2, 0, random1 / 2),
-                    entity.getLocation().add(-random1 / 2, -1, -random2),
-                    entity.getLocation().add(random1 / 2, 0, -random2 / 2)
-                };
+                        {
+                                entity.getLocation().add(random1, 1, random2),
+                                entity.getLocation().add(-random2, 0, random1 / 2),
+                                entity.getLocation().add(-random1 / 2, -1, -random2),
+                                entity.getLocation().add(random1 / 2, 0, -random2 / 2)
+                        };
 
                 final int explosionsNum = multipleExplosions ? locations.length : 1;
 
@@ -159,13 +160,13 @@ public class Explosions extends ListenerModule
         }
     }
 
+
     /**
-     * Gets called just when an ItemStack is about to be crafted
-     * Sets the amount in the result slot to the appropriate number
-     * @param event
+     * Gets called just when an ItemStack is about to be crafted Sets the amount in the result slot to the appropriate
+     * number
      */
     @EventHandler
-    public void beforeCraft (PrepareItemCraftEvent event)
+    public void beforeCraft(PrepareItemCraftEvent event)
     {
         Inventory inv = event.getInventory();
 
@@ -174,7 +175,7 @@ public class Explosions extends ListenerModule
             InventoryHolder human = inv.getHolder();
             if (human instanceof Player)
             {
-                Player player = (Player)human;
+                Player player = (Player) human;
                 World world = player.getWorld();
 
                 final int multiplier = CFG.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
@@ -208,11 +209,13 @@ public class Explosions extends ListenerModule
         }
     }
 
+
     /**
-     * when a player crafts something...
-     * MoreTnt: Contains the logic for modifying the amount of tnt crafted on a per world basis.
+     * when a player crafts something... MoreTnt: Contains the logic for modifying the amount of tnt crafted on a per
+     * world basis.
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onItemCrafted(CraftItemEvent event)
@@ -221,7 +224,7 @@ public class Explosions extends ListenerModule
 
         if (human instanceof Player)
         {
-            Player player = (Player)human;
+            Player player = (Player) human;
 
             World world = player.getWorld();
 
@@ -229,7 +232,7 @@ public class Explosions extends ListenerModule
             final boolean playerBypasses = playerModule.playerBypasses(player, Feature.EXPLOSIONS);
 
             //Are we crafting tnt and is more tnt enabled, from BeforeCraftEvent
-            if (event.getRecipe().getResult().equals(new ItemStack (Material.TNT, multiplier)) &&! playerBypasses)
+            if (event.getRecipe().getResult().equals(new ItemStack(Material.TNT, multiplier)) && !playerBypasses)
             {
                 switch (multiplier)
                 {
@@ -244,7 +247,7 @@ public class Explosions extends ListenerModule
                         {
                             int amountBefore = PlayerModule.countInvItem(inv, Material.TNT);
                             //Add the missing tnt 1 tick later, we count what has been added by shiftclicking and multiply it
-                            UtilityModule.addExtraItemsLater task = new UtilityModule.addExtraItemsLater(inv, amountBefore, Material.TNT, multiplier -1);
+                            UtilityModule.addExtraItemsLater task = new UtilityModule.addExtraItemsLater(inv, amountBefore, Material.TNT, multiplier - 1);
                             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);
                         }
                         break;

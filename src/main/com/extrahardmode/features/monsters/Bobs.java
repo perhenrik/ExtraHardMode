@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -42,13 +43,15 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  * Changes to Enderman including:
- *
+ * <p/>
  * Teleportation of the Player towards the Enderman ,
  */
 public class Bobs extends ListenerModule
 {
     private ExtraHardMode plugin = null;
+
     private RootConfig CFG = null;
+
 
     public Bobs(ExtraHardMode plugin)
     {
@@ -57,10 +60,12 @@ public class Bobs extends ListenerModule
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
+
     /**
      * when an entity (not a player) teleports...
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler
     public void onEntityTeleport(EntityTeleportEvent event)

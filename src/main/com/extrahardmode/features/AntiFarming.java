@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -55,18 +56,21 @@ import org.bukkit.util.Vector;
 
 /**
  * Antifarming module
- *
- *
  */
 public class AntiFarming extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private final UtilityModule utils;
+
     private final PlayerModule playerModule;
+
     private final BlockModule blockModule;
 
-    public AntiFarming (ExtraHardMode plugin)
+
+    public AntiFarming(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -76,13 +80,14 @@ public class AntiFarming extends ListenerModule
         blockModule = plugin.getModuleForClass(BlockModule.class);
     }
 
+
     /**
      * when a player interacts with the world
+     * <p/>
+     * No bonemeal on mushrooms , bonemeal doesn't always succeed
      *
-     * No bonemeal on mushrooms ,
-     * bonemeal doesn't always succeed
-     *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(priority = EventPriority.LOWEST)
     void onPlayerInteract(PlayerInteractEvent event)
@@ -96,7 +101,7 @@ public class AntiFarming extends ListenerModule
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ANTIFARMING);
 
         // FEATURE: bonemeal doesn't work on mushrooms
-        if (noBonemealOnMushrooms && action == Action.RIGHT_CLICK_BLOCK &&! playerBypasses)
+        if (noBonemealOnMushrooms && action == Action.RIGHT_CLICK_BLOCK && !playerBypasses)
         {
             Block block = event.getClickedBlock();
             if (block.getType() == Material.RED_MUSHROOM || block.getType() == Material.BROWN_MUSHROOM)
@@ -113,7 +118,7 @@ public class AntiFarming extends ListenerModule
         }
 
         // FEATURE: seed reduction. some plants die even when a player uses bonemeal.
-        if (weakFoodCrops && action.equals(Action.RIGHT_CLICK_BLOCK) &&! playerBypasses)
+        if (weakFoodCrops && action.equals(Action.RIGHT_CLICK_BLOCK) && !playerBypasses)
         {
             Block block = event.getClickedBlock();
             if (blockModule.isPlant(block.getType()))
@@ -128,9 +133,10 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * When a player breaks a block...
-     *
+     * <p/>
      * no netherwart farming
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -154,9 +160,10 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * When a player places a block...
-     *
+     * <p/>
      * no farming nether wart
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -177,9 +184,10 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * When a block grows...
-     *
+     * <p/>
      * fewer seeds = shrinking crops. when a plant grows to its full size, it may be replaced by a dead shrub
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -197,12 +205,14 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * when a tree or mushroom grows...
-     *
+     * <p/>
      * no big plant growth in deserts
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onStructureGrow(StructureGrowEvent event)
@@ -223,10 +233,12 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * when a dispenser dispenses...
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     void onBlockDispense(BlockDispenseEvent event)
@@ -247,16 +259,13 @@ public class AntiFarming extends ListenerModule
                 if (velocity.getX() > 0.0)
                 {
                     block = event.getBlock().getLocation().add(1.0, 0.0, 0.0).getBlock();
-                }
-                else if (velocity.getX() < 0.0)
+                } else if (velocity.getX() < 0.0)
                 {
                     block = event.getBlock().getLocation().add(-1.0, 0.0, 0.0).getBlock();
-                }
-                else if (velocity.getZ() > 0.0)
+                } else if (velocity.getZ() > 0.0)
                 {
                     block = event.getBlock().getLocation().add(0.0, 0.0, 1.0).getBlock();
-                }
-                else
+                } else
                 {
                     block = event.getBlock().getLocation().add(0.0, 0.0, -1.0).getBlock();
                 }
@@ -267,10 +276,12 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * when a sheep regrows its wool...
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler
     public void onSheepRegrowWool(SheepRegrowWoolEvent event)
@@ -287,6 +298,7 @@ public class AntiFarming extends ListenerModule
                 sheep.setColor(DyeColor.WHITE);
         }
     }
+
 
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -310,6 +322,7 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
     {
@@ -325,9 +338,9 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * When an Iron Golem dies
-     * @param event
      */
     @EventHandler
     public void onGolemDeath(EntityDeathEvent event)
@@ -342,10 +355,12 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * when a player crafts something...
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onItemCrafted(CraftItemEvent event)
@@ -356,7 +371,7 @@ public class AntiFarming extends ListenerModule
         Player player = null;
         if (human instanceof Player)
         {
-            player = (Player)human;
+            player = (Player) human;
             world = player.getWorld();
         }
 
@@ -378,10 +393,12 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * when a player empties a bucket...
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerEmptyBucket(PlayerBucketEmptyEvent event)
@@ -403,15 +420,14 @@ public class AntiFarming extends ListenerModule
         }
     }
 
+
     /**
      * When a player fills a bucket
-     *
+     * <p/>
      * prevent players from quickly picking up buckets again (around lava etc.)
-     *
-     * @param event
      */
     @EventHandler
-    public void onPlayerFillBucket (PlayerBucketFillEvent event)
+    public void onPlayerFillBucket(PlayerBucketFillEvent event)
     {
         Block block = event.getBlockClicked().getRelative(event.getBlockFace());
         if (blockModule.isMarked(block))

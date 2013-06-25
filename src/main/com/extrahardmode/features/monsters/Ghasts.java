@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -40,17 +41,19 @@ import java.util.List;
 
 /**
  * All changes to Ghasts including:
- *
- * Increase loot for Ghasts drastically
- * Ghasts don't take damage from arrows
+ * <p/>
+ * Increase loot for Ghasts drastically Ghasts don't take damage from arrows
  */
 public class Ghasts extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private final PlayerModule playerModule;
 
-    public Ghasts (ExtraHardMode plugin)
+
+    public Ghasts(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -58,12 +61,11 @@ public class Ghasts extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * When an Entity dies
-     *
+     * <p/>
      * Increase loot for Ghasts drastically
-     *
-     * @param event
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
@@ -88,12 +90,11 @@ public class Ghasts extends ListenerModule
         }
     }
 
+
     /**
      * When an Entity takes damage
-     *
+     * <p/>
      * Ghasts don't take damage from arrows
-     *
-     * @param event
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
@@ -128,8 +129,7 @@ public class Ghasts extends ListenerModule
                         // check permissions when it's shot by a player
                         Player player = (Player) arrow.getShooter();
                         event.setCancelled(!playerModule.playerBypasses(player, Feature.MONSTER_GHASTS));
-                    }
-                    else
+                    } else
                     {
                         // otherwise always deflect
                         event.setCancelled(true);

@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -47,28 +48,32 @@ public class RealisticChopping extends ListenerModule
      * Plugin-Reference to get modules
      */
     private final ExtraHardMode plugin;
+
     /**
      * Config Instance
      */
     private final RootConfig CFG;
+
     /**
      * Stuff like FallingBlocks etc.
      */
     private final BlockModule blockModule;
+
     /**
      * Temporarily store data
      */
     private final DataStoreModule dataStoreModule;
+
     /**
      * Permissions etc.
      */
     private final PlayerModule playerModule;
 
+
     /**
      * Constructor
-     * @param plugin
      */
-    public RealisticChopping (ExtraHardMode plugin)
+    public RealisticChopping(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -78,10 +83,12 @@ public class RealisticChopping extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * When a player breaks a block...
      *
-     * @param breakEvent - Event that occurred.
+     * @param breakEvent
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
@@ -94,11 +101,12 @@ public class RealisticChopping extends ListenerModule
         final boolean playerHasBypass = playerModule.playerBypasses(player, Feature.REALISTIC_CHOPPING);
 
         // FEATURE: trees chop more naturally
-        if (block.getType() == Material.LOG && betterTreeChoppingEnabled &&! playerHasBypass)
+        if (block.getType() == Material.LOG && betterTreeChoppingEnabled && !playerHasBypass)
         {
             //Are there any leaves above the log? -> tree
             boolean isTree = false;
-            checkers : for (int i = 1; i < 30; i++)
+            checkers:
+            for (int i = 1; i < 30; i++)
             {
                 Material upType = block.getRelative(BlockFace.UP, i).getType();
                 switch (upType)
@@ -108,7 +116,8 @@ public class RealisticChopping extends ListenerModule
                         isTree = true;
                         break checkers;
                     }
-                    case AIR: case LOG:
+                    case AIR:
+                    case LOG:
                     {
                         break; //skip to next iteration
                     }
@@ -122,7 +131,8 @@ public class RealisticChopping extends ListenerModule
             if (isTree)
             {
                 Block aboveLog = block.getRelative(BlockFace.UP);
-                loop : for (int limit = 0; limit < 30; limit++)
+                loop:
+                for (int limit = 0; limit < 30; limit++)
                 {
                     switch (aboveLog.getType())
                     {

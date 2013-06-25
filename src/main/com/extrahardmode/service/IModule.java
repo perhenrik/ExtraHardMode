@@ -22,6 +22,7 @@
 
 package com.extrahardmode.service;
 
+
 /**
  * Represents a module.
  */

@@ -21,6 +21,7 @@
 
 package com.extrahardmode.service;
 
+
 import com.extrahardmode.service.config.Status;
 import org.bukkit.Material;
 
@@ -29,18 +30,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Parses a given StringList into a Map containing the block ids and metadatavalues if existing
- * The supported input can be formatted like this
- *
+ * Parses a given StringList into a Map containing the block ids and metadatavalues if existing The supported input can
+ * be formatted like this
+ * <p/>
  * 13:1,2,3 | COBBLESTONE.2.3.4 | 13:3.4.5
- *
- * The first number/string is always expected to be the string
- * everything after that can be seperated by any symbol which isn't a number/character
- *
- * So 13:1@4%3
- * -> [13]{1,3,4}
- * 13 is the blockid
- * and 1,3,4 is the blockmetadatavalues which are allowed
+ * <p/>
+ * The first number/string is always expected to be the string everything after that can be seperated by any symbol
+ * which isn't a number/character
+ * <p/>
+ * So 13:1@4%3 -> [13]{1,3,4} 13 is the blockid and 1,3,4 is the blockmetadatavalues which are allowed
  *
  * @author Max
  */
@@ -50,13 +48,13 @@ public class BlockItemMetaParser
     /**
      * Parse a given List of Strings which represent Blocks and their Metadata
      *
-     * @param stringlist of representing blocks
+     * @param stringlist
+     *         of representing blocks
      *
-     * @return a Map which is usable by a plugin and the StatusCode. <br>
-     *      OK = the input has been completely valid, <br>
-     *      NEEDS_TO_BE_ADJUSTED = input not valid but has been corrected and can be written back to config
+     * @return a Map which is usable by a plugin and the StatusCode. <br> OK = the input has been completely valid, <br>
+     *         NEEDS_TO_BE_ADJUSTED = input not valid but has been corrected and can be written back to config
      */
-    public static Response<Map<Integer/*block id*/, List<Byte>>> parse (List<String> stringList)
+    public static Response<Map<Integer/*block id*/, List<Byte>>> parse(List<String> stringList)
     {
         Status status = Status.OK;
 
@@ -91,7 +89,7 @@ public class BlockItemMetaParser
                     status = Status.NEEDS_TO_BE_ADJUSTED;
                 }
 
-                String [] splitted = seperators.split(blockString);
+                String[] splitted = seperators.split(blockString);
 
                 for (int i = 1; i < splitted.length; i++)
                 {
@@ -102,16 +100,15 @@ public class BlockItemMetaParser
                     {
                         /* Prevent out of range errors */
                         int metaInt = Integer.parseInt(splitted[i]);
-                            if (metaInt < Byte.MIN_VALUE)
-                            {
-                                metaInt = Byte.MIN_VALUE;
-                                status = Status.NEEDS_TO_BE_ADJUSTED;
-                            }
-                            else if (metaInt > Byte.MAX_VALUE)
-                            {
-                                metaInt = Byte.MAX_VALUE;
-                                status= Status.NEEDS_TO_BE_ADJUSTED;
-                            }
+                        if (metaInt < Byte.MIN_VALUE)
+                        {
+                            metaInt = Byte.MIN_VALUE;
+                            status = Status.NEEDS_TO_BE_ADJUSTED;
+                        } else if (metaInt > Byte.MAX_VALUE)
+                        {
+                            metaInt = Byte.MAX_VALUE;
+                            status = Status.NEEDS_TO_BE_ADJUSTED;
+                        }
                         meta.add((byte) metaInt);
                     }
                 }
@@ -142,7 +139,7 @@ public class BlockItemMetaParser
                 }
             }
 
-            String onlyNums = onlyNumbers.matcher(blockId).replaceAll("") .length() > 0
+            String onlyNums = onlyNumbers.matcher(blockId).replaceAll("").length() > 0
                     ? onlyNumbers.matcher(blockId).replaceAll("")
                     : "0";
             int blockNumber = material != null ? material.getId() : Integer.parseInt(onlyNums);
@@ -164,15 +161,15 @@ public class BlockItemMetaParser
         return new Response<Map<Integer, List<Byte>>>(status, myFallingBlocks);
     }
 
+
     /**
      * Turn a given Representation of Blocks and their metaData into a human readable form
      *
-     * @param blocksWithMeta
      * @return List to be written to config
      */
-    public static List<String> getStringsFor (Map<Integer, List<Byte>> blocksWithMeta)
+    public static List<String> getStringsFor(Map<Integer, List<Byte>> blocksWithMeta)
     {
-        List <String> blockList = new ArrayList<String>(blocksWithMeta.size());
+        List<String> blockList = new ArrayList<String>(blocksWithMeta.size());
 
         for (Map.Entry<Integer, List<Byte>> metaBlock : blocksWithMeta.entrySet())
         {
@@ -180,7 +177,7 @@ public class BlockItemMetaParser
             Material material = Material.getMaterial(metaBlock.getKey());
             builder.append(material != null ? material.name() : metaBlock.getKey());
 
-            List <Byte> metaData = metaBlock.getValue();
+            List<Byte> metaData = metaBlock.getValue();
             metaData = metaData == null ? Collections.<Byte>emptyList() : metaData;
             for (int i = 0; i < metaData.size(); i++)
             {

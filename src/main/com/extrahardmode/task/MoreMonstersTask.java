@@ -21,6 +21,7 @@
 
 package com.extrahardmode.task;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -51,15 +52,20 @@ public class MoreMonstersTask implements Runnable
      * Plugin instance.
      */
     private final ExtraHardMode plugin;
+
     /**
      * Config instanz
      */
     private final RootConfig CFG;
+
     private final PlayerModule playerModule;
+
+
     /**
      * Constructor.
      *
-     * @param plugin - Plugin instance.
+     * @param plugin
+     *         - Plugin instance.
      */
 
     public MoreMonstersTask(ExtraHardMode plugin)
@@ -69,6 +75,7 @@ public class MoreMonstersTask implements Runnable
 
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
+
 
     @Override
     public void run()
@@ -119,6 +126,8 @@ public class MoreMonstersTask implements Runnable
     }
 
     //TODO move this into a utility class
+
+
     /**
      * Tests if a a given location is elligible to be spawned on
      *

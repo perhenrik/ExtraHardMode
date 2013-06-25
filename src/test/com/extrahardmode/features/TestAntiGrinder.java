@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -45,8 +46,11 @@ import static org.junit.Assert.assertTrue;
 public class TestAntiGrinder
 {
     private final ExtraHardMode plugin = new MockExtraHardMode().get();
+
     private final RootConfig CFG = new RootConfig(plugin);
+
     private final AntiGrinder module = new AntiGrinder(plugin, CFG, new BlockModule(plugin), new UtilityModule(plugin));
+
 
     @Before
     public void prepare()
@@ -54,6 +58,7 @@ public class TestAntiGrinder
         //Enable AntiGrinder in the Config
         CFG.set("world", RootNode.INHIBIT_MONSTER_GRINDERS, true);
     }
+
 
     @Test
     public void spawnerSpawns()
@@ -64,6 +69,7 @@ public class TestAntiGrinder
         event = new MockCreatureSpawnEvent(EntityType.ENDERMAN, "world", CreatureSpawnEvent.SpawnReason.SPAWNER).get();
         assertFalse("Spawners should drop no exp", module.onEntitySpawn(event));
     }
+
 
     @Test
     public void zombieSpawns()
@@ -88,6 +94,7 @@ public class TestAntiGrinder
         assertTrue("Zombie spawn succeeds", module.onEntitySpawn(event.get()));
     }
 
+
     @Test
     public void naturalSpawns()
     {
@@ -108,7 +115,7 @@ public class TestAntiGrinder
         MockWorld world = event.getWorld();
         world.setEnvironment(World.Environment.NETHER);
 
-        assertTrue( "Natural spawn in the Nether failed", module.onEntitySpawn(event.get()));
+        assertTrue("Natural spawn in the Nether failed", module.onEntitySpawn(event.get()));
 
 
         world.setEnvironment(World.Environment.NETHER);
@@ -117,7 +124,7 @@ public class TestAntiGrinder
         relative.setMaterial(Material.COBBLESTONE);
         block.setRelative(BlockFace.DOWN, relative.get());
 
-        assertFalse( "Natural spawn in a not natural Location succeeded", module.onEntitySpawn(event.get()));
+        assertFalse("Natural spawn in a not natural Location succeeded", module.onEntitySpawn(event.get()));
 
 
         //NetherRack doesn't spawn in the OverWorld
@@ -126,6 +133,6 @@ public class TestAntiGrinder
 
         world.setEnvironment(World.Environment.NORMAL);
 
-        assertFalse( "Spawn on NetherRack in the OverWorld should have failed", module.onEntitySpawn(event.get()));
+        assertFalse("Spawn on NetherRack in the OverWorld should have failed", module.onEntitySpawn(event.get()));
     }
 }

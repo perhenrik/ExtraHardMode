@@ -22,6 +22,7 @@
 
 package com.extrahardmode.task;
 
+
 import org.bukkit.entity.Player;
 
 /**
@@ -34,21 +35,27 @@ public class SetPlayerHealthAndFoodTask implements Runnable
      * Target player.
      */
     private final Player player;
+
     /**
      * Health level.
      */
     private final int health;
+
     /**
      * Food level.
      */
     private final int food;
 
+
     /**
      * Constructor.
      *
-     * @param player - Player to adjust.
-     * @param health - Health level.
-     * @param food   - Food level.
+     * @param player
+     *         - Player to adjust.
+     * @param health
+     *         - Health level.
+     * @param food
+     *         - Food level.
      */
     public SetPlayerHealthAndFoodTask(Player player, int health, int food)
     {
@@ -56,6 +63,7 @@ public class SetPlayerHealthAndFoodTask implements Runnable
         this.health = health;
         this.food = food;
     }
+
 
     @Override
     public void run()
@@ -65,7 +73,9 @@ public class SetPlayerHealthAndFoodTask implements Runnable
             try
             {
                 this.player.setHealth(this.health);
-            } catch (IllegalArgumentException ignored){} // if less than zero or higher than max, no changes
+            } catch (IllegalArgumentException ignored)
+            {
+            } // if less than zero or higher than max, no changes
 
             this.player.setFoodLevel(this.food);
         } catch (NullPointerException e)

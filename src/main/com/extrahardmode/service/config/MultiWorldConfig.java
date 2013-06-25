@@ -21,6 +21,7 @@
 
 package com.extrahardmode.service.config;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.service.EHMModule;
@@ -39,8 +40,8 @@ import java.io.FilenameFilter;
 import java.util.*;
 
 /**
- * Modular configuration class that utilizes a ConfigNode enumeration as easy
- * access and storage of configuration option values.
+ * Modular configuration class that utilizes a ConfigNode enumeration as easy access and storage of configuration option
+ * values.
  *
  * @author Mitsugaru (original author)
  * @author Diemex (modifies to allow multiworld)
@@ -49,16 +50,19 @@ public abstract class MultiWorldConfig extends EHMModule
 {
     private Table<String/*world*/, ConfigNode, Object> OPTIONS;
 
+
     /**
      * Constructor.
      *
-     * @param plugin - Plugin instance.
+     * @param plugin
+     *         - Plugin instance.
      */
-    public MultiWorldConfig (ExtraHardMode plugin)
+    public MultiWorldConfig(ExtraHardMode plugin)
     {
         super(plugin);
         init();
     }
+
 
     /**
      * Inits Objects and deletes old ones at the same time
@@ -68,39 +72,40 @@ public abstract class MultiWorldConfig extends EHMModule
         OPTIONS = HashBasedTable.create();
     }
 
+
     /**
      * Search the base directory for yml-files
      *
-     * @param baseDir
      * @return File[] containing all the *.yml Files in a lexical order
      */
-    protected File[] getConfigFiles (File baseDir)
+    protected File[] getConfigFiles(File baseDir)
     {
-        String [] filePaths = baseDir.list(new FilenameFilter()
+        String[] filePaths = baseDir.list(new FilenameFilter()
         {
             @Override
-            public boolean accept (File dir, String name)
+            public boolean accept(File dir, String name)
             {
                 return name.endsWith(".yml");
             }
         });
-        if (filePaths == null) filePaths = new String[] {};
+        if (filePaths == null) filePaths = new String[]{};
         Arrays.sort(filePaths); //lexicality
         ArrayList<File> files = new ArrayList<File>();
         for (String fileName : filePaths)
-            files.add(new File (plugin.getDataFolder() + File.separator + fileName));
+            files.add(new File(plugin.getDataFolder() + File.separator + fileName));
         return files.toArray(new File[]{});
     }
 
+
     /**
-     * Load the given Files in a List as Config Objects, which hold the reference to the File and the loaded FileConfiguration
-     * Ignores files that don't have the RootNode in them.
-     * @param files
+     * Load the given Files in a List as Config Objects, which hold the reference to the File and the loaded
+     * FileConfiguration Ignores files that don't have the RootNode in them.
+     *
      * @return a HashMap containing all valid FileConfigurations and config.yml
      */
-    protected List<Config> loadFilesFromDisk (File[] files)
+    protected List<Config> loadFilesFromDisk(File[] files)
     {
-        List <Config> configs = new ArrayList<Config>();
+        List<Config> configs = new ArrayList<Config>();
         for (File file : files)
         {
             FileConfiguration config = YamlConfiguration.loadConfiguration(file);
@@ -114,12 +119,14 @@ public abstract class MultiWorldConfig extends EHMModule
             Config config = iter.next();
             FileConfiguration fileConfig = config.getConfig();
 
-            if ((fileConfig.getValues(true).containsKey(RootNode.baseNode()) && fileConfig.getStringList(RootNode.WORLDS.getPath()) != null) || config.getFileName().equals("config.yml"));
-                    //holds all default values for the other configs
+            if ((fileConfig.getValues(true).containsKey(RootNode.baseNode()) && fileConfig.getStringList(RootNode.WORLDS.getPath()) != null) || config.getFileName().equals("config.yml"))
+                ;
+                //holds all default values for the other configs
             else iter.remove();
         }
         return configs;
     }
+
 
     /**
      * <pre>
@@ -128,12 +135,16 @@ public abstract class MultiWorldConfig extends EHMModule
      * Don't forget to set() if you want to save the returned value
      * </pre>
      *
-     * @param config   -  FileConfiguration to load from
-     * @param node     -  ConfigNode for the Path and DefaultValue
-     * @param defaults -  will return the default value if not found in config
+     * @param config
+     *         -  FileConfiguration to load from
+     * @param node
+     *         -  ConfigNode for the Path and DefaultValue
+     * @param defaults
+     *         -  will return the default value if not found in config
+     *
      * @return the Object matching the type of the ConfigNode, otherwise null if not found
      */
-    public Response loadNode (ConfigurationSection config, ConfigNode node, boolean defaults)
+    public Response loadNode(ConfigurationSection config, ConfigNode node, boolean defaults)
     {
         Validate.notNull(config, "config can't be null");
         Validate.notNull(config, "node can't be null");
@@ -152,7 +163,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case DOUBLE:
             {
                 if (config.get(node.getPath()) instanceof Double)
-                    obj =  config.getDouble(node.getPath());
+                    obj = config.getDouble(node.getPath());
                 break;
             }
             case STRING:
@@ -189,43 +200,37 @@ public abstract class MultiWorldConfig extends EHMModule
                 status = Status.OK;
                 if (obj instanceof String) //for Strings makes sure their modes get recognized
                 {
-                    if (((String) obj).toUpperCase() .equals (Mode.DISABLE.name()))
+                    if (((String) obj).toUpperCase().equals(Mode.DISABLE.name()))
                     {
                         status = Status.DISABLES;
-                    }
-                    else if (((String) obj).toUpperCase() .equals (Mode.INHERIT.name()))
+                    } else if (((String) obj).toUpperCase().equals(Mode.INHERIT.name()))
                     {
                         status = Status.INHERITS;
                     }
                 }
-            }
-            else
+            } else
             {   //hasn't been loaded
                 if (config.getString(node.getPath()).toUpperCase().equals(Mode.INHERIT.name()))
                 {   //inherits in config
                     status = Status.INHERITS;
                     obj = Mode.INHERIT.name().toLowerCase();
-                }
-                else if (config.getString(node.getPath()).toUpperCase().equals(Mode.DISABLE.name()))
+                } else if (config.getString(node.getPath()).toUpperCase().equals(Mode.DISABLE.name()))
                 {   //disabled in config
                     status = Status.DISABLES;
                     obj = Mode.DISABLE.name().toLowerCase();
-                }
-                else
+                } else
                 {   //should not be reached, but... we don't want to return null
                     status = Status.NOT_FOUND;
                     obj = node.getDefaultValue();
                 }
             }
-        }
-        else
+        } else
         {   //default value gets returned for both, but the status represents the actual Status
             if (defaults)
             {
                 obj = node.getDefaultValue();
                 status = Status.ADJUSTED;
-            }
-            else
+            } else
             {   //
                 obj = node.getDefaultValue();
                 status = Status.NOT_FOUND;
@@ -235,14 +240,18 @@ public abstract class MultiWorldConfig extends EHMModule
         return new Response(status, obj);
     }
 
+
     /**
      * Set a value for the given node and world
      *
-     * @param world - World for the value
-     * @param node  - ConfigNode for the given value
-     * @param value - the Object to save
+     * @param world
+     *         - World for the value
+     * @param node
+     *         - ConfigNode for the given value
+     * @param value
+     *         - the Object to save
      */
-    public void set (final String world, final ConfigNode node, Object value)
+    public void set(final String world, final ConfigNode node, Object value)
     {
         switch (node.getVarType())
         {
@@ -296,13 +305,15 @@ public abstract class MultiWorldConfig extends EHMModule
         }
     }
 
+
     /**
      * Return all world names were EHM is activated
+     *
      * @return world names
      */
-    public String[] getEnabledWorlds ()
+    public String[] getEnabledWorlds()
     {
-        ArrayList <String> worlds = new ArrayList<String>();
+        ArrayList<String> worlds = new ArrayList<String>();
         for (Map.Entry<String, Map<ConfigNode, Object>> entry : OPTIONS.rowMap().entrySet())
             worlds.add(entry.getKey());
         return worlds.toArray(new String[worlds.size()]);
@@ -312,11 +323,12 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Get the integer value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
      *
      * @return Value of the node. Returns -1 if unknown.
      */
-    public int getInt (final ConfigNode node, final String world)
+    public int getInt(final ConfigNode node, final String world)
     {
         int i = -1;
         switch (node.getVarType())
@@ -324,7 +336,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case INTEGER:
             {
                 Object obj = OPTIONS.get(world, node);
-                i = obj instanceof Integer ? (Integer)obj : (Integer)node.getValueToDisable();
+                i = obj instanceof Integer ? (Integer) obj : (Integer) node.getValueToDisable();
                 break;
             }
             default:
@@ -335,14 +347,16 @@ public abstract class MultiWorldConfig extends EHMModule
         return i;
     }
 
+
     /**
      * Get the double value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
      *
      * @return Value of the node. Returns 0 if unknown.
      */
-    public double getDouble (final ConfigNode node, final String world)
+    public double getDouble(final ConfigNode node, final String world)
     {
         double d = 0.0;
         switch (node.getVarType())
@@ -350,7 +364,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case DOUBLE:
             {
                 Object obj = OPTIONS.get(world, node);
-                d = obj instanceof Double ? (Double)obj : (Double) node.getValueToDisable();
+                d = obj instanceof Double ? (Double) obj : (Double) node.getValueToDisable();
                 break;
             }
             default:
@@ -361,14 +375,16 @@ public abstract class MultiWorldConfig extends EHMModule
         return d;
     }
 
+
     /**
      * Get the boolean value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
      *
      * @return Value of the node. Returns false if unknown.
      */
-    public boolean getBoolean (final ConfigNode node, final String world)
+    public boolean getBoolean(final ConfigNode node, final String world)
     {
         boolean bool = false;
         switch (node.getVarType())
@@ -387,14 +403,16 @@ public abstract class MultiWorldConfig extends EHMModule
         return bool;
     }
 
+
     /**
      * Get the string value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
      *
      * @return Value of the node. Returns and empty string if unknown.
      */
-    public String getString (final ConfigNode node, final String world)
+    public String getString(final ConfigNode node, final String world)
     {
         String out = "";
         switch (node.getVarType())
@@ -402,7 +420,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case STRING:
             {
                 Object obj = OPTIONS.get(world, node);
-                out = obj instanceof String ? (String)obj : (String) node.getValueToDisable();
+                out = obj instanceof String ? (String) obj : (String) node.getValueToDisable();
                 break;
             }
             default:
@@ -413,14 +431,16 @@ public abstract class MultiWorldConfig extends EHMModule
         return out;
     }
 
+
     /**
      * Get the list value of the node.
      *
-     * @param node - Node to use.
+     * @param node
+     *         - Node to use.
      *
      * @return Value of the node. Returns an empty list if unknown.
      */
-    public List<String> getStringList (final ConfigNode node, final String world)
+    public List<String> getStringList(final ConfigNode node, final String world)
     {
         List<String> list = new ArrayList<String>();
         switch (node.getVarType())
@@ -428,7 +448,7 @@ public abstract class MultiWorldConfig extends EHMModule
             case LIST:
             {
                 Object obj = OPTIONS.get(world, node);
-                list = obj instanceof List ? (List<String>)obj : (List<String>)node.getValueToDisable();
+                list = obj instanceof List ? (List<String>) obj : (List<String>) node.getValueToDisable();
                 break;
             }
             default:
@@ -439,25 +459,29 @@ public abstract class MultiWorldConfig extends EHMModule
         return list;
     }
 
-    public abstract void load ();
+
+    public abstract void load();
+
 
     /**
      * Verify that the ConfigNode contains a valid value and is usable by the Plugin
      *
-     * @param node  the ConfigNode to validate, validates according to the SubType of the ConfigNode
-     * @param value the current value to validate
+     * @param node
+     *         the ConfigNode to validate, validates according to the SubType of the ConfigNode
+     * @param value
+     *         the current value to validate
      *
      * @return a Response containing if the Object has been adjusted and the value (adjusted/original)
      */
-    public Response<Integer> validateInt (final ConfigNode node, Object value)
+    public Response<Integer> validateInt(final ConfigNode node, Object value)
     {
-        Response response = new Response <Object>(Status.NOT_FOUND, value);
+        Response response = new Response<Object>(Status.NOT_FOUND, value);
 
         if (node.getVarType() == (ConfigNode.VarType.INTEGER))
         {
             if (value instanceof Integer)
             {
-                int valMe = (Integer)value;
+                int valMe = (Integer) value;
 
                 if (node.getSubType() != null)
                 {
@@ -487,26 +511,27 @@ public abstract class MultiWorldConfig extends EHMModule
                             throw new UnsupportedOperationException("SubType of " + node.getPath() + " doesn't have a validation method");
                     }
                 }
-            }
-            else
+            } else
             {
-                response = new Response<Object>(Status.ADJUSTED, (Integer)node.getDefaultValue());
+                response = new Response<Object>(Status.ADJUSTED, (Integer) node.getDefaultValue());
             }
-        }
-        else
+        } else
         {
             throw new IllegalArgumentException("Expected a ConfigNode with Type Integer but got " + node.getVarType() + " for " + node.getPath());
         }
         return response;
     }
 
+
     /**
-     * Validate Y coordinate limit for the given configuration option against the
-     * list of enabled worlds.
+     * Validate Y coordinate limit for the given configuration option against the list of enabled worlds.
      *
-     * @param node   - Root node to validate.
-     * @param worlds - List of worlds to check against.
-     * @param value  - Integer to validate
+     * @param node
+     *         - Root node to validate.
+     * @param worlds
+     *         - List of worlds to check against.
+     * @param value
+     *         - Integer to validate
      *
      * @return a Response containing either the original value or adjusted if out of bounds and the Status
      */
@@ -537,11 +562,14 @@ public abstract class MultiWorldConfig extends EHMModule
         return new Response(status, value);
     }
 
+
     /**
      * Validate percentage (0-100) value for given configuration option.
      *
-     * @param node  - Root node to validate.
-     * @param value - Integer to validate
+     * @param node
+     *         - Root node to validate.
+     * @param value
+     *         - Integer to validate
      *
      * @return a Response containing either the original value or adjusted if out of bounds and the Status
      */
@@ -554,8 +582,7 @@ public abstract class MultiWorldConfig extends EHMModule
                 plugin.getLogger().warning(ChatColor.YELLOW + " Percentage for " + node.getPath() + " cannot be less than 0.");
             value = 0;
             status = Status.ADJUSTED;
-        }
-        else if (value > 100)
+        } else if (value > 100)
         {
             if (plugin.getLogger() != null) //testing
                 plugin.getLogger().warning(ChatColor.YELLOW + " Percentage for " + node.getPath() + " cannot be greater than 100.");
@@ -565,13 +592,18 @@ public abstract class MultiWorldConfig extends EHMModule
         return new Response(status, value);
     }
 
+
     /**
      * Validates a configOption with custom bounds
      *
-     * @param node   the configNode
-     * @param minVal the minimum value the config is allowed to have
-     * @param maxVal the maximum value for the config, if == minVal then it doesn't get checked
-     * @param value  - Integer to validate
+     * @param node
+     *         the configNode
+     * @param minVal
+     *         the minimum value the config is allowed to have
+     * @param maxVal
+     *         the maximum value for the config, if == minVal then it doesn't get checked
+     * @param value
+     *         - Integer to validate
      *
      * @return a Response containing either the original value or adjusted if out of bounds and the Status
      */
@@ -584,8 +616,7 @@ public abstract class MultiWorldConfig extends EHMModule
                 plugin.getLogger().warning(plugin.getTag() + " Value for " + node.getPath() + " cannot be smaller than " + minVal);
             value = minVal;
             status = Status.ADJUSTED;
-        }
-        else if (minVal < maxVal && value > maxVal)
+        } else if (minVal < maxVal && value > maxVal)
         {
             if (plugin.getLogger() != null) //testing
                 plugin.getLogger().warning(plugin.getTag() + " Value for " + node.getPath() + " cannot be greater than " + maxVal);

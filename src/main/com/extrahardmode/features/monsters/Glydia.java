@@ -55,23 +55,25 @@ import org.bukkit.util.Vector;
 import java.util.List;
 
 /**
- * Glydia is the Enderdragon
- * changes to her include:
- *
- * additional attacks ,
- * more loot including villager eggs and dragon egg ,
- * messages when challenging the dragon and dying ,
- * Limited Building in the End ,
- * Blazes, Zombies, aggro Enderman
+ * Glydia is the Enderdragon changes to her include:
+ * <p/>
+ * additional attacks , more loot including villager eggs and dragon egg , messages when challenging the dragon and
+ * dying , Limited Building in the End , Blazes, Zombies, aggro Enderman
  */
 public class Glydia extends ListenerModule
 {
     private ExtraHardMode plugin = null;
+
     private RootConfig CFG = null;
+
     private final MessageConfig messages;
+
     private final DataStoreModule data;
+
     private final MessagingModule messenger;
+
     private final PlayerModule playerModule;
+
 
     public Glydia(ExtraHardMode plugin)
     {
@@ -84,12 +86,11 @@ public class Glydia extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * When a Block is broken in the End
-     *
+     * <p/>
      * Limited building in the end
-     *
-     * @param breakEvent
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
@@ -102,14 +103,13 @@ public class Glydia extends ListenerModule
         final boolean playerBypass = playerModule.playerBypasses(player, Feature.MONSTER_GLYDIA);
 
         // FEATURE: very limited building in the end, players are allowed to break only end stone, and only to create a stair up to ground level
-        if (endNoBuilding && world.getEnvironment() == World.Environment.THE_END &&! playerBypass)
+        if (endNoBuilding && world.getEnvironment() == World.Environment.THE_END && !playerBypass)
         {
             if (block.getType() != Material.ENDER_STONE)
             {
                 breakEvent.setCancelled(true);
                 messenger.sendMessage(player, MessageNode.LIMITED_END_BUILDING);
-            }
-            else
+            } else
             {
                 int absoluteDistanceFromBlock = Math.abs(block.getX() - player.getLocation().getBlockX());
                 int zdistance = Math.abs(block.getZ() - player.getLocation().getBlockZ());
@@ -128,12 +128,11 @@ public class Glydia extends ListenerModule
         }
     }
 
+
     /**
      * When a Block is placed
-     *
+     * <p/>
      * Limited building in the end
-     *
-     * @param placeEvent
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent placeEvent)
@@ -146,7 +145,7 @@ public class Glydia extends ListenerModule
         final boolean playerBypass = playerModule.playerBypasses(player, Feature.MONSTER_GLYDIA);
 
         // FEATURE: very limited building in the end players are allowed to break only end stone, and only to create a stair up to ground level
-        if (enderDragonNoBuilding && world.getEnvironment() == World.Environment.THE_END &&! playerBypass)
+        if (enderDragonNoBuilding && world.getEnvironment() == World.Environment.THE_END && !playerBypass)
         {
             placeEvent.setCancelled(true);
             //TODO EhmLimitedBuildingEvent End
@@ -155,14 +154,11 @@ public class Glydia extends ListenerModule
         }
     }
 
+
     /**
      * When an Entity dies (Glydia)
-     *
-     * drop villager eggs ,
-     * drop a dragon egg ,
-     * announce the killers
-     *
-     * @param event
+     * <p/>
+     * drop villager eggs , drop a dragon egg , announce the killers
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
@@ -215,15 +211,14 @@ public class Glydia extends ListenerModule
         }
     }
 
+
     /**
      * When the Player dies while fighting the dragon
-     *
+     * <p/>
      * announce his death
-     *
-     * @param event
      */
     @EventHandler
-    public void onPlayerDeath (PlayerDeathEvent event)
+    public void onPlayerDeath(PlayerDeathEvent event)
     {
         Player player = event.getEntity();
 
@@ -233,32 +228,30 @@ public class Glydia extends ListenerModule
         List<String> playersFightingDragon = data.getPlayers();
         if (dragonAnnouncements && playersFightingDragon.contains(player.getName()))
         {
-            messenger.broadcast(MessageNode.END_DRAGON_PLAYER_KILLED, new FindAndReplace (MessageNode.variables.PLAYER.getVarName(), player.getName()));
+            messenger.broadcast(MessageNode.END_DRAGON_PLAYER_KILLED, new FindAndReplace(MessageNode.variables.PLAYER.getVarName(), player.getName()));
             data.getPlayers().remove(player.getName());
         }
     }
 
+
     /**
      * When the Player changes World while fighting the Dragon,
-     *
+     * <p/>
      * remove him from the Players fighting the Dragon
-     *
-     * @param event
      */
     @EventHandler
-    public void onPlayerTpOut (PlayerChangedWorldEvent event)
+    public void onPlayerTpOut(PlayerChangedWorldEvent event)
     {
         String playerName = event.getPlayer().getName();
         if (event.getFrom().getEnvironment() == World.Environment.THE_END && data.getPlayers().contains(playerName))
             data.getPlayers().remove(playerName);
     }
 
+
     /**
      * When the Dragon is damaged
-     *
+     * <p/>
      * initiate the additional attacks
-     *
-     * @param event
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
@@ -273,7 +266,7 @@ public class Glydia extends ListenerModule
             damageByEntityEvent = (EntityDamageByEntityEvent) event;
         }
 
-        final boolean dragonAdditionalAttacks =  CFG.getBoolean(RootNode.ENDER_DRAGON_ADDITIONAL_ATTACKS, world.getName());
+        final boolean dragonAdditionalAttacks = CFG.getBoolean(RootNode.ENDER_DRAGON_ADDITIONAL_ATTACKS, world.getName());
         final boolean dragonAnnouncements = CFG.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, world.getName());
 
         // FEATURE: the dragon has new attacks
@@ -283,8 +276,7 @@ public class Glydia extends ListenerModule
             if (damageByEntityEvent.getDamager() instanceof Player)
             {
                 damager = (Player) damageByEntityEvent.getDamager();
-            }
-            else if (damageByEntityEvent.getDamager() instanceof Projectile)
+            } else if (damageByEntityEvent.getDamager() instanceof Projectile)
             {
                 Projectile projectile = (Projectile) damageByEntityEvent.getDamager();
                 if (projectile.getShooter() != null && projectile.getShooter() instanceof Player)
@@ -328,10 +320,12 @@ public class Glydia extends ListenerModule
         }
     }
 
+
     /**
      * when a player changes from the End to another world, clean up if End empty
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(priority = EventPriority.MONITOR)
     void onPlayerChangeWorld(PlayerChangedWorldEvent event)
@@ -376,10 +370,12 @@ public class Glydia extends ListenerModule
         }
     }
 
+
     /**
      * when an item spawns
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onItemSpawn(ItemSpawnEvent event)
@@ -394,10 +390,12 @@ public class Glydia extends ListenerModule
         }
     }
 
+
     /**
      * when an entity targets something (as in to attack it)...
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler
     public void onEntityTarget(EntityTargetEvent event)
@@ -412,12 +410,11 @@ public class Glydia extends ListenerModule
         }
     }
 
+
     /**
      * When an explosion occurs
-     *
+     * <p/>
      * Spawn monsters when the dragon shoots fireballs ,
-     *
-     * @param event
      */
     @EventHandler
     public void onExplosion(EntityExplodeEvent event)
@@ -474,8 +471,7 @@ public class Glydia extends ListenerModule
                         }
                         fire.setVelocity(velocity);
                     }
-                }
-                else if (random < 70)
+                } else if (random < 70)
                 {
                     for (int i = 0; i < 2; i++)
                     {
@@ -484,8 +480,7 @@ public class Glydia extends ListenerModule
                         Zombie zombie = (Zombie) spawnedMonster;
                         zombie.setVillager(true);
                     }
-                }
-                else
+                } else
                 {
                     spawnedMonster = entity.getWorld().spawnEntity(entity.getLocation(), EntityType.ENDERMAN);
                 }
