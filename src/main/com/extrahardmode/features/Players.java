@@ -25,6 +25,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
+import com.extrahardmode.events.EhmPlayerExtinguishFireEvent;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
@@ -211,8 +212,10 @@ public class Players extends ListenerModule
         {
             if (block.getRelative(event.getBlockFace()).getType() == Material.FIRE)
             {
-                //TODO EhmPlayerExtinguishFireEvent
-                player.setFireTicks(100); // 20L ~ 1 seconds; 100L ~ 5 seconds
+                EhmPlayerExtinguishFireEvent fireEvent = new EhmPlayerExtinguishFireEvent(player, 100);  // 20L ~ 1 seconds; 100L ~ 5 seconds
+                plugin.getServer().getPluginManager().callEvent(fireEvent);
+                if(!fireEvent.isCancelled())
+                    player.setFireTicks(fireEvent.getBurnTicks());
             }
         }
     }
