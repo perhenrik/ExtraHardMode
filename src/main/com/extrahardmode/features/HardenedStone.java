@@ -108,27 +108,27 @@ public class HardenedStone extends ListenerModule
             if (inHandStack != null)
             {
                 int toolId = inHandStack.getType().getId();
+                EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, tools.get(toolId) != null ? (short) tools.get(toolId).get(0) : 0);
+
                 if (tools.containsKey(toolId))
                 {
                     if (!tools.get(toolId).isEmpty())
                     {
-                        EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, (short) tools.get(toolId).get(0));
                         /* Broadcast an Event for other Plugins to change if the tool can break stone and the amount of blocks */
                         plugin.getServer().getPluginManager().callEvent(hardEvent);
 
-                        if (hardEvent.getNumOfBlocks() == 0)
-                        {
-                            messenger.notifyPlayer(player, MessageNode.STONE_MINING_HELP, PermissionNode.SILENT_STONE_MINING_HELP);
-                            event.setCancelled(true);
-                            return;
-                        }
-
                         // otherwise, drastically reduce tool durability when breaking stone
-                        else if (hardEvent.getNumOfBlocks() > 0)
+                        if (hardEvent.getNumOfBlocks() > 0)
                         {
                             player.setItemInHand(UtilityModule.damage(hardEvent.getTool(), hardEvent.getNumOfBlocks()));
                         }
                     }
+                }
+                if (hardEvent.getNumOfBlocks() == 0)
+                {
+                    messenger.notifyPlayer(player, MessageNode.STONE_MINING_HELP, PermissionNode.SILENT_STONE_MINING_HELP);
+                    event.setCancelled(true);
+                    return;
                 }
             }
         }
