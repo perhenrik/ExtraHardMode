@@ -21,6 +21,7 @@
 
 package com.extrahardmode.events;
 
+
 import org.bukkit.Location;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Player;
@@ -36,65 +37,87 @@ import org.bukkit.event.HandlerList;
 public class EhmEndermanTeleportEvent extends Event implements Cancellable
 {
     private boolean cancelled;
+
     private final Player player;
+
     private final Enderman enderman;
-    private  Location teleportTo;
+
+    private Location teleportTo;
+
 
     /**
      * Constructor
      *
-     * @param shooter Player shooting the arrow
-     * @param skeleton Skeleton getting hit
-     * @param deflectPercentage the percentage of arrows a Skeleton deflects
+     * @param shooter
+     *         Player shooting the arrow
+     * @param skeleton
+     *         Skeleton getting hit
+     * @param deflectPercentage
+     *         the percentage of arrows a Skeleton deflects
      */
-    public EhmEndermanTeleportEvent (Player player, Enderman enderman, Location teleportTo)
+    public EhmEndermanTeleportEvent(Player player, Enderman enderman, Location teleportTo)
     {
         this.player = player;
         this.enderman = enderman;
         this.teleportTo = teleportTo;
     }
 
+
     /**
      * Constructor
      *
-     * @param shooter Player shooting the arrow
-     * @param skeleton Skeleton getting hit
-     * @param deflectPercentage the percentage of arrows a Skeleton deflects
+     * @param shooter
+     *         Player shooting the arrow
+     * @param skeleton
+     *         Skeleton getting hit
+     * @param deflectPercentage
+     *         the percentage of arrows a Skeleton deflects
      */
-    public EhmEndermanTeleportEvent (Player shooter, Enderman enderman, Location teleportTo, boolean cancelled)
+    public EhmEndermanTeleportEvent(Player shooter, Enderman enderman, Location teleportTo, boolean cancelled)
     {
         this(shooter, enderman, teleportTo);
         this.cancelled = cancelled;
     }
 
+
     /**
      * @return the player being teleported
      */
-    public Player getPlayer() {
+    public Player getPlayer()
+    {
         return player;
     }
+
 
     /**
      * @return the Enderman teleporting the Player
      */
-    public Enderman getEnderman() {
+    public Enderman getEnderman()
+    {
         return enderman;
     }
+
 
     /**
      * @return the Location where the Player will be teleported to
      */
-    public Location getTeleportTo() {
+    public Location getTeleportTo()
+    {
         return teleportTo;
     }
 
+
     /**
      * Set the Location where the Enderman should teleport the Player
-     * @param teleportTo location to set
+     *
+     * @param teleportTo
+     *         location to set
      */
-    public void setTeleportTo(Location teleportTo) {
+    public void setTeleportTo(Location teleportTo)
+    {
         this.teleportTo = teleportTo;
     }
+
 
     /**
      * @return if Event got cancelled
@@ -105,8 +128,10 @@ public class EhmEndermanTeleportEvent extends Event implements Cancellable
         return cancelled;
     }
 
+
     /**
-     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled
+     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)
@@ -114,12 +139,15 @@ public class EhmEndermanTeleportEvent extends Event implements Cancellable
         this.cancelled = cancelled;
     }
 
+
     private static final HandlerList HANDLERS = new HandlerList();
+
 
     public HandlerList getHandlers()
     {
         return HANDLERS;
     }
+
 
     public static HandlerList getHandlerList()
     {

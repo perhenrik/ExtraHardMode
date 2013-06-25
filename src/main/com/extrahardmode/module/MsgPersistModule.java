@@ -21,6 +21,7 @@
 
 package com.extrahardmode.module;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.service.EHMModule;
@@ -39,16 +40,16 @@ public class MsgPersistModule extends EHMModule
     private final String dbFile;
 
     private final String msgTable = "messages";
+
     private final String playerTable = "players";
 
     /**
-     * Buffer player ids
-     * (playerName, playerId)
+     * Buffer player ids (playerName, playerId)
      */
     private Map<String, Integer> playerIdBuffer;
+
     /**
-     * Buffer data from the db
-     * (playerid, message, value)
+     * Buffer data from the db (playerid, message, value)
      */
     private Table<Integer, MessageNode, Integer> buffer;
 
@@ -56,9 +57,11 @@ public class MsgPersistModule extends EHMModule
     /**
      * Constructor.
      *
-     * @param plugin - Plugin instance.
+     * @param plugin
+     *         - Plugin instance.
      */
-    public MsgPersistModule(ExtraHardMode plugin, String dbFile) {
+    public MsgPersistModule(ExtraHardMode plugin, String dbFile)
+    {
         super(plugin);
         this.dbFile = dbFile;
     }
@@ -67,10 +70,13 @@ public class MsgPersistModule extends EHMModule
     /**
      * Make sure JDBC is enabled/loaded
      */
-    protected void testJDBC() {
-        try {
+    protected void testJDBC()
+    {
+        try
+        {
             Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e)
+        {
             plugin.getLogger().severe("JDBC Driver not found : " + e);
             closing();
         }
@@ -78,11 +84,11 @@ public class MsgPersistModule extends EHMModule
 
 
     /**
-     * Get the id of the Player.
-     * Buffers id in a Map.
-     * Creates new id if Player not in the db yet.
+     * Get the id of the Player. Buffers id in a Map. Creates new id if Player not in the db yet.
      *
-     * @param playerName name of the Player
+     * @param playerName
+     *         name of the Player
+     *
      * @return id of Player
      */
     private int getPlayerId(String playerName)
@@ -92,10 +98,11 @@ public class MsgPersistModule extends EHMModule
         int id = 0;
 
         Connection conn = null;
-        try {
+        try
+        {
             conn = retrieveConnection();
             String query = String.format(
-                    "SELECT id FROM %s WHERE %s = %s", playerTable, "name", '"'+playerName+'"');
+                    "SELECT id FROM %s WHERE %s = %s", playerTable, "name", '"' + playerName + '"');
 
             ResultSet resultSet = conn.createStatement().executeQuery(query);
             if (resultSet.next())
@@ -104,7 +111,7 @@ public class MsgPersistModule extends EHMModule
             if (id == 0) //Create a new Player
             {
                 String newPlayerQuery = String.format( //new id
-                        "INSERT INTO %s (%s) VALUES (%s)", playerTable, "name", '"'+playerName+'"');
+                        "INSERT INTO %s (%s) VALUES (%s)", playerTable, "name", '"' + playerName + '"');
                 id = conn.createStatement().executeUpdate(newPlayerQuery);
 
                 String newPlayerDataQuery = String.format( //empty row in messages
@@ -113,10 +120,19 @@ public class MsgPersistModule extends EHMModule
             }
 
             playerIdBuffer.put(playerName, id);
-        } catch (SQLException e) {
+        } catch (SQLException e)
+        {
             e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (conn != null) conn.close();
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
-        finally{try{if(conn != null)conn.close();}catch(SQLException e){e.printStackTrace();}}
 
         return id;
     }
@@ -126,7 +142,6 @@ public class MsgPersistModule extends EHMModule
      * Get a connection to our database
      *
      * @return a connection
-     * @throws SQLException
      */
     private Connection retrieveConnection() throws SQLException
     {
@@ -140,7 +155,8 @@ public class MsgPersistModule extends EHMModule
     private void initializeTables()
     {
         Connection conn = null;
-        try {
+        try
+        {
             conn = retrieveConnection();
             Statement statement = conn.createStatement();
             statement.setQueryTimeout(30);
@@ -164,20 +180,31 @@ public class MsgPersistModule extends EHMModule
             String msgQuery = String.format(
                     "CREATE TABLE IF NOT EXISTS %s (id INTEGER PRIMARY KEY UNIQUE %s)", msgTable, columns);
             statement.executeUpdate(msgQuery);
-        } catch (SQLException e) {
+        } catch (SQLException e)
+        {
             e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (conn != null) conn.close();
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
-        finally{try{if(conn != null)conn.close();}catch(SQLException e){e.printStackTrace();}}
     }
 
 
     /**
      * Increment the count of a certain message by one
      *
-     * @param node to increment
-     * @param playerName only for this player
+     * @param node
+     *         to increment
+     * @param playerName
+     *         only for this player
      */
-    public void increment (MessageNode node, String playerName)
+    public void increment(MessageNode node, String playerName)
     {
         int playerId = getPlayerId(playerName);
         int value = getCountFor(node, playerId);
@@ -189,15 +216,19 @@ public class MsgPersistModule extends EHMModule
     /**
      * Set the count of a certain message to a certain value
      *
-     * @param node node to set the count for
-     * @param playerId player for whom we are tracking the count
-     * @param value value to set
+     * @param node
+     *         node to set the count for
+     * @param playerId
+     *         player for whom we are tracking the count
+     * @param value
+     *         value to set
      */
-    private void set (MessageNode node, int playerId, int value)
+    private void set(MessageNode node, int playerId, int value)
     {
         Validate.isTrue(value >= 0, "Count has to be positive");
         Connection conn = null;
-        try {
+        try
+        {
             conn = retrieveConnection();
             Statement statement = conn.createStatement();
 
@@ -205,22 +236,33 @@ public class MsgPersistModule extends EHMModule
             String setQuery = String.format(
                     "UPDATE %s SET %s = %s WHERE id = %s", msgTable, node.getColumnName(), value, playerId);
             statement.execute(setQuery);
-        } catch (SQLException e) {
+        } catch (SQLException e)
+        {
             e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (conn != null) conn.close();
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
-        finally{try{if(conn != null)conn.close();}catch(SQLException e){e.printStackTrace();}}
     }
 
 
     /**
      * Get the count of a message
      *
-     * @param node which message
-     * @param playerName player which has seen this message
+     * @param node
+     *         which message
+     * @param playerName
+     *         player which has seen this message
      *
      * @return count >= 0
      */
-    public int getCountFor (MessageNode node, String playerName)
+    public int getCountFor(MessageNode node, String playerName)
     {
         return getCountFor(node, getPlayerId(playerName));
     }
@@ -229,29 +271,41 @@ public class MsgPersistModule extends EHMModule
     /**
      * Get how often a message has been displayed
      *
-     * @param node to get the count for
-     * @param playerId id of the player to get the count for
+     * @param node
+     *         to get the count for
+     * @param playerId
+     *         id of the player to get the count for
      *
      * @return how often this message has been displayed
      */
-    private int getCountFor (MessageNode node, int playerId)
+    private int getCountFor(MessageNode node, int playerId)
     {
         Connection conn = null;
         int value = 0;
 
-        try {
+        try
+        {
             conn = retrieveConnection();
             Statement statement = conn.createStatement();
 
             String select = String.format("SELECT %s FROM %s WHERE %s = %s", node.getColumnName(), msgTable, "id", playerId);
 
             ResultSet result = statement.executeQuery(select);
-            if(result.next())
+            if (result.next())
                 value = result.getInt(node.getColumnName());
-        } catch (SQLException e) {
+        } catch (SQLException e)
+        {
             e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (conn != null) conn.close();
+            } catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
-        finally{try{if(conn != null)conn.close();}catch(SQLException e){e.printStackTrace();}}
 
         return value;
     }
@@ -260,9 +314,10 @@ public class MsgPersistModule extends EHMModule
     /**
      * Resets all counts for a given player
      *
-     * @param playerName player to reset the stats for
+     * @param playerName
+     *         player to reset the stats for
      */
-    public void resetAll (String playerName)
+    public void resetAll(String playerName)
     {
         int playerId = getPlayerId(playerName);
         for (MessageNode node : MessageNode.values())
@@ -276,7 +331,8 @@ public class MsgPersistModule extends EHMModule
 
 
     @Override
-    public void starting() {
+    public void starting()
+    {
         playerIdBuffer = new HashMap<String, Integer>();
         testJDBC();
         initializeTables();
@@ -284,7 +340,8 @@ public class MsgPersistModule extends EHMModule
 
 
     @Override
-    public void closing() {
+    public void closing()
+    {
         playerIdBuffer = null;
     }
 }

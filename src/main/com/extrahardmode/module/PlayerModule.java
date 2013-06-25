@@ -21,6 +21,7 @@
 
 package com.extrahardmode.module;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -41,18 +42,27 @@ import org.bukkit.inventory.PlayerInventory;
 public class PlayerModule extends EHMModule
 {
     private final RootConfig CFG;
+
+    <<<<<<<HEAD
+
     private final BlockModule blockModule;
+
+    =======
+
+
+            >>>>>>>dev
+
+
     /**
      * Constructor
-     *
-     * @param plugin
      */
-    public PlayerModule (ExtraHardMode plugin)
+    public PlayerModule(ExtraHardMode plugin)
     {
         super(plugin);
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
     }
+
 
     public boolean playerBypasses(Player player, Feature feature)
     {
@@ -74,25 +84,30 @@ public class PlayerModule extends EHMModule
         return bypasses;
     }
 
+
+    <<<<<<<HEAD
+
+
     /**
      * Is the player currently on a ladder?
-     * @param player
-     * @return
      */
     public boolean isPlayerOnLadder(Player player)
     {
         return player.getLocation().getBlock().getType().equals(Material.LADDER);
     }
 
+
     /**
      * Calculates the weight of the players inventory with the given amount of weight per item
-     * @param player
-     * @param armorPoints Points per piece of worn armor
-     * @param inventoryPoints Points per full stack of one item
-     * @param toolPoints Points per tool (which doesn't stack)
-     * @return
+     *
+     * @param armorPoints
+     *         Points per piece of worn armor
+     * @param inventoryPoints
+     *         Points per full stack of one item
+     * @param toolPoints
+     *         Points per tool (which doesn't stack)
      */
-    public float inventoryWeight (Player player, float armorPoints, float inventoryPoints, float toolPoints)
+    public float inventoryWeight(Player player, float armorPoints, float inventoryPoints, float toolPoints)
     {
         // count worn clothing
         PlayerInventory inventory = player.getInventory();
@@ -115,8 +130,7 @@ public class PlayerModule extends EHMModule
                 if (blockModule.isTool(itemStack.getType()))
                 {
                     addWeight += toolPoints;
-                }
-                else
+                } else
                 {
                     //take stackSize into consideration
                     addWeight = inventoryPoints * itemStack.getAmount() / itemStack.getMaxStackSize();
@@ -127,13 +141,18 @@ public class PlayerModule extends EHMModule
         return weight;
     }
 
+
     /**
      * Counts the number of items of a specific type
-     * @param inv to count in
-     * @param toCount the Material to count
+     *
+     * @param inv
+     *         to count in
+     * @param toCount
+     *         the Material to count
+     *
      * @return the number of items as Integer
      */
-    public static int countInvItem (PlayerInventory inv, Material toCount)
+    public static int countInvItem(PlayerInventory inv, Material toCount)
     {
         int counter = 0;
         for (ItemStack stack : inv.getContents())
@@ -146,10 +165,13 @@ public class PlayerModule extends EHMModule
         return counter;
     }
 
+
     /**
      * Get the percentage of how much less damage a player will take.
      *
-     * @param player to check the armor contents for
+     * @param player
+     *         to check the armor contents for
+     *
      * @return the percentage as double. Example 0.8 when full armor is worn
      */
     public double getArmorPoints(final Player player)
@@ -163,29 +185,36 @@ public class PlayerModule extends EHMModule
                 case LEATHER_BOOTS:
                 case GOLD_BOOTS:
                 case CHAINMAIL_BOOTS:
-                    points += 0.04; break;
+                    points += 0.04;
+                    break;
                 case GOLD_HELMET:
                 case CHAINMAIL_HELMET:
                 case IRON_HELMET:
                 case IRON_BOOTS:
                 case LEATHER_LEGGINGS:
-                    points += 0.08; break;
+                    points += 0.08;
+                    break;
                 case DIAMOND_HELMET:
                 case DIAMOND_BOOTS:
                 case GOLD_LEGGINGS:
                 case LEATHER_CHESTPLATE:
-                    points += 0.12; break;
+                    points += 0.12;
+                    break;
                 case CHAINMAIL_LEGGINGS:
-                    points += 0.16; break;
+                    points += 0.16;
+                    break;
                 case IRON_LEGGINGS:
                 case GOLD_CHESTPLATE:
                 case CHAINMAIL_CHESTPLATE:
-                    points += 0.2; break;
+                    points += 0.2;
+                    break;
                 case DIAMOND_LEGGINGS:
                 case IRON_CHESTPLATE:
-                    points += 0.24; break;
+                    points += 0.24;
+                    break;
                 case DIAMOND_CHESTPLATE:
-                    points += 0.32; break;
+                    points += 0.32;
+                    break;
                 case AIR:
                     break;
                 default:
@@ -195,11 +224,20 @@ public class PlayerModule extends EHMModule
         return points;
     }
 
-    @Override
-    public void starting() {
-    }
+
+    =======
+            >>>>>>>dev
 
     @Override
-    public void closing() {
+
+
+    public void starting()
+    {
+    }
+
+
+    @Override
+    public void closing()
+    {
     }
 }

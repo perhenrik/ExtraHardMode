@@ -1,5 +1,6 @@
 package com.extrahardmode.events;
 
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.event.Cancellable;
@@ -15,19 +16,27 @@ import org.bukkit.util.Vector;
 public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
 {
     private boolean cancelled;
+
     private final Entity entity;
+
     private final Skeleton skeleton;
+
     private Vector velocity;
+
     private final int knockbackPercentage;
+
 
     /**
      * Constructor
      *
-     * @param entity the Entity getting shot by the Skeli
-     * @param skeleton Skeleton shooting the Player
-     * @param deflectPercentage the percentage of arrows knocking the Player back
+     * @param entity
+     *         the Entity getting shot by the Skeli
+     * @param skeleton
+     *         Skeleton shooting the Player
+     * @param deflectPercentage
+     *         the percentage of arrows knocking the Player back
      */
-    public EhmSkeletonKnockbackEvent (Entity entity, Skeleton skeleton, Vector velocity, int knockbackPercentage)
+    public EhmSkeletonKnockbackEvent(Entity entity, Skeleton skeleton, Vector velocity, int knockbackPercentage)
     {
         this.entity = entity;
         this.skeleton = skeleton;
@@ -35,19 +44,25 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
         this.knockbackPercentage = knockbackPercentage;
     }
 
+
     /**
      * Constructor
      *
-     * @param entity the Entity getting shot by the Skeli
-     * @param skeleton Skeleton shooting the Player
-     * @param deflectPercentage the percentage of arrows knocking the Player back
-     * @param cancelled if the Event should be cancelled by default
+     * @param entity
+     *         the Entity getting shot by the Skeli
+     * @param skeleton
+     *         Skeleton shooting the Player
+     * @param deflectPercentage
+     *         the percentage of arrows knocking the Player back
+     * @param cancelled
+     *         if the Event should be cancelled by default
      */
-    public EhmSkeletonKnockbackEvent (Entity entity, Skeleton skeleton, Vector velocity, int deflectPercentage, boolean cancelled)
+    public EhmSkeletonKnockbackEvent(Entity entity, Skeleton skeleton, Vector velocity, int deflectPercentage, boolean cancelled)
     {
-        this (entity, skeleton, velocity, deflectPercentage);
+        this(entity, skeleton, velocity, deflectPercentage);
         this.cancelled = cancelled;
     }
+
 
     /**
      * @return the Skeleton that is being shot at
@@ -57,6 +72,7 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
         return skeleton;
     }
 
+
     /**
      * @return the percentage of arrows getting deflected
      */
@@ -64,6 +80,7 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
     {
         return knockbackPercentage;
     }
+
 
     /**
      * Get the velocity of the Player being knocked back
@@ -75,15 +92,15 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
         return velocity;
     }
 
+
     /**
      * Set the velocity of the Player being knocked back
-     *
-     * @param velocity
      */
     public void setVelocity(Vector velocity)
     {
         this.velocity = velocity;
     }
+
 
     /**
      * @return the entity getting knocked back
@@ -92,6 +109,7 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
     {
         return entity;
     }
+
 
     /**
      * @return if Event got cancelled
@@ -102,8 +120,10 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
         return cancelled;
     }
 
+
     /**
-     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled
+     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)
@@ -111,12 +131,15 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
         this.cancelled = cancelled;
     }
 
+
     private static final HandlerList HANDLERS = new HandlerList();
+
 
     public HandlerList getHandlers()
     {
         return HANDLERS;
     }
+
 
     public static HandlerList getHandlerList()
     {

@@ -22,6 +22,7 @@
 
 package com.extrahardmode.config.messages;
 
+
 import com.extrahardmode.service.config.ConfigNode;
 
 /**
@@ -125,35 +126,40 @@ public enum MessageNode implements ConfigNode
 
     //General Advice
     NETHER_WARNING
-            ("Nether Warning", 2 ,"nether_warn",
-                    "&cThis is a dangerous place. Make sure you come prepared with arrows and good gear.")
-    ;
+            ("Nether Warning", 2, "nether_warn",
+                    "&cThis is a dangerous place. Make sure you come prepared with arrows and good gear.");
 
     /**
      * Path in the Config
      */
     private final String path;
+
     /**
      * Default value
      */
     private final String value;
+
     /**
      * Messages are always strings.
      */
     private final VarType type = VarType.STRING;
+
     /**
      * Name of the column to be used for persistence
      */
     private final String column;
+
     /**
      * How often this msg should be displayed to a Player (0 = off, -1 = infinite)
      */
     private final int msgCount;
 
+
     /**
      * Constructor.
      *
-     * @param value - Default Value
+     * @param value
+     *         - Default Value
      */
     private MessageNode(String path, int msgCount, String column, String value)
     {
@@ -163,11 +169,13 @@ public enum MessageNode implements ConfigNode
         this.value = value;
     }
 
+
     @Override
     public String getPath()
     {
         return "Messages." + path;
     }
+
 
     @Override
     public VarType getVarType()
@@ -175,11 +183,13 @@ public enum MessageNode implements ConfigNode
         return type;
     }
 
+
     @Override
     public SubType getSubType()
     {/*ignored*/
         return null;
     }
+
 
     @Override
     public Object getValueToDisable()
@@ -187,15 +197,16 @@ public enum MessageNode implements ConfigNode
         return null;
     }
 
+
     @Override
     public Object getDefaultValue()
     {
         return value;
     }
 
+
     /**
-     * Get the name of the column.
-     * Used by our sqllite db for persistence.
+     * Get the name of the column. Used by our sqllite db for persistence.
      *
      * @return column name. Won't be changed.
      */
@@ -204,25 +215,29 @@ public enum MessageNode implements ConfigNode
         return column;
     }
 
-    public int getMsgCount ()
+
+    public int getMsgCount()
     {
         return msgCount;
     }
+
 
     /**
      * Variables that will be filled in by the plugin
      */
     public enum variables
     {
-        PLAYER ("$PLAYER"),
-        PLAYERS ("$PLAYERS");
+        PLAYER("$PLAYER"),
+        PLAYERS("$PLAYERS");
 
         private final String variable;
+
 
         private variables(String variable)
         {
             this.variable = variable;
         }
+
 
         /**
          * Get the identifier which represents this variable in the String

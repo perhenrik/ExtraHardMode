@@ -1,5 +1,7 @@
 package com.extrahardmode.features;
 
+
+<<<<<<<HEAD
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.events.*;
@@ -7,7 +9,10 @@ import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import org.bukkit.Material;
-import org.bukkit.World;
+=======
+
+        >>>>>>>dev
+        import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creeper;
@@ -22,15 +27,20 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+
 /**
  * @author Diemex
  */
 public class Tutorial implements Listener
 {
     private final ExtraHardMode plugin;
+
     private final MessagingModule messenger;
+
     private final BlockModule blockModule;
+
     private final PlayerModule playerModule;
+
 
     public Tutorial(ExtraHardMode plugin)
     {
@@ -43,13 +53,25 @@ public class Tutorial implements Listener
 
     /**
      * When an Entity targets another Entity
-     *
+     * <p/>
      * Display some warnings to a Player when he is targetted by a dangerous mob
-     *
-     * @param event
      */
     @EventHandler
-    public void onEntityTarget (EntityTargetEvent event)
+    <<<<<<<HEAD
+
+
+    public void onEntityTarget(EntityTargetEvent event)
+
+
+    =======
+
+
+    public void onEntityTarget(EntityTargetLivingEntityEvent event)
+
+
+    >>>>>>>dev
+
+
     {
         if (event.getTarget() instanceof Player)
         {
@@ -86,9 +108,11 @@ public class Tutorial implements Listener
                 case PIG_ZOMBIE:
                 {
                     messenger.sendTutorial(player, MessageNode.PIGZOMBIE_TARGET);
-                    plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                    plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
+                    {
                         @Override
-                        public void run() {
+                        public void run()
+                        {
                             messenger.sendTutorial(player, MessageNode.PIGZOMBIE_TARGET_WART);
                         }
                     }, 300L);
@@ -128,11 +152,13 @@ public class Tutorial implements Listener
         }
     }
 
+
     /**
-     * When an Enderman teleports a Player for the first time, cancel the Event and inform the Player of his imminent death
+     * When an Enderman teleports a Player for the first time, cancel the Event and inform the Player of his imminent
+     * death
      */
     @EventHandler
-    public void onEndermanTeleport (EhmEndermanTeleportEvent event)
+    public void onEndermanTeleport(EhmEndermanTeleportEvent event)
     {
         final Player player = event.getPlayer();
         final Enderman enderman = event.getEnderman();
@@ -145,11 +171,12 @@ public class Tutorial implements Listener
         }
     }
 
+
     /**
      * Inform Players about the respawning Zombies
      */
-    @EventHandler (ignoreCancelled = true)
-    public void onZombieRespawn (EhmZombieRespawnEvent event)
+    @EventHandler(ignoreCancelled = true)
+    public void onZombieRespawn(EhmZombieRespawnEvent event)
     {
         final Player player = event.getPlayer();
         if (player != null)
@@ -158,11 +185,12 @@ public class Tutorial implements Listener
         }
     }
 
+
     /**
      * Warn players before entering the nether
      */
     @EventHandler
-    public void onPlayerChangeWorld (PlayerChangedWorldEvent event)
+    public void onPlayerChangeWorld(PlayerChangedWorldEvent event)
     {
         final Player player = event.getPlayer();
         if (player.getWorld().getEnvironment() == World.Environment.NETHER)
@@ -171,11 +199,12 @@ public class Tutorial implements Listener
         }
     }
 
+
     /**
      * Inform Players about creepers dropping tnt
      */
     @EventHandler
-    public void onCreeperDropTnt (EhmCreeperDropTntEvent event)
+    public void onCreeperDropTnt(EhmCreeperDropTntEvent event)
     {
         final Player player = event.getPlayer();
         if (player != null)
@@ -184,10 +213,11 @@ public class Tutorial implements Listener
         }
     }
 
+
     /**
      * When a Skeleton deflects an arrow
      */
-    @EventHandler (ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true)
     public void onSkeletonDeflect(EhmSkeletonDeflectEvent event)
     {
         if (event.getShooter() != null)
@@ -196,6 +226,7 @@ public class Tutorial implements Listener
             messenger.sendTutorial(player, MessageNode.SKELETON_DEFLECT);
         }
     }
+
 
     /**
      * Let Players know that they can use ice
@@ -207,11 +238,12 @@ public class Tutorial implements Listener
         messenger.sendTutorial(player, MessageNode.BUCKET_FILL);
     }
 
+
     /**
      * Messages when planting with antifarming
      */
     @EventHandler
-    public void onBlockPlace (BlockPlaceEvent event)
+    public void onBlockPlace(BlockPlaceEvent event)
     {
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
@@ -228,7 +260,7 @@ public class Tutorial implements Listener
         Block below = block.getRelative(BlockFace.DOWN);
 
         //Unwatered
-        if (blockModule.isPlant(block.getType()) && below.getState().getData().getData() == (byte)0)
+        if (blockModule.isPlant(block.getType()) && below.getState().getData().getData() == (byte) 0)
         {
             messenger.sendTutorial(player, MessageNode.ANTIFARMING_UNWATERD);
         }
@@ -248,21 +280,23 @@ public class Tutorial implements Listener
         }
     }
 
+
     /**
      * Inform about Silverfish
      */
     @EventHandler
-    public void onShootSilverfish (EhmSkeletonShootSilverfishEvent event)
+    public void onShootSilverfish(EhmSkeletonShootSilverfishEvent event)
     {
         event.getSilverfish().addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 1, 1000));
         //event.getSilverfish().setFireTicks(100);
     }
 
+
     /**
      * Inform about not being able to extinguish fire with bare hands
      */
     @EventHandler
-    public void onExtinguishFire (EhmPlayerExtinguishFireEvent event)
+    public void onExtinguishFire(EhmPlayerExtinguishFireEvent event)
     {
         messenger.sendTutorial(event.getPlayer(), MessageNode.EXTINGUISH_FIRE);
     }

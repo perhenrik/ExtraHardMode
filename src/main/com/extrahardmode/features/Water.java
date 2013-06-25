@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -53,12 +54,17 @@ import org.bukkit.util.Vector;
 public class Water extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private final UtilityModule utils;
+
     private final MessagingModule messenger;
+
     private final PlayerModule playerModule;
 
-    public Water (ExtraHardMode plugin)
+
+    public Water(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -68,10 +74,12 @@ public class Water extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * when a player moves...
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(priority = EventPriority.NORMAL)
     void onPlayerMove(PlayerMoveEvent event)
@@ -87,10 +95,10 @@ public class Water extends ListenerModule
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.MONSTER_GLYDIA);
         final boolean blockWaterElevators = CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS, world.getName());
 
-        final float maxWeight = (float)CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, world.getName());
-        final float armorPoints = (float)CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, world.getName());
-        final float inventoryPoints = (float)CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, world.getName());
-        final float toolPoints = (float)CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, world.getName());
+        final float maxWeight = (float) CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, world.getName());
+        final float armorPoints = (float) CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, world.getName());
+        final float inventoryPoints = (float) CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, world.getName());
+        final float toolPoints = (float) CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, world.getName());
 
         final int drowningRate = CFG.getInt(RootNode.NO_SWIMMING_IN_ARMOR_DROWN_RATE, world.getName());
         final int overEncumbranceExtra = CFG.getInt(RootNode.NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA, world.getName());
@@ -99,7 +107,7 @@ public class Water extends ListenerModule
         final float overwaterDrownVel = -0.7F;
 
         // FEATURE: no swimming while heavy, only enabled worlds, players without bypass permission and not in creative
-        if (noSwimingInArmor &&! playerBypasses)
+        if (noSwimingInArmor && !playerBypasses)
         {
             // only care about moving up
             if (to.getY() > from.getY())
@@ -115,48 +123,62 @@ public class Water extends ListenerModule
                         playerData.cachedWeightStatus = playerModule.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
                     }
                     // if too heavy let player feel the weight by pulling them down, if in boat can always swim
-                    if (playerData.cachedWeightStatus > maxWeight &&! player.isInsideVehicle())
+                    if (playerData.cachedWeightStatus > maxWeight && !player.isInsideVehicle())
                     {
                         drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel, overwaterDrownVel);
                     }
                 }
                 //when you swim up waterfalls and basically are flying with only a tip of your body in water
-                else if (blockWaterElevators &&! playerModule.isPlayerOnLadder(player) &&! player.isInsideVehicle() &&! player.isFlying())
+                <<<<<<<HEAD
+                else
+                if (blockWaterElevators && !playerModule.isPlayerOnLadder(player) && !player.isInsideVehicle() && !player.isFlying())
                 {
                     if (playerData.cachedWeightStatus <= 0)
                     {
                         playerData.cachedWeightStatus = playerModule.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
-                    }
-                    else if (playerData.cachedWeightStatus > maxWeight)
+                    } else if (playerData.cachedWeightStatus > maxWeight)
+                    =======
+                    else
+                    if (blockWaterElevators && !utils.isPlayerOnLadder(player) && !player.isInsideVehicle() && !player.isFlying())
                     {
-                        //Detect waterfalls
-                        BlockFace[] faces = {
-                                BlockFace.WEST,
-                                BlockFace.NORTH_WEST,
-                                BlockFace.NORTH,
-                                BlockFace.NORTH_EAST,
-                                BlockFace.EAST,
-                                BlockFace.SOUTH_EAST,
-                                BlockFace.SOUTH,
-                                BlockFace.SOUTH_WEST };
-                        Location loc = player.getLocation();
-                        boolean isWaterNear = false;
-                        for (BlockFace face : faces)
+                        if (playerData.cachedWeightStatus <= 0)
                         {
-                            Material nearType = loc.getBlock().getRelative(face).getType();
-                            if (nearType.equals(Material.STATIONARY_WATER))
-                                isWaterNear = true;
+                            playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
+                        } else if (playerData.cachedWeightStatus > maxWeight)
+                        >>>>>>>dev
+                        {
+                            //Detect waterfalls
+                            BlockFace[] faces = {
+                                    BlockFace.WEST,
+                                    BlockFace.NORTH_WEST,
+                                    BlockFace.NORTH,
+                                    BlockFace.NORTH_EAST,
+                                    BlockFace.EAST,
+                                    BlockFace.SOUTH_EAST,
+                                    BlockFace.SOUTH,
+                                    BlockFace.SOUTH_WEST};
+                            Location loc = player.getLocation();
+                            boolean isWaterNear = false;
+                            for (BlockFace face : faces)
+                            {
+                                Material nearType = loc.getBlock().getRelative(face).getType();
+                                if (nearType.equals(Material.STATIONARY_WATER))
+                                    isWaterNear = true;
+                            }
+                            if (isWaterNear)
+                                drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel + 0.3F, normalDrownVel + 0.3F); //the water flowing down pulls you down
                         }
-                        if (isWaterNear) drown(player, drowningRate, overEncumbranceExtra, playerData.cachedWeightStatus, maxWeight, normalDrownVel + 0.3F, normalDrownVel + 0.3F); //the water flowing down pulls you down
                     }
                 }
             }
         }
-    }
 
-    /**
-     * Drowns the player at the given rate
-     */
+
+        /**
+         * Drowns the player at the given rate
+         */
+
+
     void drown(Player player, int drowningRate, int overEncumbranceExtra, float cachedWeightStatus, float maxWeight, float normalDrownVel, float overwaterDrownVel)
     {
         if (cachedWeightStatus > maxWeight)
@@ -166,7 +188,7 @@ public class Water extends ListenerModule
             MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
             float rdm = plugin.getRandom().nextFloat(); //how expensive is this
             //drownrate + extra when overencumbered
-            float drownPercent = ((float)drowningRate / 500.0F) + ((cachedWeightStatus - maxWeight) * overEncumbranceExtra) / 500.0F;
+            float drownPercent = ((float) drowningRate / 500.0F) + ((cachedWeightStatus - maxWeight) * overEncumbranceExtra) / 500.0F;
             if (rdm < drownPercent)
             {
                 Vector vec = player.getVelocity();
@@ -182,10 +204,12 @@ public class Water extends ListenerModule
         }
     }
 
+
     /**
      * when a player drops an item
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void onPlayerDropItem(PlayerDropItemEvent event)
@@ -196,10 +220,12 @@ public class Water extends ListenerModule
         playerData.cachedWeightStatus = -1.0F;
     }
 
+
     /**
      * when a player picks up an item
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void onPlayerPickupItem(PlayerPickupItemEvent event)
@@ -210,10 +236,12 @@ public class Water extends ListenerModule
         playerData.cachedWeightStatus = -1.0F;
     }
 
+
     /**
      * When a player interacts with an inventory.
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void onPlayerInventoryClick(InventoryClickEvent event)

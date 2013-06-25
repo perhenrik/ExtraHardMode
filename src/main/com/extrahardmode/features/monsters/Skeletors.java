@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -41,15 +42,17 @@ import org.bukkit.util.Vector;
 
 /**
  * Changes to Skeletons include:
- *
- * Immunity to arrows ,
- * shooting Silverfish
- *
+ * <p/>
+ * Immunity to arrows , <<<<<<< HEAD shooting Silverfish
+ * <p/>
+ * ======= >>>>>>> dev
  */
 public class Skeletors extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
 
     public Skeletors(ExtraHardMode plugin)
     {
@@ -61,10 +64,8 @@ public class Skeletors extends ListenerModule
 
     /**
      * When an entity takes damage
-     *
+     * <p/>
      * skeletons are immune to arrows
-     *
-     * @param event
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
@@ -95,7 +96,7 @@ public class Skeletors extends ListenerModule
                 Arrow arrow = (Arrow) damageSource;
 
                 Player player = arrow.getShooter() instanceof Player ? (Player) arrow.getShooter() : null;
-                EhmSkeletonDeflectEvent skeliEvent = new EhmSkeletonDeflectEvent(player, (Skeleton)entity, deflect, !plugin.random(deflect));
+                EhmSkeletonDeflectEvent skeliEvent = new EhmSkeletonDeflectEvent(player, (Skeleton) entity, deflect, !plugin.random(deflect));
                 plugin.getServer().getPluginManager().callEvent(skeliEvent);
 
                 // percent chance
@@ -141,12 +142,14 @@ public class Skeletors extends ListenerModule
         }
     }
 
+
     /**
      * when an entity shoots a bow...
-     *
+     * <p/>
      * skeletons shoot silverfish
      *
-     * @param event - Event that occurred.
+     * @param event
+     *         - Event that occurred.
      */
     @EventHandler
     public void onShootProjectile(ProjectileLaunchEvent event)
@@ -172,7 +175,7 @@ public class Skeletors extends ListenerModule
                     final Player player = (Player) skeleton.getTarget();
                     // cancel arrow fire
                     event.setCancelled(true);
-                    
+
                     // replace with silverfish, quarter velocity of arrow, wants to attack same target as skeleton
                     Creature silverFish = (Creature) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0, 1.5, 0), EntityType.SILVERFISH);
                     silverFish.setVelocity(arrow.getVelocity().multiply(0.25));

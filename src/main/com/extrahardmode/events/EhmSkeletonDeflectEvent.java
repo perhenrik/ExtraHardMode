@@ -1,5 +1,6 @@
 package com.extrahardmode.events;
 
+
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.event.Cancellable;
@@ -14,50 +15,66 @@ import org.bukkit.event.HandlerList;
 public class EhmSkeletonDeflectEvent extends Event implements Cancellable
 {
     private boolean cancelled;
+
     private final Player shooter;
+
     private final Skeleton skeleton;
+
     private final int deflectPercentage;
+
 
     /**
      * Constructor
      *
-     * @param shooter Player shooting the arrow
-     * @param skeleton Skeleton getting hit
-     * @param deflectPercentage the percentage of arrows a Skeleton deflects
+     * @param shooter
+     *         Player shooting the arrow
+     * @param skeleton
+     *         Skeleton getting hit
+     * @param deflectPercentage
+     *         the percentage of arrows a Skeleton deflects
      */
-    public EhmSkeletonDeflectEvent (Player shooter, Skeleton skeleton, int deflectPercentage)
+    public EhmSkeletonDeflectEvent(Player shooter, Skeleton skeleton, int deflectPercentage)
     {
         this.shooter = shooter;
         this.skeleton = skeleton;
         this.deflectPercentage = deflectPercentage;
     }
 
+
     /**
      * Constructor
      *
-     * @param shooter Player shooting the arrow
-     * @param skeleton Skeleton getting hit
-     * @param deflectPercentage the percentage of arrows a Skeleton deflects
+     * @param shooter
+     *         Player shooting the arrow
+     * @param skeleton
+     *         Skeleton getting hit
+     * @param deflectPercentage
+     *         the percentage of arrows a Skeleton deflects
      */
-    public EhmSkeletonDeflectEvent (Player shooter, Skeleton skeleton, int deflectPercentage, boolean cancelled)
+    public EhmSkeletonDeflectEvent(Player shooter, Skeleton skeleton, int deflectPercentage, boolean cancelled)
     {
-        this (shooter, skeleton, deflectPercentage);
+        this(shooter, skeleton, deflectPercentage);
         this.cancelled = cancelled;
     }
+
 
     /**
      * @return the Skeleton that is being shot at
      */
-    public Skeleton getSkeleton() {
+    public Skeleton getSkeleton()
+    {
         return skeleton;
     }
+
 
     /**
      * @return the percentage of arrows getting deflected
      */
-    public int getDeflectPercentage() {
+    public int getDeflectPercentage()
+    {
         return deflectPercentage;
     }
+
 
     /**
      * @return if Event got cancelled
@@ -68,8 +85,10 @@ public class EhmSkeletonDeflectEvent extends Event implements Cancellable
         return cancelled;
     }
 
+
     /**
-     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled
+     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)
@@ -77,19 +96,24 @@ public class EhmSkeletonDeflectEvent extends Event implements Cancellable
         this.cancelled = cancelled;
     }
 
+
     /**
      * @return the Player shooting the Skeleton
      */
-    public Player getShooter() {
+    public Player getShooter()
+    {
         return shooter;
     }
 
+
     private static final HandlerList HANDLERS = new HandlerList();
+
 
     public HandlerList getHandlers()
     {
         return HANDLERS;
     }
+
 
     public static HandlerList getHandlerList()
     {

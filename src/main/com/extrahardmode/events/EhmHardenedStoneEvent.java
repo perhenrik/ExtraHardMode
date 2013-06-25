@@ -21,6 +21,7 @@
 
 package com.extrahardmode.events;
 
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -28,10 +29,11 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * This Event is called when EHM determines if a tool is supposed to be affected by the hardened stone code.
- * It will be called everytime when a Player breaks stone also if the tool wouldn't be able to break the Block.
- *
+ * This Event is called when EHM determines if a tool is supposed to be affected by the hardened stone code. It will be
+ * called everytime when a Player breaks stone also if the tool wouldn't be able to break the Block.
+ * <p/>
  * This allows for plugins to step over the toolcheck and add their own tools. (bukkitforge etc.)
+ *
  * @author Max
  */
 
@@ -41,20 +43,25 @@ public class EhmHardenedStoneEvent extends Event
      * Player who broke the Stone
      */
     private final Player player;
+
     /**
      * The Tool which broke the block
      */
     private final ItemStack tool;
+
     /**
      * The amount of blocks this tool can mine
      */
     private short numOfBlocks;
 
+
     /**
      * Constructor
      *
-     * @param toolId the tool which broke the Stone
-     * @param numOfBlocks amount of blocks tool can mine
+     * @param toolId
+     *         the tool which broke the Stone
+     * @param numOfBlocks
+     *         amount of blocks tool can mine
      */
     public EhmHardenedStoneEvent(Player player, ItemStack tool, short numOfBlocks)
     {
@@ -62,6 +69,7 @@ public class EhmHardenedStoneEvent extends Event
         this.tool = tool;
         this.numOfBlocks = numOfBlocks;
     }
+
 
     /**
      * Get the Player involved in this Event
@@ -73,6 +81,7 @@ public class EhmHardenedStoneEvent extends Event
         return player;
     }
 
+
     /**
      * Get the tool the Player used to break the stone
      *
@@ -82,6 +91,7 @@ public class EhmHardenedStoneEvent extends Event
     {
         return tool;
     }
+
 
     /**
      * Get the id
@@ -93,6 +103,7 @@ public class EhmHardenedStoneEvent extends Event
         return tool.getTypeId();
     }
 
+
     /**
      * Get the Material of the tool
      *
@@ -103,18 +114,20 @@ public class EhmHardenedStoneEvent extends Event
         return tool.getType();
     }
 
+
     /**
-     * Set the amount of blocks the tool can mine
-     * Just set this higher than 0 and ehm will allow the tool to break blocks
+     * Set the amount of blocks the tool can mine Just set this higher than 0 and ehm will allow the tool to break
+     * blocks
      */
     public void setNumOfBlocks(short blocks)
     {
         this.numOfBlocks = blocks;
     }
 
+
     /**
      * Get the amount of stone blocks this tool would be able to break.
-     * <p>
+     * <p/>
      * Will be 0 if the tool isn't able to break stone by default.
      */
     public short getNumOfBlocks()
@@ -122,12 +135,15 @@ public class EhmHardenedStoneEvent extends Event
         return numOfBlocks;
     }
 
+
     private static final HandlerList HANDLERS = new HandlerList();
+
 
     public HandlerList getHandlers()
     {
         return HANDLERS;
     }
+
 
     public static HandlerList getHandlerList()
     {

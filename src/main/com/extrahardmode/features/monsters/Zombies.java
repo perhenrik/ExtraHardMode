@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -40,19 +41,18 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
- * Zombies
- * <p>
- * can resurrect themselves ,
- * make players slow when hit
- * </p>
+ * Zombies <p> can resurrect themselves , make players slow when hit </p>
  */
 public class Zombies extends ListenerModule
 {
     private final ExtraHardMode plugin;
+
     private final RootConfig CFG;
+
     private final PlayerModule playerModule;
 
-    public Zombies (ExtraHardMode plugin)
+
+    public Zombies(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
@@ -60,9 +60,10 @@ public class Zombies extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * When a zombie dies
-     *
+     * <p/>
      * sometimes reanimate the zombie
      */
     @EventHandler
@@ -86,7 +87,7 @@ public class Zombies extends ListenerModule
 
                 EhmZombieRespawnEvent zombieEvent = new EhmZombieRespawnEvent(player, zombie, zombiesReanimatePercent, !plugin.random(zombiesReanimatePercent));
                 plugin.getServer().getPluginManager().callEvent(zombieEvent);
-                if (!zombie.isVillager() && entity.getFireTicks() < 1 &&! zombieEvent.isCancelled())
+                if (!zombie.isVillager() && entity.getFireTicks() < 1 && !zombieEvent.isCancelled())
                 {
                     RespawnZombieTask task = new RespawnZombieTask(plugin, entity.getLocation(), player);
                     int respawnSeconds = plugin.getRandom().nextInt(6) + 3; // 3-8 seconds
@@ -97,9 +98,10 @@ public class Zombies extends ListenerModule
         }
     }
 
+
     /**
      * When an Entity is damaged
-     *
+     * <p/>
      * When a player is damaged by a zombie make him slow
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -123,7 +125,7 @@ public class Zombies extends ListenerModule
             }
 
             // FEATURE: zombies can apply a debilitating effect
-            if (zombiesSlowPlayers && player != null &&! playerBypasses)
+            if (zombiesSlowPlayers && player != null && !playerBypasses)
             {
                 if (damageByEntityEvent != null && damageByEntityEvent.getDamager() instanceof Zombie)
                 {

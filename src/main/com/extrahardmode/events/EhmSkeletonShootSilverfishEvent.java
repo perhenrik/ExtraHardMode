@@ -1,5 +1,6 @@
 package com.extrahardmode.events;
 
+
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
@@ -15,20 +16,29 @@ import org.bukkit.event.HandlerList;
 public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellable
 {
     private boolean cancelled;
+
     private final Player player;
+
     private final Skeleton skeleton;
+
     private final Creature silverfish;
+
     private final int shootSilverfishPercent;
+
 
     /**
      * Constructor
      *
-     * @param player Player being shot at
-     * @param skeleton Skeleton shooting the Silverfish
-     * @param silverfish the Silverfish being release by the Skeli
-     * @param releasePercentage percentage of how often Silverfish get released
+     * @param player
+     *         Player being shot at
+     * @param skeleton
+     *         Skeleton shooting the Silverfish
+     * @param silverfish
+     *         the Silverfish being release by the Skeli
+     * @param releasePercentage
+     *         percentage of how often Silverfish get released
      */
-    public EhmSkeletonShootSilverfishEvent (Player player, Skeleton skeleton, Creature silverfish, int releasePercentage)
+    public EhmSkeletonShootSilverfishEvent(Player player, Skeleton skeleton, Creature silverfish, int releasePercentage)
     {
         this.player = player;
         this.skeleton = skeleton;
@@ -36,20 +46,27 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
         this.shootSilverfishPercent = releasePercentage;
     }
 
+
     /**
      * Constructor
      *
-     * @param player Player being shot at
-     * @param skeleton Skeleton shooting the Silverfish
-     * @param silverfish the Silverfish being release by the Skeli
-     * @param releasePercentage percentage of how often Silverfish get released
-     * @param cancelled if Event should be cancelled by default
+     * @param player
+     *         Player being shot at
+     * @param skeleton
+     *         Skeleton shooting the Silverfish
+     * @param silverfish
+     *         the Silverfish being release by the Skeli
+     * @param releasePercentage
+     *         percentage of how often Silverfish get released
+     * @param cancelled
+     *         if Event should be cancelled by default
      */
-    public EhmSkeletonShootSilverfishEvent (Player player, Skeleton skeleton, Creature silverfish, int releasePercentage, boolean cancelled)
+    public EhmSkeletonShootSilverfishEvent(Player player, Skeleton skeleton, Creature silverfish, int releasePercentage, boolean cancelled)
     {
         this(player, skeleton, silverfish, releasePercentage);
         this.cancelled = cancelled;
     }
+
 
     /**
      * @return the Skeleton that is being shot at
@@ -59,6 +76,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
         return skeleton;
     }
 
+
     /**
      * @return the Player shooting the Skeleton
      */
@@ -66,6 +84,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
     {
         return player;
     }
+
 
     /**
      * Get the Silverfish being spawned by the Skeleton
@@ -77,6 +96,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
         return silverfish;
     }
 
+
     /**
      * Get the percentage of Silverfish being released
      *
@@ -87,6 +107,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
         return shootSilverfishPercent;
     }
 
+
     /**
      * @return the percentage of arrows getting deflected
      */
@@ -94,6 +115,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
     {
         return shootSilverfishPercent;
     }
+
 
     /**
      * @return if Event got cancelled
@@ -104,8 +126,10 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
         return cancelled;
     }
 
+
     /**
-     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled
+     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)
@@ -113,12 +137,15 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
         this.cancelled = cancelled;
     }
 
+
     private static final HandlerList HANDLERS = new HandlerList();
+
 
     public HandlerList getHandlers()
     {
         return HANDLERS;
     }
+
 
     public static HandlerList getHandlerList()
     {

@@ -22,6 +22,7 @@
 
 package com.extrahardmode;
 
+
 import com.extrahardmode.command.Commander;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
@@ -34,9 +35,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
+
+<<<<<<<HEAD
+        =======
+        >>>>>>>dev
 
 /**
  * Main plugin class.
@@ -52,12 +57,13 @@ public class ExtraHardMode extends JavaPlugin
     /**
      * Registered modules.
      */
-    private final Map<Class<? extends IModule>, IModule> modules = new HashMap<Class<? extends IModule>, IModule>();
+    private final Map<Class<? extends IModule>, IModule> modules = new LinkedHashMap<Class<? extends IModule>, IModule>();
 
     /**
      * for computing random chance
      */
     private final Random randomNumberGenerator = new Random();
+
 
     /**
      * initializes well... everything
@@ -110,8 +116,11 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Skeletors.class, new Skeletors(this));
         registerModule(Spoiders.class, new Spoiders(this));
         registerModule(Zombies.class, new Zombies(this));
+        <<<<<<<HEAD
 
         new Tutorial(this);
+        =======
+        >>>>>>>dev
 
 
         // FEATURE: monsters spawn in the light under a configurable Y level
@@ -119,16 +128,31 @@ public class ExtraHardMode extends JavaPlugin
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 1200L, 1200L);
     }
 
+
+    @Override
+    public void onDisable()
+    {
+        super.onDisable();
+        //Gracefully stop all modules
+        for (IModule module : modules.values())
+            module.closing();
+        modules.clear();
+    }
+
+
     /**
      * Computes random chance
      *
-     * @param percentChance - Percentage of success.
+     * @param percentChance
+     *         - Percentage of success.
+     *
      * @return True if it was successful, else false.
      */
     public boolean random(int percentChance)
     {
         return randomNumberGenerator.nextInt(101) < percentChance;
     }
+
 
     /**
      * Get random generator.
@@ -140,17 +164,23 @@ public class ExtraHardMode extends JavaPlugin
         return randomNumberGenerator;
     }
 
+
     public String getTag()
     {
         return TAG;
     }
 
+
     /**
      * Register a module.
      *
-     * @param clazz  - Class of the instance.
-     * @param module - Module instance.
-     * @throws IllegalArgumentException - Thrown if an argument is null.
+     * @param clazz
+     *         - Class of the instance.
+     * @param module
+     *         - Module instance.
+     *
+     * @throws IllegalArgumentException
+     *         - Thrown if an argument is null.
      */
     <T extends IModule> void registerModule(Class<T> clazz, T module)
     {
@@ -158,8 +188,7 @@ public class ExtraHardMode extends JavaPlugin
         if (clazz == null)
         {
             throw new IllegalArgumentException("Class cannot be null");
-        }
-        else if (module == null)
+        } else if (module == null)
         {
             throw new IllegalArgumentException("Module cannot be null");
         }
@@ -169,12 +198,14 @@ public class ExtraHardMode extends JavaPlugin
         module.starting();
     }
 
+
     /**
      * Deregister a module.
      *
-     * @param clazz - Class of the instance.
-     * @return Module that was removed. Returns null if no instance of the module
-     *         is registered.
+     * @param clazz
+     *         - Class of the instance.
+     *
+     * @return Module that was removed. Returns null if no instance of the module is registered.
      */
     public <T extends IModule> T deregisterModuleForClass(Class<T> clazz)
     {
@@ -192,15 +223,28 @@ public class ExtraHardMode extends JavaPlugin
         return module;
     }
 
+
     /**
      * Retrieve a registered module.
      *
-     * @param clazz - Class identifier.
-     * @return Module instance. Returns null is an instance of the given class
-     *         has not been registered with the API.
+     * @param clazz
+     *         - Class identifier.
+     *
+     * @return Module instance. Returns null is an instance of the given class has not been registered with the API.
      */
     public <T extends IModule> T getModuleForClass(Class<T> clazz)
     {
         return clazz.cast(modules.get(clazz));
+    }
+
+
+    /**
+     * Get all the registered modules
+     *
+     * @return Map of modules
+     */
+    public Map<Class<? extends IModule>, IModule> getModules()
+    {
+        return modules;
     }
 }

@@ -21,6 +21,7 @@
 
 package com.extrahardmode.features.monsters;
 
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
@@ -42,17 +43,20 @@ import org.bukkit.potion.PotionEffectType;
 
 /**
  * Changes to Creepers including:
- *
- * Naturally spawning Charged Creepers ,
- * Charged Creepers exloding on hit ,
- *
+ * <p/>
+ * Naturally spawning Charged Creepers , Charged Creepers exloding on hit ,
  */
 public class BumBumBens extends ListenerModule
 {
     private ExtraHardMode plugin = null;
+
     private RootConfig CFG = null;
+
     private EntityHelper EntityHelper = null;
+
     private final PlayerModule playerModule;
+
+
     public BumBumBens(ExtraHardMode plugin)
     {
         super(plugin);
@@ -61,11 +65,11 @@ public class BumBumBens extends ListenerModule
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
+
     /**
      * When an Entity spawns
-     *
+     * <p/>
      * naturally spawning Charged Creepers
-     * @param event
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -87,12 +91,11 @@ public class BumBumBens extends ListenerModule
         }
     }
 
+
     /**
      * When an Entity dies
-     *
+     * <p/>
      * Creepers may drop tnt
-     *
-     * @param event
      */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
@@ -111,7 +114,7 @@ public class BumBumBens extends ListenerModule
                     && creeperDropTntMaxY > entity.getLocation().getBlockY())
             {
                 final Player player = entity.getKiller();
-                EhmCreeperDropTntEvent dropTntEvent = new EhmCreeperDropTntEvent(player, (Creeper) entity,entity.getLocation());
+                EhmCreeperDropTntEvent dropTntEvent = new EhmCreeperDropTntEvent(player, (Creeper) entity, entity.getLocation());
                 plugin.getServer().getPluginManager().callEvent(dropTntEvent);
                 if (!dropTntEvent.isCancelled())
                 {
@@ -123,13 +126,11 @@ public class BumBumBens extends ListenerModule
         }
     }
 
+
     /**
      * When an Entity takes damage
-     *
-     * Charged creepers explode on hit ,
-     * burning creepers will cause a big explosion
-     *
-     * @param event
+     * <p/>
+     * Charged creepers explode on hit , burning creepers will cause a big explosion
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
@@ -167,8 +168,7 @@ public class BumBumBens extends ListenerModule
                             damager = (Player) damageByEntityEvent.getDamager();
                             if (damager != null && playerModule.playerBypasses(damager, Feature.MONSTER_BUMBUMBENS))
                                 return;
-                        }
-                        else if (damageByEntityEvent.getDamager() instanceof Projectile)
+                        } else if (damageByEntityEvent.getDamager() instanceof Projectile)
                         {   //Damaged by an arrow shot by a player
                             Projectile bullet = (Projectile) damageByEntityEvent.getDamager();
                             if (bullet.getShooter() instanceof Player)//otherwise skeli/dispenser etc.
@@ -202,7 +202,7 @@ public class BumBumBens extends ListenerModule
                 if ((event.getCause().equals(EntityDamageEvent.DamageCause.FIRE)
                         || event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)
                         || event.getCause().equals(EntityDamageEvent.DamageCause.LAVA))
-                        &&! creeper.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE))
+                        && !creeper.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE))
                 {
                     if (!EntityHelper.hasFlagIgnore(entity))
                     {
@@ -215,14 +215,14 @@ public class BumBumBens extends ListenerModule
         }
     }
 
+
     /**
      * When something explodes
-     *
+     * <p/>
      * Increase size of Creeper explosions
-     *
-     * @param event
      */
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST) //give some time for other plugins to block the event
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    //give some time for other plugins to block the event
     public void onExplosion(EntityExplodeEvent event)
     {
         Entity entity = event.getEntity();
@@ -232,7 +232,7 @@ public class BumBumBens extends ListenerModule
 
         // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
         // Charged creeper explosion is handled in onEntityDamage
-        if (customCreeper && entity instanceof Creeper &&! ((Creeper)entity).isPowered() &&! EntityHelper.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
+        if (customCreeper && entity instanceof Creeper && !((Creeper) entity).isPowered() && !EntityHelper.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
         {
             event.setCancelled(true);
             EntityHelper.flagIgnore(plugin, entity);//Ignore this creeper in further calls to this method
