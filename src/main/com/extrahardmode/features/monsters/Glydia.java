@@ -108,7 +108,7 @@ public class Glydia extends ListenerModule
             if (block.getType() != Material.ENDER_STONE)
             {
                 breakEvent.setCancelled(true);
-                messenger.sendMessage(player, MessageNode.LIMITED_END_BUILDING);
+                messenger.send(player, MessageNode.LIMITED_END_BUILDING);
             } else
             {
                 int absoluteDistanceFromBlock = Math.abs(block.getX() - player.getLocation().getBlockX());
@@ -122,7 +122,7 @@ public class Glydia extends ListenerModule
                 {
                     breakEvent.setCancelled(true);
                     //TODO EhmLimitedBuildingEvent End
-                    messenger.sendMessage(player, MessageNode.LIMITED_END_BUILDING);
+                    messenger.send(player, MessageNode.LIMITED_END_BUILDING);
                 }
             }
         }
@@ -149,7 +149,7 @@ public class Glydia extends ListenerModule
         {
             placeEvent.setCancelled(true);
             //TODO EhmLimitedBuildingEvent End
-            messenger.sendMessage(player, MessageNode.LIMITED_END_BUILDING);
+            messenger.send(player, MessageNode.LIMITED_END_BUILDING);
             return;
         }
     }
@@ -202,7 +202,7 @@ public class Glydia extends ListenerModule
                     if (plugin.getServer().getPlayer(player) != null)
                     {
                         Player player1 = plugin.getServer().getPlayer(player);
-                        messenger.sendMessage(player1, MessageNode.DRAGON_FOUNTAIN_TIP);
+                        messenger.send(player1, MessageNode.DRAGON_FOUNTAIN_TIP);
                     }
                 }
             }

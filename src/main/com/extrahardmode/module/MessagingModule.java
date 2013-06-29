@@ -73,52 +73,99 @@ public class MessagingModule extends EHMModule
     }
 
 
-    /**
-     * Sends a message and logs the timestamp of the sent message to prevent spam
-     *
-     * @param player
-     *         to send the message to
-     * @param node
-     *         to log the message
-     * @param message
-     *         to send
-     */
-    private void sendAndSave(Player player, MessageNode node, String message)
+    private void send(Player player, MessageNode node, String message, Type type)
     {
-        if (player == null)
+        switch (type)
         {
-            plugin.getLogger().warning("Could not send the following message: " + message);
-        } else
-        {
-            // FEATURE: don't spam messages
-            DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
-            long now = Calendar.getInstance().getTimeInMillis();
+            case NOTIFICATION:
+                if (player == null)
+                {
+                    plugin.getLogger().warning("Could not send the following message: " + message);
+                } else
+                {
+                    // FEATURE: don't spam messages
+                    DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+                    long now = Calendar.getInstance().getTimeInMillis();
 
-            if (!node.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
-            {
-                if (manager != null)
-                    manager.showPopup(player.getName(), MessageType.NOTFICATION, "ExtraHardMode", message);
-                else
-                    player.sendMessage(message);
-                playerData.lastMessageSent = node;
-                playerData.lastMessageTimestamp = now;
-            }
+                    if (!node.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
+                    {
+                        if (manager != null)
+                            manager.showPopup(player.getName(), MessageType.NOTFICATION, "ExtraHardMode", message);
+                        else
+                            player.sendMessage(message);
+                        playerData.lastMessageSent = node;
+                        playerData.lastMessageTimestamp = now;
+                    }
 
+                }
+                break;
+            case TUTORIAL:
+                Validate.notNull(player);
+                if (persistModule.getCountFor(node, player.getName()) < node.getMsgCount())
+                {
+                    long now = Calendar.getInstance().getTimeInMillis();
+
+                    if (!timeouts.contains(player.getName(), message) || now - timeouts.get(player.getName(), message) > 120000)
+                    {
+                        timeouts.put(player.getName(), node, now);
+                        String msgText = messages.getString(node);
+                        if (manager != null)
+                            manager.showPopup(player.getName(), MessageType.WARNING, "ExtraHardMode", msgText);
+                        else
+                            player.sendMessage(ChatColor.DARK_RED + plugin.getTag() + ChatColor.WHITE + " " + msgText);
+                        persistModule.increment(node, player.getName());
+                    }
+                } else
+                    timeouts.remove(player, message);
+                break;
+            case BROADCAST:
+                plugin.getServer().broadcastMessage(message);
+                break;
         }
     }
 
 
     /**
-     * Sends a message to a player. Attempts to not spam the player with messages.
+     * Broacast a message to the whole server
+     *
+     * @param node
+     *         message to broadcast
+     * @param replace
+     *         replace these placeholders
+     */
+    public void broadcast(MessageNode node, FindAndReplace... replace)
+    {
+        send(null, node, Type.BROADCAST, replace);
+    }
+
+
+    /**
+     * Send a message to a Player.
      *
      * @param player
-     *         - Target player.
-     * @param message
-     *         - Message to send.
+     *         to send the message to
+     * @param node
+     *         message, gets loaded from the config
+     * @param type
+     *         type determnines the display lenght and color
      */
-    public void sendMessage(Player player, MessageNode message)
+    public void send(Player player, MessageNode node, Type type)
     {
-        sendAndSave(player, message, messages.getString(message));
+        send(player, node, messages.getString(node), type);
+    }
+
+
+    /**
+     * Send a message to a Player. Default type is NOTIFICATION.
+     *
+     * @param player
+     *         to send the message to
+     * @param node
+     *         message, gets loaded from the config
+     */
+    public void send(Player player, MessageNode node)
+    {
+        send(player, node, messages.getString(node), Type.NOTIFICATION);
     }
 
 
@@ -129,17 +176,15 @@ public class MessagingModule extends EHMModule
      *         Player to send the message to
      * @param message
      *         to send
-     * @param args
-     *         variables to fill in
      */
-    public void sendMessage(Player player, MessageNode message, FindAndReplace... args)
+    public void send(Player player, MessageNode message, Type type, FindAndReplace... fars)
     {
-        String msgText = null;
-        for (FindAndReplace far : args)
+        String msgText = messages.getString(message);
+        for (FindAndReplace far : fars)
         {   /* Replace the placeholder with the actual value */
-            msgText = messages.getString(message).replaceAll(far.getSearchWord(), far.getReplaceWith());
+            msgText = msgText.replace(far.getSearchWord(), far.getReplaceWith());
         }
-        sendAndSave(player, message, msgText);
+        send(player, message, msgText, type);
     }
 
 
@@ -156,62 +201,43 @@ public class MessagingModule extends EHMModule
      * @param soundPitch
      *         20-35 is good
      */
-    public void notifyPlayer(Player player, MessageNode node, PermissionNode perm, Sound sound, float soundPitch)
+    public void send(Player player, MessageNode node, PermissionNode perm, Sound sound, float soundPitch)
     {
         if (!player.hasPermission(perm.getNode()))
         {
-            sendMessage(player, node);
+            send(player, node, messages.getString(node), Type.NOTIFICATION);
             if (sound != null)
                 player.playSound(player.getLocation(), sound, 1, soundPitch);
         }
     }
 
 
-    public void notifyPlayer(Player player, MessageNode node, PermissionNode perm)
-    {
-        notifyPlayer(player, node, perm, null, 0);
-    }
-
-
     /**
-     * Broadcast a message to the whole server
+     * Send the player an informative message to explain what he's doing wrong.
+     * <p/>
+     *
+     * @param player
+     *         to send msg to
+     * @param node
+     *         the message
+     * @param perm
+     *         permission to silence the message
      */
-    public void broadcast(MessageNode message, FindAndReplace... vars)
+    public void send(Player player, MessageNode node, PermissionNode perm)
     {
-        String msgText = null;
-        for (FindAndReplace pair : vars)
-        {
-            msgText = messages.getString(message).replace(pair.getSearchWord(), pair.getReplaceWith());
-        }
-        plugin.getServer().broadcastMessage(msgText);
+        send(player, node, perm, null, 0);
     }
 
 
-    public void sendTutorial(Player player, MessageNode message)
+    public enum Type
     {
-        Validate.notNull(player);
-        if (persistModule.getCountFor(message, player.getName()) < message.getMsgCount())
-        {
-            long now = Calendar.getInstance().getTimeInMillis();
-
-            if (!timeouts.contains(player.getName(), message) || now - timeouts.get(player.getName(), message) > 120000)
-            {
-                timeouts.put(player.getName(), message, now);
-                String msgText = messages.getString(message);
-                if (manager != null)
-                    manager.showPopup(player.getName(), MessageType.WARNING, "ExtraHardMode", msgText);
-                else
-                    player.sendMessage(ChatColor.DARK_RED + plugin.getTag() + ChatColor.WHITE + " " + msgText);
-                persistModule.increment(message, player.getName());
-            }
-        } else
-            timeouts.remove(player, message);
+        NOTIFICATION,
+        TUTORIAL,
+        BROADCAST
     }
 
 
     @Override
-
-
     public void starting()
     {
     }

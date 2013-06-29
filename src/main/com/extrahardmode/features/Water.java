@@ -188,7 +188,7 @@ public class Water extends ListenerModule
                 else  //when under water
                     vec.setY(normalDrownVel);
                 player.setVelocity(vec);
-                messenger.sendMessage(player, MessageNode.NO_SWIMMING_IN_ARMOR);
+                messenger.send(player, MessageNode.NO_SWIMMING_IN_ARMOR);
             }
         }
     }

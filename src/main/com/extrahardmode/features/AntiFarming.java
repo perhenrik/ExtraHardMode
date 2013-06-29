@@ -387,7 +387,7 @@ public class AntiFarming extends ListenerModule
             if (cantCraftMelons && (result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS))
             {
                 event.setCancelled(true);
-                plugin.getModuleForClass(MessagingModule.class).sendMessage(player, MessageNode.NO_CRAFTING_MELON_SEEDS);
+                plugin.getModuleForClass(MessagingModule.class).send(player, MessageNode.NO_CRAFTING_MELON_SEEDS);
                 return;
             }
         }

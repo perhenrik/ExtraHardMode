@@ -94,6 +94,9 @@ public enum MessageNode implements ConfigNode
     ZOMBIE_RESPAWN
             ("Zombie Respawn", 5, "zombie_respawn",
                     "&cZombies might resurrect if not on fire!"),
+    ZOMBIE_SLOW_PLAYERS
+            ("Zombie slow Player", 3, "zombie_slow",
+                    "&cZombies slow you down when hit!"),
     SKELETON_DEFLECT
             ("Skeleton Deflect Arrows", 3, "skeleton_deflect_arrow",
                     "&cArrows just pass through Skeletons, you gotta go close combat!"),
@@ -109,6 +112,9 @@ public enum MessageNode implements ConfigNode
     EXTINGUISH_FIRE
             ("Extinguish Fire", 3, "extinguish_fire",
                     "&cPutting out fire with your hand will catch you on fire."),
+    LOST_ITEMS
+            ("Lost Items On Death", -1, "lost_items",
+                    "&dIn the scuffle " + variables.PLAYER.getVarName() +  " managed to loose " + variables.ITEMS.getVarName()),
 
     //Farming
     BUCKET_FILL
@@ -116,7 +122,7 @@ public enum MessageNode implements ConfigNode
                     "&cYou can pick up water, but once you place it, it evaporates. Get some ice if you want to farm!"),
     ANTIFARMING_UNWATERD
             ("Antifarming Unwatered", 3, "antifarm_unwatered",
-                    "&cYour crops need sufficient water, otherwise they'll dry out!"),
+                    "&cYour crops need sufficient water, otherwise they\'ll dry out!"),
     ANTIFARMING_NO_LIGHT
             ("Antifarming Not Enough Light", 3, "antifarm_natural_light",
                     "&cYour crops require natural light to grow!"),
@@ -227,8 +233,9 @@ public enum MessageNode implements ConfigNode
      */
     public enum variables
     {
-        PLAYER("$PLAYER"),
-        PLAYERS("$PLAYERS");
+        PLAYER  ("$PLAYER"),
+        PLAYERS ("$PLAYERS"),
+        ITEMS   ("$ITEMS");
 
         private final String variable;
 
