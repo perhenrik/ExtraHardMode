@@ -23,6 +23,9 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author Diemex
@@ -66,7 +69,7 @@ public class Tutorial implements Listener
                 {
                     Creeper creeper = (Creeper) event.getEntity();
                     if (creeper.isPowered())
-                        messenger.send(player, MessageNode.CHARGED_CREEPER_TARGET, MessagingModule.Type.TUTORIAL);
+                        messenger.send(player, MessageNode.CHARGED_CREEPER_TARGET, MessageNode.MsgType.TUTORIAL);
                     break;
                 }
                 case BLAZE:
@@ -74,35 +77,35 @@ public class Tutorial implements Listener
                     switch (world.getEnvironment())
                     {
                         case NORMAL:
-                            messenger.send(player, MessageNode.BLAZE_TARGET_NORMAL, MessagingModule.Type.TUTORIAL);
+                            messenger.send(player, MessageNode.BLAZE_TARGET_NORMAL, MessageNode.MsgType.TUTORIAL);
                             break;
                         case NETHER:
-                            messenger.send(player, MessageNode.BLAZE_TARGET_NETHER, MessagingModule.Type.TUTORIAL);
+                            messenger.send(player, MessageNode.BLAZE_TARGET_NETHER, MessageNode.MsgType.TUTORIAL);
                             break;
                     }
                     break;
                 }
                 case GHAST:
                 {
-                    messenger.send(player, MessageNode.GHAST_TARGET, MessagingModule.Type.TUTORIAL);
+                    messenger.send(player, MessageNode.GHAST_TARGET, MessageNode.MsgType.TUTORIAL);
                     break;
                 }
                 case PIG_ZOMBIE:
                 {
-                    messenger.send(player, MessageNode.PIGZOMBIE_TARGET, MessagingModule.Type.TUTORIAL);
+                    messenger.send(player, MessageNode.PIGZOMBIE_TARGET, MessageNode.MsgType.TUTORIAL);
                     plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
                     {
                         @Override
                         public void run()
                         {
-                            messenger.send(player, MessageNode.PIGZOMBIE_TARGET_WART, MessagingModule.Type.TUTORIAL);
+                            messenger.send(player, MessageNode.PIGZOMBIE_TARGET_WART, MessageNode.MsgType.TUTORIAL);
                         }
                     }, 300L);
                     break;
                 }
                 case MAGMA_CUBE:
                 {
-                    messenger.send(player, MessageNode.PIGZOMBIE_TARGET, MessagingModule.Type.TUTORIAL);
+                    messenger.send(player, MessageNode.PIGZOMBIE_TARGET, MessageNode.MsgType.TUTORIAL);
                     break;
                 }
                 case SKELETON:
@@ -122,12 +125,12 @@ public class Tutorial implements Listener
                 }
                 case ENDERMAN:
                 {
-                    messenger.send(player, MessageNode.ENDERMAN_GENERAL, MessagingModule.Type.TUTORIAL);
+                    messenger.send(player, MessageNode.ENDERMAN_GENERAL, MessageNode.MsgType.TUTORIAL);
                     break;
                 }
                 case ZOMBIE:
                 {
-                    messenger.send(player, MessageNode.ZOMBIE_SLOW_PLAYERS, MessagingModule.Type.TUTORIAL);
+                    messenger.send(player, MessageNode.ZOMBIE_SLOW_PLAYERS, MessageNode.MsgType.TUTORIAL);
                     break;
                 }
             }
@@ -145,11 +148,11 @@ public class Tutorial implements Listener
         final Player player = event.getPlayer();
         final Enderman enderman = event.getEnderman();
 
-        messenger.send(player, MessageNode.ENDERMAN_GENERAL, MessagingModule.Type.TUTORIAL);
+        messenger.send(player, MessageNode.ENDERMAN_GENERAL, MessageNode.MsgType.TUTORIAL);
         if (playerModule.getArmorPoints(player) < 0.32) //basically leather armor
         {
             enderman.setTarget(null); //give new Players a chance if they don't know yet
-            messenger.send(player, MessageNode.ENDERMAN_SUICIDAL, MessagingModule.Type.TUTORIAL);
+            messenger.send(player, MessageNode.ENDERMAN_SUICIDAL, MessageNode.MsgType.TUTORIAL);
         }
     }
 
@@ -163,7 +166,7 @@ public class Tutorial implements Listener
         final Player player = event.getPlayer();
         if (player != null)
         {
-            messenger.send(player, MessageNode.ZOMBIE_RESPAWN, MessagingModule.Type.TUTORIAL);
+            messenger.send(player, MessageNode.ZOMBIE_RESPAWN, MessageNode.MsgType.TUTORIAL);
         }
     }
 
@@ -177,7 +180,7 @@ public class Tutorial implements Listener
         final Player player = event.getPlayer();
         if (player.getWorld().getEnvironment() == World.Environment.NETHER)
         {
-            messenger.send(player, MessageNode.NETHER_WARNING, MessagingModule.Type.TUTORIAL);
+            messenger.send(player, MessageNode.NETHER_WARNING, MessageNode.MsgType.TUTORIAL);
         }
     }
 
@@ -191,7 +194,7 @@ public class Tutorial implements Listener
         final Player player = event.getPlayer();
         if (player != null)
         {
-            messenger.send(player, MessageNode.CREEPER_DROP_TNT, MessagingModule.Type.TUTORIAL);
+            messenger.send(player, MessageNode.CREEPER_DROP_TNT, MessageNode.MsgType.TUTORIAL);
         }
     }
 
@@ -205,7 +208,7 @@ public class Tutorial implements Listener
         if (event.getShooter() != null)
         {
             final Player player = event.getShooter();
-            messenger.send(player, MessageNode.SKELETON_DEFLECT, MessagingModule.Type.TUTORIAL);
+            messenger.send(player, MessageNode.SKELETON_DEFLECT, MessageNode.MsgType.TUTORIAL);
         }
     }
 
@@ -217,7 +220,7 @@ public class Tutorial implements Listener
     public void onPlayerFillBucket(PlayerBucketFillEvent event)
     {
         final Player player = event.getPlayer();
-        messenger.send(player, MessageNode.BUCKET_FILL, MessagingModule.Type.TUTORIAL);
+        messenger.send(player, MessageNode.BUCKET_FILL, MessageNode.MsgType.TUTORIAL);
     }
 
 
@@ -235,7 +238,7 @@ public class Tutorial implements Listener
             Block above = block.getRelative(BlockFace.UP);
             if (above.getLightFromSky() < 10)
             {
-                messenger.send(player, MessageNode.ANTIFARMING_NO_LIGHT, MessagingModule.Type.TUTORIAL);
+                messenger.send(player, MessageNode.ANTIFARMING_NO_LIGHT, MessageNode.MsgType.TUTORIAL);
             }
         }
 
@@ -244,7 +247,7 @@ public class Tutorial implements Listener
         //Unwatered
         if (blockModule.isPlant(block.getType()) && below.getState().getData().getData() == (byte) 0)
         {
-            messenger.send(player, MessageNode.ANTIFARMING_UNWATERD, MessagingModule.Type.TUTORIAL);
+            messenger.send(player, MessageNode.ANTIFARMING_UNWATERD, MessageNode.MsgType.TUTORIAL);
         }
 
         //Warn players before they build big farms in the desert
@@ -255,7 +258,7 @@ public class Tutorial implements Listener
                 case DESERT:
                 case DESERT_HILLS:
                 {
-                    messenger.send(player, MessageNode.ANTIFARMING_DESSERT_WARNING, MessagingModule.Type.TUTORIAL);
+                    messenger.send(player, MessageNode.ANTIFARMING_DESSERT_WARNING, MessageNode.MsgType.TUTORIAL);
                     break;
                 }
             }
@@ -280,7 +283,7 @@ public class Tutorial implements Listener
     @EventHandler
     public void onExtinguishFire(EhmPlayerExtinguishFireEvent event)
     {
-        messenger.send(event.getPlayer(), MessageNode.EXTINGUISH_FIRE, MessagingModule.Type.BROADCAST);
+        messenger.send(event.getPlayer(), MessageNode.EXTINGUISH_FIRE, MessageNode.MsgType.BROADCAST);
     }
 
 
@@ -292,15 +295,51 @@ public class Tutorial implements Listener
     public void onPlayerInventoryLoss(EhmPlayerInventoryLossEvent event)
     {
         StringBuilder items = new StringBuilder();
-        for (ItemStack item : event.getStacksToRemove())
+
+        //Merge the item amounts: 1 stone, 1 stone => 2 stones
+        List<ItemStack> lostItems = new ArrayList<ItemStack>();
+        for (int i = 0; i < event.getStacksToRemove().size(); i++)
+        {
+            ItemStack item = event.getStacksToRemove().get(i);
+            //Does an item of the same type exist already?
+            int index = -1;
+            for (int lostI = 0; lostI < lostItems.size(); lostI++)
+            {
+                ItemStack lost = lostItems.get(lostI);
+                if (lost.getType() == item.getType())
+                {
+                    index = lostI;
+                    break;
+                }
+            }
+            if (index >= 0)
+                lostItems.get(index).setAmount(lostItems.get(index).getAmount() + item.getAmount());
+            else
+                lostItems.add(item);
+
+        }
+
+        //Build the output String
+        for (ItemStack item : lostItems)
         {
             if (items.length() > 0) items.append(", ");
-            items.append(item.getType().name().toLowerCase() + "(" + item.getAmount() + ")");
+            {
+                items.append(item.getAmount());
+                items.append(' ');
+                items.append(item.getType().name().toLowerCase());
+                if (item.getAmount() > 1)
+                    items.append('s');
+            }
         }
+
+        //Only print if items have been removed
         if (event.getStacksToRemove().size() > 0)
+        {
             messenger.broadcast(MessageNode.LOST_ITEMS,
                     new FindAndReplace(MessageNode.variables.PLAYER.getVarName(), event.getPlayer().getName()),
                     new FindAndReplace(MessageNode.variables.ITEMS.getVarName(), items.toString()));
+            messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS_PLAYER, MessageNode.MsgType.TUTORIAL);
+        }
     }
 
     //TODO Farming: NetherWart, Mushrooms

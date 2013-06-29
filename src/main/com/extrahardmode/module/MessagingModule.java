@@ -73,7 +73,7 @@ public class MessagingModule extends EHMModule
     }
 
 
-    private void send(Player player, MessageNode node, String message, Type type)
+    private void send(Player player, MessageNode node, String message, MessageNode.MsgType type)
     {
         switch (type)
         {
@@ -135,7 +135,7 @@ public class MessagingModule extends EHMModule
      */
     public void broadcast(MessageNode node, FindAndReplace... replace)
     {
-        send(null, node, Type.BROADCAST, replace);
+        send(null, node, MessageNode.MsgType.BROADCAST, replace);
     }
 
 
@@ -149,7 +149,7 @@ public class MessagingModule extends EHMModule
      * @param type
      *         type determnines the display lenght and color
      */
-    public void send(Player player, MessageNode node, Type type)
+    public void send(Player player, MessageNode node, MessageNode.MsgType type)
     {
         send(player, node, messages.getString(node), type);
     }
@@ -165,7 +165,7 @@ public class MessagingModule extends EHMModule
      */
     public void send(Player player, MessageNode node)
     {
-        send(player, node, messages.getString(node), Type.NOTIFICATION);
+        send(player, node, messages.getString(node), MessageNode.MsgType.NOTIFICATION);
     }
 
 
@@ -177,7 +177,7 @@ public class MessagingModule extends EHMModule
      * @param message
      *         to send
      */
-    public void send(Player player, MessageNode message, Type type, FindAndReplace... fars)
+    public void send(Player player, MessageNode message, MessageNode.MsgType type, FindAndReplace... fars)
     {
         String msgText = messages.getString(message);
         for (FindAndReplace far : fars)
@@ -205,7 +205,7 @@ public class MessagingModule extends EHMModule
     {
         if (!player.hasPermission(perm.getNode()))
         {
-            send(player, node, messages.getString(node), Type.NOTIFICATION);
+            send(player, node, messages.getString(node), MessageNode.MsgType.NOTIFICATION);
             if (sound != null)
                 player.playSound(player.getLocation(), sound, 1, soundPitch);
         }
@@ -226,14 +226,6 @@ public class MessagingModule extends EHMModule
     public void send(Player player, MessageNode node, PermissionNode perm)
     {
         send(player, node, perm, null, 0);
-    }
-
-
-    public enum Type
-    {
-        NOTIFICATION,
-        TUTORIAL,
-        BROADCAST
     }
 
 

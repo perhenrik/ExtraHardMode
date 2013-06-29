@@ -170,7 +170,7 @@ public class MsgPersistModule extends EHMModule
             StringBuilder columns = new StringBuilder();
             for (MessageNode message : MessageNode.values())
             {
-                if (message.getColumnName() != null)
+                if (message.getColumnName() != null && message.getMsgType() == MessageNode.MsgType.TUTORIAL)
                 {
                     columns.append(',');
                     columns.append(message.getColumnName());
@@ -180,6 +180,23 @@ public class MsgPersistModule extends EHMModule
             String msgQuery = String.format(
                     "CREATE TABLE IF NOT EXISTS %s (id INTEGER PRIMARY KEY UNIQUE %s)", msgTable, columns);
             statement.executeUpdate(msgQuery);
+
+            //Check if all columns are present
+            DatabaseMetaData dmd = conn.getMetaData();
+            //Add missing columns
+            for (MessageNode node : MessageNode.values())
+            {
+                if (node.getMsgType() == MessageNode.MsgType.TUTORIAL)
+                {
+                    ResultSet set = dmd.getColumns(null, null, msgTable, node.getColumnName());
+                    if (!set.next())
+                    {
+                        String updateQuery = String.format(
+                                "ALTER TABLE %s ADD COLUMN %s", msgTable, node.getColumnName());
+                        statement.executeUpdate(updateQuery);
+                    }
+                }
+            }
         } catch (SQLException e)
         {
             e.printStackTrace();
