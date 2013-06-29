@@ -54,14 +54,13 @@ import org.bukkit.util.Vector;
  */
 public class Blazes extends ListenerModule
 {
-    private ExtraHardMode plugin = null;
+    private ExtraHardMode plugin;
 
-    private RootConfig CFG = null;
+    private RootConfig CFG;
 
     private final MessageConfig messages;
 
-    private UtilityModule utils = null;
-
+    private UtilityModule utils;
 
     public Blazes(ExtraHardMode plugin)
     {
@@ -139,7 +138,7 @@ public class Blazes extends ListenerModule
         final int blazeSplitPercent = CFG.getInt(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT, world.getName());
 
         // FEATURE: nether blazes drop extra loot (glowstone and gunpowder)
-        if (bonusLoot && entity instanceof Blaze)
+        if (bonusLoot && entity instanceof Blaze &&! EntityHelper.isLootLess(entity))
         {
             if (world.getEnvironment() == World.Environment.NETHER)
             {
