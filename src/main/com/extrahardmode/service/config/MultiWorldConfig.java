@@ -358,13 +358,13 @@ public abstract class MultiWorldConfig extends EHMModule
      */
     public double getDouble(final ConfigNode node, final String world)
     {
-        double d = 0.0;
+        double d;
         switch (node.getVarType())
         {
             case DOUBLE:
             {
                 Object obj = OPTIONS.get(world, node);
-                d = obj instanceof Double ? (Double) obj : (Double) node.getValueToDisable();
+                d = obj instanceof Number ? ((Number)obj).doubleValue() : (Double) node.getValueToDisable();
                 break;
             }
             default:

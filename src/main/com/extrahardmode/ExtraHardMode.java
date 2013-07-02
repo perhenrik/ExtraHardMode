@@ -99,6 +99,7 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Glydia.class, new Glydia(this));
         registerModule(Bobs.class, new Bobs(this));
         registerModule(Ghasts.class, new Ghasts(this));
+        registerModule(Horses.class, new Horses(this));
         registerModule(MonsterRules.class, new MonsterRules(this));
         registerModule(Pigies.class, new Pigies(this));
         registerModule(RealisticChopping.class, new RealisticChopping(this));

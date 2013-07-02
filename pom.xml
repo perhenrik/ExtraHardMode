@@ -37,9 +37,9 @@
         <project.mainclass>com.extrahardmode.ExtraHardMode</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
-        <mc-version>1.5.2</mc-version>
-        <bukkit-ver>R1.0</bukkit-ver>
-        <snapshot></snapshot>
+        <mc-version>1.6.1</mc-version>
+        <bukkit-ver>R0.1</bukkit-ver>
+        <snapshot>-SNAPSHOT</snapshot>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/</srcDir>
         <!--Jenkins Build Number-->

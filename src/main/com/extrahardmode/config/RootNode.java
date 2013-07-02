@@ -141,7 +141,7 @@ public enum RootNode implements ConfigNode
      * how much health after respawn
      */
     PLAYER_RESPAWN_HEALTH
-            ("Player.Death.Respawn Health", VarType.INTEGER, SubType.HEALTH, 15),
+            ("Player.Death.Respawn Health", VarType.DOUBLE, SubType.NATURAL_NUMBER, 15),
     /**
      * how much food bar after respawn
      */
@@ -831,6 +831,31 @@ public enum RootNode implements ConfigNode
             case DOUBLE:
             {
                 obj = 0.0;
+                switch (subType)
+                {
+                    case NATURAL_NUMBER:
+                    case Y_VALUE:
+                    {
+                        if (disableValue != null)
+                            obj = (Double) disableValue.get();
+                        break;
+                    }
+                    case HEALTH:
+                    {
+                        obj = 20.0;
+                        break;
+                    }
+                    case PERCENTAGE:
+                    {
+                        obj = 0.0;
+                        break;
+                    }
+                    default:
+                    {
+                        obj = defaultValue;
+                        throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
+                    }
+                }
                 break;
             }
             case STRING:

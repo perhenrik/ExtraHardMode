@@ -96,12 +96,12 @@ public class Players extends ListenerModule
 
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.RESPAWN_FOOD_HEALTH);
 
-        final int respawnHealth = playerBypasses ? player.getMaxHealth()
-                : CFG.getInt(RootNode.PLAYER_RESPAWN_HEALTH, world.getName());
-        final int respawnFood = playerBypasses ? player.getMaxHealth()
+        final double respawnHealth = playerBypasses ? player.getMaxHealth()
+                : CFG.getDouble(RootNode.PLAYER_RESPAWN_HEALTH, world.getName());
+        final int respawnFood = playerBypasses ? 20
                 : CFG.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, world.getName());
 
-        if (respawnFood < player.getMaxHealth() || respawnHealth < player.getMaxHealth()) //maxHealth and maxFoodLevel are both 20, but there is no method for maxFoodLevel
+        if ((respawnFood < 20 || respawnHealth < player.getMaxHealth()) && respawnHealth > 0.0) //maxHealth and maxFoodLevel are both 20, but there is no method for maxFoodLevel
         {
             //TODO HIGH EhmPlayerRespawnEvent
             SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, respawnHealth, respawnFood);
@@ -171,14 +171,14 @@ public class Players extends ListenerModule
                             player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 3));
                         break;
                     case FALL:
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * event.getDamage(), 4));
-                        event.setDamage(event.getDamage() * 2);
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (20 * event.getDamage()), 4));
+                        event.setDamage(event.getDamage() * 2.0);
                         break;
                     case SUFFOCATION:
-                        event.setDamage(event.getDamage() * 5);
+                        event.setDamage(event.getDamage() * 5.0);
                         break;
                     case LAVA:
-                        event.setDamage(event.getDamage() * 2);
+                        event.setDamage(event.getDamage() * 2.0);
                         break;
                     case FIRE_TICK:
                         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));

@@ -19,37 +19,34 @@
  * along with ExtraHardMode.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.extrahardmode.service;
+package com.extrahardmode.features.monsters;
 
 
 import com.extrahardmode.ExtraHardMode;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
+import com.extrahardmode.service.ListenerModule;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 
 /**
  * @author Diemex
  */
-public class ListenerModule implements IModule, Listener
+public class Horses extends ListenerModule
 {
-    protected final ExtraHardMode plugin;
-
-
-    public ListenerModule(ExtraHardMode plugin)
+    public Horses(ExtraHardMode plugin)
     {
-        this.plugin = plugin;
+        super(plugin);
     }
 
 
-    @Override
-    public void starting()
+    @EventHandler
+    public void onEntityInteract(InventoryOpenEvent event)
     {
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-    }
-
-
-    @Override
-    public void closing()
-    {
-        HandlerList.unregisterAll(this);
+        final Inventory inv = event.getInventory();
+        InventoryView view = event.getView();
+        Class clazz = event.getClass();
+        Player player = (Player) event.getPlayer();
     }
 }
