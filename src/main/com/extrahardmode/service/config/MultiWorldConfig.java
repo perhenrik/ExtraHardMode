@@ -48,6 +48,18 @@ import java.util.*;
  */
 public abstract class MultiWorldConfig extends EHMModule
 {
+
+    /**
+     * For mods like MystCraft which allow Players to create their own dimensions, so the admin doesnt have to add
+     * worlds manually
+     */
+    protected boolean enabledForAll = false;
+
+    /**
+     * String that will enabled the plugin for all possible worlds
+     */
+    protected final String ALL_WORLDS = "@all";
+
     private Table<String/*world*/, ConfigNode, Object> OPTIONS;
 
 
@@ -335,7 +347,11 @@ public abstract class MultiWorldConfig extends EHMModule
         {
             case INTEGER:
             {
-                Object obj = OPTIONS.get(world, node);
+                Object obj = null;
+                if (OPTIONS.contains(world, node))
+                    obj = OPTIONS.get(world, node);
+                else if (enabledForAll)
+                    obj = OPTIONS.get(ALL_WORLDS, node);
                 i = obj instanceof Integer ? (Integer) obj : (Integer) node.getValueToDisable();
                 break;
             }
@@ -363,7 +379,11 @@ public abstract class MultiWorldConfig extends EHMModule
         {
             case DOUBLE:
             {
-                Object obj = OPTIONS.get(world, node);
+                Object obj = null;
+                if (OPTIONS.contains(world, node))
+                    obj = OPTIONS.get(world, node);
+                else if (enabledForAll)
+                    obj = OPTIONS.get(ALL_WORLDS, node);
                 d = obj instanceof Double ? (Double) obj : (Double) node.getValueToDisable();
                 break;
             }
@@ -391,7 +411,11 @@ public abstract class MultiWorldConfig extends EHMModule
         {
             case BOOLEAN:
             {
-                Object obj = OPTIONS.get(world, node);
+                Object obj = null;
+                if (OPTIONS.contains(world, node))
+                    obj = OPTIONS.get(world, node);
+                else if (enabledForAll)
+                    obj = OPTIONS.get(ALL_WORLDS, node);
                 bool = obj instanceof Boolean ? (Boolean) obj : (Boolean) node.getValueToDisable();
                 break;
             }
@@ -419,7 +443,11 @@ public abstract class MultiWorldConfig extends EHMModule
         {
             case STRING:
             {
-                Object obj = OPTIONS.get(world, node);
+                Object obj = null;
+                if (OPTIONS.contains(world, node))
+                    obj = OPTIONS.get(world, node);
+                else if (enabledForAll)
+                    obj = OPTIONS.get(ALL_WORLDS, node);
                 out = obj instanceof String ? (String) obj : (String) node.getValueToDisable();
                 break;
             }
@@ -447,7 +475,11 @@ public abstract class MultiWorldConfig extends EHMModule
         {
             case LIST:
             {
-                Object obj = OPTIONS.get(world, node);
+                Object obj = null;
+                if (OPTIONS.contains(world, node))
+                    obj = OPTIONS.get(world, node);
+                else if (enabledForAll)
+                    obj = OPTIONS.get(ALL_WORLDS, node);
                 list = obj instanceof List ? (List<String>) obj : (List<String>) node.getValueToDisable();
                 break;
             }
