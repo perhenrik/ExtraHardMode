@@ -138,7 +138,7 @@ public class Players extends ListenerModule
             for (int i = 0; i < numberOfStacksToRemove && drops.size() > 0; i++)
                 removedDrops.add(drops.get(plugin.getRandom().nextInt(drops.size())));
 
-            EhmPlayerInventoryLossEvent inventoryLossEvent = new EhmPlayerInventoryLossEvent(player, drops, removedDrops);
+            EhmPlayerInventoryLossEvent inventoryLossEvent = new EhmPlayerInventoryLossEvent(event, drops, removedDrops);
             plugin.getServer().getPluginManager().callEvent(inventoryLossEvent);
 
             if (!inventoryLossEvent.isCancelled())

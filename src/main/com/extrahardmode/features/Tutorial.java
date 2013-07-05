@@ -2,12 +2,12 @@ package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.events.*;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
-import com.extrahardmode.service.FindAndReplace;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -36,6 +36,8 @@ public class Tutorial implements Listener
 
     private final MessagingModule messenger;
 
+    private final MessageConfig msgCfg;
+
     private final BlockModule blockModule;
 
     private final PlayerModule playerModule;
@@ -46,6 +48,7 @@ public class Tutorial implements Listener
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.messenger = plugin.getModuleForClass(MessagingModule.class);
+        this.msgCfg = plugin.getModuleForClass(MessageConfig.class);
         this.blockModule = plugin.getModuleForClass(BlockModule.class);
         this.playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
@@ -283,7 +286,7 @@ public class Tutorial implements Listener
     @EventHandler
     public void onExtinguishFire(EhmPlayerExtinguishFireEvent event)
     {
-        messenger.send(event.getPlayer(), MessageNode.EXTINGUISH_FIRE, MessageNode.MsgType.BROADCAST);
+        messenger.send(event.getPlayer(), MessageNode.EXTINGUISH_FIRE, MessageNode.MsgType.TUTORIAL);
     }
 
 
@@ -335,9 +338,11 @@ public class Tutorial implements Listener
         //Only print if items have been removed
         if (event.getStacksToRemove().size() > 0)
         {
-            messenger.broadcast(MessageNode.LOST_ITEMS,
-                    new FindAndReplace(MessageNode.variables.PLAYER.getVarName(), event.getPlayer().getName()),
-                    new FindAndReplace(MessageNode.variables.ITEMS.getVarName(), items.toString()));
+            String outPut = msgCfg.getString(MessageNode.LOST_ITEMS);
+            outPut = outPut.replace(MessageNode.variables.DEATH_MSG.getVarName(), event.getDeathEvent().getDeathMessage());
+            outPut = outPut.replace(MessageNode.variables.ITEMS.getVarName(), items.toString());
+            event.getDeathEvent().setDeathMessage(outPut);
+
             messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS_PLAYER, MessageNode.MsgType.TUTORIAL);
         }
     }

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -20,6 +21,12 @@ public class EhmPlayerInventoryLossEvent extends Event implements Cancellable
      * Player who died
      */
     private final Player player;
+
+
+    /**
+     * DeathEvent to modify the Message for example
+     */
+    private final PlayerDeathEvent event;
 
     /**
      * All the items a Player has lost by dying
@@ -45,11 +52,23 @@ public class EhmPlayerInventoryLossEvent extends Event implements Cancellable
      * @param drops
      *         all items that got lost
      */
-    public EhmPlayerInventoryLossEvent(Player player, List<ItemStack> drops, List<ItemStack> stacksToRemove)
+    public EhmPlayerInventoryLossEvent(PlayerDeathEvent event, List<ItemStack> drops, List<ItemStack> stacksToRemove)
     {
-        this.player = player;
+        this.event = event;
+        this.player = event.getEntity();
         this.drops = drops;
         this.stacksToRemove = stacksToRemove;
+    }
+
+
+    /**
+     * Get the DeathEvent associated with this inventory loss event
+     *
+     * @return event
+     */
+    public PlayerDeathEvent getDeathEvent()
+    {
+        return event;
     }
 
 
@@ -97,8 +116,6 @@ public class EhmPlayerInventoryLossEvent extends Event implements Cancellable
 
     /**
      * Set all the indexes of stacks to be removed... make sure the indeces actually exist
-     *
-     * @param stacksToRemove
      */
     public void setStacksToRemove(List<ItemStack> stacksToRemove)
     {

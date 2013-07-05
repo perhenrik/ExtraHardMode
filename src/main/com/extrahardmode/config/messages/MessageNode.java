@@ -114,7 +114,7 @@ public enum MessageNode implements ConfigNode
                     "&cPutting out fire with your hand will catch you on fire."),
     LOST_ITEMS
             ("List Lost Items On Death", MsgType.NOTIFICATION, "lost_items_broadcast",
-                    "&dIn the scuffle " + variables.PLAYER.getVarName() + " managed to loose " + variables.ITEMS.getVarName()),
+                    variables.DEATH_MSG + " and managed to loose " + variables.ITEMS.getVarName()),
     LOST_ITEMS_PLAYER
             ("Inform Player On Lost Items", MsgType.TUTORIAL, "lost_items",
                     "On death there is a a chance you might loose some of your items!"),
@@ -289,9 +289,10 @@ public enum MessageNode implements ConfigNode
      */
     public enum variables
     {
+        DEATH_MSG("DEATH_MSG"),
         PLAYER("$PLAYER"),
         PLAYERS("$PLAYERS"),
-        ITEMS("$ITEMS");
+        ITEMS("ITEMS");
 
         private final String variable;
 
