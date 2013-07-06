@@ -38,8 +38,7 @@
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
         <mc-version>1.6.1</mc-version>
-        <bukkit-ver>R0.1</bukkit-ver>
-        <snapshot>-SNAPSHOT</snapshot>
+        <bukkit-ver>R0.1-CUSTOM</bukkit-ver><!--a build that contains the horse API-->
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/</srcDir>
         <!--Jenkins Build Number-->
@@ -111,13 +110,13 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>${mc-version}-${bukkit-ver}${snapshot}</version>
+            <version>${mc-version}-${bukkit-ver}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>${mc-version}-${bukkit-ver}${snapshot}</version>
+            <version>${mc-version}-${bukkit-ver}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
