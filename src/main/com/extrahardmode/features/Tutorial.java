@@ -2,12 +2,16 @@ package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
+import com.extrahardmode.config.messages.MyMsgTypes;
 import com.extrahardmode.events.*;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -19,6 +23,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.inventory.ItemStack;
@@ -36,6 +42,8 @@ public class Tutorial implements Listener
 
     private final MessagingModule messenger;
 
+    private final RootConfig CFG;
+
     private final MessageConfig msgCfg;
 
     private final BlockModule blockModule;
@@ -48,10 +56,12 @@ public class Tutorial implements Listener
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.messenger = plugin.getModuleForClass(MessagingModule.class);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         this.msgCfg = plugin.getModuleForClass(MessageConfig.class);
         this.blockModule = plugin.getModuleForClass(BlockModule.class);
         this.playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
+
 
     /**
      * When an Entity targets another Entity
@@ -344,6 +354,49 @@ public class Tutorial implements Listener
             event.getDeathEvent().setDeathMessage(outPut);
 
             messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS_PLAYER, MessageNode.MsgType.TUTORIAL);
+        }
+    }
+
+
+    /**
+     * Display the weight of the inventory
+     */
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event)
+    {
+        if (event.getWhoClicked() instanceof Player && messenger.arePopupsEnabled())
+        {
+            final Player player = (Player) event.getWhoClicked();
+
+            final double armorPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, player.getWorld().getName());
+            final double invPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, player.getWorld().getName());
+            final double toolPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, player.getWorld().getName());
+            final double maxPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, player.getWorld().getName());
+
+            //Because when player takes out we still have old inventory
+            plugin.getServer().getScheduler().runTask(plugin, new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    final float weight = PlayerModule.inventoryWeight(player, (float) armorPoints, (float) invPoints, (float) toolPoints);
+
+                    List<String> weightMessage = new ArrayList<String>(2);
+                    weightMessage.add(String.format("Weight %.1f/%.1f", weight, maxPoints));
+                    weightMessage.add(weight > maxPoints ? ChatColor.RED + "U will drown" : ChatColor.GREEN + "U won't drown");
+                    messenger.sendPopup(player, MyMsgTypes.WEIGHT_MSG, weightMessage);
+                }
+            });
+        }
+    }
+
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event)
+    {
+        if (event.getPlayer() instanceof Player)
+        {
+            messenger.hidePopup((Player)event.getPlayer(), MyMsgTypes.WEIGHT_MSG.getUniqueIdentifier());
         }
     }
 

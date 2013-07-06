@@ -30,15 +30,17 @@ import com.extrahardmode.service.FindAndReplace;
 import com.extrahardmode.service.PermissionNode;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import me.diemex.sbpopupapi.MessageType;
-import me.diemex.sbpopupapi.SBPopupAPI;
-import me.diemex.sbpopupapi.SBPopupManager;
+import de.diemex.sbpopupapi.MessageType;
+import de.diemex.sbpopupapi.MsgType;
+import de.diemex.sbpopupapi.SBPopupAPI;
+import de.diemex.sbpopupapi.SBPopupManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * @author Max
@@ -64,11 +66,10 @@ public class MessagingModule extends EHMModule
         persistModule = plugin.getModuleForClass(MsgPersistModule.class);
         try
         {
-            if (null != Class.forName("me.diemex.sbpopupapi.SBPopupAPI"))
-                manager = SBPopupAPI.getSBManager();
-        } catch (ClassNotFoundException e)
+            plugin.getServer().getPluginManager().getPlugin("SBPopupAPI");
+            manager = SBPopupAPI.getSBManager();
+        } catch (Exception ignored)
         {
-            e.printStackTrace();
         }
     }
 
@@ -90,7 +91,7 @@ public class MessagingModule extends EHMModule
                     if (!node.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
                     {
                         if (manager != null)
-                            manager.showPopup(player.getName(), MessageType.NOTFICATION, "ExtraHardMode", message);
+                            sendPopup(player, MessageType.NOTFICATION, message);
                         else
                             player.sendMessage(message);
                         playerData.lastMessageSent = node;
@@ -110,7 +111,7 @@ public class MessagingModule extends EHMModule
                         timeouts.put(player.getName(), node, now);
                         String msgText = messages.getString(node);
                         if (manager != null)
-                            manager.showPopup(player.getName(), MessageType.WARNING, "ExtraHardMode", msgText);
+                            sendPopup(player, MessageType.WARNING, msgText);
                         else
                             player.sendMessage(ChatColor.DARK_RED + plugin.getTag() + ChatColor.WHITE + " " + msgText);
                         persistModule.increment(node, player.getName());
@@ -128,10 +129,8 @@ public class MessagingModule extends EHMModule
     /**
      * Broacast a message to the whole server
      *
-     * @param node
-     *         message to broadcast
-     * @param replace
-     *         replace these placeholders
+     * @param node    message to broadcast
+     * @param replace replace these placeholders
      */
     public void broadcast(MessageNode node, FindAndReplace... replace)
     {
@@ -142,12 +141,9 @@ public class MessagingModule extends EHMModule
     /**
      * Send a message to a Player.
      *
-     * @param player
-     *         to send the message to
-     * @param node
-     *         message, gets loaded from the config
-     * @param type
-     *         type determnines the display lenght and color
+     * @param player to send the message to
+     * @param node   message, gets loaded from the config
+     * @param type   type determnines the display lenght and color
      */
     public void send(Player player, MessageNode node, MessageNode.MsgType type)
     {
@@ -158,10 +154,8 @@ public class MessagingModule extends EHMModule
     /**
      * Send a message to a Player. Default type is NOTIFICATION.
      *
-     * @param player
-     *         to send the message to
-     * @param node
-     *         message, gets loaded from the config
+     * @param player to send the message to
+     * @param node   message, gets loaded from the config
      */
     public void send(Player player, MessageNode node)
     {
@@ -172,10 +166,8 @@ public class MessagingModule extends EHMModule
     /**
      * Sends a message with variables which will be inserted in the specified areas
      *
-     * @param player
-     *         Player to send the message to
-     * @param message
-     *         to send
+     * @param player  Player to send the message to
+     * @param message to send
      */
     public void send(Player player, MessageNode message, MessageNode.MsgType type, FindAndReplace... fars)
     {
@@ -192,14 +184,10 @@ public class MessagingModule extends EHMModule
      * Send the player an informative message to explain what he's doing wrong. Play an optional sound aswell
      * <p/>
      *
-     * @param player
-     *         to send msg to
-     * @param perm
-     *         permission to silence the message
-     * @param sound
-     *         errorsound to play after the event got cancelled
-     * @param soundPitch
-     *         20-35 is good
+     * @param player     to send msg to
+     * @param perm       permission to silence the message
+     * @param sound      errorsound to play after the event got cancelled
+     * @param soundPitch 20-35 is good
      */
     public void send(Player player, MessageNode node, PermissionNode perm, Sound sound, float soundPitch)
     {
@@ -216,16 +204,65 @@ public class MessagingModule extends EHMModule
      * Send the player an informative message to explain what he's doing wrong.
      * <p/>
      *
-     * @param player
-     *         to send msg to
-     * @param node
-     *         the message
-     * @param perm
-     *         permission to silence the message
+     * @param player to send msg to
+     * @param node   the message
+     * @param perm   permission to silence the message
      */
     public void send(Player player, MessageNode node, PermissionNode perm)
     {
         send(player, node, perm, null, 0);
+    }
+
+
+    /**
+     * Send a short message using SbPopupAPI
+     *
+     * @param player  player to send the message to
+     * @param type    type defines the length color for consistency
+     * @param message text to display
+     */
+    public void sendPopup(Player player, MsgType type, String message)
+    {
+        if (manager != null)
+            manager.showPopup(player.getName(), type, "ExtraHardMode", message);
+    }
+
+
+    /**
+     * Send a short message using SbPopupAPI
+     *
+     * @param player  player to send the message to
+     * @param type    type defines the length color for consistency
+     * @param message text already seperated into lines
+     */
+    public void sendPopup(Player player, MsgType type, List<String> message)
+    {
+        if (manager != null)
+            manager.showPopup(player.getName(), type, "ExtraHardMode", message);
+    }
+
+
+    /**
+     * Hides/Removes the message with the given unqiue identifier
+     *
+     * @param player     player for which to hide message
+     * @param identifier uique identifier of this message
+     */
+    public void hidePopup(Player player, String identifier)
+    {
+        if (manager != null)
+            manager.removePopup(player.getName(), identifier);
+    }
+
+
+    /**
+     * Are popops enabled
+     *
+     * @return if popupmanager is loaded
+     */
+    public boolean arePopupsEnabled()
+    {
+        return manager != null;
     }
 
 

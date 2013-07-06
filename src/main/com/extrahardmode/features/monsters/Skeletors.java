@@ -43,9 +43,7 @@ import org.bukkit.util.Vector;
 /**
  * Changes to Skeletons include:
  * <p/>
- * Immunity to arrows , <<<<<<< HEAD shooting Silverfish
- * <p/>
- * ======= >>>>>>> dev
+ * Immunity to arrows
  */
 public class Skeletors extends ListenerModule
 {

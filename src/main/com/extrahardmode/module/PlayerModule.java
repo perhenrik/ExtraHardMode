@@ -97,7 +97,7 @@ public class PlayerModule extends EHMModule
      * @param toolPoints
      *         Points per tool (which doesn't stack)
      */
-    public float inventoryWeight(Player player, float armorPoints, float inventoryPoints, float toolPoints)
+    public static float inventoryWeight(Player player, float armorPoints, float inventoryPoints, float toolPoints)
     {
         // count worn clothing
         PlayerInventory inventory = player.getInventory();
@@ -117,7 +117,7 @@ public class PlayerModule extends EHMModule
             if (itemStack != null && itemStack.getType() != Material.AIR)
             {
                 float addWeight = 0.0F;
-                if (blockModule.isTool(itemStack.getType()))
+                if (BlockModule.isTool(itemStack.getType()))
                 {
                     addWeight += toolPoints;
                 } else
