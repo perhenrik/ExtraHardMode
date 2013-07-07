@@ -57,8 +57,7 @@ public class BlockModule extends EHMModule
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - plugin instance.
+     * @param plugin - plugin instance.
      */
     public BlockModule(ExtraHardMode plugin)
     {
@@ -70,14 +69,11 @@ public class BlockModule extends EHMModule
     /**
      * Schedule the physics task
      *
-     * @param block
-     *         - Target block.
-     * @param recursionCount
-     *         - Number of times to execute.
-     * @param forceCheck
-     *         - Whether to force adjacent blocks to be checked for the first iteration
-     * @param wait
-     *         - how many ticks to wait before the next task, mainly to prevent crashes when FallingBlocks collide
+     * @param block          - Target block.
+     * @param recursionCount - Number of times to execute.
+     * @param forceCheck     - Whether to force adjacent blocks to be checked for the first iteration
+     * @param wait           - how many ticks to wait before the next task, mainly to prevent crashes when FallingBlocks
+     *                       collide
      */
     public void physicsCheck(Block block, int recursionCount, boolean forceCheck, int wait)
     {
@@ -93,10 +89,8 @@ public class BlockModule extends EHMModule
     /**
      * Makes one single block subject to gravity
      *
-     * @param block
-     *         - Block to apply physics to.
-     * @param damageEntities
-     *         - if Entities should be damaged
+     * @param block          - Block to apply physics to.
+     * @param damageEntities - if Entities should be damaged
      *
      * @return the UUID of this FallingBlock
      */
@@ -132,8 +126,7 @@ public class BlockModule extends EHMModule
      * <p/>
      * remember to remove the mark as block metadata persists
      *
-     * @param block
-     *         to mark
+     * @param block to mark
      */
     public void mark(Block block)
     {
@@ -144,8 +137,7 @@ public class BlockModule extends EHMModule
     /**
      * Removes Metadata from the block
      *
-     * @param block
-     *         to remove the metadata from
+     * @param block to remove the metadata from
      */
     public void removeMark(Block block)
     {
@@ -156,8 +148,7 @@ public class BlockModule extends EHMModule
     /**
      * Has this block been marked?
      *
-     * @param block
-     *         to check
+     * @param block to check
      *
      * @return if it has been marked
      */
@@ -170,10 +161,8 @@ public class BlockModule extends EHMModule
     /**
      * Check if the given plant at the block should die.
      *
-     * @param block
-     *         - Block to check.
-     * @param newDataValue
-     *         - Data value to replace.
+     * @param block        - Block to check.
+     * @param newDataValue - Data value to replace.
      *
      * @return True if plant should die, else false.
      */
@@ -275,14 +264,10 @@ public class BlockModule extends EHMModule
     /**
      * Get all the blocks in a specific area centered around the Location passed in
      *
-     * @param loc
-     *         Center of the search area
-     * @param height
-     *         how many blocks up to check
-     * @param radius
-     *         of the search (cubic search radius)
-     * @param type
-     *         of Material to search for
+     * @param loc    Center of the search area
+     * @param height how many blocks up to check
+     * @param radius of the search (cubic search radius)
+     * @param type   of Material to search for
      *
      * @return all the Block with the given Type in the specified radius
      */
@@ -311,8 +296,7 @@ public class BlockModule extends EHMModule
     /**
      * Will a FallingBlock which lands on this Material break and drop to the ground?
      *
-     * @param mat
-     *         to check
+     * @param mat to check
      *
      * @return boolean
      */
@@ -329,6 +313,99 @@ public class BlockModule extends EHMModule
                 || mat == Material.DEAD_BUSH
                 || mat == Material.LONG_GRASS
                 || mat == Material.WEB;
+    }
+
+
+    /**
+     * Returns if Material is a plant that should be affected by the farming Rules
+     */
+    public boolean isPlant(Material material)
+    {
+        return material.equals(Material.CROPS)
+                || material.equals(Material.POTATO)
+                || material.equals(Material.CARROT)
+                || material.equals(Material.MELON_STEM)
+                || material.equals(Material.PUMPKIN_STEM);
+    }
+
+
+    /**
+     * Is this Material food for horses?
+     *
+     * @param material material to test
+     *
+     * @return true if vegetable
+     */
+    public static boolean isHorseFood(Material material)
+    {
+        return material.equals(Material.CARROT_ITEM)
+                || material.equals(Material.POTATO_ITEM)
+                || material.equals(Material.APPLE)
+                || material.equals(Material.HAY_BLOCK)
+                || material.equals(Material.WHEAT);
+    }
+
+
+    /**
+     * Is the given material a tool, e.g. doesn't stack
+     */
+    public static boolean isTool(Material material)
+    {
+        return material.name().endsWith("AXE") //axe & pickaxe
+                || material.name().endsWith("SPADE")
+                || material.name().endsWith("SWORD")
+                || material.name().endsWith("HOE")
+                || material.name().endsWith("BUCKET") //water, milk, lava,..
+                || material.equals(Material.BOW)
+                || material.equals(Material.FISHING_ROD)
+                || material.equals(Material.WATCH)
+                || material.equals(Material.COMPASS)
+                || material.equals(Material.FLINT_AND_STEEL);
+    }
+
+
+    /**
+     * is the given material armor
+     */
+    public boolean isArmor(Material material)
+    {
+        return material.name().endsWith("HELMET")
+                || material.name().endsWith("CHESTPLATE")
+                || material.name().endsWith("LEGGINGS")
+                || material.name().endsWith("BOOTS");
+    }
+
+
+    /**
+     * Consider this block a natural block for spawning?
+     */
+    public boolean isNaturalSpawnMaterial(Material material)
+    {
+        return material == Material.GRASS
+                || material == Material.DIRT
+                || material == Material.STONE
+                || material == Material.SAND
+                || material == Material.GRAVEL
+                || material == Material.MOSSY_COBBLESTONE
+                || material == Material.OBSIDIAN
+                || material == Material.COBBLESTONE
+                || material == Material.BEDROCK
+                || material == Material.AIR      //Ghast, Bat
+                || material == Material.WATER;  //Squid
+    }
+
+
+    /**
+     * Is this a natural block for netherspawning?
+     */
+    //TODO name too long
+    public boolean isNaturalNetherSpawn(Material material)
+    {
+        return material == Material.NETHERRACK
+                || material == Material.NETHER_BRICK
+                || material == Material.SOUL_SAND
+                || material == Material.GRAVEL
+                || material == Material.AIR;
     }
 
 

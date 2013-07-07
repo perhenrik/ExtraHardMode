@@ -25,7 +25,7 @@ package com.extrahardmode.modules;
 import com.extrahardmode.mocks.MockExtraHardMode;
 import com.extrahardmode.mocks.MockPlayer;
 import com.extrahardmode.mocks.MockPlayerInventory;
-import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.module.PlayerModule;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class TestInventoryWeight
 {
-    private UtilityModule module;
+    private PlayerModule module;
 
     private final Player myPlayer = new MockPlayer("Diemex94").get();
 
@@ -65,7 +65,7 @@ public class TestInventoryWeight
     @Before
     public void prepare()
     {
-        module = new UtilityModule(new MockExtraHardMode().get());
+        module = new PlayerModule(new MockExtraHardMode().get());
     }
 
 

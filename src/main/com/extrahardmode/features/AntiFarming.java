@@ -121,7 +121,7 @@ public class AntiFarming extends ListenerModule
         if (weakFoodCrops && action.equals(Action.RIGHT_CLICK_BLOCK) && !playerBypasses)
         {
             Block block = event.getClickedBlock();
-            if (utils.isPlant(block.getType()))
+            if (blockModule.isPlant(block.getType()))
             {
                 Material materialInHand = player.getItemInHand().getType();
                 if (materialInHand == Material.INK_SACK && plugin.getModuleForClass(BlockModule.class).plantDies(block, Byte.MAX_VALUE))
@@ -387,7 +387,7 @@ public class AntiFarming extends ListenerModule
             if (cantCraftMelons && (result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS))
             {
                 event.setCancelled(true);
-                plugin.getModuleForClass(MessagingModule.class).sendMessage(player, MessageNode.NO_CRAFTING_MELON_SEEDS);
+                plugin.getModuleForClass(MessagingModule.class).send(player, MessageNode.NO_CRAFTING_MELON_SEEDS);
                 return;
             }
         }

@@ -23,12 +23,14 @@ package com.extrahardmode.features.monsters;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.HorseJumpEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.HorseInventory;
@@ -36,14 +38,37 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.*;
+
 /**
  * @author Diemex
  */
 public class Horses extends ListenerModule
 {
+    /**
+     * Store the food value of each horse
+     */
+    private Map<UUID/*HorseId*/, Integer/*Food Value*/> healthMap = new HashMap<UUID, Integer>(8);
+
+    /**
+     * Is the horse being ridden and should we drain its food
+     */
+    private Set<UUID> horsesBeingRidden = new HashSet<UUID>(8);
+
+    /**
+     * This horse has been right clicked with food and player shouldn't mount the horse
+     */
+    private Set<UUID> enterMap = new HashSet<UUID>(1);
+
+    private final MessagingModule messenger;
+
+    private final String horseMessage = "extrahardmode.horse.health";
+
+
     public Horses(ExtraHardMode plugin)
     {
         super(plugin);
+        messenger = plugin.getModuleForClass(MessagingModule.class);
     }
 
 
@@ -55,27 +80,13 @@ public class Horses extends ListenerModule
     {
         final Inventory inv = event.getInventory();
 
-        //test
-        short dur = event.getCurrentItem().getDurability();
-        switch (event.getClick())
-        {
-            case RIGHT:
-                event.getCurrentItem().setDurability(dur--);
-                break;
-            case LEFT:
-                event.getCurrentItem().setDurability(dur++);
-                break;
-        }
-
-        plugin.getServer().broadcastMessage("durability: " + event.getCurrentItem().getDurability());
-
         if (inv instanceof HorseInventory)
         {
             Inventory horseInv = event.getView().getTopInventory();
             int clickedSlot = event.getRawSlot();
 
             //TODO allow saddle and armor placement
-            //if (event.getWhoClicked().getLocation().getBlockY() < 60)
+            if (event.getWhoClicked().getLocation().getBlockY() < 60)
             {
                 //In a horse inventory the first two slots are saddle + armor, a mule only has a saddle + potentially a chest
                 //Block usage of the chest in caves, but allow taking of the saddle
@@ -86,6 +97,9 @@ public class Horses extends ListenerModule
             }
         }
     }
+
+
+    //TODO Save who is on a horse and who not
 
 
     /**
@@ -104,7 +118,7 @@ public class Horses extends ListenerModule
                 case BLOCK_EXPLOSION:
                 case ENTITY_EXPLOSION:
                     //TODO EhmPlayerEnvironmentalDamageEvent for each type
-                    if (event.getDamage() > 2)
+                    if (event.getDamage() > 2.0)
                         horse.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 3));
                     break;
                 case FALL:
@@ -124,13 +138,131 @@ public class Horses extends ListenerModule
         }
     }
 
+
+    /**
+     * Reduce jump height significantly
+     */
+    @EventHandler
+    public void onHorseJump(HorseJumpEvent event)
+    {
+        final float jumpHeight = event.getPower();
+        event.setPower(jumpHeight / 2.0F);
+    }
+
     /**
      * Make horse armor wear out
      */
     /**
      * Make saddle wear out
      */
+
+    /**
+     * Make horses require food.
+     * Rightclicking a horse with food feeds it, player shouldnt enter the horse afterwards
+     */
+    /*@EventHandler
+    public void onvehicleEnter(VehicleEnterEvent event)
+    {
+        plugin.getServer().broadcastMessage(event.getEntered().getType() + " Entered " + event.getVehicle().getType());
+        if (enterMap.contains(event.getVehicle().getUniqueId()))
+        {
+            //TODO player view resetting
+            enterMap.remove(event.getVehicle().getUniqueId());
+            event.setCancelled(true);
+        }
+    }*/
+
+
     /**
      * Make horses require food
      */
+    /*@EventHandler
+    public void onVehicleExit(VehicleExitEvent event)
+    {
+        plugin.getServer().broadcastMessage(event.getExited().getType() + " Exited " + event.getVehicle().getType());
+    }*/
+
+
+    /**
+     * When a Player right clicks a horse with food in his hand fill up the food meter of the horse
+     */
+    /*@EventHandler
+    public void onPlayerInteract(PlayerInteractEntityEvent event)
+    {
+        final Player player = event.getPlayer();
+        final Horse horse = event.getRightClicked() instanceof Horse ? (Horse) event.getRightClicked() : null;
+
+        plugin.getServer().broadcastMessage("Right Clicked: " + event.getRightClicked().getType());
+        plugin.getServer().getLogger().info(player.getItemInHand().getType() + " horse food " + (BlockModule.isHorseFood(player.getItemInHand().getType()) ? "true" : "false"));
+
+        //Player feeds horse when he has a veggie in his hand and the horse is tamed
+        if (horse != null && horse.isTamed() && BlockModule.isHorseFood(player.getItemInHand().getType()))
+        {
+            final UUID horseId = event.getRightClicked().getUniqueId();
+            int oldValue = healthMap.containsKey(horseId) ? healthMap.get(horseId) : 0, newValue;
+
+            switch (player.getItemInHand().getType())
+            {
+                //TODO lol good nutrition
+                case CARROT_ITEM:
+                case POTATO_ITEM:
+                case WHEAT:
+                    newValue = incrementFood(horseId, 5);
+                    break;
+                case HAY_BLOCK:
+                    newValue = incrementFood(horseId, 40);
+                    break;
+                default:
+                    throw new UnsupportedOperationException(player.getItemInHand().getType() + " has been added to eatable blocks but no food value has been defined.");
+            }
+
+            //TODO visual effects sound when eating
+            //Consume food if the horse ate it
+            if (newValue > oldValue)
+                player.getItemInHand().setAmount(player.getItemInHand().getAmount() - 1);
+
+            //TODO horses dont spawn with full food
+            //TODO only tamed horses
+            //Update player on new value
+            if (oldValue < 20 && newValue >= 20)
+                messenger.send(player, MessageNode.HORSE_FEED_LOW);
+            else if (oldValue < 50 && newValue >= 50)
+                messenger.send(player, MessageNode.HORSE_FEED_MIDDLE);
+            else if (oldValue < 80 && newValue >= 80)
+                messenger.send(player, MessageNode.HORSE_FEED_HIGH);
+
+            //Save that the Player just feed the horse and cancel the upcoming VehicleEnterEvent
+            enterMap.add(horseId);
+        }
+    }*/
+
+
+    /**
+     * Increment the food level of the given horse
+     *
+     * @param horse  entity id of the horse
+     * @param amount amount to add to the food bar
+     *
+     * @return new value
+     */
+    public int incrementFood(UUID horse, int amount)
+    {
+        int oldValue = healthMap.containsKey(horse) ? healthMap.get(horse) : 0;
+        if (oldValue + amount < 100)
+            healthMap.put(horse, oldValue + amount);
+        return oldValue + amount;
+    }
+
+
+    /**
+     * Increment the food level of the given horse
+     *
+     * @param horse  entity id of the horse
+     * @param amount amount to subtract from the food bar
+     */
+    public void decrementFood(UUID horse, int amount)
+    {
+        int oldValue = healthMap.containsKey(horse) ? healthMap.get(horse) : 0;
+        healthMap.put(horse, oldValue - amount);
+    }
 }

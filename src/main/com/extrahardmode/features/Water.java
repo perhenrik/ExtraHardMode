@@ -120,7 +120,7 @@ public class Water extends ListenerModule
                     // if no cached value, calculate
                     if (playerData.cachedWeightStatus <= 0)
                     {
-                        playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
+                        playerData.cachedWeightStatus = playerModule.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
                     }
                     // if too heavy let player feel the weight by pulling them down, if in boat can always swim
                     if (playerData.cachedWeightStatus > maxWeight && !player.isInsideVehicle())
@@ -129,11 +129,11 @@ public class Water extends ListenerModule
                     }
                 }
                 //when you swim up waterfalls and basically are flying with only a tip of your body in water
-                else if (blockWaterElevators && !utils.isPlayerOnLadder(player) && !player.isInsideVehicle() && !player.isFlying())
+                else if (blockWaterElevators && !playerModule.isPlayerOnLadder(player) && !player.isInsideVehicle() && !player.isFlying())
                 {
                     if (playerData.cachedWeightStatus <= 0)
                     {
-                        playerData.cachedWeightStatus = utils.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
+                        playerData.cachedWeightStatus = playerModule.inventoryWeight(player, armorPoints, inventoryPoints, toolPoints);
                     } else if (playerData.cachedWeightStatus > maxWeight)
                     {
                         //Detect waterfalls
@@ -166,6 +166,8 @@ public class Water extends ListenerModule
     /**
      * Drowns the player at the given rate
      */
+
+
     void drown(Player player, int drowningRate, int overEncumbranceExtra, float cachedWeightStatus, float maxWeight, float normalDrownVel, float overwaterDrownVel)
     {
         if (cachedWeightStatus > maxWeight)
@@ -186,7 +188,7 @@ public class Water extends ListenerModule
                 else  //when under water
                     vec.setY(normalDrownVel);
                 player.setVelocity(vec);
-                messenger.sendMessage(player, MessageNode.NO_SWIMMING_IN_ARMOR);
+                messenger.send(player, MessageNode.NO_SWIMMING_IN_ARMOR);
             }
         }
     }

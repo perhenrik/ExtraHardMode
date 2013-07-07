@@ -26,6 +26,8 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
+import com.extrahardmode.events.EhmPlayerExtinguishFireEvent;
+import com.extrahardmode.events.EhmPlayerInventoryLossEvent;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
@@ -47,6 +49,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -128,15 +131,24 @@ public class Players extends ListenerModule
         // FEATURE: some portion of player inventory is permanently lost on death
         if (!playerBypasses)
         {
-            //TODO HIGH EhmPlayerInvetoryLossEvent after computation
             List<ItemStack> drops = event.getDrops();
+            List<ItemStack> removedDrops = new ArrayList<ItemStack>();
+
             int numberOfStacksToRemove = (int) (drops.size() * (deathLossPercent / 100.0f));
             for (int i = 0; i < numberOfStacksToRemove && drops.size() > 0; i++)
+                removedDrops.add(drops.get(plugin.getRandom().nextInt(drops.size())));
+
+            EhmPlayerInventoryLossEvent inventoryLossEvent = new EhmPlayerInventoryLossEvent(event, drops, removedDrops);
+            plugin.getServer().getPluginManager().callEvent(inventoryLossEvent);
+
+            if (!inventoryLossEvent.isCancelled())
             {
-                int indexOfStackToRemove = plugin.getRandom().nextInt(drops.size());
-                drops.remove(indexOfStackToRemove);
-                //TODO HIGH tools percentage, damage etc.
+                List<ItemStack> evntDrops = inventoryLossEvent.getDrops();
+                List<ItemStack> evntDropsRemove = inventoryLossEvent.getStacksToRemove();
+                for (ItemStack item : evntDropsRemove)
+                    evntDrops.remove(item);
             }
+            //TODO HIGH tools percentage, damage etc.
         }
 
     }
@@ -215,8 +227,10 @@ public class Players extends ListenerModule
         {
             if (block.getRelative(event.getBlockFace()).getType() == Material.FIRE)
             {
-                //TODO EhmPlayerExtinguishFireEvent
-                player.setFireTicks(100); // 20L ~ 1 seconds; 100L ~ 5 seconds
+                EhmPlayerExtinguishFireEvent fireEvent = new EhmPlayerExtinguishFireEvent(player, 100);  // 20L ~ 1 seconds; 100L ~ 5 seconds
+                plugin.getServer().getPluginManager().callEvent(fireEvent);
+                if (!fireEvent.isCancelled())
+                    player.setFireTicks(fireEvent.getBurnTicks());
             }
         }
     }

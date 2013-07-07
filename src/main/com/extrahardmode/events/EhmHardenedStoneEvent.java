@@ -72,6 +72,17 @@ public class EhmHardenedStoneEvent extends Event
 
 
     /**
+     * Get the Player involved in this Event
+     *
+     * @return player
+     */
+    public Player getPlayer()
+    {
+        return player;
+    }
+
+
+    /**
      * Get the tool the Player used to break the stone
      *
      * @return ItemStack Player is holding

@@ -25,6 +25,7 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
+import com.extrahardmode.events.EhmEndermanTeleportEvent;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -128,11 +129,16 @@ public class Bobs extends ListenerModule
                     destinationBlock = destinationBlock.getRelative(BlockFace.UP);
                 }
 
-                player.teleport(destinationBlock.getLocation(), PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
-                //TODO EhmEndermanTeleportEvent
+                EhmEndermanTeleportEvent teleportEvent = new EhmEndermanTeleportEvent(player, enderman, destinationBlock.getLocation());
+                plugin.getServer().getPluginManager().callEvent(teleportEvent);
 
-                // play sound at new location
-                world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+                if (!teleportEvent.isCancelled())
+                {
+                    player.teleport(teleportEvent.getTeleportTo(), PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
+
+                    // play sound at new location
+                    world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+                }
             }
         }
     }

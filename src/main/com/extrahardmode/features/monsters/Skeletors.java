@@ -25,6 +25,9 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
+import com.extrahardmode.events.EhmSkeletonDeflectEvent;
+import com.extrahardmode.events.EhmSkeletonKnockbackEvent;
+import com.extrahardmode.events.EhmSkeletonShootSilverfishEvent;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
@@ -35,11 +38,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.util.Vector;
 
 /**
  * Changes to Skeletons include:
  * <p/>
- * Immunity to arrows ,
+ * Immunity to arrows
  */
 public class Skeletors extends ListenerModule
 {
@@ -83,14 +87,18 @@ public class Skeletors extends ListenerModule
         if (entityType == EntityType.SKELETON && damageByEntityEvent != null && deflect > 0)
         {
             Entity damageSource = damageByEntityEvent.getDamager();
-            //TODO EhmSkeletonDeflectArrowEvent
+
             // only arrows
             if (damageSource instanceof Arrow)
             {
                 Arrow arrow = (Arrow) damageSource;
 
+                Player player = arrow.getShooter() instanceof Player ? (Player) arrow.getShooter() : null;
+                EhmSkeletonDeflectEvent skeliEvent = new EhmSkeletonDeflectEvent(player, (Skeleton) entity, deflect, !plugin.random(deflect));
+                plugin.getServer().getPluginManager().callEvent(skeliEvent);
+
                 // percent chance
-                if (plugin.random(deflect))
+                if (!skeliEvent.isCancelled())
                 {
 
                     // cancel the damage
@@ -120,9 +128,11 @@ public class Skeletors extends ListenerModule
                         {
                             // cut damage in half
                             event.setDamage(event.getDamage() / 2);
-                            //TODO EhmSkeletonKnockbackEvent
                             // knock back target with half the arrow's velocity
-                            entity.setVelocity(arrow.getVelocity());
+                            Vector knockback = arrow.getVelocity().multiply(0.5D);
+                            EhmSkeletonKnockbackEvent knockbackEvent = new EhmSkeletonKnockbackEvent(entity, (Skeleton) arrow.getShooter(), knockback, knockBackPercent);
+                            if (!knockbackEvent.isCancelled())
+                                knockbackEvent.getEntity().setVelocity(knockbackEvent.getVelocity());
                         }
                     }
                 }
@@ -152,20 +162,32 @@ public class Skeletors extends ListenerModule
         if (event.getEntity() != null && entityType == EntityType.ARROW)
         {
             Arrow arrow = (Arrow) event.getEntity();
-            //TODO EhmSkeletonSilverfishEvent
             LivingEntity shooter = arrow.getShooter();
             if (shooter != null && shooter.getType() == EntityType.SKELETON && plugin.random(silverfishShootPercent))
             {
                 Skeleton skeleton = (Skeleton) shooter;
                 // cancel arrow fire
                 event.setCancelled(true);
+                if (skeleton.getTarget() instanceof Player) //To prevent tons of Silverfish
+                {
+                    final Player player = (Player) skeleton.getTarget();
+                    // cancel arrow fire
+                    event.setCancelled(true);
 
-                // replace with silverfish, quarter velocity of arrow, wants to attack
-                // same target as skeleton
-                Creature silverFish = (Creature) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0, 1.5, 0), EntityType.SILVERFISH);
-                silverFish.setVelocity(arrow.getVelocity().multiply(0.25));
-                silverFish.setTarget(skeleton.getTarget());
-                EntityHelper.markLootLess(plugin, silverFish); // this silverfish doesn't drop loot
+                    // replace with silverfish, quarter velocity of arrow, wants to attack same target as skeleton
+                    Creature silverFish = (Creature) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0, 1.5, 0), EntityType.SILVERFISH);
+                    silverFish.setVelocity(arrow.getVelocity().multiply(0.25));
+                    silverFish.setTarget(skeleton.getTarget());
+                    EntityHelper.markLootLess(plugin, silverFish); // this silverfish doesn't drop loot
+                    EhmSkeletonShootSilverfishEvent shootSilverfishEvent = new EhmSkeletonShootSilverfishEvent(player, skeleton, silverFish, silverfishShootPercent);
+                    plugin.getServer().getPluginManager().callEvent(shootSilverfishEvent);
+
+                    if (shootSilverfishEvent.isCancelled()) //Undo
+                    {
+                        event.setCancelled(false);
+                        silverFish.remove();
+                    }
+                }
             }
         }
     }

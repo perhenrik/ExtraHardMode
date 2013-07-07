@@ -34,9 +34,11 @@ import com.extrahardmode.task.MoreMonstersTask;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
+
 
 /**
  * Main plugin class.
@@ -69,12 +71,17 @@ public class ExtraHardMode extends JavaPlugin
         // Register modules
         registerModule(RootConfig.class, new RootConfig(this));
         registerModule(MessageConfig.class, new MessageConfig(this));
+
+        File rootFolder = new File(getDataFolder().getPath() + File.separator + "persistence" + File.separator);
+        rootFolder.mkdirs();
+        registerModule(MsgPersistModule.class, new MsgPersistModule(this, rootFolder + File.separator + "messages_count.db"));
+
         registerModule(MessagingModule.class, new MessagingModule(this));
+
         registerModule(DataStoreModule.class, new DataStoreModule(this));
         registerModule(BlockModule.class, new BlockModule(this));
         registerModule(UtilityModule.class, new UtilityModule(this));
         registerModule(PlayerModule.class, new PlayerModule(this));
-
 
         //Register command
         getCommand("ehm").setExecutor(new Commander(this));
@@ -107,6 +114,7 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Skeletors.class, new Skeletors(this));
         registerModule(Spoiders.class, new Spoiders(this));
         registerModule(Zombies.class, new Zombies(this));
+        new Tutorial(this);
 
 
         // FEATURE: monsters spawn in the light under a configurable Y level

@@ -831,6 +831,7 @@ public enum RootNode implements ConfigNode
             case DOUBLE:
             {
                 obj = 0.0;
+                if (subType != null)
                 switch (subType)
                 {
                     case NATURAL_NUMBER:
@@ -964,6 +965,7 @@ public enum RootNode implements ConfigNode
             this.add(Material.DIAMOND_ORE.toString());
         }
     }
+
 
     /**
      * Default list of falling blocks.

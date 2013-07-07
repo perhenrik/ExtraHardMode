@@ -102,7 +102,7 @@ public class Torches extends ListenerModule
             {
                 if (soundFizzEnabled)
                 {
-                    messenger.notifyPlayer(player, MessageNode.LIMITED_TORCH_PLACEMENTS, PermissionNode.SILENT_LIMITED_TORCH_PLACEMENT, Sound.FIZZ, 20);
+                    messenger.send(player, MessageNode.LIMITED_TORCH_PLACEMENTS, PermissionNode.SILENT_LIMITED_TORCH_PLACEMENT, Sound.FIZZ, 20);
                 }
                 placeEvent.setCancelled(true);
             }
@@ -116,7 +116,7 @@ public class Torches extends ListenerModule
                     && (block.getType() == Material.TORCH || block.getType() == Material.JACK_O_LANTERN || (block.getType() == Material.FIRE && block
                     .getRelative(BlockFace.DOWN).getType() == Material.NETHERRACK)))
             {
-                messenger.notifyPlayer(player, MessageNode.NO_TORCHES_HERE, PermissionNode.SILENT_NO_TORCHES_HERE, Sound.FIZZ, 20);
+                messenger.send(player, MessageNode.NO_TORCHES_HERE, PermissionNode.SILENT_NO_TORCHES_HERE, Sound.FIZZ, 20);
                 placeEvent.setCancelled(true);
                 return;
             }

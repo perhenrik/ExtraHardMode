@@ -92,6 +92,7 @@ public class Silverfish extends ListenerModule
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
+        //TODO Silverfish drop random loot
         final boolean dropCobble = CFG.getBoolean(RootNode.SILVERFISH_DROP_COBBLE, world.getName());
 
         // FEATURE: silverfish drop cobblestone

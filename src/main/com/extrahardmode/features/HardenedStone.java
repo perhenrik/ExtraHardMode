@@ -126,7 +126,7 @@ public class HardenedStone extends ListenerModule
                 }
                 if (hardEvent.getNumOfBlocks() == 0)
                 {
-                    messenger.notifyPlayer(player, MessageNode.STONE_MINING_HELP, PermissionNode.SILENT_STONE_MINING_HELP);
+                    messenger.send(player, MessageNode.STONE_MINING_HELP, PermissionNode.SILENT_STONE_MINING_HELP);
                     event.setCancelled(true);
                     return;
                 }
@@ -172,7 +172,7 @@ public class HardenedStone extends ListenerModule
             {
                 if (adjacentBlock.getType() == Material.STONE)
                 {
-                    messenger.sendMessage(player, MessageNode.NO_PLACING_ORE_AGAINST_STONE);
+                    messenger.send(player, MessageNode.NO_PLACING_ORE_AGAINST_STONE);
                     placeEvent.setCancelled(true);
                     return;
                 }
