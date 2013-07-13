@@ -84,7 +84,7 @@ public class RootConfig extends MultiWorldConfig
      */
     public Map<Integer, List<Byte>> getMappedNode(ConfigNode node, String world)
     {
-        return extraSettings.contains(node, world) ? extraSettings.get(node, world) : Collections.EMPTY_MAP;
+        return extraSettings.contains(node, world) ? extraSettings.get(node, world) : enabledForAll ? extraSettings.get(node, ALL_WORLDS) : Collections.EMPTY_MAP;
     }
 
 
@@ -261,6 +261,9 @@ public class RootConfig extends MultiWorldConfig
     {
         Response<List<String>> myWorlds = loadNode(config.getConfig(), RootNode.WORLDS, false);
         List<String> worlds = myWorlds.getContent();
+        //Check for * placeholder = Enables plugin for all worlds
+        if (worlds.contains(ALL_WORLDS))
+            enabledForAll = true;
 
         for (RootNode node : RootNode.values())
         {

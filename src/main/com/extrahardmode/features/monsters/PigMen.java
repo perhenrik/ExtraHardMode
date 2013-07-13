@@ -80,19 +80,14 @@ public class PigMen extends ListenerModule
         final int pigWartDropEveryWherePercent = CFG.getInt(RootNode.NETHER_PIGS_DROP_WART, world.getName());
 
         // FEATURE: pig zombies drop nether wart when slain in nether fortresses
-        if (pigWartFortress && world.getEnvironment().equals(World.Environment.NETHER) && entity instanceof PigZombie)
+        if (world.getEnvironment().equals(World.Environment.NETHER) && entity instanceof PigZombie)
         {
             Block underBlock = entity.getLocation().getBlock().getRelative(BlockFace.DOWN);
-            if (underBlock.getType() == Material.NETHER_BRICK)
-            {
+            if (pigWartFortress && underBlock.getType() == Material.NETHER_BRICK)
                 event.getDrops().add(new ItemStack(Material.NETHER_STALK));
-            }
-        }
 
-        // FEATURE: pig zombies sometimes drop nether wart when slain elsewhere
-        else if (pigWartDropEveryWherePercent > 0 && world.getEnvironment().equals(World.Environment.NETHER) && entity instanceof PigZombie)
-        {
-            if (plugin.random(pigWartDropEveryWherePercent))
+            // FEATURE: pig zombies sometimes drop nether wart when slain elsewhere
+            else if (pigWartDropEveryWherePercent > 0 && plugin.random(pigWartDropEveryWherePercent))
                 event.getDrops().add(new ItemStack(Material.NETHER_STALK));
         }
     }
@@ -127,8 +122,7 @@ public class PigMen extends ListenerModule
     /**
      * when a chunk loads... Always angry pigzombies
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event)
