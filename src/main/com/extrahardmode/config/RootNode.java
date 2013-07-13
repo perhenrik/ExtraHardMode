@@ -345,7 +345,7 @@ public enum RootNode implements ConfigNode
      * Whether pig zombies should drop netherwart occasionally elsewhere in Nether
      */
     NETHER_PIGS_DROP_WART
-            ("PigZombies.Percent Chance to Drop Netherwart Elsewhere In Nether", VarType.INTEGER, SubType.PERCENTAGE, 0),
+            ("PigZombies.Percent Chance to Drop Netherwart Elsewhere In Nether", VarType.INTEGER, SubType.PERCENTAGE, 25),
     /**
      * PigMen get spawned when lighting strikes
      */
