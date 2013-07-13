@@ -46,14 +46,14 @@ import org.bukkit.event.entity.PotionSplashEvent;
  * <p/>
  * New Attacks like Explosion potions, spawning of zombies
  */
-public class Bitches extends ListenerModule
+public class Witches extends ListenerModule
 {
     private final ExtraHardMode plugin;
 
     private final RootConfig CFG;
 
 
-    public Bitches(ExtraHardMode plugin)
+    public Witches(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;

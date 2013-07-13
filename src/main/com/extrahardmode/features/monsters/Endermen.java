@@ -46,14 +46,14 @@ import org.bukkit.event.player.PlayerTeleportEvent;
  * <p/>
  * Teleportation of the Player towards the Enderman ,
  */
-public class Bobs extends ListenerModule
+public class Endermen extends ListenerModule
 {
     private ExtraHardMode plugin = null;
 
     private RootConfig CFG = null;
 
 
-    public Bobs(ExtraHardMode plugin)
+    public Endermen(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;

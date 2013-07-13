@@ -100,19 +100,19 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Torches.class, new Torches(this));
         registerModule(Water.class, new Water(this));
         //monsters
-        registerModule(Bitches.class, new Bitches(this));
+        registerModule(Witches.class, new Witches(this));
         registerModule(Blazes.class, new Blazes(this));
         registerModule(BumBumBens.class, new BumBumBens(this));
         registerModule(Glydia.class, new Glydia(this));
-        registerModule(Bobs.class, new Bobs(this));
+        registerModule(Endermen.class, new Endermen(this));
         registerModule(Ghasts.class, new Ghasts(this));
         registerModule(Horses.class, new Horses(this));
         registerModule(MonsterRules.class, new MonsterRules(this));
-        registerModule(Pigies.class, new Pigies(this));
+        registerModule(PigMen.class, new PigMen(this));
         registerModule(RealisticChopping.class, new RealisticChopping(this));
         registerModule(Silverfish.class, new Silverfish(this));
         registerModule(Skeletors.class, new Skeletors(this));
-        registerModule(Spoiders.class, new Spoiders(this));
+        registerModule(Spiders.class, new Spiders(this));
         registerModule(Zombies.class, new Zombies(this));
         new Tutorial(this);
 

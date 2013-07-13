@@ -50,14 +50,14 @@ import org.bukkit.inventory.ItemStack;
  * <p/>
  * Always angry , drop netherwart in the nether , spawn on lighting strikes
  */
-public class Pigies extends ListenerModule
+public class PigMen extends ListenerModule
 {
     private final ExtraHardMode plugin;
 
     private final RootConfig CFG;
 
 
-    public Pigies(ExtraHardMode plugin)
+    public PigMen(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;

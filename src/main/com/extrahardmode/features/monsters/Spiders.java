@@ -49,14 +49,14 @@ import java.util.List;
  * <p/>
  * More spiders in caves
  */
-public class Spoiders extends ListenerModule
+public class Spiders extends ListenerModule
 {
     private final ExtraHardMode plugin;
 
     private final RootConfig CFG;
 
 
-    public Spoiders(ExtraHardMode plugin)
+    public Spiders(ExtraHardMode plugin)
     {
         super(plugin);
         this.plugin = plugin;
