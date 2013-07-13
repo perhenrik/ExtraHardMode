@@ -98,7 +98,7 @@ public class MoreMonstersTask implements Runnable
                     {
                         Entity mob = EntityHelper.spawnRandomMob(location);
                         //If there are Players nearby don't spawn
-                        List<Entity> entities = mob.getNearbyEntities(16, 16, 16);
+                        List<Entity> entities = mob.getNearbyEntities(32.0, 32.0, 32.0);
                         for (Entity ent : entities)
                             if (ent instanceof Player)
                             {

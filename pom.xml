@@ -37,8 +37,8 @@
         <project.mainclass>com.extrahardmode.ExtraHardMode</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
-        <mc-version>1.6.1</mc-version>
-        <bukkit-ver>R0.1-CUSTOM</bukkit-ver><!--a build that contains the horse API-->
+        <mc-version>1.6.2</mc-version>
+        <bukkit-ver>R0.1-SNAPSHOT</bukkit-ver><!--a build that contains the horse API-->
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/</srcDir>
         <!--Jenkins Build Number-->
