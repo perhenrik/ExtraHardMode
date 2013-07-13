@@ -80,7 +80,8 @@ public class Spoiders extends ListenerModule
         final int spiderBonusSpawnPercent = CFG.getInt(RootNode.BONUS_UNDERGROUND_SPIDER_SPAWN_PERCENT, world.getName());
 
         // FEATURE: more spiders underground
-        if (entityType == EntityType.ZOMBIE && world.getEnvironment() == World.Environment.NORMAL && location.getBlockY() < world.getSeaLevel() - 5)
+        if (entityType == EntityType.ZOMBIE && world.getEnvironment() == World.Environment.NORMAL && location.getBlockY() < world.getSeaLevel() - 5
+                && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL) //Don't change type from respawned zombies etc.
         {
             if (plugin.random(spiderBonusSpawnPercent))
             {
