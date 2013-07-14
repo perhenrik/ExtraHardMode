@@ -37,7 +37,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.AbstractMap.SimpleEntry;
-import java.util.List;
 
 /**
  * Task to spawn more monsters.
@@ -98,9 +97,16 @@ public class MoreMonstersTask implements Runnable
                     {
                         Entity mob = EntityHelper.spawnRandomMob(location);
                         //If there are Players nearby don't spawn
-                        List<Entity> entities = mob.getNearbyEntities(32.0, 32.0, 32.0);
+                        //TODO find bug, maybe its the dev build?....
+                        /*List<Entity> entities = mob.getNearbyEntities(32.0, 32.0, 32.0);
                         for (Entity ent : entities)
                             if (ent instanceof Player)
+                            {
+                                mob.remove();
+                                break;
+                            }*/
+                        for (Player p : plugin.getServer().getOnlinePlayers())
+                            if (player.getLocation().distanceSquared(mob.getLocation()) < 600.0)
                             {
                                 mob.remove();
                                 break;
