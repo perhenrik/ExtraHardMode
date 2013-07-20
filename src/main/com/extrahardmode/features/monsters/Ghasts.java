@@ -74,17 +74,19 @@ public class Ghasts extends ListenerModule
         World world = entity.getWorld();
 
         final boolean ghastDeflectArrows = CFG.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
+        final int ghastExpMupliplier = CFG.getInt(RootNode.GHASTS_EXP_MULTIPLIER, world.getName());
+        final int ghastDropsMultiplier = CFG.getInt(RootNode.GHASTS_DROPS_MULTIPLIER, world.getName());
 
         // FEATURE: ghasts deflect arrows and drop extra loot and exp
         if (ghastDeflectArrows)
         {
             if (entity instanceof Ghast)
             {
-                event.setDroppedExp(event.getDroppedExp() * 10);
+                event.setDroppedExp(event.getDroppedExp() * ghastExpMupliplier);
                 List<ItemStack> itemDrops = event.getDrops();
                 for (ItemStack itemDrop : itemDrops)
                 {
-                    itemDrop.setAmount(itemDrop.getAmount() * 10);
+                    itemDrop.setAmount(itemDrop.getAmount() * ghastDropsMultiplier);
                 }
             }
         }

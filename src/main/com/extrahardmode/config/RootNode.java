@@ -357,6 +357,16 @@ public enum RootNode implements ConfigNode
     GHASTS_DEFLECT_ARROWS
             ("Ghasts.Immune To Arrows", VarType.BOOLEAN, true),
     /**
+     * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
+     */
+    GHASTS_EXP_MULTIPLIER
+            ("Ghasts.Exp Multiplier", VarType.INTEGER, 10),
+    /**
+     * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
+     */
+    GHASTS_DROPS_MULTIPLIER
+            ("Ghasts.Drops Multiplier", VarType.INTEGER, 5),
+    /**
      * whether endermen may teleport players
      */
     IMPROVED_ENDERMAN_TELEPORTATION
@@ -655,7 +665,7 @@ public enum RootNode implements ConfigNode
      * Size of Explosion below the border
      */
     EXPLOSIONS_GHAST_BELOW_POWER
-            ("Explosions.Ghasts.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
+            ("Explosions.Ghasts.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 2),
     /**
      * Set Fire on Explosion below border
      */
@@ -670,7 +680,7 @@ public enum RootNode implements ConfigNode
      * Size of Explosion below border
      */
     EXPLOSIONS_GHAST_ABOVE_POWER
-            ("Explosions.Ghasts.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
+            ("Explosions.Ghasts.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 2),
     /**
      * Set Fire on Explosion below border
      */
