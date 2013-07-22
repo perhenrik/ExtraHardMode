@@ -398,7 +398,6 @@ public class BlockModule extends EHMModule
     /**
      * Is this a natural block for netherspawning?
      */
-    //TODO name too long
     public boolean isNaturalNetherSpawn(Material material)
     {
         return material == Material.NETHERRACK
@@ -406,6 +405,29 @@ public class BlockModule extends EHMModule
                 || material == Material.SOUL_SAND
                 || material == Material.GRAVEL
                 || material == Material.AIR;
+    }
+
+
+    /**
+     * Determine if block is of the axis and placed in a weird angle. Dunno how to explain :D
+     *
+     * @return true if tje block is of the axis and placement should be blocked
+     */
+    public static boolean isOffAxis(Block playerBlock, Block placed, Block against)
+    {
+        /* Disallow placing where the x's are if there is air beneath the block. This fixes the torch/fence exploit
+                 x|x
+        x         |      x
+       ===========P===========
+                  |       x
+                x |
+         */
+        if (placed.getRelative(BlockFace.DOWN).getType() == Material.AIR)
+            if (placed.getX() != against.getX() /*placed onto the side*/ && playerBlock.getX() == against.getX())
+                return true;
+            else if (placed.getZ() != against.getZ() && playerBlock.getZ() == against.getZ())
+                return true;
+        return false;
     }
 
 

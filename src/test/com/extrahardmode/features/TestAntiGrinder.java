@@ -77,13 +77,15 @@ public class TestAntiGrinder
         MockCreatureSpawnEvent event = new MockCreatureSpawnEvent(EntityType.ZOMBIE, "world", CreatureSpawnEvent.SpawnReason.VILLAGE_INVASION);
 
         //Set a Block at the given Location
-        MockBlock block = new MockBlock(event.getWorld().get());
+        MockBlock block = new MockBlock();
+        block.setWorld(event.getWorld().get());
         MockLocation location = event.getLocation();
         location.setBlock(block);
         event.setLocation(location);
 
         //Set a Block beneath the "SpawnBlock"
-        MockBlock relative = new MockBlock(event.getWorld().get());
+        MockBlock relative = new MockBlock();
+        relative.setWorld(event.getWorld().get());
         relative.setMaterial(Material.DIRT);
         block.setRelative(BlockFace.DOWN, relative.get());
 
@@ -101,13 +103,15 @@ public class TestAntiGrinder
         MockCreatureSpawnEvent event = new MockCreatureSpawnEvent(EntityType.PIG_ZOMBIE, "world", CreatureSpawnEvent.SpawnReason.NATURAL);
 
         //Set a Block at the given Location
-        MockBlock block = new MockBlock(event.getWorld().get());
+        MockBlock block = new MockBlock();
+        block.setWorld(event.getWorld().get());
         MockLocation location = event.getLocation();
         location.setBlock(block);
         event.setLocation(location);
 
         //Set a Block beneath the "SpawnBlock"
-        MockBlock relative = new MockBlock(event.getWorld().get());
+        MockBlock relative = new MockBlock();
+        relative.setWorld(event.getWorld().get());
         relative.setMaterial(Material.NETHERRACK);
         block.setRelative(BlockFace.DOWN, relative.get());
 

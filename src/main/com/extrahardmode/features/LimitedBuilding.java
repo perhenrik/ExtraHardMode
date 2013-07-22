@@ -26,6 +26,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
+import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MessagingModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
@@ -89,41 +90,37 @@ public class LimitedBuilding extends ListenerModule
             Block underBlock = playerBlock.getRelative(BlockFace.DOWN);
             Block against = placeEvent.getBlockAgainst();
 
+            //Blocks directly below player
             if (block.getX() == playerBlock.getX()
                     && block.getZ() == playerBlock.getZ()
                     && block.getY() < playerBlock.getY())
             {
                 //TODO EhmLimitedBuildingEvent Case.BENEATH_PLAYER
-                messenger.send(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
+                messenger.send(player, MessageNode.REALISTIC_BUILDING_BENEATH, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
             }
 
             // if standing directly over lava, prevent placement
             else if ((underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
-                    && !(playerBlock.getType().name().contains("STEP") && playerBlock.getType().name().contains("STAIRS")))
+                    && !(playerBlock.getType().name().contains("STEP") && playerBlock.getType().name().contains("STAIRS"))
+                    && block.getRelative(BlockFace.DOWN).getType() == Material.AIR)
             {
                 //TODO EhmLimitedBuildingEvent Case.PLAYER_ABOVE_UNSAFE_LOC
                 messenger.send(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
             }
 
-            // otherwise if hovering over air, check one block lower
-            else if (underBlock.getType() == Material.AIR && !(playerBlock.getType().name().contains("STEP") && playerBlock.getType().name().contains("STAIRS")))
+            else if (BlockModule.isOffAxis(playerBlock, block, against))
             {
-                underBlock = underBlock.getRelative(BlockFace.DOWN);
-
-                // if over lava or more air, prevent placement
-                if (underBlock.getType() == Material.AIR || underBlock.getType() == Material.LAVA || underBlock.getType() == Material.STATIONARY_LAVA)
-                {
-                    //TODO EhmLimitedBuildingEvent Case.FLYING (not sure)
-                    messenger.send(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
-                    placeEvent.setCancelled(true);
-                }
+                messenger.send(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
+                placeEvent.setCancelled(true);
             }
 
             /* Fences and glasspanes are half placed as vertical half blocks allowing the player to build in the air */
-            else if ((against.getType() == Material.FENCE || against.getType() == Material.THIN_GLASS) && underBlock.equals(against))
+            //Block placing of blocks on the side of the block on which the player is currently standing
+            else if ((against.getX() == playerBlock.getX() && against.getZ() == playerBlock.getZ()) && (against.getX() != block.getX() || against.getZ() != block.getZ()))
             {
+                messenger.send(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
             }
         }

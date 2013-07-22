@@ -41,22 +41,33 @@ public class MockBlock
 {
     private final Block block = mock(Block.class);
 
-
-    public MockBlock(World world)
+    public MockBlock setWorld(World world)
     {
         when(block.getWorld()).thenReturn(world);
+        return this;
     }
 
 
-    public void setRelative(BlockFace face, Block block)
+    public MockBlock setLocation (int x, int y, int z)
+    {
+        when(this.block.getX()).thenReturn(x);
+        when(this.block.getY()).thenReturn(y);
+        when(this.block.getZ()).thenReturn(z);
+        return this;
+    }
+
+
+    public MockBlock setRelative(BlockFace face, Block block)
     {
         when(this.block.getRelative(any(BlockFace.class))).thenReturn(block);
+        return this;
     }
 
 
-    public void setMaterial(Material material)
+    public MockBlock setMaterial(Material material)
     {
         when(block.getType()).thenReturn(material);
+        return this;
     }
 
 

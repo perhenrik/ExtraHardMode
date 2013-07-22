@@ -23,12 +23,15 @@ package com.extrahardmode.modules;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.mocks.MockBlock;
 import com.extrahardmode.mocks.MockExtraHardMode;
 import com.extrahardmode.module.BlockModule;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -50,16 +53,48 @@ public class TestBlockModule
     @Test
     public void testBreaksFallingBlocks()
     {
-        assertEquals(module.breaksFallingBlock(Material.STEP), true);
-        assertEquals(module.breaksFallingBlock(Material.REDSTONE_TORCH_ON), true);
-        assertEquals(module.breaksFallingBlock(Material.REDSTONE_TORCH_OFF), true);
-        assertEquals(module.breaksFallingBlock(Material.TORCH), true);
-        assertEquals(module.breaksFallingBlock(Material.RAILS), true);
-        assertEquals(module.breaksFallingBlock(Material.ACTIVATOR_RAIL), true);
-        assertEquals(module.breaksFallingBlock(Material.RED_ROSE), true);
-        assertEquals(module.breaksFallingBlock(Material.BROWN_MUSHROOM), true);
-        assertEquals(module.breaksFallingBlock(Material.WEB), true);
+        assertTrue(module.breaksFallingBlock(Material.STEP));
+        assertTrue(module.breaksFallingBlock(Material.REDSTONE_TORCH_ON));
+        assertTrue(module.breaksFallingBlock(Material.REDSTONE_TORCH_OFF));
+        assertTrue(module.breaksFallingBlock(Material.TORCH));
+        assertTrue(module.breaksFallingBlock(Material.RAILS));
+        assertTrue(module.breaksFallingBlock(Material.ACTIVATOR_RAIL));
+        assertTrue(module.breaksFallingBlock(Material.RED_ROSE));
+        assertTrue(module.breaksFallingBlock(Material.BROWN_MUSHROOM));
+        assertTrue(module.breaksFallingBlock(Material.WEB));
 
-        assertEquals(module.breaksFallingBlock(Material.LOG), false);
+        assertFalse(module.breaksFallingBlock(Material.LOG));
+    }
+
+    @Test
+    public void testIsOffAxis()
+    {
+        MockBlock player = new MockBlock();
+        player.setLocation(0, 64, 0);
+
+        MockBlock againstBlock = new MockBlock();
+        againstBlock.setLocation(0, 64, 10);
+
+        MockBlock placedBlock = new MockBlock();
+        placedBlock.setLocation(1, 64, 10);
+        placedBlock.setRelative(BlockFace.DOWN, new MockBlock().setMaterial(Material.AIR).get());
+
+        assertTrue(BlockModule.isOffAxis(player.get(), placedBlock.get(), againstBlock.get()));
+    }
+
+    @Test
+    public void testIsOffAxisBut()
+    {
+        MockBlock player = new MockBlock();
+        player.setLocation(0, 64, 0);
+
+        MockBlock againstBlock = new MockBlock();
+        againstBlock.setLocation(0, 64, 2);
+
+        MockBlock placedBlock = new MockBlock();
+        placedBlock.setLocation(0, 64, 1);
+        placedBlock.setRelative(BlockFace.DOWN, new MockBlock().setMaterial(Material.AIR).get());
+
+        assertFalse(BlockModule.isOffAxis(player.get(), placedBlock.get(), againstBlock.get()));
     }
 }

@@ -38,10 +38,13 @@ public enum MessageNode implements ConfigNode
                     "You'll need an iron or diamond pickaxe to break stone.  Try exploring natural formations for exposed ore like coal, which softens stone around it when broken."),
     NO_PLACING_ORE_AGAINST_STONE
             ("NoPlacingOreAgainstStone", MsgType.NOTIFICATION, "hardened_stone_ore",
-                    "Sorry, you can't place ore next to stone."),
+                    "Sorry, you can\'t place ore next to stone."),
     REALISTIC_BUILDING
             ("RealisticBuilding", MsgType.NOTIFICATION, "realistic_building",
                     "You can't build while in the air."),
+    REALISTIC_BUILDING_BENEATH
+            ("RealisticBuildingBeneath", MsgType.NOTIFICATION, "realistic_building_beneath",
+                    "You can\'t place a block directly beneath you."),
     LIMITED_TORCH_PLACEMENTS
             ("LimitedTorchPlacements", MsgType.NOTIFICATION, "torches_soft_blocks",
                     "It's too soft there to fasten a torch."),
@@ -69,35 +72,35 @@ public enum MessageNode implements ConfigNode
 
     //Horses
     HORSE_FEED_LOW
-            ("Horse Feed Low", MsgType.NOTIFICATION, "horse_feed_low",
-                    "You have saved your horse from starving, but it's still very hungry."),
+            ("HorseFeedLow", MsgType.NOTIFICATION, "horse_feed_low",
+                    "You have saved your horse from starving, but it\'s still very hungry."),
     HORSE_FEED_MIDDLE
-            ("Horse Feed Low", MsgType.NOTIFICATION, "horse_feed_middle",
+            ("HorseFeedMiddle", MsgType.NOTIFICATION, "horse_feed_middle",
                     "Your horse has ate well."),
     HORSE_FEED_HIGH
-            ("Horse Feed Low", MsgType.NOTIFICATION, "horse_feed_high",
+            ("HorseFeedHigh", MsgType.NOTIFICATION, "horse_feed_high",
                     "Your horse is satiated."),
 
     HORSE_STARVING_LOW
-            ("Horse Feed Low", MsgType.NOTIFICATION, "horse_starve_low",
+            ("HorseStarveLow", MsgType.NOTIFICATION, "horse_starve_low",
                     "Your horse is very tired and needs some food."),
     HORSE_STARVING_DANGEROUS
-            ("Horse Feed Low", MsgType.NOTIFICATION, "horse_starve_dangerous",
+            ("HorseStarveMiddle", MsgType.NOTIFICATION, "horse_starve_dangerous",
                     "Your horse is about to starve."),
     HORSE_STARVING_IMMINENT_DEATH
-            ("Horse Feed Low", MsgType.NOTIFICATION, "horse_starve_imminent_death",
+            ("HorseStarveHigh", MsgType.NOTIFICATION, "horse_starve_imminent_death",
                     "Your horse is starving, feed it or it will die."),
 
 
     //Target Events
     CHARGED_CREEPER_TARGET
-            ("Charged Creeper", MsgType.TUTORIAL, "charged_creeper",
+            ("ChargedCreeper", MsgType.TUTORIAL, "charged_creeper",
                     "&cCharged Creepers explode instantly when hit. Run!"),
     BLAZE_TARGET_NORMAL
-            ("Blaze Overworld", MsgType.TUTORIAL, "blaze_overworld",
+            ("BlazeOverworld", MsgType.TUTORIAL, "blaze_overworld",
                     "&cBlazes spawn near lava and their fiery breath causes a big explosion on death!"),
     BLAZE_TARGET_NETHER
-            ("Blaze Nether", MsgType.TUTORIAL, "blaze_nether",
+            ("BlazeNether", MsgType.TUTORIAL, "blaze_nether",
                     "&cBlazes spawn everywhere in the Nether and may split on death!"),
     MAGMACUBE_TARGET
             ("Magmacube", MsgType.TUTORIAL, "magmacube",
@@ -106,58 +109,58 @@ public enum MessageNode implements ConfigNode
             ("Ghast", MsgType.TUTORIAL, "ghast_warning",
                     "&cThese fearsome Ghasts wear invisible arrow deflective armor! Ghasts drop a lot more loot as well."),
     PIGZOMBIE_TARGET
-            ("Pig Zombie Always Angry", MsgType.TUTORIAL, "pigzombie",
+            ("PigZombieAlwaysAngry", MsgType.TUTORIAL, "pigzombie",
                     "&cRUN! Pig Zombies are always angry and hungry!"),
     PIGZOMBIE_TARGET_WART
-            ("Pig Zombie Drop Netherwart", MsgType.TUTORIAL, "pigzombie_wart",
+            ("PigZombieDropNetherwart", MsgType.TUTORIAL, "pigzombie_wart",
                     "&cYou can get netherwart from slaying Pig Zombies"),
 
     //Various Own Events
     ZOMBIE_RESPAWN
-            ("Zombie Respawn", MsgType.TUTORIAL, "zombie_respawn",
+            ("ZombieRespawn", MsgType.TUTORIAL, "zombie_respawn",
                     "&cZombies might resurrect if not on fire!"),
     ZOMBIE_SLOW_PLAYERS
-            ("Zombie slow Player", MsgType.TUTORIAL, "zombie_slow",
+            ("ZombieSlowPlayer", MsgType.TUTORIAL, "zombie_slow",
                     "&cZombies slow you down when hit!"),
     SKELETON_DEFLECT
-            ("Skeleton Deflect Arrows", MsgType.TUTORIAL, "skeleton_deflect_arrow",
+            ("SkeletonDeflectArrows", MsgType.TUTORIAL, "skeleton_deflect_arrow",
                     "&cArrows just pass through Skeletons, you gotta go close combat!"),
     ENDERMAN_GENERAL
-            ("Enderman General", MsgType.TUTORIAL, "enderman_teleport",
+            ("EndermanGeneral", MsgType.TUTORIAL, "enderman_teleport",
                     "&cEnderman can teleport you too!"),
     ENDERMAN_SUICIDAL
-            ("Enderman Suicidal", MsgType.ONE_TIME, "enderman_deaggro",
+            ("EndermanSuicidal", MsgType.ONE_TIME, "enderman_deaggro",
                     "&cGet better gear if you want to fight an enderman or die trying!"),
     CREEPER_DROP_TNT
-            ("Creeper Drop Tnt", MsgType.TUTORIAL, "creeper_drop_tnt",
+            ("CreeperDropTnt", MsgType.TUTORIAL, "creeper_drop_tnt",
                     "&cCreepers may drop activated tnt on death!"),
     EXTINGUISH_FIRE
-            ("Extinguish Fire", MsgType.TUTORIAL, "extinguish_fire",
+            ("ExtinguishFire", MsgType.TUTORIAL, "extinguish_fire",
                     "&cPutting out fire with your hand will catch you on fire."),
     LOST_ITEMS
-            ("List Lost Items On Death", MsgType.NOTIFICATION, "lost_items_broadcast",
+            ("ListLostItemsOnDeath", MsgType.NOTIFICATION, "lost_items_broadcast",
                     variables.DEATH_MSG + " and managed to loose " + variables.ITEMS.getVarName()),
     LOST_ITEMS_PLAYER
-            ("Inform Player On Lost Items", MsgType.TUTORIAL, "lost_items",
+            ("InformPlayerOnLostItems", MsgType.TUTORIAL, "lost_items",
                     "On death there is a a chance you might loose some of your items!"),
 
     //Farming
     BUCKET_FILL
-            ("Bucket Fill", MsgType.TUTORIAL, "bucket_fill",
+            ("BucketFill", MsgType.TUTORIAL, "bucket_fill",
                     "&cYou can pick up water, but once you place it, it evaporates. Get some ice if you want to farm!"),
     ANTIFARMING_UNWATERD
-            ("Antifarming Unwatered", MsgType.TUTORIAL, "antifarm_unwatered",
+            ("AntifarmingUnwatered", MsgType.TUTORIAL, "antifarm_unwatered",
                     "&cYour crops need sufficient water, otherwise they\'ll dry out!"),
     ANTIFARMING_NO_LIGHT
-            ("Antifarming Not Enough Light", MsgType.TUTORIAL, "antifarm_natural_light",
+            ("AntifarmingNotEnoughLight", MsgType.TUTORIAL, "antifarm_natural_light",
                     "&cYour crops require natural light to grow!"),
     ANTIFARMING_DESSERT_WARNING
-            ("Antifarming Desert", MsgType.TUTORIAL, "antifarm_desert",
+            ("AntifarmingDesert", MsgType.TUTORIAL, "antifarm_desert",
                     "&cDeserts are really dry and nothing grows here!"),
 
     //General Advice
     NETHER_WARNING
-            ("Nether Warning", MsgType.TUTORIAL, "nether_warn",
+            ("NetherWarning", MsgType.TUTORIAL, "nether_warn",
                     "&cThis is a dangerous place. Make sure you come prepared with arrows and good gear.");
 
     /**
