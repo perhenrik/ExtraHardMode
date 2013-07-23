@@ -38,12 +38,27 @@
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
         <mc-version>1.6.2</mc-version>
-        <bukkit-ver>R0.1-SNAPSHOT</bukkit-ver><!--a build that contains the horse API-->
+        <bukkit-ver>R0.1-SNAPSHOT</bukkit-ver>
+        <!--a build that contains the horse API-->
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/</srcDir>
         <!--Jenkins Build Number-->
         <buildNumber><!--jenkins build number-->${env.BUILD_NUMBER}</buildNumber>
     </properties>
+
+    <!-- maven deployment -->
+    <distributionManagement>
+        <repository>
+            <id>ehm-release</id>
+            <name>extrahardmode.com Releases</name>
+            <url>http://extrahardmode.com:8081/nexus/content/repositories/bukkit-plugins/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ehm-snapshot</id>
+            <name>extrahardmode.com Snapshots</name>
+            <url>http://extrahardmode.com:8081/nexus/content/repositories/bukkit-plugins-snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <!-- Build instructions -->
     <build>
