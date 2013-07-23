@@ -38,13 +38,13 @@ public enum MessageNode implements ConfigNode
                     "You'll need an iron or diamond pickaxe to break stone.  Try exploring natural formations for exposed ore like coal, which softens stone around it when broken."),
     NO_PLACING_ORE_AGAINST_STONE
             ("NoPlacingOreAgainstStone", MsgType.NOTIFICATION, "hardened_stone_ore",
-                    "Sorry, you can\'t place ore next to stone."),
+                    "Sorry, you can't place ore next to stone."),
     REALISTIC_BUILDING
             ("RealisticBuilding", MsgType.NOTIFICATION, "realistic_building",
                     "You can't build while in the air."),
     REALISTIC_BUILDING_BENEATH
             ("RealisticBuildingBeneath", MsgType.NOTIFICATION, "realistic_building_beneath",
-                    "You can\'t place a block directly beneath you."),
+                    "You can't place a block directly beneath you."),
     LIMITED_TORCH_PLACEMENTS
             ("LimitedTorchPlacements", MsgType.NOTIFICATION, "torches_soft_blocks",
                     "It's too soft there to fasten a torch."),
