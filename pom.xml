@@ -42,8 +42,8 @@
         <!--a build that contains the horse API-->
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/</srcDir>
-        <!--Jenkins Build Number-->
-        <buildNumber><!--jenkins build number-->${env.BUILD_NUMBER}</buildNumber>
+        <!--Jenkins Build-Number to be included in the jar manifest and will be parsed by the /version command-->
+        <buildNumber>${env.BUILD_NUMBER}</buildNumber>
     </properties>
 
     <!-- maven deployment -->
@@ -75,8 +75,6 @@
                 <directory>${basedir}</directory>
                 <filtering>true</filtering>
             </resource>
-            <!-- <resource> <includes> <include>LICENSE.txt</include> </includes>
-<directory>${basedir}</directory> </resource> -->
         </resources>
 
         <plugins>
@@ -88,6 +86,35 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
+            </plugin>
+
+            <!-- Shade Metrics -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.mcstats.bukkit:metrics</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.mcstats</pattern>
+                                    <shadedPattern>com.extrahardmode.metrics</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <minimizeJar>true</minimizeJar>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Use a profile to override the outputdir, e.g. to a local testserver-->
@@ -114,48 +141,69 @@
             <id>Bukkit</id>
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
+        <!-- Mocking -->
         <repository>
             <id>powermock-repo</id>
             <url>http://powermock.googlecode.com/svn/repo/</url>
+        </repository>
+        <!-- Metrics -->
+        <repository>
+            <id>mcStats</id>
+            <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
     </repositories>
 
     <!-- Dependencies -->
     <dependencies>
-        <dependency>
-            <groupId>de.diemex</groupId>
-            <artifactId>SBPopupAPI</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+        <!-- Bukkit -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>${mc-version}-${bukkit-ver}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- We don't use the craftbukkit dependency, it's just for easy runtime debugging -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
             <version>${mc-version}-${bukkit-ver}</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- Awesome Popups -->
+        <dependency>
+            <groupId>de.diemex</groupId>
+            <artifactId>SBPopupAPI</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Metrics for stats -->
+        <dependency>
+            <groupId>org.mcstats.bukkit</groupId>
+            <artifactId>metrics</artifactId>
+            <version>R7</version>
+        </dependency>
+
+
+        <!-- Unit testing dependencies -->
+        <!-- JUnit: Assertions and test framework -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-            <version>1.5</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- Mock bukkit's interfaces -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Mock final methods and stuff -->
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -174,16 +222,19 @@
 
     <!-- Developers -->
     <developers>
+        <!-- Former Author -->
         <developer>
             <id>bigscary</id>
             <url>https://github.com/ryanhamshire</url>
         </developer>
+        <!-- Current Author -->
         <developer>
             <id>Diemex</id>
             <email>di.em.ex@gmx.de</email>
             <url>https://github.com/Di3mex</url>
             <timezone>GMT</timezone>
         </developer>
+        <!-- Contributor -->
         <developer>
             <id>Mitsugaru</id>
             <email>mitsugaru@gmail.com</email>
