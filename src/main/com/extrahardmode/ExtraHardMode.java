@@ -28,6 +28,7 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.features.*;
 import com.extrahardmode.features.monsters.*;
+import com.extrahardmode.metrics.ConfigPlotter;
 import com.extrahardmode.module.*;
 import com.extrahardmode.service.IModule;
 import com.extrahardmode.task.MoreMonstersTask;
@@ -89,7 +90,7 @@ public class ExtraHardMode extends JavaPlugin
         // register for events
         PluginManager pluginManager = this.getServer().getPluginManager();
 
-        // EventHandlers gallore....look away, scroll down
+        //Basic Modules
         registerModule(AntiFarming.class, new AntiFarming(this));
         registerModule(AntiGrinder.class, new AntiGrinder(this));
         registerModule(Explosions.class, new Explosions(this));
@@ -99,7 +100,8 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Players.class, new Players(this));
         registerModule(Torches.class, new Torches(this));
         registerModule(Water.class, new Water(this));
-        //monsters
+
+        //Monster Modules
         registerModule(Witches.class, new Witches(this));
         registerModule(Blazes.class, new Blazes(this));
         registerModule(BumBumBens.class, new BumBumBens(this));
@@ -114,12 +116,17 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Skeletors.class, new Skeletors(this));
         registerModule(Spiders.class, new Spiders(this));
         registerModule(Zombies.class, new Zombies(this));
+
+        //TODO make modules
         new Tutorial(this);
 
 
         // FEATURE: monsters spawn in the light under a configurable Y level
         MoreMonstersTask task = new MoreMonstersTask(this);
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 1200L, 1200L);
+
+        //Metrics Plotter
+        new ConfigPlotter(this, getModuleForClass(RootConfig.class));
     }
 
 

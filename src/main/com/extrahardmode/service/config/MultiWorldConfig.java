@@ -496,6 +496,16 @@ public abstract class MultiWorldConfig extends EHMModule
 
 
     /**
+     * Clear all the loaded config options.
+     * Primarily for unit testing purposes.
+     */
+    public void clearCache()
+    {
+        OPTIONS.clear();
+    }
+
+
+    /**
      * Verify that the ConfigNode contains a valid value and is usable by the Plugin
      *
      * @param node

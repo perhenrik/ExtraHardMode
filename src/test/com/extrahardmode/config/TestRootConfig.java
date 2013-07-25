@@ -24,6 +24,7 @@ package com.extrahardmode.config;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.mocks.MockExtraHardMode;
+import com.extrahardmode.service.MockConfigNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -53,6 +54,7 @@ public class TestRootConfig
 
     public TestRootConfig()
     {
+        //TODO remove dependeny on RootNode
         cfg.set("world", RootNode.WEAK_FOOD_CROPS, true);
         cfg.set("pvp", RootNode.WEAK_FOOD_CROPS, false);
         cfg.set("world_the_end", RootNode.WEAK_FOOD_CROPS, false);
@@ -174,5 +176,49 @@ public class TestRootConfig
         HashSet<String> expectedWorlds = new HashSet<String>(Arrays.asList(new String[]{"world", "pvp", "world_the_end", "miningWorld", "world_nether", "worlds"}));
         HashSet<String> inputWorlds = new HashSet<String>(Arrays.asList(cfg.getEnabledWorlds()));
         assertTrue(expectedWorlds.equals(inputWorlds));
+    }
+
+    @Test
+    public void testMetricsEnabledAll()
+    {
+        cfg.clearCache();
+        cfg.set("w1", MockConfigNode.BOOL_TRUE, true);
+        cfg.set("w2", MockConfigNode.BOOL_TRUE, true);
+        cfg.set("w3", MockConfigNode.BOOL_TRUE, true);
+
+        assertEquals(1, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
+    }
+
+    @Test
+    public void testMetricsEnabledSome1()
+    {
+        cfg.clearCache();
+        cfg.set("w1", MockConfigNode.BOOL_TRUE, true);
+        cfg.set("w2", MockConfigNode.BOOL_TRUE, false);
+        cfg.set("w3", MockConfigNode.BOOL_TRUE, true);
+
+        assertEquals(2, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
+    }
+
+    @Test
+    public void testMetricsEnabledSome2()
+    {
+        cfg.clearCache();
+        cfg.set("w1", MockConfigNode.BOOL_TRUE, false);
+        cfg.set("w2", MockConfigNode.BOOL_TRUE, false);
+        cfg.set("w3", MockConfigNode.BOOL_TRUE, true);
+
+        assertEquals(2, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
+    }
+
+    @Test
+    public void testMetricsDisabled()
+    {
+        cfg.clearCache();
+        cfg.set("w1", MockConfigNode.BOOL_TRUE, false);
+        cfg.set("w2", MockConfigNode.BOOL_TRUE, false);
+        cfg.set("w3", MockConfigNode.BOOL_TRUE, false);
+
+        assertEquals(0, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
     }
 }

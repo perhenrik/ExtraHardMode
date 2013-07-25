@@ -28,8 +28,8 @@ import java.util.Collections;
 
 public enum MockConfigNode implements ConfigNode
 {
-    BOOL_FALSE("test01", VarType.BOOLEAN, false),
-    BOOL_TRUE("test04", VarType.BOOLEAN, true),
+    BOOL_FALSE("test .test 01", VarType.BOOLEAN, false),
+    BOOL_TRUE("test.hallo.test04", VarType.BOOLEAN, true),
     INT_0("test02", VarType.INTEGER, 0),
     INT_9("test03", VarType.INTEGER, 9),
     STR_0("test05", VarType.STRING, "derp"),

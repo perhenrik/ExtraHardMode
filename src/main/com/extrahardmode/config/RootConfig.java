@@ -75,10 +75,8 @@ public class RootConfig extends MultiWorldConfig
     /**
      * Get a node which has to parsed from a StringList prior to be usable
      *
-     * @param node
-     *         special node
-     * @param world
-     *         the world where this is activated
+     * @param node  special node
+     * @param world the world where this is activated
      *
      * @return a List of Block Ids and MetaData values if found
      */
@@ -102,8 +100,7 @@ public class RootConfig extends MultiWorldConfig
      * Loads all FileConfigurations into memory Insures that there is always a main config.yml loads all other Config's
      * based on the Mode specified in the ConfigFile
      *
-     * @param configs
-     *         FileName + respective FileConfiguration
+     * @param configs FileName + respective FileConfiguration
      */
     void load(List<Config> configs)
     {
@@ -208,8 +205,7 @@ public class RootConfig extends MultiWorldConfig
     /**
      * Loads the main config.yml
      *
-     * @param configs
-     *         to process
+     * @param configs to process
      *
      * @return all configs and the main config marked as processed
      */
@@ -249,11 +245,9 @@ public class RootConfig extends MultiWorldConfig
     /**
      * Store the Options from the FileConfiguration into memory
      *
-     * @param config
-     *         Config, to load the values from, according to the Mode specified. The Mode determines how not found or
-     *         same values are treated
-     * @param main
-     *         main file to use for reference values, can be null if we are loading with Mode.MAIN
+     * @param config Config, to load the values from, according to the Mode specified. The Mode determines how not found
+     *               or same values are treated
+     * @param main   main file to use for reference values, can be null if we are loading with Mode.MAIN
      *
      * @return the passed in config, is marked as Status.ADJUSTED if the Config has been changed
      */
@@ -385,8 +379,7 @@ public class RootConfig extends MultiWorldConfig
      * Reorders and saves the config. Reorders the Config to the order specified by the enum in RootNode. This assumes
      * that the Config only has valid Entries.
      *
-     * @param config
-     *         Config to save
+     * @param config Config to save
      */
     void saveConfig(Config config)
     {
@@ -416,6 +409,59 @@ public class RootConfig extends MultiWorldConfig
         } catch (IOException e)
         {
             e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Get a value to be used by metrics
+     * <pre>
+     * Boolean values:
+     * 0 = completely disabled
+     * 1 = enabled in all worlds
+     * 2 = Enabled in some worlds
+     *
+     * Integers:
+     * -----------
+     * Percentages:
+     * 0 = 0%
+     * 1 = 1-20%
+     * 2 = 21-40%
+     * 3 = 41-60%
+     * 4 = 61-80%
+     * 5 = 81-100%
+     * Health:
+     * 0 = 0
+     * 1 = 1-5
+     * 2 = 6-10
+     * 3 = 11-15
+     * 4 = 16-19
+     * 5 = 20
+     * Y-Value:
+     * 0 = 0
+     * 1 = 1-50
+     * 2 = 51-100
+     * 3 = 101-150
+     * 4 = 151-200
+     * 5 = 201-255
+     * </pre>
+     *
+     * @param node to get the value for
+     */
+    public int getMetricsValue(ConfigNode node)
+    {
+        switch (node.getVarType())
+        {
+            case BOOLEAN:
+            {
+                //Add up how often it's enabled
+                int value = 0;
+                for (String world : getEnabledWorlds())
+                    value += getBoolean(node, world) ? 1 : 0;
+                return value == 0 ? 0 : value == getEnabledWorlds().length ? 1 : 2;
+            }
+            default:
+                throw new UnsupportedOperationException(node.getPath() + " " + node.getVarType().name() + " not supported yet!");
         }
     }
 }
