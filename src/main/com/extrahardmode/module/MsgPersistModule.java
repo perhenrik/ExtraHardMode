@@ -24,6 +24,7 @@ package com.extrahardmode.module;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.messages.MessageNode;
+import com.extrahardmode.config.messages.MsgCategory;
 import com.extrahardmode.service.EHMModule;
 import com.google.common.collect.Table;
 import org.apache.commons.lang.Validate;
@@ -170,7 +171,7 @@ public class MsgPersistModule extends EHMModule
             StringBuilder columns = new StringBuilder();
             for (MessageNode message : MessageNode.values())
             {
-                if (message.getColumnName() != null && message.getMsgType() == MessageNode.MsgType.TUTORIAL)
+                if (message.getColumnName() != null && message.getMsgCategory() == MsgCategory.TUTORIAL)
                 {
                     columns.append(',');
                     columns.append(message.getColumnName());
@@ -186,7 +187,7 @@ public class MsgPersistModule extends EHMModule
             //Add missing columns
             for (MessageNode node : MessageNode.values())
             {
-                if (node.getMsgType() == MessageNode.MsgType.TUTORIAL)
+                if (node.getMsgCategory() == MsgCategory.TUTORIAL)
                 {
                     ResultSet set = dmd.getColumns(null, null, msgTable, node.getColumnName());
                     if (!set.next())

@@ -28,7 +28,7 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.ListenerModule;
@@ -387,7 +387,7 @@ public class AntiFarming extends ListenerModule
             if (cantCraftMelons && (result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS))
             {
                 event.setCancelled(true);
-                plugin.getModuleForClass(MessagingModule.class).send(player, MessageNode.NO_CRAFTING_MELON_SEEDS);
+                plugin.getModuleForClass(MsgModule.class).send(player, MessageNode.NO_CRAFTING_MELON_SEEDS);
                 return;
             }
         }

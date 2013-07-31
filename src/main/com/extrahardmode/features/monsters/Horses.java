@@ -23,7 +23,7 @@ package com.extrahardmode.features.monsters;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
@@ -60,7 +60,7 @@ public class Horses extends ListenerModule
      */
     private Set<UUID> enterMap = new HashSet<UUID>(1);
 
-    private final MessagingModule messenger;
+    private final MsgModule messenger;
 
     private final String horseMessage = "extrahardmode.horse.health";
 
@@ -68,7 +68,7 @@ public class Horses extends ListenerModule
     public Horses(ExtraHardMode plugin)
     {
         super(plugin);
-        messenger = plugin.getModuleForClass(MessagingModule.class);
+        messenger = plugin.getModuleForClass(MsgModule.class);
     }
 
 

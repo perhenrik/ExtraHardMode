@@ -77,7 +77,7 @@ public class ExtraHardMode extends JavaPlugin
         rootFolder.mkdirs();
         registerModule(MsgPersistModule.class, new MsgPersistModule(this, rootFolder + File.separator + "messages_count.db"));
 
-        registerModule(MessagingModule.class, new MessagingModule(this));
+        registerModule(MsgModule.class, new MsgModule(this));
 
         registerModule(DataStoreModule.class, new DataStoreModule(this));
         registerModule(BlockModule.class, new BlockModule(this));

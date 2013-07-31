@@ -151,6 +151,11 @@
             <id>mcStats</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
+        <!-- ExtraHardMode.com -->
+        <repository>
+            <id>extrahardmode.com</id>
+            <url>http://extrahardmode.com:8081/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <!-- Dependencies -->
@@ -173,7 +178,7 @@
         <dependency>
             <groupId>de.diemex</groupId>
             <artifactId>SBPopupAPI</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <!-- Metrics for stats -->

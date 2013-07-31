@@ -25,13 +25,12 @@ package com.extrahardmode.module;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
+import com.extrahardmode.config.messages.MsgCategory;
 import com.extrahardmode.service.EHMModule;
 import com.extrahardmode.service.FindAndReplace;
 import com.extrahardmode.service.PermissionNode;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import de.diemex.sbpopupapi.MessageType;
-import de.diemex.sbpopupapi.MsgType;
 import de.diemex.sbpopupapi.SBPopupAPI;
 import de.diemex.sbpopupapi.SBPopupManager;
 import org.apache.commons.lang.Validate;
@@ -45,13 +44,14 @@ import java.util.List;
 /**
  * @author Max
  */
-public class MessagingModule extends EHMModule
+public class MsgModule extends EHMModule
 {
     private final MessageConfig messages;
 
     private final MsgPersistModule persistModule;
 
     private SBPopupManager manager;
+    private boolean popupsEnabled = false;
 
     private final Table<String, MessageNode, Long> timeouts = HashBasedTable.create();
 
@@ -59,7 +59,7 @@ public class MessagingModule extends EHMModule
     /**
      * Constructor
      */
-    public MessagingModule(ExtraHardMode plugin)
+    public MsgModule(ExtraHardMode plugin)
     {
         super(plugin);
         messages = plugin.getModuleForClass(MessageConfig.class);
@@ -67,16 +67,18 @@ public class MessagingModule extends EHMModule
         try
         {
             SBPopupAPI api = (SBPopupAPI) plugin.getServer().getPluginManager().getPlugin("SBPopupAPI");
-            if (api != null) manager = api.getSBManager();
+            popupsEnabled = api != null;
+            if (api != null)
+                manager = api.getSBManager();
         } catch (Exception ignored)
         {
         }
     }
 
 
-    private void send(Player player, MessageNode node, String message, MessageNode.MsgType type)
+    private void send(Player player, MessageNode node, String message, MsgCategory category)
     {
-        switch (type)
+        switch (category)
         {
             case NOTIFICATION:
                 if (player == null)
@@ -90,8 +92,8 @@ public class MessagingModule extends EHMModule
 
                     if (!node.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
                     {
-                        if (manager != null)
-                            sendPopup(player, MessageType.NOTFICATION, message);
+                        if (popupsAreEnabled())
+                            sendPopup(player, MsgCategory.NOTIFICATION, message);
                         else
                             player.sendMessage(message);
                         playerData.lastMessageSent = node;
@@ -111,7 +113,7 @@ public class MessagingModule extends EHMModule
                         timeouts.put(player.getName(), node, now);
                         String msgText = messages.getString(node);
                         if (manager != null)
-                            sendPopup(player, MessageType.WARNING, msgText);
+                            sendPopup(player, MsgCategory.TUTORIAL, msgText);
                         else
                             player.sendMessage(ChatColor.DARK_RED + plugin.getTag() + ChatColor.WHITE + " " + msgText);
                         persistModule.increment(node, player.getName());
@@ -134,7 +136,7 @@ public class MessagingModule extends EHMModule
      */
     public void broadcast(MessageNode node, FindAndReplace... replace)
     {
-        send(null, node, MessageNode.MsgType.BROADCAST, replace);
+        send(null, node, MsgCategory.BROADCAST, replace);
     }
 
 
@@ -145,7 +147,7 @@ public class MessagingModule extends EHMModule
      * @param node   message, gets loaded from the config
      * @param type   type determnines the display lenght and color
      */
-    public void send(Player player, MessageNode node, MessageNode.MsgType type)
+    public void send(Player player, MessageNode node, MsgCategory type)
     {
         send(player, node, messages.getString(node), type);
     }
@@ -159,7 +161,7 @@ public class MessagingModule extends EHMModule
      */
     public void send(Player player, MessageNode node)
     {
-        send(player, node, messages.getString(node), MessageNode.MsgType.NOTIFICATION);
+        send(player, node, messages.getString(node), MsgCategory.NOTIFICATION);
     }
 
 
@@ -169,7 +171,7 @@ public class MessagingModule extends EHMModule
      * @param player  Player to send the message to
      * @param message to send
      */
-    public void send(Player player, MessageNode message, MessageNode.MsgType type, FindAndReplace... fars)
+    public void send(Player player, MessageNode message, MsgCategory type, FindAndReplace... fars)
     {
         String msgText = messages.getString(message);
         for (FindAndReplace far : fars)
@@ -193,7 +195,7 @@ public class MessagingModule extends EHMModule
     {
         if (!player.hasPermission(perm.getNode()))
         {
-            send(player, node, messages.getString(node), MessageNode.MsgType.NOTIFICATION);
+            send(player, node, messages.getString(node), MsgCategory.NOTIFICATION);
             if (sound != null)
                 player.playSound(player.getLocation(), sound, 1, soundPitch);
         }
@@ -221,10 +223,10 @@ public class MessagingModule extends EHMModule
      * @param type    type defines the length color for consistency
      * @param message text to display
      */
-    public void sendPopup(Player player, MsgType type, String message)
+    public void sendPopup(Player player, MsgCategory category, String message)
     {
-        if (manager != null)
-            manager.showPopup(player.getName(), type, "ExtraHardMode", message);
+        if (popupsAreEnabled())
+            manager.showPopup(player.getName(), category.getUniqueIdentifier(), category.getLength(), category.getTitleColor(), category.getTitleColor(), "ExtraHardMode", message);
     }
 
 
@@ -235,10 +237,10 @@ public class MessagingModule extends EHMModule
      * @param type    type defines the length color for consistency
      * @param message text already seperated into lines
      */
-    public void sendPopup(Player player, MsgType type, List<String> message)
+    public void sendPopup(Player player, MsgCategory category, List<String> message)
     {
-        if (manager != null)
-            manager.showPopup(player.getName(), type, "ExtraHardMode", message);
+        if (popupsAreEnabled())
+            manager.showPopup(player.getName(), category.getUniqueIdentifier(), category.getLength(), category.getTitleColor(), category.getTitleColor(), "ExtraHardMode", message);
     }
 
 
@@ -260,9 +262,9 @@ public class MessagingModule extends EHMModule
      *
      * @return if popupmanager is loaded
      */
-    public boolean arePopupsEnabled()
+    public boolean popupsAreEnabled()
     {
-        return manager != null;
+        return popupsEnabled;
     }
 
 

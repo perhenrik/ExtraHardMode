@@ -27,7 +27,7 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.ListenerModule;
@@ -54,7 +54,7 @@ public class LimitedBuilding extends ListenerModule
 
     private final UtilityModule utils;
 
-    private final MessagingModule messenger;
+    private final MsgModule messenger;
 
     private final PlayerModule playerModule;
 
@@ -65,7 +65,7 @@ public class LimitedBuilding extends ListenerModule
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);
-        messenger = plugin.getModuleForClass(MessagingModule.class);
+        messenger = plugin.getModuleForClass(MsgModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 

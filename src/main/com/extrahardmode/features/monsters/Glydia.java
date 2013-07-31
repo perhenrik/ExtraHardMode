@@ -30,7 +30,7 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.features.Feature;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityHelper;
-import com.extrahardmode.module.MessagingModule;
+import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.FindAndReplace;
 import com.extrahardmode.service.ListenerModule;
@@ -70,7 +70,7 @@ public class Glydia extends ListenerModule
 
     private final DataStoreModule data;
 
-    private final MessagingModule messenger;
+    private final MsgModule messenger;
 
     private final PlayerModule playerModule;
 
@@ -82,7 +82,7 @@ public class Glydia extends ListenerModule
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         data = plugin.getModuleForClass(DataStoreModule.class);
-        messenger = plugin.getModuleForClass(MessagingModule.class);
+        messenger = plugin.getModuleForClass(MsgModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
