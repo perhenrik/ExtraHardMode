@@ -43,7 +43,7 @@ public class ConfigPlotter
                         @Override
                         public int getValue()
                         {
-                            return plugin.getServer().getWorlds().size() * 100 / CFG.getEnabledWorlds().length;
+                            return CFG.getEnabledWorlds().length > 0 ? (plugin.getServer().getWorlds().size() * 100 / CFG.getEnabledWorlds().length) : 0;
                         }
 
                     });
