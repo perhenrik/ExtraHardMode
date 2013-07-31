@@ -51,12 +51,12 @@
         <repository>
             <id>ehm-release</id>
             <name>extrahardmode.com Releases</name>
-            <url>http://extrahardmode.com:8081/nexus/content/repositories/bukkit-plugins/</url>
+            <url>http://extrahardmode.com:8081/content/repositories/bukkit-plugins/</url>
         </repository>
         <snapshotRepository>
             <id>ehm-snapshot</id>
             <name>extrahardmode.com Snapshots</name>
-            <url>http://extrahardmode.com:8081/nexus/content/repositories/bukkit-plugins-snapshot/</url>
+            <url>http://extrahardmode.com:8081/content/repositories/bukkit-plugins-snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
 
