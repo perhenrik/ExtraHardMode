@@ -67,8 +67,8 @@ public class MessagingModule extends EHMModule
         try
         {
             SBPopupAPI api = (SBPopupAPI) plugin.getServer().getPluginManager().getPlugin("SBPopupAPI");
-            manager = api.getSBManager();
-        } catch (NoClassDefFoundError ignored)
+            if (api != null) manager = api.getSBManager();
+        } catch (Exception ignored)
         {
         }
     }
