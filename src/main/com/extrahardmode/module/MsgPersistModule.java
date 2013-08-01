@@ -58,8 +58,7 @@ public class MsgPersistModule extends EHMModule
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Plugin instance.
+     * @param plugin - Plugin instance.
      */
     public MsgPersistModule(ExtraHardMode plugin, String dbFile)
     {
@@ -87,8 +86,7 @@ public class MsgPersistModule extends EHMModule
     /**
      * Get the id of the Player. Buffers id in a Map. Creates new id if Player not in the db yet.
      *
-     * @param playerName
-     *         name of the Player
+     * @param playerName name of the Player
      *
      * @return id of Player
      */
@@ -99,13 +97,15 @@ public class MsgPersistModule extends EHMModule
         int id = 0;
 
         Connection conn = null;
+        Statement aStatement;
         try
         {
             conn = retrieveConnection();
-            String query = String.format(
+            aStatement = conn.createStatement();
+            String playerIdQuery = String.format(
                     "SELECT id FROM %s WHERE %s = %s", playerTable, "name", '"' + playerName + '"');
 
-            ResultSet resultSet = conn.createStatement().executeQuery(query);
+            ResultSet resultSet = aStatement.executeQuery(playerIdQuery);
             if (resultSet.next())
                 id = resultSet.getInt("id");
 
@@ -113,11 +113,17 @@ public class MsgPersistModule extends EHMModule
             {
                 String newPlayerQuery = String.format( //new id
                         "INSERT INTO %s (%s) VALUES (%s)", playerTable, "name", '"' + playerName + '"');
-                id = conn.createStatement().executeUpdate(newPlayerQuery);
+                aStatement.executeUpdate(newPlayerQuery);
+
+                //Get the id of the just inserted row, I tried getGeneratedKeys() but that wasn't supported by jdbc
+                resultSet = aStatement.executeQuery(playerIdQuery);
+                if (resultSet.next())
+                    id = resultSet.getInt("id");
 
                 String newPlayerDataQuery = String.format( //empty row in messages
                         "INSERT INTO %s (%s) VALUES (%s)", msgTable, "id", id);
-                conn.createStatement().executeUpdate(newPlayerDataQuery);
+                aStatement.executeUpdate(newPlayerDataQuery);
+                aStatement.close();
             }
 
             playerIdBuffer.put(playerName, id);
@@ -217,10 +223,8 @@ public class MsgPersistModule extends EHMModule
     /**
      * Increment the count of a certain message by one
      *
-     * @param node
-     *         to increment
-     * @param playerName
-     *         only for this player
+     * @param node       to increment
+     * @param playerName only for this player
      */
     public void increment(MessageNode node, String playerName)
     {
@@ -234,12 +238,9 @@ public class MsgPersistModule extends EHMModule
     /**
      * Set the count of a certain message to a certain value
      *
-     * @param node
-     *         node to set the count for
-     * @param playerId
-     *         player for whom we are tracking the count
-     * @param value
-     *         value to set
+     * @param node     node to set the count for
+     * @param playerId player for whom we are tracking the count
+     * @param value    value to set
      */
     private void set(MessageNode node, int playerId, int value)
     {
@@ -273,10 +274,8 @@ public class MsgPersistModule extends EHMModule
     /**
      * Get the count of a message
      *
-     * @param node
-     *         which message
-     * @param playerName
-     *         player which has seen this message
+     * @param node       which message
+     * @param playerName player which has seen this message
      *
      * @return count >= 0
      */
@@ -289,10 +288,8 @@ public class MsgPersistModule extends EHMModule
     /**
      * Get how often a message has been displayed
      *
-     * @param node
-     *         to get the count for
-     * @param playerId
-     *         id of the player to get the count for
+     * @param node     to get the count for
+     * @param playerId id of the player to get the count for
      *
      * @return how often this message has been displayed
      */
@@ -338,8 +335,7 @@ public class MsgPersistModule extends EHMModule
     /**
      * Resets all counts for a given player
      *
-     * @param playerName
-     *         player to reset the stats for
+     * @param playerName player to reset the stats for
      */
     public void resetAll(String playerName)
     {
