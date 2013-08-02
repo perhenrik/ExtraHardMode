@@ -64,8 +64,7 @@ public class Endermen extends ListenerModule
     /**
      * when an entity (not a player) teleports...
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler
     public void onEntityTeleport(EntityTeleportEvent event)
@@ -80,16 +79,11 @@ public class Endermen extends ListenerModule
             Enderman enderman = (Enderman) entity;
 
             // ignore endermen which aren't fighting players
-            if (enderman.getTarget() == null || !(enderman.getTarget() instanceof Player))
+            if (!(enderman.getTarget() instanceof Player))
                 return;
 
-            // ignore endermen which are taking damage from the environment (to
-            // avoid rapid teleportation due to rain or suffocation)
+            // ignore endermen which are taking damage from the environment (to avoid rapid teleportation due to rain or suffocation)
             if (enderman.getLastDamageCause() != null && enderman.getLastDamageCause().getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK)
-                return;
-
-            // ignore endermen which are in caves (standing on stone)
-            if (enderman.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() == Material.STONE)
                 return;
 
             Player player = (Player) enderman.getTarget();
@@ -101,7 +95,6 @@ public class Endermen extends ListenerModule
             // half the time, teleport the player instead
             if (plugin.random(50))
             {
-                event.setCancelled(true);
                 int distanceSquared = (int) player.getLocation().distanceSquared(enderman.getLocation());
 
                 // play sound at old location
@@ -125,9 +118,17 @@ public class Endermen extends ListenerModule
 
                 while (destinationBlock.getType() != Material.AIR || destinationBlock.getRelative(BlockFace.UP).getType() != Material.AIR
                         && destinationBlock.getY() < destinationBlock.getWorld().getMaxHeight())
-                {
                     destinationBlock = destinationBlock.getRelative(BlockFace.UP);
-                }
+
+                //Limit the height difference so players arent teleported into caves or teleported out of caves etc.
+                int playerY = player.getLocation().getBlockY(), destY = destinationBlock.getLocation().getBlockY();
+                if (playerY > destY ? (playerY - destY) > 10 : (destY - playerY) > 10)
+                    return;
+
+                //Prevent Enderman from loosing aggro because player got ported into water
+                Material underType = destinationBlock.getRelative(BlockFace.DOWN).getType();
+                if (underType == Material.WATER || underType == Material.STATIONARY_WATER)
+                    return;
 
                 EhmEndermanTeleportEvent teleportEvent = new EhmEndermanTeleportEvent(player, enderman, destinationBlock.getLocation());
                 plugin.getServer().getPluginManager().callEvent(teleportEvent);
@@ -138,6 +139,7 @@ public class Endermen extends ListenerModule
 
                     // play sound at new location
                     world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+                    event.setCancelled(true);
                 }
             }
         }

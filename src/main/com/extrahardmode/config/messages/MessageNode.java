@@ -128,9 +128,6 @@ public enum MessageNode implements ConfigNode
     ENDERMAN_GENERAL
             ("EndermanGeneral", MsgCategory.TUTORIAL, "enderman_teleport",
                     "&cEnderman can teleport you too!"),
-    ENDERMAN_SUICIDAL
-            ("EndermanSuicidal", MsgCategory.ONE_TIME, "enderman_deaggro",
-                    "&cGet better gear if you want to fight an enderman or die trying!"),
     CREEPER_DROP_TNT
             ("CreeperDropTnt", MsgCategory.TUTORIAL, "creeper_drop_tnt",
                     "&cCreepers may drop activated tnt on death!"),

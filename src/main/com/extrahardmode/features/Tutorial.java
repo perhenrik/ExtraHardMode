@@ -17,7 +17,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -159,25 +158,6 @@ public class Tutorial implements Listener
                     break;
                 }
             }
-        }
-    }
-
-
-    /**
-     * When an Enderman teleports a Player for the first time, cancel the Event and inform the Player of his imminent
-     * death
-     */
-    @EventHandler
-    public void onEndermanTeleport(EhmEndermanTeleportEvent event)
-    {
-        final Player player = event.getPlayer();
-        final Enderman enderman = event.getEnderman();
-
-        messenger.send(player, MessageNode.ENDERMAN_GENERAL, MsgCategory.TUTORIAL);
-        if (playerModule.getArmorPoints(player) < 0.32) //basically leather armor
-        {
-            enderman.setTarget(null); //give new Players a chance if they don't know yet
-            messenger.send(player, MessageNode.ENDERMAN_SUICIDAL, MsgCategory.TUTORIAL);
         }
     }
 

@@ -177,7 +177,7 @@ public class MsgPersistModule extends EHMModule
             StringBuilder columns = new StringBuilder();
             for (MessageNode message : MessageNode.values())
             {
-                if (message.getColumnName() != null && message.getMsgCategory() == MsgCategory.TUTORIAL)
+                if (message.getColumnName() != null && (message.getMsgCategory() == MsgCategory.TUTORIAL || message.getMsgCategory() == MsgCategory.ONE_TIME))
                 {
                     columns.append(',');
                     columns.append(message.getColumnName());
@@ -193,7 +193,7 @@ public class MsgPersistModule extends EHMModule
             //Add missing columns
             for (MessageNode node : MessageNode.values())
             {
-                if (node.getMsgCategory() == MsgCategory.TUTORIAL)
+                if (node.getMsgCategory() == MsgCategory.TUTORIAL || node.getMsgCategory() == MsgCategory.ONE_TIME)
                 {
                     ResultSet set = dmd.getColumns(null, null, msgTable, node.getColumnName());
                     if (!set.next())
