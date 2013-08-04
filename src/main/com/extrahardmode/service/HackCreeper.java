@@ -432,6 +432,27 @@ public class HackCreeper implements Creeper
 
 
     @Override
+    public boolean isLeashed()
+    {
+        return false;
+    }
+
+
+    @Override
+    public Entity getLeashHolder() throws IllegalStateException
+    {
+        return null;
+    }
+
+
+    @Override
+    public boolean setLeashHolder(Entity holder)
+    {
+        return false;
+    }
+
+
+    @Override
     public void damage(double amount)
     {
     }
