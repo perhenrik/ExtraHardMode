@@ -28,6 +28,7 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
+import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Material;
 import org.bukkit.World;

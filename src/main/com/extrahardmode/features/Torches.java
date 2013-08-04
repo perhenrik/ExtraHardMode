@@ -29,6 +29,7 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.PermissionNode;
 import com.extrahardmode.task.RemoveExposedTorchesTask;

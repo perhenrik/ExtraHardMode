@@ -31,6 +31,7 @@ import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.Material;

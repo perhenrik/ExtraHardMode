@@ -19,10 +19,8 @@
  * along with ExtraHardMode.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.extrahardmode.features;
+package com.extrahardmode.service;
 
-
-import com.extrahardmode.service.PermissionNode;
 
 /**
  * Holds some information about a given feature like the permission which will bypass it
