@@ -76,9 +76,9 @@ public class MsgModule extends EHMModule
     }
 
 
-    private void send(Player player, MessageNode node, String message, MsgCategory category)
+    private void send(Player player, MessageNode node, String message)
     {
-        switch (category)
+         switch (messages.getCat(node))
         {
             case NOTIFICATION:
                 if (player == null)
@@ -104,11 +104,11 @@ public class MsgModule extends EHMModule
                 break;
             case TUTORIAL:
                 Validate.notNull(player);
-                if (persistModule.getCountFor(node, player.getName()) < node.getMsgCount())
+                if (persistModule.getCountFor(node, player.getName()) < messages.getMsgCount(node))
                 {
                     long now = Calendar.getInstance().getTimeInMillis();
 
-                    if (!timeouts.contains(player.getName(), message) || now - timeouts.get(player.getName(), message) > 120000)
+                    if (!timeouts.contains(player.getName(), node) || now - timeouts.get(player.getName(), node) > 120000) //only if contains
                     {
                         timeouts.put(player.getName(), node, now);
                         String msgText = messages.getString(node);
@@ -145,23 +145,10 @@ public class MsgModule extends EHMModule
      *
      * @param player to send the message to
      * @param node   message, gets loaded from the config
-     * @param type   type determnines the display lenght and color
-     */
-    public void send(Player player, MessageNode node, MsgCategory type)
-    {
-        send(player, node, messages.getString(node), type);
-    }
-
-
-    /**
-     * Send a message to a Player. Default type is NOTIFICATION.
-     *
-     * @param player to send the message to
-     * @param node   message, gets loaded from the config
      */
     public void send(Player player, MessageNode node)
     {
-        send(player, node, messages.getString(node), MsgCategory.NOTIFICATION);
+        send(player, node, messages.getString(node));
     }
 
 
@@ -178,7 +165,7 @@ public class MsgModule extends EHMModule
         {   /* Replace the placeholder with the actual value */
             msgText = msgText.replace(far.getSearchWord(), far.getReplaceWith());
         }
-        send(player, message, msgText, type);
+        send(player, message, msgText);
     }
 
 
@@ -195,7 +182,7 @@ public class MsgModule extends EHMModule
     {
         if (!player.hasPermission(perm.getNode()))
         {
-            send(player, node, messages.getString(node), MsgCategory.NOTIFICATION);
+            send(player, node, messages.getString(node));
             if (sound != null)
                 player.playSound(player.getLocation(), sound, 1, soundPitch);
         }

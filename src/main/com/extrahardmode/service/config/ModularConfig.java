@@ -58,7 +58,7 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Cache of options for the config.
      */
-    private final Map<ConfigNode, Object> OPTIONS = new ConcurrentHashMap<ConfigNode, Object>();
+    protected final Map<ConfigNode, Object> OPTIONS = new ConcurrentHashMap<ConfigNode, Object>();
 
 
     /**

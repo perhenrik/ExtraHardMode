@@ -84,7 +84,7 @@ public class Tutorial implements Listener
                     {
                         Creeper creeper = (Creeper) event.getEntity();
                         if (creeper.isPowered())
-                            messenger.send(player, MessageNode.CHARGED_CREEPER_TARGET, MsgCategory.TUTORIAL);
+                            messenger.send(player, MessageNode.CHARGED_CREEPER_TARGET);
                     }
                     break;
                 }
@@ -94,11 +94,11 @@ public class Tutorial implements Listener
                     {
                         case NORMAL:
                             if (CFG.getBoolean(RootNode.BLAZES_EXPLODE_ON_DEATH, world.getName()))
-                                messenger.send(player, MessageNode.BLAZE_TARGET_NORMAL, MsgCategory.TUTORIAL);
+                                messenger.send(player, MessageNode.BLAZE_TARGET_NORMAL);
                             break;
                         case NETHER:
                             if (CFG.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, world.getName()) > 0)
-                                messenger.send(player, MessageNode.BLAZE_TARGET_NETHER, MsgCategory.TUTORIAL);
+                                messenger.send(player, MessageNode.BLAZE_TARGET_NETHER);
                             break;
                     }
                     break;
@@ -106,20 +106,20 @@ public class Tutorial implements Listener
                 case GHAST:
                 {
                     if (CFG.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName()))
-                        messenger.send(player, MessageNode.GHAST_TARGET, MsgCategory.TUTORIAL);
+                        messenger.send(player, MessageNode.GHAST_TARGET);
                     break;
                 }
                 case PIG_ZOMBIE:
                 {
                     if (CFG.getBoolean(RootNode.ALWAYS_ANGRY_PIG_ZOMBIES, world.getName()))
-                        messenger.send(player, MessageNode.PIGZOMBIE_TARGET, MsgCategory.TUTORIAL);
+                        messenger.send(player, MessageNode.PIGZOMBIE_TARGET);
                     if (CFG.getInt(RootNode.NETHER_PIGS_DROP_WART, world.getName()) > 0)
                         plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
                         {
                             @Override
                             public void run()
                             {
-                                messenger.send(player, MessageNode.PIGZOMBIE_TARGET_WART, MsgCategory.TUTORIAL);
+                                messenger.send(player, MessageNode.PIGZOMBIE_TARGET_WART);
                             }
                         }, 300L);
                     break;
@@ -127,7 +127,7 @@ public class Tutorial implements Listener
                 case MAGMA_CUBE:
                 {
                     if (CFG.getBoolean(RootNode.MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE, world.getName()))
-                        messenger.send(player, MessageNode.PIGZOMBIE_TARGET, MsgCategory.TUTORIAL);
+                        messenger.send(player, MessageNode.PIGZOMBIE_TARGET);
                     break;
                 }
                 case SKELETON:
@@ -148,13 +148,13 @@ public class Tutorial implements Listener
                 case ENDERMAN:
                 {
                     if (CFG.getBoolean(RootNode.IMPROVED_ENDERMAN_TELEPORTATION, world.getName()))
-                        messenger.send(player, MessageNode.ENDERMAN_GENERAL, MsgCategory.TUTORIAL);
+                        messenger.send(player, MessageNode.ENDERMAN_GENERAL);
                     break;
                 }
                 case ZOMBIE:
                 {
                     if (CFG.getBoolean(RootNode.ZOMBIES_DEBILITATE_PLAYERS, world.getName()))
-                        messenger.send(player, MessageNode.ZOMBIE_SLOW_PLAYERS, MsgCategory.TUTORIAL);
+                        messenger.send(player, MessageNode.ZOMBIE_SLOW_PLAYERS);
                     break;
                 }
             }
@@ -171,7 +171,7 @@ public class Tutorial implements Listener
         final Player player = event.getPlayer();
         if (player != null)
         {
-            messenger.send(player, MessageNode.ZOMBIE_RESPAWN, MsgCategory.TUTORIAL);
+            messenger.send(player, MessageNode.ZOMBIE_RESPAWN);
         }
     }
 
@@ -187,7 +187,7 @@ public class Tutorial implements Listener
             final Player player = event.getPlayer();
             if (player.getWorld().getEnvironment() == World.Environment.NETHER)
             {
-                messenger.send(player, MessageNode.NETHER_WARNING, MsgCategory.TUTORIAL);
+                messenger.send(player, MessageNode.NETHER_WARNING);
             }
         }
     }
@@ -202,7 +202,7 @@ public class Tutorial implements Listener
         final Player player = event.getPlayer();
         if (player != null)
         {
-            messenger.send(player, MessageNode.CREEPER_DROP_TNT, MsgCategory.TUTORIAL);
+            messenger.send(player, MessageNode.CREEPER_DROP_TNT);
         }
     }
 
@@ -216,7 +216,7 @@ public class Tutorial implements Listener
         if (event.getShooter() != null)
         {
             final Player player = event.getShooter();
-            messenger.send(player, MessageNode.SKELETON_DEFLECT, MsgCategory.TUTORIAL);
+            messenger.send(player, MessageNode.SKELETON_DEFLECT);
         }
     }
 
@@ -230,7 +230,7 @@ public class Tutorial implements Listener
         if (CFG.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, event.getPlayer().getWorld().getName()))
         {
             final Player player = event.getPlayer();
-            messenger.send(player, MessageNode.BUCKET_FILL, MsgCategory.TUTORIAL);
+            messenger.send(player, MessageNode.BUCKET_FILL);
         }
     }
 
@@ -249,7 +249,7 @@ public class Tutorial implements Listener
             Block above = block.getRelative(BlockFace.UP);
             if (above.getLightFromSky() < 10)
             {
-                messenger.send(player, MessageNode.ANTIFARMING_NO_LIGHT, MsgCategory.TUTORIAL);
+                messenger.send(player, MessageNode.ANTIFARMING_NO_LIGHT);
             }
         }
 
@@ -258,7 +258,7 @@ public class Tutorial implements Listener
         //Unwatered
         if (blockModule.isPlant(block.getType()) && below.getState().getData().getData() == (byte) 0)
         {
-            messenger.send(player, MessageNode.ANTIFARMING_UNWATERD, MsgCategory.TUTORIAL);
+            messenger.send(player, MessageNode.ANTIFARMING_UNWATERD);
         }
 
         //Warn players before they build big farms in the desert
@@ -269,7 +269,7 @@ public class Tutorial implements Listener
                 case DESERT:
                 case DESERT_HILLS:
                 {
-                    messenger.send(player, MessageNode.ANTIFARMING_DESSERT_WARNING, MsgCategory.TUTORIAL);
+                    messenger.send(player, MessageNode.ANTIFARMING_DESSERT_WARNING);
                     break;
                 }
             }
@@ -294,7 +294,7 @@ public class Tutorial implements Listener
     @EventHandler
     public void onExtinguishFire(EhmPlayerExtinguishFireEvent event)
     {
-        messenger.send(event.getPlayer(), MessageNode.EXTINGUISH_FIRE, MsgCategory.TUTORIAL);
+        messenger.send(event.getPlayer(), MessageNode.EXTINGUISH_FIRE);
     }
 
 
@@ -351,7 +351,7 @@ public class Tutorial implements Listener
             outPut = outPut.replace(MessageNode.variables.ITEMS.getVarName(), items.toString());
             event.getDeathEvent().setDeathMessage(outPut);
 
-            messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS_PLAYER, MsgCategory.TUTORIAL);
+            messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS_PLAYER);
         }
     }
 

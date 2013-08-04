@@ -23,6 +23,7 @@ package com.extrahardmode.module;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.config.messages.MsgCategory;
 import com.extrahardmode.service.EHMModule;
@@ -44,6 +45,8 @@ public class MsgPersistModule extends EHMModule
 
     private final String playerTable = "players";
 
+    private final MessageConfig messages;
+
     /**
      * Buffer player ids (playerName, playerId)
      */
@@ -64,6 +67,7 @@ public class MsgPersistModule extends EHMModule
     {
         super(plugin);
         this.dbFile = dbFile;
+        messages = plugin.getModuleForClass(MessageConfig.class);
     }
 
 
@@ -175,12 +179,13 @@ public class MsgPersistModule extends EHMModule
 
             //One column for every message
             StringBuilder columns = new StringBuilder();
-            for (MessageNode message : MessageNode.values())
+            for (MessageNode node : MessageNode.values())
             {
-                if (message.getColumnName() != null && (message.getMsgCategory() == MsgCategory.TUTORIAL || message.getMsgCategory() == MsgCategory.ONE_TIME))
+                MsgCategory cat = messages.getCat(node);
+                if (node.getColumnName() != null && (cat == MsgCategory.TUTORIAL || cat == MsgCategory.ONE_TIME))
                 {
                     columns.append(',');
-                    columns.append(message.getColumnName());
+                    columns.append(node.getColumnName());
                 }
             }
 
@@ -193,7 +198,8 @@ public class MsgPersistModule extends EHMModule
             //Add missing columns
             for (MessageNode node : MessageNode.values())
             {
-                if (node.getMsgCategory() == MsgCategory.TUTORIAL || node.getMsgCategory() == MsgCategory.ONE_TIME)
+                MsgCategory cat = messages.getCat(node);
+                if (cat == MsgCategory.TUTORIAL || cat == MsgCategory.ONE_TIME)
                 {
                     ResultSet set = dmd.getColumns(null, null, msgTable, node.getColumnName());
                     if (!set.next())

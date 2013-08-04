@@ -30,134 +30,211 @@ import com.extrahardmode.service.config.ConfigNode;
  */
 public enum MessageNode implements ConfigNode
 {
+    //Mode-Nodes have to be have the exact same name + _MODE
+    NO_TORCHES_HERE_MODE
+            ("NoTorchesHere.Mode", MsgCategory.NOTIFICATION),
     NO_TORCHES_HERE
-            ("NoTorchesHere", MsgCategory.NOTIFICATION, "torches_underground",
+            ("NoTorchesHere.Msg", MsgCategory.NOTIFICATION, "torches_underground",
                     "There's not enough air flow down here for permanent flames. Use another method to light your way."),
+    STONE_MINING_HELP_MODE
+            ("StoneMiningHelp.Mode", MsgCategory.NOTIFICATION),
     STONE_MINING_HELP
-            ("StoneMiningHelp", MsgCategory.NOTIFICATION, "hardened_stone",
+            ("StoneMiningHelp.Msg", MsgCategory.NOTIFICATION, "hardened_stone",
                     "You'll need an iron or diamond pickaxe to break stone.  Try exploring natural formations for exposed ore like coal, which softens stone around it when broken."),
+    NO_PLACING_ORE_AGAINST_STONE_MODE
+            ("NoPlacingOreAgainstStone.Mode", MsgCategory.NOTIFICATION),
     NO_PLACING_ORE_AGAINST_STONE
-            ("NoPlacingOreAgainstStone", MsgCategory.NOTIFICATION, "hardened_stone_ore",
-                    "Sorry, you can't place ore next to stone."),
+            ("NoPlacingOreAgainstStone.Msg", MsgCategory.NOTIFICATION, "hardened_stone_ore", "Sorry, you can't place ore next to stone."),
+    REALISTIC_BUILDING_MODE
+            ("RealisticBuilding.Mode", MsgCategory.NOTIFICATION),
     REALISTIC_BUILDING
-            ("RealisticBuilding", MsgCategory.NOTIFICATION, "realistic_building",
-                    "You can't build while in the air."),
+            ("RealisticBuilding.Msg", MsgCategory.NOTIFICATION, "realistic_building", "You can't build while in the air."),
+    REALISTIC_BUILDING_BENEATH_MODE
+            ("RealisticBuildingBeneath.Mode", MsgCategory.NOTIFICATION),
     REALISTIC_BUILDING_BENEATH
-            ("RealisticBuildingBeneath", MsgCategory.NOTIFICATION, "realistic_building_beneath",
+            ("RealisticBuildingBeneath.Msg", MsgCategory.NOTIFICATION, "realistic_building_beneath",
                     "You can't place a block directly beneath you."),
+    LIMITED_TORCH_PLACEMENTS_MODE
+            ("LimitedTorchPlacements.Mode", MsgCategory.NOTIFICATION),
     LIMITED_TORCH_PLACEMENTS
-            ("LimitedTorchPlacements", MsgCategory.NOTIFICATION, "torches_soft_blocks",
+            ("LimitedTorchPlacements.Msg", MsgCategory.NOTIFICATION, "torches_soft_blocks",
                     "It's too soft there to fasten a torch."),
+    NO_CRAFTING_MELON_SEEDS_MODE
+            ("NoCraftingMelonSeeds.Mode", MsgCategory.NOTIFICATION),
     NO_CRAFTING_MELON_SEEDS
-            ("NoCraftingMelonSeeds", MsgCategory.NOTIFICATION, "no_crafting_melon_seeds",
+            ("NoCraftingMelonSeeds.Msg", MsgCategory.NOTIFICATION, "no_crafting_melon_seeds",
                     "That appears to be seedless!"),
+    LIMITED_END_BUILDING_MODE
+            ("LimitedEndBuilding.Mode", MsgCategory.NOTIFICATION),
     LIMITED_END_BUILDING
-            ("LimitedEndBuilding", MsgCategory.NOTIFICATION, "limited_building_end",
+            ("LimitedEndBuilding.Msg", MsgCategory.NOTIFICATION, "limited_building_end",
                     "Sorry, building here is very limited.  You may only break blocks to reach ground level."),
+    DRAGON_FOUNTAIN_TIP_MODE
+            ("DragonFountainTip.Mode", MsgCategory.NOTIFICATION),
     DRAGON_FOUNTAIN_TIP
-            ("DragonFountainTip", MsgCategory.NOTIFICATION, "dragon_fountain_tip",
+            ("DragonFountainTip.Msg", MsgCategory.NOTIFICATION, "dragon_fountain_tip",
                     "Congratulations on defeating the dragon!  If you can't reach the fountain to jump into the portal, throw an ender pearl at it."),
+    NO_SWIMMING_IN_ARMOR_MODE
+            ("NoSwimmingInArmor.Mode", MsgCategory.NOTIFICATION),
     NO_SWIMMING_IN_ARMOR
-            ("NoSwimmingInArmor", MsgCategory.NOTIFICATION, "no_swimming_in_armor_warning",
+            ("NoSwimmingInArmor.Msg", MsgCategory.NOTIFICATION, "no_swimming_in_armor_warning",
                     "You're carrying too much weight to swim!"),
+    END_DRAGON_KILLED_MODE
+            ("DragonDefeated.Mode", MsgCategory.BROADCAST),
     END_DRAGON_KILLED
-            ("DragonDefeated", MsgCategory.NOTIFICATION, "end_dragon_killed",
+            ("DragonDefeated.Msg", MsgCategory.BROADCAST, "end_dragon_killed",
                     "The dragon has been defeated!  ( By: " + variables.PLAYERS.getVarName() + " )"),
+    END_DRAGON_PLAYER_KILLED_MODE
+            ("PlayerKilledByDragon.Mode", MsgCategory.BROADCAST),
     END_DRAGON_PLAYER_KILLED
-            ("PlayerKilledByDragon", MsgCategory.NOTIFICATION, "player_killed_dragon",
-                    variables.PLAYER.getVarName() + " was killed while fighting the dragon!"),
+            ("PlayerKilledByDragon.Msg", MsgCategory.BROADCAST, "player_killed_dragon",
+                    "'" + variables.PLAYER.getVarName() + " was killed while fighting the dragon!"),
+    END_DRAGON_PLAYER_CHALLENGING_MODE
+            ("PlayerChallengingDragon.Mode", MsgCategory.BROADCAST),
     END_DRAGON_PLAYER_CHALLENGING
-            ("PlayerChallengingDragon", MsgCategory.NOTIFICATION, "player_challenging_dragon",
+            ("PlayerChallengingDragon.Msg", MsgCategory.BROADCAST, "player_challenging_dragon",
                     variables.PLAYER.getVarName() + " is challenging the dragon!"),
 
     //Horses
+    HORSE_FEED_LOW_MODE
+            ("HorseFeedLow.Mode", MsgCategory.NOTIFICATION),
     HORSE_FEED_LOW
-            ("HorseFeedLow", MsgCategory.NOTIFICATION, "horse_feed_low",
-                    "You have saved your horse from starving, but it\'s still very hungry."),
+            ("HorseFeedLow.Msg", MsgCategory.NOTIFICATION, "horse_feed_low",
+                    "You have saved your horse from starving, but it's still very hungry."),
+    HORSE_FEED_MIDDLE_MODE
+            ("HorseFeedMiddle.Mode", MsgCategory.NOTIFICATION),
     HORSE_FEED_MIDDLE
-            ("HorseFeedMiddle", MsgCategory.NOTIFICATION, "horse_feed_middle",
+            ("HorseFeedMiddle.Msg", MsgCategory.NOTIFICATION, "horse_feed_middle",
                     "Your horse has ate well."),
+    HORSE_FEED_HIGH_MODE
+            ("HorseFeedHigh.Mode", MsgCategory.NOTIFICATION),
     HORSE_FEED_HIGH
-            ("HorseFeedHigh", MsgCategory.NOTIFICATION, "horse_feed_high",
+            ("HorseFeedHigh.Msg", MsgCategory.NOTIFICATION, "horse_feed_high",
                     "Your horse is satiated."),
 
+    HORSE_STARVING_LOW_MODE
+            ("HorseStarveLow.Mode", MsgCategory.NOTIFICATION),
     HORSE_STARVING_LOW
-            ("HorseStarveLow", MsgCategory.NOTIFICATION, "horse_starve_low",
+            ("HorseStarveLow.Msg", MsgCategory.NOTIFICATION, "horse_starve_low",
                     "Your horse is very tired and needs some food."),
+    HORSE_STARVING_DANGEROUS_MODE
+            ("HorseStarveMiddle.Mode", MsgCategory.NOTIFICATION),
     HORSE_STARVING_DANGEROUS
-            ("HorseStarveMiddle", MsgCategory.NOTIFICATION, "horse_starve_dangerous",
+            ("HorseStarveMiddle.Msg", MsgCategory.NOTIFICATION, "horse_starve_dangerous",
                     "Your horse is about to starve."),
+    HORSE_STARVING_IMMINENT_DEATH_MODE
+            ("HorseStarveHigh.Mode", MsgCategory.NOTIFICATION),
     HORSE_STARVING_IMMINENT_DEATH
-            ("HorseStarveHigh", MsgCategory.NOTIFICATION, "horse_starve_imminent_death",
+            ("HorseStarveHigh.Msg", MsgCategory.NOTIFICATION, "horse_starve_imminent_death",
                     "Your horse is starving, feed it or it will die."),
 
 
     //Target Events
+    CHARGED_CREEPER_TARGET_MODE
+            ("ChargedCreeper.Mode", MsgCategory.TUTORIAL),
     CHARGED_CREEPER_TARGET
-            ("ChargedCreeper", MsgCategory.TUTORIAL, "charged_creeper",
+            ("ChargedCreeper.Msg", MsgCategory.TUTORIAL, "charged_creeper",
                     "&cCharged Creepers explode instantly when hit. Run!"),
+    BLAZE_TARGET_NORMAL_MODE
+            ("BlazeOverworld.Mode", MsgCategory.TUTORIAL),
     BLAZE_TARGET_NORMAL
-            ("BlazeOverworld", MsgCategory.TUTORIAL, "blaze_overworld",
+            ("BlazeOverworld.Msg", MsgCategory.TUTORIAL, "blaze_overworld",
                     "&cBlazes spawn near lava and their fiery breath causes a big explosion on death!"),
+    BLAZE_TARGET_NETHER_MODE
+            ("BlazeNether.Mode", MsgCategory.TUTORIAL),
     BLAZE_TARGET_NETHER
-            ("BlazeNether", MsgCategory.TUTORIAL, "blaze_nether",
+            ("BlazeNether.Msg", MsgCategory.TUTORIAL, "blaze_nether",
                     "&cBlazes spawn everywhere in the Nether and may split on death!"),
+    MAGMACUBE_TARGET_MODE
+            ("Magmacube.Mode", MsgCategory.TUTORIAL),
     MAGMACUBE_TARGET
-            ("Magmacube", MsgCategory.TUTORIAL, "magmacube",
+            ("Magmacube.Msg", MsgCategory.TUTORIAL, "magmacube",
                     "&cThese small buggers actually are just disguised blazes!"),
+    GHAST_TARGET_MODE
+            ("Ghast.Mode", MsgCategory.TUTORIAL),
     GHAST_TARGET
-            ("Ghast", MsgCategory.TUTORIAL, "ghast_warning",
+            ("Ghast.Msg", MsgCategory.TUTORIAL, "ghast_warning",
                     "&cThese fearsome Ghasts wear invisible arrow deflective armor! Ghasts drop a lot more loot as well."),
+    PIGZOMBIE_TARGET_MODE
+            ("PigZombieAlwaysAngry.Mode", MsgCategory.TUTORIAL),
     PIGZOMBIE_TARGET
-            ("PigZombieAlwaysAngry", MsgCategory.TUTORIAL, "pigzombie",
+            ("PigZombieAlwaysAngry.Msg", MsgCategory.TUTORIAL, "pigzombie",
                     "&cRUN! Pig Zombies are always angry and hungry!"),
+    PIGZOMBIE_TARGET_WART_MODE
+            ("PigZombieDropNetherwart.Mode", MsgCategory.TUTORIAL),
     PIGZOMBIE_TARGET_WART
-            ("PigZombieDropNetherwart", MsgCategory.TUTORIAL, "pigzombie_wart",
+            ("PigZombieDropNetherwart.Msg", MsgCategory.TUTORIAL, "pigzombie_wart",
                     "&cYou can get netherwart from slaying Pig Zombies"),
 
     //Various Own Events
+    ZOMBIE_RESPAWN_MODE
+            ("ZombieRespawn.Mode", MsgCategory.TUTORIAL),
     ZOMBIE_RESPAWN
-            ("ZombieRespawn", MsgCategory.TUTORIAL, "zombie_respawn",
+            ("ZombieRespawn.Msg", MsgCategory.TUTORIAL, "zombie_respawn",
                     "&cZombies might resurrect if not on fire!"),
+    ZOMBIE_SLOW_PLAYERS_MODE
+            ("ZombieSlowPlayer.Mode", MsgCategory.TUTORIAL),
     ZOMBIE_SLOW_PLAYERS
-            ("ZombieSlowPlayer", MsgCategory.TUTORIAL, "zombie_slow",
+            ("ZombieSlowPlayer.Msg", MsgCategory.TUTORIAL, "zombie_slow",
                     "&cZombies slow you down when hit!"),
+    SKELETON_DEFLECT_MODE
+            ("SkeletonDeflectArrows.Mode", MsgCategory.TUTORIAL),
     SKELETON_DEFLECT
-            ("SkeletonDeflectArrows", MsgCategory.TUTORIAL, "skeleton_deflect_arrow",
+            ("SkeletonDeflectArrows.Msg", MsgCategory.TUTORIAL, "skeleton_deflect_arrow",
                     "&cArrows just pass through Skeletons, you gotta go close combat!"),
+    ENDERMAN_GENERAL_MODE
+            ("EndermanGeneral.Mode", MsgCategory.TUTORIAL),
     ENDERMAN_GENERAL
-            ("EndermanGeneral", MsgCategory.TUTORIAL, "enderman_teleport",
+            ("EndermanGeneral.Msg", MsgCategory.TUTORIAL, "enderman_teleport",
                     "&cEnderman can teleport you too!"),
+    CREEPER_DROP_TNT_MODE
+            ("CreeperDropTnt.Mode", MsgCategory.TUTORIAL),
     CREEPER_DROP_TNT
-            ("CreeperDropTnt", MsgCategory.TUTORIAL, "creeper_drop_tnt",
+            ("CreeperDropTnt.Msg", MsgCategory.TUTORIAL, "creeper_drop_tnt",
                     "&cCreepers may drop activated tnt on death!"),
+    EXTINGUISH_FIRE_MODE
+            ("ExtinguishFire.Mode", MsgCategory.TUTORIAL),
     EXTINGUISH_FIRE
-            ("ExtinguishFire", MsgCategory.TUTORIAL, "extinguish_fire",
+            ("ExtinguishFire.Msg", MsgCategory.TUTORIAL, "extinguish_fire",
                     "&cPutting out fire with your hand will catch you on fire."),
+    LOST_ITEMS_MODE
+            ("ListLostItemsOnDeath.Mode", MsgCategory.NOTIFICATION),
     LOST_ITEMS
-            ("ListLostItemsOnDeath", MsgCategory.NOTIFICATION, "lost_items_broadcast",
+            ("ListLostItemsOnDeath.Msg", MsgCategory.NOTIFICATION, "lost_items_broadcast",
                     variables.DEATH_MSG + " and managed to loose " + variables.ITEMS.getVarName()),
+    LOST_ITEMS_PLAYER_MODE
+            ("InformPlayerOnLostItems.Mode", MsgCategory.TUTORIAL),
     LOST_ITEMS_PLAYER
-            ("InformPlayerOnLostItems", MsgCategory.TUTORIAL, "lost_items",
+            ("InformPlayerOnLostItems.Msg", MsgCategory.TUTORIAL, "lost_items",
                     "On death there is a a chance you might loose some of your items!"),
 
     //Farming
+    BUCKET_FILL_MODE
+            ("BucketFill.Mode", MsgCategory.TUTORIAL),
     BUCKET_FILL
-            ("BucketFill", MsgCategory.TUTORIAL, "bucket_fill",
+            ("BucketFill.Msg", MsgCategory.TUTORIAL, "bucket_fill",
                     "&cYou can pick up water, but once you place it, it evaporates. Get some ice if you want to farm!"),
+    ANTIFARMING_UNWATERD_MODE
+            ("AntifarmingUnwatered.Mode", MsgCategory.TUTORIAL),
     ANTIFARMING_UNWATERD
-            ("AntifarmingUnwatered", MsgCategory.TUTORIAL, "antifarm_unwatered",
+            ("AntifarmingUnwatered.Msg", MsgCategory.TUTORIAL, "antifarm_unwatered",
                     "&cYour crops need sufficient water, otherwise they\'ll dry out!"),
+    ANTIFARMING_NO_LIGHT_MODE
+            ("AntifarmingNotEnoughLight.Mode", MsgCategory.TUTORIAL),
     ANTIFARMING_NO_LIGHT
-            ("AntifarmingNotEnoughLight", MsgCategory.TUTORIAL, "antifarm_natural_light",
+            ("AntifarmingNotEnoughLight.Msg", MsgCategory.TUTORIAL, "antifarm_natural_light",
                     "&cYour crops require natural light to grow!"),
+    ANTIFARMING_DESSERT_WARNING_MODE
+            ("AntifarmingDesert.Mode", MsgCategory.TUTORIAL),
     ANTIFARMING_DESSERT_WARNING
-            ("AntifarmingDesert", MsgCategory.TUTORIAL, "antifarm_desert",
+            ("AntifarmingDesert.Msg", MsgCategory.TUTORIAL, "antifarm_desert",
                     "&cDeserts are really dry and nothing grows here!"),
 
     //General Advice
+    NETHER_WARNING_MODE
+            ("NetherWarning.Mode", MsgCategory.TUTORIAL),
     NETHER_WARNING
-            ("NetherWarning", MsgCategory.TUTORIAL, "nether_warn",
+            ("NetherWarning.Msg", MsgCategory.TUTORIAL, "nether_warn",
                     "&cThis is a dangerous place. Make sure you come prepared with arrows and good gear.");
 
     /**
@@ -187,15 +264,29 @@ public enum MessageNode implements ConfigNode
 
 
     /**
+     * Constructor for Mode Nodes
+     *
+     * @param path        path in yml
+     * @param msgCategory mode of the message this nod eis for
+     */
+    private MessageNode(String path, MsgCategory msgCategory)
+    {
+        this.path = path;
+        this.msgCategory = msgCategory;
+        this.column = null;
+        this.value = msgCategory.name().toLowerCase();
+    }
+
+
+    /**
      * Constructor.
      *
-     * @param value
-     *         - Default Value
+     * @param value - Default Value
      */
     private MessageNode(String path, MsgCategory msgCategory, String column, String value)
     {
         this.path = path;
-        this.msgCategory = msgCategory;
+        this.msgCategory = null;
         this.column = column;
         this.value = value;
     }
@@ -248,36 +339,24 @@ public enum MessageNode implements ConfigNode
 
 
     /**
-     * Get the type of this message
-     *
-     * @return type
+     * Is this node only for the category
      */
-    public MsgCategory getMsgCategory()
+    public boolean isCategoryNode()
     {
-        return msgCategory;
+        return msgCategory != null;
     }
 
 
     /**
-     * Get how often a message is supposed to be displayed
+     * Get the default category of this message.
      *
-     * @return how often this message will be displayed. -1 = no limit
+     * @return type
+     *
+     * @see MessageConfig#getCat(MessageNode)
      */
-    public int getMsgCount()
+    public MsgCategory getDefaultCategory()
     {
-        switch (msgCategory)
-        {
-            case TUTORIAL:
-                return 3;
-            case NOTIFICATION:
-                return -1;
-            case BROADCAST:
-                return -1;
-            case ONE_TIME:
-                return 1;
-            default:
-                throw new UnsupportedOperationException("Not Implemented MsgCategory");
-        }
+        return msgCategory;
     }
 
 
@@ -286,10 +365,10 @@ public enum MessageNode implements ConfigNode
      */
     public enum variables
     {
-        DEATH_MSG("DEATH_MSG"),
+        DEATH_MSG("$DEATH_MSG"),
         PLAYER("$PLAYER"),
         PLAYERS("$PLAYERS"),
-        ITEMS("ITEMS");
+        ITEMS("$ITEMS");
 
         private final String variable;
 
