@@ -118,7 +118,7 @@ public class UtilityModule extends EHMModule
     }
 
 
-    boolean isSameShape(ArrayList<ItemStack> recipe1, ArrayList<ItemStack> recipe2)
+    private static boolean isSameShape(ArrayList<ItemStack> recipe1, ArrayList<ItemStack> recipe2)
     {
         //compare recipes
         boolean isSame = true;
@@ -131,7 +131,7 @@ public class UtilityModule extends EHMModule
     }
 
 
-    public boolean isSameRecipe(ShapedRecipe recipe1, ShapedRecipe recipe2)
+    public static boolean isSameRecipe(ShapedRecipe recipe1, ShapedRecipe recipe2)
     {
         boolean isSameResult = recipe1.getResult().getAmount() == recipe2.getResult().getAmount()
                 && recipe1.getResult().getType().equals(recipe2.getResult().getType());
@@ -140,7 +140,7 @@ public class UtilityModule extends EHMModule
     }
 
 
-    private ArrayList<ItemStack> recipeToArrayList(ShapedRecipe recipe)
+    private static ArrayList<ItemStack> recipeToArrayList(ShapedRecipe recipe)
     {
         String[] shape = recipe.getShape();
         Map<Character, ItemStack> ingredientMap = recipe.getIngredientMap();
@@ -160,7 +160,7 @@ public class UtilityModule extends EHMModule
     }
 
 
-    String strArrToStr(String[] arr)
+    private static String strArrToStr(String[] arr)
     {
         StringBuilder builder = new StringBuilder();
         for (String s : arr)

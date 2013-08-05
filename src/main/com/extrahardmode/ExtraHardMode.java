@@ -96,6 +96,7 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Explosions.class, new Explosions(this));
         registerModule(HardenedStone.class, new HardenedStone(this));
         registerModule(LimitedBuilding.class, new LimitedBuilding(this));
+        registerModule(MoreTnt.class, new MoreTnt(this));
         registerModule(Physics.class, new Physics(this));
         registerModule(Players.class, new Players(this));
         registerModule(Torches.class, new Torches(this));
