@@ -496,6 +496,31 @@ public enum RootNode implements ConfigNode
     EXPLOSIONS_TURN_STONE_TO_COBLE
             ("Explosions.Turn Stone To Cobble", VarType.BOOLEAN, true),
     /**
+     * Enable cool flying blocks
+     */
+    EXPLOSIONS_FYLING_BLOCKS_ENABLE
+            ("Explosions.Physics.Enable", VarType.BOOLEAN, true),
+    /**
+     * How many blocks will go flying
+     */
+    EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE
+            ("Explosions.Physics.Blocks Affected Percentage", VarType.INTEGER, 20),
+    /**
+     * How fast the blocks accelerate upwards
+     */
+    EXPLOSIONS_FLYING_BLOCKS_UP_VEL
+            ("Explosions.Physics.Up Velocity", VarType.DOUBLE, 2.0),
+    /**
+     * How far the blocks spread
+     */
+    EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL
+            ("Explosions.Physics.Spread Velocity", VarType.DOUBLE, 3.0),
+    /**
+     * In what radius the flying blocks shouldnt be placed
+     */
+    EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS
+            ("Explosions.Physics.Exceed Radius Autoremove", VarType.INTEGER, 10),
+    /**
      * This determines if the explosion is categorized as under or above
      */
     EXPLOSIONS_Y

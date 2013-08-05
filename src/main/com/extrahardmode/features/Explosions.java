@@ -27,6 +27,7 @@ import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
+import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.ListenerModule;
@@ -37,11 +38,15 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Fireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,6 +64,8 @@ public class Explosions extends ListenerModule
     private final UtilityModule utils;
 
     private final PlayerModule playerModule;
+
+    private final String tag = "extrahardmode.explosion.fallingblock";
 
 
     /**
@@ -81,7 +88,7 @@ public class Explosions extends ListenerModule
      *
      * @param event - Event that occurred.
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onExplosion(EntityExplodeEvent event)
     {
         World world = event.getLocation().getWorld();
@@ -156,6 +163,95 @@ public class Explosions extends ListenerModule
                 event.setCancelled(true);
                 // same as vanilla TNT, plus fire
                 new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.GHAST_FIREBALL).run();
+            }
+        }
+    }
+
+
+    /**
+     * Apply Physics after explosion
+     */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPhysicsApply(final EntityExplodeEvent event)
+    {
+        String worldName = event.getLocation().getWorld().getName();
+        if (CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE, worldName))
+        {
+            final int flyPercentage = CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE, worldName);
+            final double upVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_UP_VEL, worldName);
+            final double spreadVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL, worldName);
+
+            //if (event.getEntity() instanceof TNTPrimed)
+            {
+                final List<FallingBlock> fallingBlockList = new ArrayList<FallingBlock>();
+                for (Block block : event.blockList())
+                {
+                    if (block.getType().isSolid())
+                    {
+                        //Only a few of the blocks fly as an effect
+                        if (plugin.random(flyPercentage))
+                        //if (block.getDrops().size() > 0)
+                        {
+                            FallingBlock fall = block.getLocation().getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
+                            fall.setMetadata(tag, new FixedMetadataValue(plugin, block.getLocation())); //decide on the distance if block should be placed
+                            //fall.setMetadata("drops", new FixedMetadataValue(plugin, block.getDrops()));
+                            fall.setDropItem(false);
+                            UtilityModule.moveUp(fall, upVel);
+                            //block.setType(Material.AIR);
+                            fallingBlockList.add(fall);
+                        }
+                    }
+                }
+
+                plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        for (FallingBlock fall : fallingBlockList)
+                        {
+                            UtilityModule.moveAway(fall, event.getLocation(), spreadVel);
+                            //fall.removeMetadata(tag, plugin);
+                            //fall.setMetadata("tag2", new FixedMetadataValue(plugin, true));
+                        }
+                    }
+                }, 2L);
+            }
+        }
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) //so we are last and if a block protection plugin cancelled the event we know it
+    public void blockLand(EntityChangeBlockEvent event)
+    {
+        final int distance = (int) Math.pow(CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS, event.getBlock().getWorld().getName()), 2);
+        if (event.getEntity() instanceof FallingBlock)
+        {
+            Block block = event.getBlock();
+            FallingBlock fallBaby = (FallingBlock) event.getEntity();
+            if (fallBaby.hasMetadata(tag))
+            {
+                Object obj = fallBaby.getMetadata(tag).size() > 0 ? fallBaby.getMetadata(tag).get(0).value() : null;
+                if (obj instanceof Location)
+                {
+                    Location loc = (Location) obj;
+                    //Compare the distance to the original explosion, dont place block if the block landed far away (dont make landscape ugly)
+                    if (event.getBlock().getLocation().distanceSquared(loc) > distance)
+                    {
+                        event.setCancelled(true);
+                        fallBaby.remove();
+                    }
+                    //If close place the block as if the player broke it first: stone -> cobble, gras -> dirt etc.
+                    else
+                    {
+                        Material type = BlockModule.getDroppedMaterial(fallBaby.getMaterial());
+                        if (type.isBlock())
+                            block.setType(type);
+                        else //if block doesnt drop something that can be placed again... thin glass, redstone ore
+                            block.setType(Material.AIR);
+                        event.setCancelled(true);
+                    }
+                }
             }
         }
     }
