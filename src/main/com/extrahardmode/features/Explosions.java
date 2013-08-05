@@ -82,11 +82,9 @@ public class Explosions extends ListenerModule
 
 
     /**
-     * Handles all of EHM's custom explosions, this includes bigger random tnt explosions , bigger ghast explosion ,
-     * turn stone into cobble in hardened stone mode ,
+     * Handles all of EHM's custom explosions, this includes bigger random tnt explosions , bigger ghast explosion , turn stone into cobble in hardened stone mode ,
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onExplosion(EntityExplodeEvent event)
@@ -162,8 +160,7 @@ public class Explosions extends ListenerModule
 
 
     /**
-     * Gets called just when an ItemStack is about to be crafted Sets the amount in the result slot to the appropriate
-     * number
+     * Gets called just when an ItemStack is about to be crafted Sets the amount in the result slot to the appropriate number
      */
     @EventHandler
     public void beforeCraft(PrepareItemCraftEvent event)
@@ -211,11 +208,9 @@ public class Explosions extends ListenerModule
 
 
     /**
-     * when a player crafts something... MoreTnt: Contains the logic for modifying the amount of tnt crafted on a per
-     * world basis.
+     * when a player crafts something... MoreTnt: Contains the logic for modifying the amount of tnt crafted on a per world basis.
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onItemCrafted(CraftItemEvent event)

@@ -26,8 +26,6 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.module.EntityHelper;
-import com.extrahardmode.service.HackCreeper;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
@@ -259,14 +257,7 @@ public class CreateExplosionTask implements Runnable
                     isSafe = !suicide.isCancelled();
                 }
                 break;
-            default: //mark all Explosions as Creeper Explosions
-                Creeper mockCreeper = new HackCreeper(loc);
-                EntityHelper.flagIgnore(plugin, mockCreeper);
-
-                EntityExplodeEvent suicide = new EntityExplodeEvent(mockCreeper, loc, boundaries, 1.0F);
-                plugin.getServer().getPluginManager().callEvent(suicide);
-                mockCreeper.remove();
-                isSafe = !suicide.isCancelled();
+            default: //check for block protection plugins
                 break;
         }
         return isSafe;

@@ -431,6 +431,44 @@ public class BlockModule extends EHMModule
     }
 
 
+    /**
+     * Get the Material that will be dropped if this Block is broken by a player e.g. stone -> cobblestone ice -> nothing Note: This method doesn't have all blocks and is only
+     * meant for blocks that you dont want to drop like grass/ice blocks
+     *
+     * @param mat to get the drop for
+     */
+    public static Material getDroppedMaterial(Material mat)
+    {
+        switch (mat)
+        {
+            case GRASS:
+            case SOIL:
+                return Material.DIRT;
+            case STONE:
+                return Material.COBBLESTONE;
+            case COAL_ORE:
+                return Material.COAL;
+            case LAPIS_ORE:
+                return Material.INK_SACK;
+            case EMERALD_ORE:
+                return Material.EMERALD;
+            case REDSTONE_ORE:
+            case GLOWING_REDSTONE_ORE:
+                return Material.REDSTONE;
+            case DIAMOND_ORE:
+                return Material.DIAMOND;
+            case QUARTZ_ORE:
+                return Material.QUARTZ;
+            case ICE:
+            case LEAVES:
+            case MOB_SPAWNER:
+                return Material.AIR;
+        }
+        return mat;
+    }
+
+
+
     @Override
     public void starting()
     {/*ignored*/}
