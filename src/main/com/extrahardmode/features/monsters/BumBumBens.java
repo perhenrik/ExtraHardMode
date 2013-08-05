@@ -185,9 +185,9 @@ public class BumBumBens extends ListenerModule
                         return;
                     }
                     EntityHelper.markLootLess(plugin, (LivingEntity) entity);
+                    entity.remove();
                     if (customCharged)
                         new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED).run(); // equal to a TNT blast
-                    entity.remove();
                     return;
                 }
             }
