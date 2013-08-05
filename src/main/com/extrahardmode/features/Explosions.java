@@ -91,13 +91,17 @@ public class Explosions extends ListenerModule
         final boolean customGhastExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_GHASTS_ENABLE, world.getName());
         final boolean multipleExplosions = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
         final boolean turnStoneToCobble = CFG.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
+        //cancel explosion if no worldDamage should be done
+        final boolean tntWorldDamage = event.getLocation().getBlockY() > CFG.getInt(RootNode.EXPLOSIONS_Y, world.getName())
+                ? CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF, world.getName())
+                : CFG.getBoolean(RootNode.EXPLOSIONS_TNT_BELOW_WORLD_GRIEF, world.getName());
+
+        if (entity != null && (entity.getType() == EntityType.CREEPER || entity.getType() == EntityType.PRIMED_TNT))
+            event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
 
         // FEATURE: bigger TNT booms, all explosions have 100% block yield
         if (customTntExplosion)
         {
-            if (entity != null && (entity.getType() == EntityType.CREEPER || entity.getType() == EntityType.PRIMED_TNT))
-                event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
-
             if (entity != null && entity.getType() == EntityType.PRIMED_TNT)
             {
                 // create more explosions nearby
@@ -120,23 +124,26 @@ public class Explosions extends ListenerModule
                     CreateExplosionTask task = new CreateExplosionTask(plugin, locations[i], ExplosionType.TNT);
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 3L * (i + 1));
                 }
-            }
-        }
 
-        // FEATURE: in hardened stone mode, TNT only softens stone to cobble
-        if (turnStoneToCobble)
-        {
-            List<Block> blocks = event.blockList();
-            Iterator<Block> iter = blocks.iterator();
-            //TODO LOW EhmSoftenStoneEvent
-            while (iter.hasNext())
-            {
-                Block block = iter.next();
-                if (block.getType() == Material.STONE)
+                // FEATURE: in hardened stone mode, TNT only softens stone to cobble
+                if (turnStoneToCobble)
                 {
-                    block.setType(Material.COBBLESTONE);
-                    iter.remove();
+                    List<Block> blocks = event.blockList();
+                    Iterator<Block> iter = blocks.iterator();
+                    while (iter.hasNext())
+                    {
+                        Block block = iter.next();
+                        if (block.getType() == Material.STONE)
+                        {
+                            block.setType(Material.COBBLESTONE);
+                            iter.remove();
+                        }
+                    }
                 }
+
+                //FEATURE: World damage based on the y-coordinate
+                if (!tntWorldDamage)
+                    event.setCancelled(true);
             }
         }
 

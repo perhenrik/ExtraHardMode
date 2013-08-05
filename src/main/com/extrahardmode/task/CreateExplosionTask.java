@@ -29,10 +29,8 @@ import com.extrahardmode.config.RootNode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.minecart.ExplosiveMinecart;
-import org.bukkit.event.entity.EntityExplodeEvent;
 
 import java.util.ArrayList;
 
@@ -92,44 +90,6 @@ public class CreateExplosionTask implements Runnable
     }
 
 
-    /**
-     * Constructor.
-     *
-     * @param location
-     *         - Location to make explosion occur.
-     * @param type
-     *         - Type that determines size and possible blockdamage or fire of explosion.
-     * @param entity
-     *         - Reference to the Entity that caused this Explosion
-     */
-    public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type, Entity entity)
-    {
-        this(plugin, location, type); //Call to standard constructor to save code
-        switch (entity.getType())
-        {
-            case CREEPER:
-            {
-                this.creeper = (Creeper) entity;
-                break;
-            }
-            case PRIMED_TNT:
-            {
-                tnt = (TNTPrimed) entity;
-                break;
-            }
-            case MINECART_TNT:
-            {
-                minecartTnt = (ExplosiveMinecart) entity;
-                break;
-            }
-            default:
-            {
-                throw new IllegalArgumentException(entity.getType().getName() + " is not handled ");
-            }
-        }
-    }
-
-
     @Override
     public void run()
     {
@@ -149,7 +109,7 @@ public class CreateExplosionTask implements Runnable
 
         final int border = CFG.getInt(RootNode.EXPLOSIONS_Y, loc.getWorld().getName());
 
-        if (loc.getY() <= (double) border)
+        if (loc.getY() <= border)
         {
             switch (type)
             {
@@ -183,7 +143,7 @@ public class CreateExplosionTask implements Runnable
                     setFire = type.isFireB();
                     damageWorld = type.allowBlockDmgB();
             }
-        } else if (loc.getY() > (double) border)
+        } else if (loc.getY() > border)
         {
             switch (type)
             {
@@ -221,7 +181,7 @@ public class CreateExplosionTask implements Runnable
 
         if (validateLocationSafe(loc, type))
         {
-            loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), (float) power, setFire, damageWorld);
+            loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, damageWorld);
         }
     }
 
@@ -237,29 +197,7 @@ public class CreateExplosionTask implements Runnable
     boolean validateLocationSafe(Location loc, ExplosionType type)
     {
         boolean isSafe = true;
-        int boomSize;
-        if (loc.getY() < (double) CFG.getInt(RootNode.EXPLOSIONS_Y, loc.getWorld().getName()))
-            boomSize = type.getPowerB();
-        else
-            boomSize = type.getPowerA();
-        boomSize *= 2; //raughly the size to check borders of protected areas
-        ArrayList<Block> boundaries = getBlockList(loc, boomSize);
 
-        switch (type)
-        {
-            case CREEPER:
-            case CREEPER_CHARGED:
-                if (creeper != null)
-                {
-                    EntityExplodeEvent suicide = new EntityExplodeEvent(creeper, loc, boundaries, 1.0F);
-                    plugin.getServer().getPluginManager().callEvent(suicide);
-                    creeper.remove();
-                    isSafe = !suicide.isCancelled();
-                }
-                break;
-            default: //check for block protection plugins
-                break;
-        }
         return isSafe;
     }
 
