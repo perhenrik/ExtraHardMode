@@ -23,31 +23,32 @@ package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
+import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CreateExplosionTask;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,6 +67,8 @@ public class Explosions extends ListenerModule
 
     private final PlayerModule playerModule;
 
+    private final String tag = "extrahardmode.explosion.fallingblock";
+
 
     /**
      * Your constructor of choice
@@ -83,13 +86,11 @@ public class Explosions extends ListenerModule
 
 
     /**
-     * Handles all of EHM's custom explosions, this includes bigger random tnt explosions , bigger ghast explosion ,
-     * turn stone into cobble in hardened stone mode ,
+     * Handles all of EHM's custom explosions, this includes bigger random tnt explosions , bigger ghast explosion , turn stone into cobble in hardened stone mode ,
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onExplosion(EntityExplodeEvent event)
     {
         World world = event.getLocation().getWorld();
@@ -99,13 +100,17 @@ public class Explosions extends ListenerModule
         final boolean customGhastExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_GHASTS_ENABLE, world.getName());
         final boolean multipleExplosions = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
         final boolean turnStoneToCobble = CFG.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
+        //cancel explosion if no worldDamage should be done
+        final boolean tntWorldDamage = event.getLocation().getBlockY() > CFG.getInt(RootNode.EXPLOSIONS_Y, world.getName())
+                ? CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF, world.getName())
+                : CFG.getBoolean(RootNode.EXPLOSIONS_TNT_BELOW_WORLD_GRIEF, world.getName());
+
+        if (entity != null && (entity.getType() == EntityType.CREEPER || entity.getType() == EntityType.PRIMED_TNT))
+            event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
 
         // FEATURE: bigger TNT booms, all explosions have 100% block yield
         if (customTntExplosion)
         {
-            if (entity != null && (entity.getType() == EntityType.CREEPER || entity.getType() == EntityType.PRIMED_TNT))
-                event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
-
             if (entity != null && entity.getType() == EntityType.PRIMED_TNT)
             {
                 // create more explosions nearby
@@ -128,23 +133,26 @@ public class Explosions extends ListenerModule
                     CreateExplosionTask task = new CreateExplosionTask(plugin, locations[i], ExplosionType.TNT);
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 3L * (i + 1));
                 }
-            }
-        }
 
-        // FEATURE: in hardened stone mode, TNT only softens stone to cobble
-        if (turnStoneToCobble)
-        {
-            List<Block> blocks = event.blockList();
-            Iterator<Block> iter = blocks.iterator();
-            //TODO LOW EhmSoftenStoneEvent
-            while (iter.hasNext())
-            {
-                Block block = iter.next();
-                if (block.getType() == Material.STONE)
+                // FEATURE: in hardened stone mode, TNT only softens stone to cobble
+                if (turnStoneToCobble)
                 {
-                    block.setType(Material.COBBLESTONE);
-                    iter.remove();
+                    List<Block> blocks = event.blockList();
+                    Iterator<Block> iter = blocks.iterator();
+                    while (iter.hasNext())
+                    {
+                        Block block = iter.next();
+                        if (block.getType() == Material.STONE)
+                        {
+                            block.setType(Material.COBBLESTONE);
+                            iter.remove();
+                        }
+                    }
                 }
+
+                //FEATURE: World damage based on the y-coordinate
+                if (!tntWorldDamage)
+                    event.setCancelled(true);
             }
         }
 
@@ -163,95 +171,111 @@ public class Explosions extends ListenerModule
 
 
     /**
-     * Gets called just when an ItemStack is about to be crafted Sets the amount in the result slot to the appropriate
-     * number
+     * Provide Compat for block protection plugins
+     *
+     * @param event
      */
-    @EventHandler
-    public void beforeCraft(PrepareItemCraftEvent event)
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onAnyExplosion(EntityExplodeEvent event)
     {
-        Inventory inv = event.getInventory();
-
-        if (inv != null && inv.getHolder() != null)
+        //Remove Blocks that are in protected area
+        Iterator<Block> iter= event.blockList().iterator();
+        while (iter.hasNext())
         {
-            InventoryHolder human = inv.getHolder();
-            if (human instanceof Player)
+            Block block = iter.next();
+            if (CompatHandler.isExplosionProtected(block.getLocation()))
             {
-                Player player = (Player) human;
-                World world = player.getWorld();
-
-                final int multiplier = CFG.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
-
-                switch (multiplier)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    default:
-                        if (event.getRecipe().getResult().getType().equals(Material.TNT))
-                        {
-                            //TODO LOW EhmMoreTntEvent
-                            //Recipe in CraftingGrid
-                            ShapedRecipe craftRecipe = (ShapedRecipe) event.getRecipe();
-                            CraftingInventory craftInv = event.getInventory();
-
-                            //The vanilla tnt recipe
-                            ShapedRecipe vanillaTnt = new ShapedRecipe(new ItemStack(Material.TNT)).shape("gsg", "sgs", "gsg").setIngredient('g', Material.SULPHUR).setIngredient('s', Material.SAND);
-
-                            //Multiply the amount of tnt in enabled worlds
-                            if (utils.isSameRecipe(craftRecipe, vanillaTnt))
-                            {
-                                craftInv.setResult(new ItemStack(Material.TNT, multiplier));
-                            }
-                        }
-                        break;
-                }
+                iter.remove();
+                //Restore old block
+                //block.setType(block.getLocation().getBlock().getType());
             }
         }
     }
 
 
     /**
-     * when a player crafts something... MoreTnt: Contains the logic for modifying the amount of tnt crafted on a per
-     * world basis.
-     *
-     * @param event
-     *         - Event that occurred.
+     * Apply Physics after explosion
      */
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onItemCrafted(CraftItemEvent event)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPhysicsApply(final EntityExplodeEvent event)
     {
-        InventoryHolder human = event.getInventory().getHolder();
-
-        if (human instanceof Player)
+        String worldName = event.getLocation().getWorld().getName();
+        if (CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE, worldName))
         {
-            Player player = (Player) human;
+            final int flyPercentage = CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE, worldName);
+            final double upVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_UP_VEL, worldName);
+            final double spreadVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL, worldName);
 
-            World world = player.getWorld();
-
-            final int multiplier = CFG.getInt(RootNode.MORE_TNT_NUMBER, world.getName());
-            final boolean playerBypasses = playerModule.playerBypasses(player, Feature.EXPLOSIONS);
-
-            //Are we crafting tnt and is more tnt enabled, from BeforeCraftEvent
-            if (event.getRecipe().getResult().equals(new ItemStack(Material.TNT, multiplier)) && !playerBypasses)
+            //if (event.getEntity() instanceof TNTPrimed)
             {
-                switch (multiplier)
+                final List<FallingBlock> fallingBlockList = new ArrayList<FallingBlock>();
+                for (Block block : event.blockList())
                 {
-                    case 0:
-                        event.setCancelled(true); //Feature disable tnt crafting
-                        break;
-                    default:
-                        Validate.isTrue(multiplier > 0, "Multiplier for tnt can't be negative");
-                        PlayerInventory inv = player.getInventory();
-                        //ShiftClick only causes this event to be called once
-                        if (event.isShiftClick())
+                    if (block.getType().isSolid())
+                    {
+                        //Only a few of the blocks fly as an effect
+                        if (plugin.random(flyPercentage))
+                        //if (block.getDrops().size() > 0)
                         {
-                            int amountBefore = PlayerModule.countInvItem(inv, Material.TNT);
-                            //Add the missing tnt 1 tick later, we count what has been added by shiftclicking and multiply it
-                            UtilityModule.addExtraItemsLater task = new UtilityModule.addExtraItemsLater(inv, amountBefore, Material.TNT, multiplier - 1);
-                            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);
+                            FallingBlock fall = block.getLocation().getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
+                            fall.setMetadata(tag, new FixedMetadataValue(plugin, block.getLocation())); //decide on the distance if block should be placed
+                            //fall.setMetadata("drops", new FixedMetadataValue(plugin, block.getDrops()));
+                            fall.setDropItem(false);
+                            UtilityModule.moveUp(fall, upVel);
+                            //block.setType(Material.AIR);
+                            fallingBlockList.add(fall);
                         }
-                        break;
+                    }
+                }
+
+                plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        for (FallingBlock fall : fallingBlockList)
+                        {
+                            UtilityModule.moveAway(fall, event.getLocation(), spreadVel);
+                            //fall.removeMetadata(tag, plugin);
+                            //fall.setMetadata("tag2", new FixedMetadataValue(plugin, true));
+                        }
+                    }
+                }, 2L);
+            }
+        }
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) //so we are last and if a block protection plugin cancelled the event we know it
+    public void blockLand(EntityChangeBlockEvent event)
+    {
+        final int distance = (int) Math.pow(CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS, event.getBlock().getWorld().getName()), 2);
+        if (event.getEntity() instanceof FallingBlock)
+        {
+            Block block = event.getBlock();
+            FallingBlock fallBaby = (FallingBlock) event.getEntity();
+            if (fallBaby.hasMetadata(tag))
+            {
+                Object obj = fallBaby.getMetadata(tag).size() > 0 ? fallBaby.getMetadata(tag).get(0).value() : null;
+                if (obj instanceof Location)
+                {
+                    Location loc = (Location) obj;
+                    //Compare the distance to the original explosion, dont place block if the block landed far away (dont make landscape ugly)
+                    if (event.getBlock().getLocation().distanceSquared(loc) > distance)
+                    {
+                        event.setCancelled(true);
+                        fallBaby.remove();
+                    }
+                    //If close place the block as if the player broke it first: stone -> cobble, gras -> dirt etc.
+                    else
+                    {
+                        Material type = BlockModule.getDroppedMaterial(fallBaby.getMaterial());
+                        if (type.isBlock())
+                            block.setType(type);
+                        else //if block doesnt drop something that can be placed again... thin glass, redstone ore
+                            block.setType(Material.AIR);
+                        event.setCancelled(true);
+                    }
                 }
             }
         }

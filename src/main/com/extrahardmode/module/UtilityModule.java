@@ -25,17 +25,20 @@ package com.extrahardmode.module;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.EHMModule;
+import com.extrahardmode.service.OurRandom;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -50,8 +53,7 @@ public class UtilityModule extends EHMModule
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Plugin instance.
+     * @param plugin - Plugin instance.
      */
     public UtilityModule(ExtraHardMode plugin)
     {
@@ -62,8 +64,7 @@ public class UtilityModule extends EHMModule
     /**
      * Generates a Firework with random colors/velocity and the given Firework Type
      *
-     * @param type
-     *         The type of firework
+     * @param type The type of firework
      */
     public void fireWorkRandomColors(FireworkEffect.Type type, Location location)
     {
@@ -86,10 +87,8 @@ public class UtilityModule extends EHMModule
     /**
      * >>>>>>> dev Damage an item based on the amount of Blocks it can mine
      *
-     * @param item
-     *         Item to damage
-     * @param blocks
-     *         amount of blocks the item can break
+     * @param item   Item to damage
+     * @param blocks amount of blocks the item can break
      *
      * @return the damaged Item, can be completely broken
      */
@@ -118,7 +117,7 @@ public class UtilityModule extends EHMModule
     }
 
 
-    boolean isSameShape(ArrayList<ItemStack> recipe1, ArrayList<ItemStack> recipe2)
+    private static boolean isSameShape(ArrayList<ItemStack> recipe1, ArrayList<ItemStack> recipe2)
     {
         //compare recipes
         boolean isSame = true;
@@ -131,7 +130,7 @@ public class UtilityModule extends EHMModule
     }
 
 
-    public boolean isSameRecipe(ShapedRecipe recipe1, ShapedRecipe recipe2)
+    public static boolean isSameRecipe(ShapedRecipe recipe1, ShapedRecipe recipe2)
     {
         boolean isSameResult = recipe1.getResult().getAmount() == recipe2.getResult().getAmount()
                 && recipe1.getResult().getType().equals(recipe2.getResult().getType());
@@ -140,7 +139,7 @@ public class UtilityModule extends EHMModule
     }
 
 
-    private ArrayList<ItemStack> recipeToArrayList(ShapedRecipe recipe)
+    private static ArrayList<ItemStack> recipeToArrayList(ShapedRecipe recipe)
     {
         String[] shape = recipe.getShape();
         Map<Character, ItemStack> ingredientMap = recipe.getIngredientMap();
@@ -160,7 +159,7 @@ public class UtilityModule extends EHMModule
     }
 
 
-    String strArrToStr(String[] arr)
+    private static String strArrToStr(String[] arr)
     {
         StringBuilder builder = new StringBuilder();
         for (String s : arr)
@@ -172,8 +171,7 @@ public class UtilityModule extends EHMModule
 
 
     /**
-     * Check the inventory after 1 tick and see how many items have been crafted, then add the amount defined by the
-     * multiplier
+     * Check the inventory after 1 tick and see how many items have been crafted, then add the amount defined by the multiplier
      */
     public static class addExtraItemsLater implements Runnable
     {
@@ -202,6 +200,33 @@ public class UtilityModule extends EHMModule
             int amountToAdd = (amountAfter - amountBefore) * (this.amountToAdd);
             inv.addItem(new ItemStack(material, amountToAdd));
         }
+    }
+
+
+    public static Vector randomDir()
+    {
+        double x = OurRandom.nextDouble() - 1.0;
+        double y = 0.0;
+        double z = OurRandom.nextDouble() - 1.0;
+        return new Vector(x, y, z);
+    }
+
+
+    public static void moveAway(Entity entity, Location center, double speed)
+    {
+        Location loc = entity.getLocation();
+        double x = loc.getX() - center.getX();
+        double y = loc.getY() - center.getY();
+        double z = loc.getZ() - center.getZ();
+        Vector vel = new Vector(x, y, z).normalize().multiply(speed);
+        entity.setVelocity(vel);
+    }
+
+
+    public static void moveUp(Entity entity, double speed)
+    {
+        Vector velocity = new Vector(0.0, speed, 0.0);//.normalize().multiply(-speed);
+        entity.setVelocity(velocity.add(randomDir()));
     }
 
 

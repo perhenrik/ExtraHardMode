@@ -23,6 +23,7 @@
 package com.extrahardmode.module;
 
 
+import com.extrahardmode.compatibility.CompatHandler;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,8 +63,7 @@ public class EntityHelper
     /**
      * Marks an entity so that the plugin can remember not to drop loot or experience if it's killed.
      *
-     * @param entity
-     *         - Entity to modify.
+     * @param entity - Entity to modify.
      */
     public static void markLootLess(Plugin plugin, LivingEntity entity)
     {
@@ -74,10 +74,8 @@ public class EntityHelper
     /**
      * Tracks total environmental damage done to an entity
      *
-     * @param entity
-     *         - Entity to check.
-     * @param damage
-     *         - Amount of damage.
+     * @param entity - Entity to check.
+     * @param damage - Amount of damage.
      */
     public static void addEnvironmentalDamage(Plugin plugin, LivingEntity entity, double damage)
     {
@@ -92,8 +90,7 @@ public class EntityHelper
     /**
      * Checks whether an entity should drop items when it dies
      *
-     * @param entity
-     *         - Entity to check.
+     * @param entity - Entity to check.
      *
      * @return True if the entity is lootable, else false.
      */
@@ -111,8 +108,7 @@ public class EntityHelper
     /**
      * Clears any webbing which may be trapping this entity (assumes two-block-tall entity)
      *
-     * @param entity
-     *         - Entity to help.
+     * @param entity - Entity to help.
      */
     public static void clearWebbing(Entity entity)
     {
@@ -248,21 +244,25 @@ public class EntityHelper
     /**
      * Spawn Monsters with their gear, use instead of world.spawn()
      *
-     * @return a reference to the spawned Entity
+     * @return a reference to the spawned Entity or null if Entity spawn has been blocked
      */
     public static Entity spawn(Location loc, EntityType type)
     {
-        Entity entity = loc.getWorld().spawnEntity(loc, type);
-        switch (type)
+        if (CompatHandler.canMonsterSpawn(loc))
         {
-            case SKELETON:
-                ((Skeleton) entity).getEquipment().setItemInHand(new ItemStack(Material.BOW));
-                break;
-            case PIG_ZOMBIE:
-                ((PigZombie) entity).getEquipment().setItemInHand(new ItemStack(Material.GOLD_SWORD));
-                break;
+            Entity entity = loc.getWorld().spawnEntity(loc, type);
+            switch (type)
+            {
+                case SKELETON:
+                    ((Skeleton) entity).getEquipment().setItemInHand(new ItemStack(Material.BOW));
+                    break;
+                case PIG_ZOMBIE:
+                    ((PigZombie) entity).getEquipment().setItemInHand(new ItemStack(Material.GOLD_SWORD));
+                    break;
+            }
+            return entity;
         }
-        return entity;
+        return null;
     }
 
 
