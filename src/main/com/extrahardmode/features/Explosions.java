@@ -23,6 +23,7 @@ package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -163,6 +164,29 @@ public class Explosions extends ListenerModule
                 event.setCancelled(true);
                 // same as vanilla TNT, plus fire
                 new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.GHAST_FIREBALL).run();
+            }
+        }
+    }
+
+
+    /**
+     * Provide Compat for block protection plugins
+     *
+     * @param event
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onAnyExplosion(EntityExplodeEvent event)
+    {
+        //Remove Blocks that are in protected area
+        Iterator<Block> iter= event.blockList().iterator();
+        while (iter.hasNext())
+        {
+            Block block = iter.next();
+            if (CompatHandler.isExplosionProtected(block.getLocation()))
+            {
+                iter.remove();
+                //Restore old block
+                //block.setType(block.getLocation().getBlock().getType());
             }
         }
     }

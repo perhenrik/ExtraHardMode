@@ -24,6 +24,7 @@ package com.extrahardmode;
 
 
 import com.extrahardmode.command.Commander;
+import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.features.*;
@@ -117,6 +118,9 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Skeletors.class, new Skeletors(this));
         registerModule(Spiders.class, new Spiders(this));
         registerModule(Zombies.class, new Zombies(this));
+
+        //Compatibility
+        registerModule(CompatHandler.class, new CompatHandler(this));
 
         //TODO make modules
         new Tutorial(this);

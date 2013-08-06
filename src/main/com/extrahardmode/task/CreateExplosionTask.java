@@ -23,6 +23,7 @@ package com.extrahardmode.task;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -181,6 +182,8 @@ public class CreateExplosionTask implements Runnable
 
         if (validateLocationSafe(loc, type))
         {
+            if (CompatHandler.isExplosionProtected(loc))
+                damageWorld = false;
             loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, damageWorld);
         }
     }

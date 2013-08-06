@@ -151,7 +151,7 @@
             <id>mcStats</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
-        <!-- ExtraHardMode.com -->
+        <!-- ExtraHardMode.com, we have all the dependencies here so we don't have offline maven repos all the time -->
         <repository>
             <id>extrahardmode.com</id>
             <url>http://extrahardmode.com:8081/content/groups/public/</url>
@@ -222,6 +222,14 @@
             <artifactId>powermock-module-junit4</artifactId>
             <version>1.5</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Compatibility Dependencies -->
+        <!-- WorldGuard -->
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>5.8</version>
         </dependency>
     </dependencies>
 
