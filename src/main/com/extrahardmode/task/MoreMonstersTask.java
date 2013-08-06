@@ -106,7 +106,7 @@ public class MoreMonstersTask implements Runnable
                                 break;
                             }*/
                         for (Player p : plugin.getServer().getOnlinePlayers())
-                            if (player.getLocation().distanceSquared(mob.getLocation()) < 600.0)
+                            if (mob != null && player.getLocation().distanceSquared(mob.getLocation()) < 600.0)
                             {
                                 mob.remove();
                                 break;
