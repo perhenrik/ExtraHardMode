@@ -117,21 +117,6 @@ public class AntiFarming extends ListenerModule
                 }
             }
         }
-
-        // FEATURE: seed reduction. some plants die even when a player uses bonemeal.
-        if (weakFoodCrops && action.equals(Action.RIGHT_CLICK_BLOCK) && !playerBypasses)
-        {
-            Block block = event.getClickedBlock();
-            if (blockModule.isPlant(block.getType()))
-            {
-                Material materialInHand = player.getItemInHand().getType();
-                if (materialInHand == Material.INK_SACK && plugin.getModuleForClass(BlockModule.class).plantDies(block, Byte.MAX_VALUE))
-                {
-                    event.setCancelled(true);
-                    block.setType(Material.LONG_GRASS); // dead shrub
-                }
-            }
-        }
     }
 
 
