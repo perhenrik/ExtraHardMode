@@ -6,6 +6,7 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
+import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;

@@ -36,17 +36,43 @@ public class ConfigPlotter
         {
             metrics = new Metrics(plugin);
 
-            metrics.createGraph("Enabled for % of worlds").addPlotter(
-                    new Metrics.Plotter()
+            final int percent = CFG.getEnabledWorlds().length > 0 ? (plugin.getServer().getWorlds().size() * 100 / CFG.getEnabledWorlds().length) : 0;
+            Metrics.Graph graph = metrics.createGraph("Enabled for % of worlds");
+            graph.addPlotter(
+                    new Metrics.Plotter("0-25%")
                     {
-
                         @Override
                         public int getValue()
                         {
-                            return CFG.getEnabledWorlds().length > 0 ? (plugin.getServer().getWorlds().size() * 100 / CFG.getEnabledWorlds().length) : 0;
+                            return percent < 26 ? 1 : 0;
                         }
 
                     });
+            graph.addPlotter(new Metrics.Plotter("26-50%")
+            {
+                @Override
+                public int getValue()
+                {
+                    return percent > 25 && percent <= 50 ? 1 : 0;
+                }
+            });
+            graph.addPlotter(new Metrics.Plotter("51-75%")
+            {
+                @Override
+                public int getValue()
+                {
+                    return percent > 50 && percent <= 75 ? 1 : 0;
+                }
+            });
+            graph.addPlotter(new Metrics.Plotter("76-100%")
+            {
+                @Override
+                public int getValue()
+                {
+                    return percent > 75 ? 1 : 0;
+                }
+            });
+
 
             for (final RootNode node : RootNode.values())
             {
@@ -85,14 +111,35 @@ public class ConfigPlotter
                     case WITCHES_ADDITIONAL_ATTACKS:
                     case ZOMBIES_DEBILITATE_PLAYERS:
                     {
-                        metrics.createGraph(getLastPart(node)).addPlotter(
-                                new Metrics.Plotter()
+                        Metrics.Graph graph1 = metrics.createGraph(getLastPart(node));
+                        final int metricsVal = CFG.getMetricsValue(node);
+                        graph1.addPlotter(
+                                new Metrics.Plotter("Completely disabled")
                                 {
-
                                     @Override
                                     public int getValue()
                                     {
-                                        return CFG.getMetricsValue(node);
+                                        return metricsVal == 0 ? 1 : 0;
+                                    }
+
+                                });
+                        graph1.addPlotter(
+                                new Metrics.Plotter("Enabled in all worlds")
+                                {
+                                    @Override
+                                    public int getValue()
+                                    {
+                                        return metricsVal == 1 ? 1 : 0;
+                                    }
+
+                                });
+                        graph1.addPlotter(
+                                new Metrics.Plotter("Enabled in some")
+                                {
+                                    @Override
+                                    public int getValue()
+                                    {
+                                        return metricsVal == 2 ? 1 : 0;
                                     }
 
                                 });
