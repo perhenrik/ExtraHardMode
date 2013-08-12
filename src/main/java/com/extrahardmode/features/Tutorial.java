@@ -9,6 +9,7 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.config.messages.MsgCategory;
 import com.extrahardmode.events.*;
 import com.extrahardmode.module.BlockModule;
+import com.extrahardmode.module.MaterialHelper;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
 import org.bukkit.ChatColor;
@@ -333,14 +334,9 @@ public class Tutorial implements Listener
         //Build the output String
         for (ItemStack item : lostItems)
         {
-            if (items.length() > 0) items.append(", ");
-            {
-                items.append(item.getAmount());
-                items.append(' ');
-                items.append(item.getType().name().toLowerCase());
-                if (item.getAmount() > 1)
-                    items.append('s');
-            }
+            if (items.length() > 0)
+                items.append(", ");
+            items.append(MaterialHelper.print(item));
         }
 
         //Only print if items have been removed
@@ -363,30 +359,30 @@ public class Tutorial implements Listener
     public void onInventoryClick(InventoryClickEvent event)
     {
         if (CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, event.getWhoClicked().getWorld().getName()))
-        if (event.getWhoClicked() instanceof Player && messenger.popupsAreEnabled())
-        {
-            final Player player = (Player) event.getWhoClicked();
-
-            final double armorPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, player.getWorld().getName());
-            final double invPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, player.getWorld().getName());
-            final double toolPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, player.getWorld().getName());
-            final double maxPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, player.getWorld().getName());
-
-            //Because when player takes out we still have old inventory
-            plugin.getServer().getScheduler().runTask(plugin, new Runnable()
+            if (event.getWhoClicked() instanceof Player && messenger.popupsAreEnabled())
             {
-                @Override
-                public void run()
-                {
-                    final float weight = PlayerModule.inventoryWeight(player, (float) armorPoints, (float) invPoints, (float) toolPoints);
+                final Player player = (Player) event.getWhoClicked();
 
-                    List<String> weightMessage = new ArrayList<String>(2);
-                    weightMessage.add(String.format("Weight %.1f/%.1f", weight, maxPoints));
-                    weightMessage.add(weight > maxPoints ? ChatColor.RED + "U will drown" : ChatColor.GREEN + "U won't drown");
-                    messenger.sendPopup(player, MsgCategory.WEIGHT_MSG, weightMessage);
-                }
-            });
-        }
+                final double armorPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, player.getWorld().getName());
+                final double invPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, player.getWorld().getName());
+                final double toolPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, player.getWorld().getName());
+                final double maxPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, player.getWorld().getName());
+
+                //Because when player takes out we still have old inventory
+                plugin.getServer().getScheduler().runTask(plugin, new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        final float weight = PlayerModule.inventoryWeight(player, (float) armorPoints, (float) invPoints, (float) toolPoints);
+
+                        List<String> weightMessage = new ArrayList<String>(2);
+                        weightMessage.add(String.format("Weight %.1f/%.1f", weight, maxPoints));
+                        weightMessage.add(weight > maxPoints ? ChatColor.RED + "U will drown" : ChatColor.GREEN + "U won't drown");
+                        messenger.sendPopup(player, MsgCategory.WEIGHT_MSG, weightMessage);
+                    }
+                });
+            }
     }
 
 
