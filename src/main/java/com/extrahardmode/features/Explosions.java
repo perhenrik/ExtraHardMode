@@ -31,7 +31,6 @@ import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
-import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Location;
