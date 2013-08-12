@@ -39,6 +39,6 @@ public class TestMaterialHelper
     public void print_multiSpecial()
     {
         assertEquals("2 repeaters", MaterialHelper.print(new ItemStack(Material.DIODE, 2)));
-        assertEquals("2 ironhorsearmor", MaterialHelper.print(new ItemStack(Material.IRON_BARDING, 2)));
+        assertEquals("2 ironhorsearmors", MaterialHelper.print(new ItemStack(Material.IRON_BARDING, 2)));
     }
 }
