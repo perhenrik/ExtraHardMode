@@ -5,7 +5,7 @@ description: ${project.description}
 dev-url: ${project.url}
 #project lead
 author: Diemex
-authors: [Mitsugaru, MKindy, bigscary]
+authors: [Mitsugaru, bigscary]
 #ensure that we are loaded after multiworld plugins
 softdepend: [Multiverse-Core, My Worlds, MystCraft, Transporter, SBPopupAPI, WorldGuard]
 commands:
