@@ -29,7 +29,6 @@ import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -39,7 +38,7 @@ import org.bukkit.entity.Player;
 import java.util.AbstractMap.SimpleEntry;
 
 /**
- * Task to spawn more monsters.
+ * Task to spawn more monsters, especially in light.
  */
 public class MoreMonstersTask implements Runnable
 {
@@ -83,9 +82,7 @@ public class MoreMonstersTask implements Runnable
         // spawn monsters from the last pass
         for (SimpleEntry<Player, Location> entry : dataStore.getPreviousLocations())
         {
-            Player player = entry.getKey();
             Location location = entry.getValue();
-            Chunk chunk = location.getChunk();
             World world = location.getWorld();
 
             try
@@ -106,7 +103,7 @@ public class MoreMonstersTask implements Runnable
                                 break;
                             }*/
                         for (Player p : plugin.getServer().getOnlinePlayers())
-                            if (mob != null && player.getLocation().distanceSquared(mob.getLocation()) < 600.0)
+                            if (mob != null && p.getLocation().distanceSquared(mob.getLocation()) < 256.0)
                             {
                                 mob.remove();
                                 break;

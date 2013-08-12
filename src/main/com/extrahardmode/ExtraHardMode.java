@@ -128,7 +128,7 @@ public class ExtraHardMode extends JavaPlugin
 
         // FEATURE: monsters spawn in the light under a configurable Y level
         MoreMonstersTask task = new MoreMonstersTask(this);
-        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 1200L, 1200L);
+        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 600L, 600L);
 
         //Metrics Plotter
         new ConfigPlotter(this, getModuleForClass(RootConfig.class));

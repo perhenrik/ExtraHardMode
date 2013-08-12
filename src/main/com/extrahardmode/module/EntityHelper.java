@@ -242,27 +242,31 @@ public class EntityHelper
 
 
     /**
-     * Spawn Monsters with their gear, use instead of world.spawn()
+     * Spawn Monsters with their gear, use instead of world.spawn(), do not spawn Entities which are not LivingEntities
      *
-     * @return a reference to the spawned Entity or null if Entity spawn has been blocked
+     * @return a reference to the spawned Entity, might be dead if the monster can't in that location or null if the EntityType was not a LivingEntity
      */
-    public static Entity spawn(Location loc, EntityType type)
+    public static LivingEntity spawn(Location loc, EntityType type)
     {
-        if (CompatHandler.canMonsterSpawn(loc))
+        LivingEntity entity = null;
         {
-            Entity entity = loc.getWorld().spawnEntity(loc, type);
+            Entity ent = loc.getWorld().spawnEntity(loc, type);
+            if (ent instanceof LivingEntity)
+                entity = (LivingEntity) ent;
+        }
+        if (entity != null)
             switch (type)
             {
                 case SKELETON:
-                    ((Skeleton) entity).getEquipment().setItemInHand(new ItemStack(Material.BOW));
+                    entity.getEquipment().setItemInHand(new ItemStack(Material.BOW));
                     break;
                 case PIG_ZOMBIE:
-                    ((PigZombie) entity).getEquipment().setItemInHand(new ItemStack(Material.GOLD_SWORD));
+                    entity.getEquipment().setItemInHand(new ItemStack(Material.GOLD_SWORD));
                     break;
             }
-            return entity;
-        }
-        return null;
+        if (entity != null && CompatHandler.canMonsterSpawn(loc))
+            entity.remove();
+        return entity;
     }
 
 
