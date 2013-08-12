@@ -299,4 +299,24 @@ public class EntityHelper
         return spawn(loc, monsterType);
     }
 
+
+    /**
+     * Test if there is one ore more Players near a Location. This method should be used to check if the distance between players and spawned mobs is big enough.
+     *
+     * @param loc      location around which to check
+     * @param distance distance around the location to check for players
+     *
+     * @return false if no players found, true if there where one or more players
+     */
+    public static boolean arePlayersNearby(Location loc, double distance)
+    {
+        double squared = Math.pow(distance, 2.0);
+        List<Player> otherEntities = loc.getWorld().getPlayers();
+        for (Player player : otherEntities)
+            if (player.getLocation().distanceSquared(loc) > squared)
+                return true;
+        return false;
+    }
+
+
 }

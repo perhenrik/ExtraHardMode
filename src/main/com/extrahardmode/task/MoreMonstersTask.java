@@ -62,8 +62,7 @@ public class MoreMonstersTask implements Runnable
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Plugin instance.
+     * @param plugin - Plugin instance.
      */
 
     public MoreMonstersTask(ExtraHardMode plugin)
@@ -94,20 +93,8 @@ public class MoreMonstersTask implements Runnable
                     {
                         Entity mob = EntityHelper.spawnRandomMob(location);
                         //If there are Players nearby don't spawn
-                        //TODO find bug, maybe its the dev build?....
-                        /*List<Entity> entities = mob.getNearbyEntities(32.0, 32.0, 32.0);
-                        for (Entity ent : entities)
-                            if (ent instanceof Player)
-                            {
-                                mob.remove();
-                                break;
-                            }*/
-                        for (Player p : plugin.getServer().getOnlinePlayers())
-                            if (mob != null && p.getLocation().distanceSquared(mob.getLocation()) < 256.0)
-                            {
-                                mob.remove();
-                                break;
-                            }
+                        if (EntityHelper.arePlayersNearby(mob.getLocation(), 16.0))
+                            mob.remove();
                     }
                 }
             } catch (IllegalArgumentException ignored)

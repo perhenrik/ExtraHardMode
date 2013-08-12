@@ -94,12 +94,16 @@ public class MonsterRules extends ListenerModule
                 {
                     if (!entityType.equals(EntityType.SILVERFISH)) //no multiple silverfish per block
                     {
-                        for (int i = 1; i < multiplier; i++)
+                        //Mc 1.6: "Social" Zombies can spawn very close when calling for help. Do not spawn more monsters if that is the case
+                        if (entityType == EntityType.ZOMBIE ? !EntityHelper.arePlayersNearby(event.getLocation(), 16.0) : !EntityHelper.arePlayersNearby(event.getLocation(), 12.0))
                         {
-                            Entity newEntity = EntityHelper.spawnRandomMob(event.getLocation());
-                            if (EntityHelper.isLootLess(entity))
+                            for (int i = 1; i < multiplier; i++)
                             {
-                                EntityHelper.markLootLess(plugin, (LivingEntity) newEntity);
+                                Entity newEntity = EntityHelper.spawnRandomMob(event.getLocation());
+                                if (EntityHelper.isLootLess(entity))
+                                {
+                                    EntityHelper.markLootLess(plugin, (LivingEntity) newEntity);
+                                }
                             }
                         }
                     }
@@ -112,8 +116,7 @@ public class MonsterRules extends ListenerModule
     /**
      * when an entity targets something (as in to attack it)...
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler
     public void onEntityTarget(EntityTargetEvent event)
@@ -134,8 +137,7 @@ public class MonsterRules extends ListenerModule
     /**
      * when an entity is damaged handles
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityDamage(EntityDamageEvent event)
