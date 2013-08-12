@@ -161,7 +161,7 @@ public class Blazes extends ListenerModule
         if (blazesExplodeOnDeath && entity instanceof Blaze && world.getEnvironment() == World.Environment.NORMAL)
         {
             // create explosion
-            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.OVERWORLD_BLAZE); // equal to a TNT blast, sets fires
+            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.OVERWORLD_BLAZE).run(); // equal to a TNT blast, sets fires
             // fire a fireball straight up in normal worlds
             Fireball fireball = (Fireball) world.spawnEntity(entity.getLocation(), EntityType.FIREBALL);
             fireball.setDirection(new Vector(0, 10, 0));
