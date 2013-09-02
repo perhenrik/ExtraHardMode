@@ -5,7 +5,7 @@
         <profile>
             <id>local-server</id>
             <properties>
-                <outputdir>/home/max/server/plugins</outputdir>
+                <outputdir>/home/max/server_1.6/plugins</outputdir>
             </properties>
         </profile>
     </profiles>

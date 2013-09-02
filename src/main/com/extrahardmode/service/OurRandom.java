@@ -8,7 +8,13 @@ import java.util.Random;
  */
 public class OurRandom
 {
-    private static Random rdm = new Random();
+    private static Random rdm;
+
+
+    public OurRandom()
+    {
+        rdm = new Random();
+    }
 
 
     public static double nextDouble()
@@ -20,5 +26,20 @@ public class OurRandom
     public static int nextInt(int range)
     {
         return rdm.nextInt(range);
+    }
+
+
+    public static boolean percentChance(int percentage)
+    {
+        return nextInt(100) < percentage;
+    }
+
+
+    /**
+     * Create a new Random object, call when plugin is enabled to ensure it's fresh etc.
+     */
+    public static void reload()
+    {
+        rdm = new Random();
     }
 }
