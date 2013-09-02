@@ -19,18 +19,36 @@
  * along with ExtraHardMode.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.extrahardmode.features.monsters.skeletors;
+package com.extrahardmode.task;
 
+
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
- * What to do if an Entity is damaged
+ * Damage a LivingEntity until it's dead, stop the task once the Entity is dead
  *
  * @author Diemex
  */
-public enum OnDamage
+public class SlowKillTask extends BukkitRunnable
 {
-    NOTHING,
-    BLIND,
-    EXPLODE,
-    SLOW
+    private final LivingEntity entity;
+
+
+    public SlowKillTask(LivingEntity entity, Plugin plugin)
+    {
+        this.entity = entity;
+        runTaskTimer(plugin, 0L, 30L);
+    }
+
+
+    @Override
+    public void run()
+    {
+        if (!entity.isDead())
+            entity.damage(1.0);
+        else
+            cancel();
+    }
 }

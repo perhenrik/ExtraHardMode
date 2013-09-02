@@ -106,6 +106,7 @@ public class Minion
 
     public static boolean isMinion(LivingEntity entity)
     {
+        boolean bool = entity.hasMetadata(minionTag);
         return entity.hasMetadata(minionTag);
     }
 }

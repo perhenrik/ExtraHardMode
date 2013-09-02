@@ -30,15 +30,13 @@ import com.extrahardmode.events.EhmSkeletonShootSilverfishEvent;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.OurRandom;
+import com.extrahardmode.task.SlowKillTask;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -79,9 +77,9 @@ public class Skeletors extends ListenerModule
         CFG = plugin.getModuleForClass(RootConfig.class);
         //TODO
         Minion silverfishMinion = new Minion(OnDamage.NOTHING, OnDamage.NOTHING, EntityType.SILVERFISH, 0);
-        Minion slimeMinion = new Minion(OnDamage.NOTHING, OnDamage.DIZZY, EntityType.SLIME, 10);
-        Minion magmaMinion = new Minion(OnDamage.NOTHING, OnDamage.DIZZY, EntityType.MAGMA_CUBE, 10);
-        customSkeletonsTypes.add(new CustomSkeleton("silverfish-annoyer", null, silverfishMinion, 15, true, 100, 15));
+        Minion slimeMinion = new Minion(OnDamage.NOTHING, OnDamage.SLOW, EntityType.SLIME, 40);
+        Minion magmaMinion = new Minion(OnDamage.NOTHING, OnDamage.BLIND, EntityType.MAGMA_CUBE, 40);
+        //customSkeletonsTypes.add(new CustomSkeleton("silverfish-annoyer", null, silverfishMinion, 15, true, 100, 15));
         customSkeletonsTypes.add(new CustomSkeleton("slime-dizzyness", PotionEffectType.CONFUSION, slimeMinion, 15, true, 100, 15));
         customSkeletonsTypes.add(new CustomSkeleton("magma-ass", PotionEffectType.INCREASE_DAMAGE, magmaMinion, 15, true, 100, 15));
     }
@@ -138,7 +136,7 @@ public class Skeletors extends ListenerModule
 
 
         //Knockback player to some percentage
-        else if (event.getDamager() instanceof Arrow)
+        else if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player)
         {
             Arrow arrow = (Arrow) event.getDamager();
             if (arrow.getShooter() instanceof Skeleton)
@@ -178,11 +176,11 @@ public class Skeletors extends ListenerModule
             {
                 switch (matched.getDamagePlayer())
                 {
-                    case DIZZY:
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, matched.getEffectDuration(), 1));
+                    case SLOW:
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, matched.getEffectDuration(), 4));
                         break;
-                    case FIRE:
-                        player.setFireTicks(matched.getEffectDuration());
+                    case BLIND:
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, matched.getEffectDuration(), 4));
                         break;
                     case NOTHING:
                     case EXPLODE:
@@ -191,6 +189,16 @@ public class Skeletors extends ListenerModule
                         throw new EnumConstantNotPresentException(OnDamage.class, "You added a new Action in OnDamage but didn't implement it!");
                 }
             }
+        }
+
+        //Block Summoners from damaging their minions
+        else if (event.getEntity() instanceof LivingEntity && Minion.isMinion((LivingEntity) event.getEntity()) && event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Skeleton)
+        {
+            event.setCancelled(true);
+            Arrow arrow = (Arrow) event.getDamager();
+            arrow.remove();
+            Location loc = event.getDamager().getLocation();
+            loc.getWorld().spawnArrow(arrow.getLocation().add((arrow.getVelocity().normalize()).multiply(4)), event.getDamager().getVelocity(), 2.0F, 0.0F);
         }
     }
 
@@ -233,7 +241,9 @@ public class Skeletors extends ListenerModule
                     if (minion instanceof Creature)
                         ((Creature) minion).setTarget(skeleton.getTarget());
                     if (minion instanceof Slime) //Magmacubes extend Slime
-                        ((Slime)minion).setSize(2);
+                        ((Slime) minion).setSize(2);
+                    if (minion instanceof MagmaCube) //ignore so they dont explode
+                        EntityHelper.flagIgnore(plugin, minion);
                     EntityHelper.markLootLess(plugin, minion); // the minion doesn't drop loot
                     Minion.setMinion(plugin, minion);
                     CustomSkeleton.addMinion(skeleton, minion, plugin);
@@ -271,9 +281,26 @@ public class Skeletors extends ListenerModule
                 for (Entity worldEntity : entity.getWorld().getEntitiesByClass(customSkeleton.getMinionType().getMinionType().getEntityClass()))
                     for (UUID id : minionIds)
                         if (worldEntity.getUniqueId() == id)
+                        {
+                            ((LivingEntity)worldEntity).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 1));
                             worldEntity.setFireTicks(Integer.MAX_VALUE);
+                            new SlowKillTask((LivingEntity)worldEntity, plugin);
+                        }
             }
         }
+    }
+
+
+    /**
+     * Block slimes that are minions from splitting into small slimes as those don't damage you
+     *
+     * @param event event that occured
+     */
+    @EventHandler
+    public void onSlimeSplit(SlimeSplitEvent event)
+    {
+        if (Minion.isMinion(event.getEntity()))
+            event.setCancelled(true);
     }
 
 
