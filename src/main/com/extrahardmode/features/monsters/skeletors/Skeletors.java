@@ -80,8 +80,10 @@ public class Skeletors extends ListenerModule
         //TODO
         Minion silverfishMinion = new Minion(OnDamage.NOTHING, OnDamage.NOTHING, EntityType.SILVERFISH, 0);
         Minion slimeMinion = new Minion(OnDamage.NOTHING, OnDamage.DIZZY, EntityType.SLIME, 10);
+        Minion magmaMinion = new Minion(OnDamage.NOTHING, OnDamage.DIZZY, EntityType.MAGMA_CUBE, 10);
         customSkeletonsTypes.add(new CustomSkeleton("silverfish-annoyer", null, silverfishMinion, 15, true, 100, 15));
         customSkeletonsTypes.add(new CustomSkeleton("slime-dizzyness", PotionEffectType.CONFUSION, slimeMinion, 15, true, 100, 15));
+        customSkeletonsTypes.add(new CustomSkeleton("magma-ass", PotionEffectType.INCREASE_DAMAGE, magmaMinion, 15, true, 100, 15));
     }
 
 
@@ -93,7 +95,6 @@ public class Skeletors extends ListenerModule
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onSkeletonDamage(EntityDamageByEntityEvent event)
     {
-        startTime();
         // FEATURE: arrows pass through skeletons
         if (event.getEntityType() == EntityType.SKELETON)
         {
@@ -191,7 +192,6 @@ public class Skeletors extends ListenerModule
                 }
             }
         }
-        stopTime("onDamage");
     }
 
 
@@ -214,7 +214,6 @@ public class Skeletors extends ListenerModule
         // FEATURE: skeletons sometimes release silverfish to attack their targets
         if (event.getEntity() != null && entityType == EntityType.ARROW)
         {
-            startTime();
             Arrow arrow = (Arrow) event.getEntity();
             LivingEntity shooter = arrow.getShooter();
             if (shooter instanceof Skeleton)
@@ -233,6 +232,8 @@ public class Skeletors extends ListenerModule
                     minion.setVelocity(arrow.getVelocity().multiply(0.25));
                     if (minion instanceof Creature)
                         ((Creature) minion).setTarget(skeleton.getTarget());
+                    if (minion instanceof Slime) //Magmacubes extend Slime
+                        ((Slime)minion).setSize(2);
                     EntityHelper.markLootLess(plugin, minion); // the minion doesn't drop loot
                     Minion.setMinion(plugin, minion);
                     CustomSkeleton.addMinion(skeleton, minion, plugin);
@@ -247,7 +248,6 @@ public class Skeletors extends ListenerModule
                     }
                 }
             }
-            stopTime("ProjectileLaunch");
         }
     }
 
@@ -263,7 +263,6 @@ public class Skeletors extends ListenerModule
         LivingEntity entity = event.getEntity();
         if (entity instanceof Skeleton && !customSkeletonsTypes.isEmpty())
         {
-            startTime();
             CustomSkeleton customSkeleton = CustomSkeleton.getCustom(entity, plugin, customSkeletonsTypes);
             if (customSkeleton.willRemoveMinions())
             {
@@ -274,7 +273,6 @@ public class Skeletors extends ListenerModule
                         if (worldEntity.getUniqueId() == id)
                             worldEntity.setFireTicks(Integer.MAX_VALUE);
             }
-            stopTime("SkeliDeath");
         }
     }
 
@@ -284,26 +282,9 @@ public class Skeletors extends ListenerModule
     {
         if (event.getEntity() instanceof Skeleton)
         {
-            startTime();
             //TODO weighted random
             int type = OurRandom.nextInt(customSkeletonsTypes.size());
             CustomSkeleton.setCustom(event.getEntity(), plugin, customSkeletonsTypes.get(type));
-            stopTime("skeliSpawn");
         }
-    }
-
-
-    private long time = 0;
-
-
-    private void startTime()
-    {
-        time = System.nanoTime();
-    }
-
-
-    private void stopTime(String msg)
-    {
-        plugin.getLogger().info(String.format("%d nanos passed [%s]", System.nanoTime() - time, msg));
     }
 }

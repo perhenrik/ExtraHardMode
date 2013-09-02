@@ -201,7 +201,7 @@ public class CustomSkeleton
     public static void setCustom(LivingEntity entity, Plugin plugin, CustomSkeleton customSkeleton)
     {
         if (customSkeleton.getEffectType() != null)
-            entity.addPotionEffect(new PotionEffect(customSkeleton.getEffectType(), Integer.MAX_VALUE, Integer.MAX_VALUE));
+            entity.addPotionEffect(new PotionEffect(customSkeleton.getEffectType(), Integer.MAX_VALUE, 1));
         entity.setMetadata(skeliTypeStr, new FixedMetadataValue(plugin, customSkeleton.getIdentifier()));
     }
 
