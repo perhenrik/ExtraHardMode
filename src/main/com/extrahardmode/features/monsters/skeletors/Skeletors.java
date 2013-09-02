@@ -35,9 +35,12 @@ import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -75,9 +78,10 @@ public class Skeletors extends ListenerModule
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         //TODO
-        Minion minion = new Minion(OnDamage.NOTHING, OnDamage.NOTHING, EntityType.SILVERFISH, 0);
-        CustomSkeleton type = new CustomSkeleton("silverfish-annoyer", null, minion, 15, true, 100, 15);
-        customSkeletonsTypes.add(type);
+        Minion silverfishMinion = new Minion(OnDamage.NOTHING, OnDamage.NOTHING, EntityType.SILVERFISH, 0);
+        Minion slimeMinion = new Minion(OnDamage.NOTHING, OnDamage.DIZZY, EntityType.SLIME, 10);
+        customSkeletonsTypes.add(new CustomSkeleton("silverfish-annoyer", null, silverfishMinion, 15, true, 100, 15));
+        customSkeletonsTypes.add(new CustomSkeleton("slime-dizzyness", PotionEffectType.CONFUSION, slimeMinion, 15, true, 100, 15));
     }
 
 
@@ -89,6 +93,7 @@ public class Skeletors extends ListenerModule
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onSkeletonDamage(EntityDamageByEntityEvent event)
     {
+        startTime();
         // FEATURE: arrows pass through skeletons
         if (event.getEntityType() == EntityType.SKELETON)
         {
@@ -109,19 +114,22 @@ public class Skeletors extends ListenerModule
                     Arrow arrow = (Arrow) damageSource;
 
                     Player player = arrow.getShooter() instanceof Player ? (Player) arrow.getShooter() : null;
-                    EhmSkeletonDeflectEvent skeliEvent = new EhmSkeletonDeflectEvent(player, skeli, type.getArrowsReflectPerc(), type, !type.isArrowsPassThrough());
-                    plugin.getServer().getPluginManager().callEvent(skeliEvent);
-
-                    // percent chance
-                    if (!skeliEvent.isCancelled())
+                    if (player != null)
                     {
-                        // cancel the damage
-                        event.setCancelled(true);
+                        EhmSkeletonDeflectEvent skeliEvent = new EhmSkeletonDeflectEvent(player, skeli, type.getArrowsReflectPerc(), type, !type.isArrowsPassThrough());
+                        plugin.getServer().getPluginManager().callEvent(skeliEvent);
 
-                        // teleport the arrow a single block farther along its flight path
-                        // note that .6 and 12 were the unexplained recommended values for speed and spread, reflectively, in the bukkit wiki
-                        arrow.remove();
-                        world.spawnArrow(arrow.getLocation().add((arrow.getVelocity().normalize()).multiply(2)), arrow.getVelocity(), 0.6f, 12.0f);
+                        // percent chance
+                        if (!skeliEvent.isCancelled())
+                        {
+                            // cancel the damage
+                            event.setCancelled(true);
+
+                            // teleport the arrow a single block farther along its flight path
+                            // note that .6 and 12 were the unexplained recommended values for speed and spread, reflectively, in the bukkit wiki
+                            arrow.remove();
+                            world.spawnArrow(arrow.getLocation().add((arrow.getVelocity().normalize()).multiply(2)), arrow.getVelocity(), 0.6f, 12.0f);
+                        }
                     }
                 }
             }
@@ -129,7 +137,7 @@ public class Skeletors extends ListenerModule
 
 
         //Knockback player to some percentage
-        if (event.getDamager() instanceof Arrow)
+        else if (event.getDamager() instanceof Arrow)
         {
             Arrow arrow = (Arrow) event.getDamager();
             if (arrow.getShooter() instanceof Skeleton)
@@ -152,6 +160,38 @@ public class Skeletors extends ListenerModule
                 }
             }
         }
+
+        // Apply effect when player hurt by minion
+        else if (event.getDamager() instanceof LivingEntity && Minion.isMinion((LivingEntity) event.getDamager()) && event.getEntity() instanceof Player)
+        {
+            Player player = (Player) event.getEntity();
+            Minion matched = null;
+            //Search for the Skeli that spawns this type of Minion
+            for (CustomSkeleton skeli : customSkeletonsTypes)
+            {
+                if (skeli.getMinionType().getMinionType() == event.getDamager().getType())
+                    matched = skeli.getMinionType();
+            }
+
+            if (matched != null)
+            {
+                switch (matched.getDamagePlayer())
+                {
+                    case DIZZY:
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, matched.getEffectDuration(), 1));
+                        break;
+                    case FIRE:
+                        player.setFireTicks(matched.getEffectDuration());
+                        break;
+                    case NOTHING:
+                    case EXPLODE:
+                        break;
+                    default:
+                        throw new EnumConstantNotPresentException(OnDamage.class, "You added a new Action in OnDamage but didn't implement it!");
+                }
+            }
+        }
+        stopTime("onDamage");
     }
 
 
@@ -174,6 +214,7 @@ public class Skeletors extends ListenerModule
         // FEATURE: skeletons sometimes release silverfish to attack their targets
         if (event.getEntity() != null && entityType == EntityType.ARROW)
         {
+            startTime();
             Arrow arrow = (Arrow) event.getEntity();
             LivingEntity shooter = arrow.getShooter();
             if (shooter instanceof Skeleton)
@@ -188,9 +229,10 @@ public class Skeletors extends ListenerModule
                     final Player player = (Player) skeleton.getTarget();
 
                     // replace with silverfish, quarter velocity of arrow, wants to attack same target as skeleton
-                    Creature minion = (Creature) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0.0, 1.5, 0.0), type.getMinionType().getMinionType());
+                    LivingEntity minion = (LivingEntity) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0.0, 1.5, 0.0), type.getMinionType().getMinionType());
                     minion.setVelocity(arrow.getVelocity().multiply(0.25));
-                    minion.setTarget(skeleton.getTarget());
+                    if (minion instanceof Creature)
+                        ((Creature) minion).setTarget(skeleton.getTarget());
                     EntityHelper.markLootLess(plugin, minion); // the minion doesn't drop loot
                     Minion.setMinion(plugin, minion);
                     CustomSkeleton.addMinion(skeleton, minion, plugin);
@@ -205,6 +247,7 @@ public class Skeletors extends ListenerModule
                     }
                 }
             }
+            stopTime("ProjectileLaunch");
         }
     }
 
@@ -220,6 +263,7 @@ public class Skeletors extends ListenerModule
         LivingEntity entity = event.getEntity();
         if (entity instanceof Skeleton && !customSkeletonsTypes.isEmpty())
         {
+            startTime();
             CustomSkeleton customSkeleton = CustomSkeleton.getCustom(entity, plugin, customSkeletonsTypes);
             if (customSkeleton.willRemoveMinions())
             {
@@ -230,6 +274,36 @@ public class Skeletors extends ListenerModule
                         if (worldEntity.getUniqueId() == id)
                             worldEntity.setFireTicks(Integer.MAX_VALUE);
             }
+            stopTime("SkeliDeath");
         }
+    }
+
+
+    @EventHandler
+    public void onSkeletonSpawn(CreatureSpawnEvent event)
+    {
+        if (event.getEntity() instanceof Skeleton)
+        {
+            startTime();
+            //TODO weighted random
+            int type = OurRandom.nextInt(customSkeletonsTypes.size());
+            CustomSkeleton.setCustom(event.getEntity(), plugin, customSkeletonsTypes.get(type));
+            stopTime("skeliSpawn");
+        }
+    }
+
+
+    private long time = 0;
+
+
+    private void startTime()
+    {
+        time = System.nanoTime();
+    }
+
+
+    private void stopTime(String msg)
+    {
+        plugin.getLogger().info(String.format("%d nanos passed [%s]", System.nanoTime() - time, msg));
     }
 }

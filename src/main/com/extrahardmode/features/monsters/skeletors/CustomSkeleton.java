@@ -200,8 +200,9 @@ public class CustomSkeleton
      */
     public static void setCustom(LivingEntity entity, Plugin plugin, CustomSkeleton customSkeleton)
     {
-        entity.addPotionEffect(new PotionEffect(customSkeleton.getEffectType(), Integer.MAX_VALUE, Integer.MAX_VALUE));
-        entity.setMetadata(skeliTypeStr, new FixedMetadataValue(plugin, customSkeleton.getEffectType().getId()));
+        if (customSkeleton.getEffectType() != null)
+            entity.addPotionEffect(new PotionEffect(customSkeleton.getEffectType(), Integer.MAX_VALUE, Integer.MAX_VALUE));
+        entity.setMetadata(skeliTypeStr, new FixedMetadataValue(plugin, customSkeleton.getIdentifier()));
     }
 
 
@@ -241,7 +242,6 @@ public class CustomSkeleton
     @SuppressWarnings("unchecked")
     public static void addMinion(LivingEntity summoner, LivingEntity minion, Plugin plugin)
     {
-
         List<UUID> idList = new ArrayList<UUID>(1);
         //Get minions already set and append the new Minion
         List<MetadataValue> meta = summoner.getMetadata(skeliMinionStorage);
@@ -262,7 +262,7 @@ public class CustomSkeleton
      *
      * @return Unique ids of all minions that have been spawned (minions can be dead)
      */
-     @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public static List<UUID> getSpawnedMinions(LivingEntity entity, Plugin plugin)
     {
         List<MetadataValue> meta = entity.getMetadata(skeliMinionStorage);

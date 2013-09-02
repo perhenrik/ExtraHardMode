@@ -35,27 +35,27 @@ public class Minion
     private OnDamage damaged;
     private OnDamage damagePlayer;
     private EntityType minionType;
-    private int potionDuration;
+    private int duration;
 
 
-    public Minion(OnDamage damaged, OnDamage damagePlayer, EntityType minionType, int potionDuration)
+    public Minion(OnDamage damaged, OnDamage damagePlayer, EntityType minionType, int duration)
     {
         this.damaged = damaged;
         this.damagePlayer = damagePlayer;
         this.minionType = minionType;
-        this.potionDuration = potionDuration;
+        this.duration = duration;
     }
 
 
-    public int getPotionDuration()
+    public int getEffectDuration()
     {
-        return potionDuration;
+        return duration;
     }
 
 
-    public void setPotionDuration(int potionDuration)
+    public void setEffectDuration(int duration)
     {
-        this.potionDuration = potionDuration;
+        this.duration = duration;
     }
 
 

@@ -3,6 +3,7 @@ package com.extrahardmode.events;
 
 import com.extrahardmode.features.monsters.skeletors.CustomSkeleton;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.event.Cancellable;
@@ -20,7 +21,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
     private boolean cancelled;
     private final Player player;
     private final Skeleton skeleton;
-    private final Creature silverfish;
+    private final LivingEntity silverfish;
     private final int shootSilverfishPercent;
 
 
@@ -32,7 +33,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
      * @param silverfish        the Silverfish being release by the Skeli
      * @param releasePercentage percentage of how often Silverfish get released
      */
-    public EhmSkeletonShootSilverfishEvent(Player player, Skeleton skeleton, Creature silverfish, int releasePercentage, CustomSkeleton type)
+    public EhmSkeletonShootSilverfishEvent(Player player, Skeleton skeleton, LivingEntity silverfish, int releasePercentage, CustomSkeleton type)
     {
         this.player = player;
         this.skeleton = skeleton;
@@ -81,7 +82,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
      *
      * @return silverfish
      */
-    public Creature getSilverfish()
+    public LivingEntity getSilverfish()
     {
         return silverfish;
     }
