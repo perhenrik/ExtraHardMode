@@ -29,9 +29,11 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.features.*;
 import com.extrahardmode.features.monsters.*;
+import com.extrahardmode.features.monsters.skeletors.Skeletors;
 import com.extrahardmode.metrics.ConfigPlotter;
 import com.extrahardmode.module.*;
 import com.extrahardmode.service.IModule;
+import com.extrahardmode.service.OurRandom;
 import com.extrahardmode.task.MoreMonstersTask;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -125,6 +127,8 @@ public class ExtraHardMode extends JavaPlugin
         //TODO make modules
         new Tutorial(this);
 
+        //Get a new Random Object
+        OurRandom.reload();
 
         // FEATURE: monsters spawn in the light under a configurable Y level
         MoreMonstersTask task = new MoreMonstersTask(this);

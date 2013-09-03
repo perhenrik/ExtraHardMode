@@ -1,7 +1,9 @@
 package com.extrahardmode.events;
 
 
+import com.extrahardmode.features.monsters.skeletors.CustomSkeleton;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.event.Cancellable;
@@ -15,55 +17,44 @@ import org.bukkit.event.HandlerList;
  */
 public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellable
 {
+    private final CustomSkeleton type;
     private boolean cancelled;
-
     private final Player player;
-
     private final Skeleton skeleton;
-
-    private final Creature silverfish;
-
+    private final LivingEntity silverfish;
     private final int shootSilverfishPercent;
 
 
     /**
      * Constructor
      *
-     * @param player
-     *         Player being shot at
-     * @param skeleton
-     *         Skeleton shooting the Silverfish
-     * @param silverfish
-     *         the Silverfish being release by the Skeli
-     * @param releasePercentage
-     *         percentage of how often Silverfish get released
+     * @param player            Player being shot at
+     * @param skeleton          Skeleton shooting the Silverfish
+     * @param silverfish        the Silverfish being release by the Skeli
+     * @param releasePercentage percentage of how often Silverfish get released
      */
-    public EhmSkeletonShootSilverfishEvent(Player player, Skeleton skeleton, Creature silverfish, int releasePercentage)
+    public EhmSkeletonShootSilverfishEvent(Player player, Skeleton skeleton, LivingEntity silverfish, int releasePercentage, CustomSkeleton type)
     {
         this.player = player;
         this.skeleton = skeleton;
         this.silverfish = silverfish;
         this.shootSilverfishPercent = releasePercentage;
+        this.type = type;
     }
 
 
     /**
      * Constructor
      *
-     * @param player
-     *         Player being shot at
-     * @param skeleton
-     *         Skeleton shooting the Silverfish
-     * @param silverfish
-     *         the Silverfish being release by the Skeli
-     * @param releasePercentage
-     *         percentage of how often Silverfish get released
-     * @param cancelled
-     *         if Event should be cancelled by default
+     * @param player            Player being shot at
+     * @param skeleton          Skeleton shooting the Silverfish
+     * @param silverfish        the Silverfish being release by the Skeli
+     * @param releasePercentage percentage of how often Silverfish get released
+     * @param cancelled         if Event should be cancelled by default
      */
-    public EhmSkeletonShootSilverfishEvent(Player player, Skeleton skeleton, Creature silverfish, int releasePercentage, boolean cancelled)
+    public EhmSkeletonShootSilverfishEvent(Player player, Skeleton skeleton, Creature silverfish, int releasePercentage, CustomSkeleton type, boolean cancelled)
     {
-        this(player, skeleton, silverfish, releasePercentage);
+        this(player, skeleton, silverfish, releasePercentage, type);
         this.cancelled = cancelled;
     }
 
@@ -91,7 +82,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
      *
      * @return silverfish
      */
-    public Creature getSilverfish()
+    public LivingEntity getSilverfish()
     {
         return silverfish;
     }
@@ -117,6 +108,12 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
     }
 
 
+    public CustomSkeleton getType()
+    {
+        return type;
+    }
+
+
     /**
      * @return if Event got cancelled
      */
@@ -128,8 +125,7 @@ public class EhmSkeletonShootSilverfishEvent extends Event implements Cancellabl
 
 
     /**
-     * @param cancelled
-     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)
