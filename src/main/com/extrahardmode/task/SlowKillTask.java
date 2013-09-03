@@ -22,6 +22,7 @@
 package com.extrahardmode.task;
 
 
+import com.extrahardmode.module.EntityHelper;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,11 +35,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class SlowKillTask extends BukkitRunnable
 {
     private final LivingEntity entity;
-
+    private final Plugin plugin;
 
     public SlowKillTask(LivingEntity entity, Plugin plugin)
     {
         this.entity = entity;
+        this.plugin = plugin;
         runTaskTimer(plugin, 0L, 30L);
     }
 
@@ -47,7 +49,10 @@ public class SlowKillTask extends BukkitRunnable
     public void run()
     {
         if (!entity.isDead())
+        {
             entity.damage(1.0);
+            EntityHelper.addEnvironmentalDamage(plugin, entity, 1.0);
+        }
         else
             cancel();
     }

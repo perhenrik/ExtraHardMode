@@ -32,16 +32,20 @@ import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.OurRandom;
 import com.extrahardmode.task.SlowKillTask;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Changes to Skeletons include:
@@ -62,7 +66,6 @@ public class Skeletors extends ListenerModule
      * All our custom Skeletons, 0 is the default skeleton. all other skeletons are identified by the id of their PotionEffectType
      */
     private List<CustomSkeleton> customSkeletonsTypes = new ArrayList<CustomSkeleton>();
-    private Map<UUID, LivingEntity> minions = new HashMap<UUID, LivingEntity>();
 
 
     /**
@@ -76,22 +79,20 @@ public class Skeletors extends ListenerModule
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         //TODO
-        Minion silverfishMinion = new Minion(OnDamage.NOTHING, OnDamage.NOTHING, EntityType.SILVERFISH, 0);
-        Minion slimeMinion = new Minion(OnDamage.NOTHING, OnDamage.SLOW, EntityType.SLIME, 40);
-        Minion magmaMinion = new Minion(OnDamage.NOTHING, OnDamage.BLIND, EntityType.MAGMA_CUBE, 40);
-        //customSkeletonsTypes.add(new CustomSkeleton("silverfish-annoyer", null, silverfishMinion, 15, true, 100, 15));
-        customSkeletonsTypes.add(new CustomSkeleton("slime-dizzyness", PotionEffectType.CONFUSION, slimeMinion, 15, true, 100, 15));
-        customSkeletonsTypes.add(new CustomSkeleton("magma-ass", PotionEffectType.INCREASE_DAMAGE, magmaMinion, 15, true, 100, 15));
+        Minion silverfishMinion = new Minion(OnDamage.NOTHING, EntityType.SILVERFISH, 0, 5, 20);
+        Minion slimeMinion = new Minion(OnDamage.SLOW, EntityType.SLIME, 40, 5, 20);
+        Minion magmaMinion = new Minion(OnDamage.BLIND, EntityType.MAGMA_CUBE, 40, 5, 10);
+        customSkeletonsTypes.add(new CustomSkeleton("silverfish-annoyer", null, silverfishMinion, 15, true, 100, 15));
+        customSkeletonsTypes.add(new CustomSkeleton("slime-dizzyness", PotionEffectType.HUNGER, slimeMinion, 100, true, 100, 15));
+        customSkeletonsTypes.add(new CustomSkeleton("magmacube-blind", PotionEffectType.FAST_DIGGING, magmaMinion, 100, true, 100, 15));
     }
 
 
     /**
-     * When an entity takes damage
-     * <p/>
-     * skeletons are immune to arrows
+     * Arrows pass through skeletons
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onSkeletonDamage(EntityDamageByEntityEvent event)
+    public void onSkeletonHitByArrow(EntityDamageByEntityEvent event)
     {
         // FEATURE: arrows pass through skeletons
         if (event.getEntityType() == EntityType.SKELETON)
@@ -133,10 +134,17 @@ public class Skeletors extends ListenerModule
                 }
             }
         }
+    }
 
 
+    /**
+     * Skeletons sometimes hoot knockback arrows
+     */
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onPlayerHitByArrow(EntityDamageByEntityEvent event)
+    {
         //Knockback player to some percentage
-        else if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player)
+        if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player)
         {
             Arrow arrow = (Arrow) event.getDamager();
             if (arrow.getShooter() instanceof Skeleton)
@@ -159,9 +167,17 @@ public class Skeletors extends ListenerModule
                 }
             }
         }
+    }
 
+
+    /**
+     * Some Minions can apply PotionEffects to the player when they attack
+     */
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onPlayerHurtByMinion(EntityDamageByEntityEvent event)
+    {
         // Apply effect when player hurt by minion
-        else if (event.getDamager() instanceof LivingEntity && Minion.isMinion((LivingEntity) event.getDamager()) && event.getEntity() instanceof Player)
+        if (event.getDamager() instanceof LivingEntity && Minion.isMinion((LivingEntity) event.getDamager()) && event.getEntity() instanceof Player)
         {
             Player player = (Player) event.getEntity();
             Minion matched = null;
@@ -190,9 +206,17 @@ public class Skeletors extends ListenerModule
                 }
             }
         }
+    }
 
+
+    /**
+     * Minions can't be damaged by their summoners
+     */
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onMinionDamageBySummoner(EntityDamageByEntityEvent event)
+    {
         //Block Summoners from damaging their minions
-        else if (event.getEntity() instanceof LivingEntity && Minion.isMinion((LivingEntity) event.getEntity()) && event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Skeleton)
+        if (event.getEntity() instanceof LivingEntity && Minion.isMinion((LivingEntity) event.getEntity()) && event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Skeleton)
         {
             event.setCancelled(true);
             Arrow arrow = (Arrow) event.getDamager();
@@ -206,7 +230,7 @@ public class Skeletors extends ListenerModule
     /**
      * when an entity shoots a bow...
      * <p/>
-     * skeletons shoot silverfish
+     * skeletons may summon minions
      *
      * @param event - Event that occurred.
      */
@@ -227,16 +251,19 @@ public class Skeletors extends ListenerModule
             if (shooter instanceof Skeleton)
             {
                 Skeleton skeleton = (Skeleton) shooter;
-                CustomSkeleton type = CustomSkeleton.getCustom(skeleton, plugin, customSkeletonsTypes);
-
-                if (skeleton.getTarget() instanceof Player && OurRandom.percentChance(type.getReleaseMinionPercent())) //Prevent tons of Minions
+                CustomSkeleton customSkeleton = CustomSkeleton.getCustom(skeleton, plugin, customSkeletonsTypes);
+                int currentSpawnLimit = customSkeleton.getMinionType().getCurrentSpawnLimit(),
+                        totalSpawnLimit = customSkeleton.getMinionType().getTotalSpawnLimit();
+                if (skeleton.getTarget() instanceof Player && OurRandom.percentChance(customSkeleton.getReleaseMinionPercent())
+                        && (currentSpawnLimit < 0 || currentSpawnLimit > CustomSkeleton.getSpawnedMinions(skeleton, plugin).size()) //Prevent tons of Minions
+                        && (totalSpawnLimit < 0 || totalSpawnLimit > CustomSkeleton.getTotalSummoned(skeleton, plugin)))
                 {
                     // Cancel and replace arrow with a summoned minion
                     event.setCancelled(true);
                     final Player player = (Player) skeleton.getTarget();
 
                     // replace with silverfish, quarter velocity of arrow, wants to attack same target as skeleton
-                    LivingEntity minion = (LivingEntity) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0.0, 1.5, 0.0), type.getMinionType().getMinionType());
+                    LivingEntity minion = (LivingEntity) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0.0, 1.5, 0.0), customSkeleton.getMinionType().getMinionType());
                     minion.setVelocity(arrow.getVelocity().multiply(0.25));
                     if (minion instanceof Creature)
                         ((Creature) minion).setTarget(skeleton.getTarget());
@@ -246,9 +273,10 @@ public class Skeletors extends ListenerModule
                         EntityHelper.flagIgnore(plugin, minion);
                     EntityHelper.markLootLess(plugin, minion); // the minion doesn't drop loot
                     Minion.setMinion(plugin, minion);
+                    Minion.setParent(skeleton, minion, plugin);
                     CustomSkeleton.addMinion(skeleton, minion, plugin);
 
-                    EhmSkeletonShootSilverfishEvent shootSilverfishEvent = new EhmSkeletonShootSilverfishEvent(player, skeleton, minion, type.getReleaseMinionPercent(), type);
+                    EhmSkeletonShootSilverfishEvent shootSilverfishEvent = new EhmSkeletonShootSilverfishEvent(player, skeleton, minion, customSkeleton.getReleaseMinionPercent(), customSkeleton);
                     plugin.getServer().getPluginManager().callEvent(shootSilverfishEvent);
 
                     if (shootSilverfishEvent.isCancelled()) //Undo
@@ -282,10 +310,27 @@ public class Skeletors extends ListenerModule
                     for (UUID id : minionIds)
                         if (worldEntity.getUniqueId() == id)
                         {
-                            ((LivingEntity)worldEntity).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 1));
+                            ((LivingEntity) worldEntity).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 1));
                             worldEntity.setFireTicks(Integer.MAX_VALUE);
-                            new SlowKillTask((LivingEntity)worldEntity, plugin);
+                            new SlowKillTask((LivingEntity) worldEntity, plugin);
                         }
+            }
+        }
+    }
+
+
+    @EventHandler
+    public void onMinionDeath(EntityDeathEvent event)
+    {
+        LivingEntity entity = event.getEntity();
+        if (Minion.isMinion(entity))
+        {
+            UUID parent = Minion.getParent(entity, plugin);
+            //Try to find the parent by id
+            for (LivingEntity worldEntity : entity.getWorld().getLivingEntities())
+            {
+                if (worldEntity.getUniqueId() == parent)
+                    CustomSkeleton.removeMinion(entity.getUniqueId(), worldEntity);
             }
         }
     }
@@ -313,5 +358,21 @@ public class Skeletors extends ListenerModule
             int type = OurRandom.nextInt(customSkeletonsTypes.size());
             CustomSkeleton.setCustom(event.getEntity(), plugin, customSkeletonsTypes.get(type));
         }
+    }
+
+
+    @EventHandler
+    public void onSilverfishSpawn(CreatureSpawnEvent event)
+    {
+        if (event.getEntityType() == EntityType.SILVERFISH)
+            event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 1, false));
+    }
+
+
+    @EventHandler
+    public void onPiggieSpawn(CreatureSpawnEvent event)
+    {
+        if (event.getEntityType() == EntityType.SKELETON)
+            event.getEntity().getEquipment().setItemInHand(new ItemStack(Material.STONE_SWORD));
     }
 }

@@ -30,10 +30,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class CustomSkeleton
 {
@@ -73,6 +70,10 @@ public class CustomSkeleton
      * Key to access the minions of the Skeleton
      */
     public final static String skeliMinionStorage = "extrahardmode.skeleton.minions";
+    /**
+     * Total count of minions spawned by this host
+     */
+    public final static String skeliTotalMinionCount = "extrahardmode.skeleton.minions.totalcount";
 
 
     public CustomSkeleton(String identifier, PotionEffectType type, Minion minion, int releaseMinionPercent, boolean removeMinions, int arrowsReflectPerc, int knockbackPercent)
@@ -201,7 +202,7 @@ public class CustomSkeleton
     public static void setCustom(LivingEntity entity, Plugin plugin, CustomSkeleton customSkeleton)
     {
         if (customSkeleton.getEffectType() != null)
-            entity.addPotionEffect(new PotionEffect(customSkeleton.getEffectType(), Integer.MAX_VALUE, 1));
+            entity.addPotionEffect(new PotionEffect(customSkeleton.getEffectType(), Integer.MAX_VALUE, 1, false));
         entity.setMetadata(skeliTypeStr, new FixedMetadataValue(plugin, customSkeleton.getIdentifier()));
     }
 
@@ -251,6 +252,37 @@ public class CustomSkeleton
                     idList = (List<UUID>) val.value();
         idList.add(minion.getUniqueId());
         summoner.setMetadata(skeliMinionStorage, new FixedMetadataValue(plugin, idList));
+
+        //Increment the total count of minions summoned
+        List<MetadataValue> countMeta = summoner.getMetadata(skeliTotalMinionCount);
+        int totalCount = getTotalSummoned(summoner, plugin);
+        totalCount++;
+        summoner.setMetadata(skeliTotalMinionCount, new FixedMetadataValue(plugin, totalCount));
+    }
+
+
+    /**
+     * Remove the minion from the list of summoned minions
+     *
+     * @param minionId id of the minion
+     * @param summoner the entity that summoned the minion
+     */
+    public static void removeMinion(UUID minionId, LivingEntity summoner)
+    {
+        List<MetadataValue> meta = summoner.getMetadata(skeliMinionStorage);
+        if (!meta.isEmpty())
+        {
+            MetadataValue value = meta.get(0);
+            if (value.value() instanceof List)
+            {
+                Iterator<UUID> iter = ((List<UUID>) value.value()).iterator();
+                while (iter.hasNext())
+                {
+                    if (minionId == iter.next())
+                        iter.remove();
+                }
+            }
+        }
     }
 
 
@@ -272,5 +304,27 @@ public class CustomSkeleton
                 if (val.value() instanceof List)
                     ids = (List<UUID>) val.value();
         return ids;
+    }
+
+
+    /**
+     * Get the total number of minions summoned by this entity
+     *
+     * @param entity entity to get minion count
+     * @param plugin owning plugin to access MetaData
+     *
+     * @return count or 0 if not set
+     */
+    public static int getTotalSummoned(LivingEntity entity, Plugin plugin)
+    {
+        List<MetadataValue> meta = entity.getMetadata(skeliTotalMinionCount);
+        int totalCount = 0;
+        if (!meta.isEmpty())
+        {
+            MetadataValue value = meta.get(0);
+            if (value.value() instanceof Integer)
+                totalCount = (Integer) value.value();
+        }
+        return totalCount;
     }
 }

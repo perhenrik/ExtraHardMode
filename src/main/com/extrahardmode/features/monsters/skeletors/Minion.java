@@ -25,25 +25,43 @@ package com.extrahardmode.features.monsters.skeletors;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Diemex
  */
 public class Minion
 {
-    private OnDamage damaged;
     private OnDamage damagePlayer;
     private EntityType minionType;
     private int duration;
+    private int currentSpawnLimit;
+    private int totalSpawnLimit;
 
 
-    public Minion(OnDamage damaged, OnDamage damagePlayer, EntityType minionType, int duration)
+    public Minion(OnDamage damagePlayer, EntityType minionType, int duration, int currentSpawnLimit, int totalSpawnLimit)
     {
-        this.damaged = damaged;
         this.damagePlayer = damagePlayer;
         this.minionType = minionType;
         this.duration = duration;
+        this.currentSpawnLimit = currentSpawnLimit;
+        this.totalSpawnLimit = totalSpawnLimit;
+    }
+
+
+    public int getCurrentSpawnLimit()
+    {
+        return currentSpawnLimit;
+    }
+
+
+    public int getTotalSpawnLimit()
+    {
+        return totalSpawnLimit;
     }
 
 
@@ -56,18 +74,6 @@ public class Minion
     public void setEffectDuration(int duration)
     {
         this.duration = duration;
-    }
-
-
-    public OnDamage getDamaged()
-    {
-        return damaged;
-    }
-
-
-    public void setDamaged(OnDamage damaged)
-    {
-        this.damaged = damaged;
     }
 
 
@@ -106,7 +112,43 @@ public class Minion
 
     public static boolean isMinion(LivingEntity entity)
     {
-        boolean bool = entity.hasMetadata(minionTag);
         return entity.hasMetadata(minionTag);
+    }
+
+
+    private static String parentKey = "extrahardmode.minion.parent";
+
+
+    /**
+     * Set the parent that summoned this minion
+     *
+     * @param summoner parent summoner
+     * @param minion   summoned minion
+     * @param owning   plugin that spawned the minion
+     */
+    public static void setParent(LivingEntity summoner, LivingEntity minion, Plugin owning)
+    {
+        minion.setMetadata(parentKey, new FixedMetadataValue(owning, summoner.getUniqueId()));
+    }
+
+
+    /**
+     * Get the parent that summoned the minion
+     *
+     * @param minion minion to get the parent for
+     * @param plugin owning plugin for MetaData
+     *
+     * @return id of parent or id of minion if parent not set
+     */
+    public static UUID getParent(LivingEntity minion, Plugin plugin)
+    {
+        List<MetadataValue> meta = minion.getMetadata(parentKey);
+        if (!meta.isEmpty())
+        {
+            MetadataValue metaVal = meta.get(0);
+            if (metaVal.value() instanceof UUID)
+                return (UUID) metaVal.value();
+        }
+        return minion.getUniqueId();
     }
 }
