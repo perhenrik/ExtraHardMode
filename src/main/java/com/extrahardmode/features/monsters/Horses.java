@@ -23,6 +23,8 @@ package com.extrahardmode.features.monsters;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.entity.Horse;
@@ -55,6 +57,8 @@ public class Horses extends ListenerModule
      */
     private Set<UUID> horsesBeingRidden = new HashSet<UUID>(8);
 
+    private final RootConfig CFG;
+
     /**
      * This horse has been right clicked with food and player shouldn't mount the horse
      */
@@ -68,6 +72,7 @@ public class Horses extends ListenerModule
     public Horses(ExtraHardMode plugin)
     {
         super(plugin);
+        CFG = plugin.getModuleForClass(RootConfig.class);
         messenger = plugin.getModuleForClass(MsgModule.class);
     }
 
@@ -79,8 +84,9 @@ public class Horses extends ListenerModule
     public void onHorseInvClick(InventoryClickEvent event)
     {
         final Inventory inv = event.getInventory();
+        final int maxHeight = CFG.getInt(RootNode.HORSE_CHEST_BLOCK_BELOW, event.getWhoClicked().getWorld().getName());
 
-        if (inv instanceof HorseInventory)
+        if (inv instanceof HorseInventory && event.getWhoClicked().getLocation().getBlockY() > maxHeight)
         {
             Inventory horseInv = event.getView().getTopInventory();
             int clickedSlot = event.getRawSlot();
@@ -108,7 +114,10 @@ public class Horses extends ListenerModule
     @EventHandler
     public void onHorseDamage(EntityDamageEvent event)
     {
-        if (event.getEntity() instanceof Horse)
+        String world = event.getEntity().getWorld().getName();
+        final boolean enhancedEnvironmentaldamage = CFG.getBoolean(RootNode.ENHANCED_ENVIRONMENTAL_DAMAGE, world);
+
+        if (event.getEntity() instanceof Horse && enhancedEnvironmentaldamage)
         {
             final LivingEntity horse = (LivingEntity) event.getEntity();
             final EntityDamageEvent.DamageCause cause = event.getCause();
@@ -117,7 +126,6 @@ public class Horses extends ListenerModule
             {
                 case BLOCK_EXPLOSION:
                 case ENTITY_EXPLOSION:
-                    //TODO EhmPlayerEnvironmentalDamageEvent for each type
                     if (event.getDamage() > 2.0)
                         horse.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 3));
                     break;
@@ -145,8 +153,21 @@ public class Horses extends ListenerModule
     @EventHandler
     public void onHorseJump(HorseJumpEvent event)
     {
-        final float jumpHeight = event.getPower();
-        event.setPower(jumpHeight / 2.0F);
+        String world = event.getEntity().getWorld().getName();
+
+        final float jumpModifier = (float) CFG.getDouble(RootNode.HORSE_JUMP_MODIFIER, world);
+        final float minHeight = (float) CFG.getDouble(RootNode.HORSE_MIN_JUMP, world);
+        final float maxHeight = (float) CFG.getDouble(RootNode.HORSE_MAX_JUMP, world);
+
+        float jumpHeight = event.getPower();
+        if (jumpHeight * jumpModifier < minHeight)
+            jumpHeight = minHeight;
+        else if (jumpHeight * jumpModifier > maxHeight)
+            jumpHeight = maxHeight;
+        else
+            jumpHeight *= jumpModifier;
+
+        event.setPower(jumpHeight);
     }
 
     /**
