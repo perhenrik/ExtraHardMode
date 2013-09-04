@@ -106,7 +106,7 @@ public class Tutorial implements Listener
                 }
                 case GHAST:
                 {
-                    if (CFG.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName()))
+                    if (CFG.getInt(RootNode.GHASTS_DEFLECT_ARROWS, world.getName()) > 0)
                         messenger.send(player, MessageNode.GHAST_TARGET);
                     break;
                 }

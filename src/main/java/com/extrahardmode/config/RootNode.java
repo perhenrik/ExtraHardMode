@@ -59,7 +59,7 @@ public enum RootNode implements ConfigNode
     /**
      * If players with op should bypass by default
      */
-    BYPASS_OPS("Bypassing.Operators Bypass", VarType.BOOLEAN, true),
+    BYPASS_OPS("Bypassing.Operators Bypass", VarType.BOOLEAN, false),
 
     /**
      * ##################
@@ -401,7 +401,7 @@ public enum RootNode implements ConfigNode
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
-    GHASTS_DEFLECT_ARROWS("Ghasts.Immune To Arrows", VarType.BOOLEAN, true),
+    GHASTS_DEFLECT_ARROWS("Ghasts.Arrows Do % Damage", VarType.INTEGER, 20),
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */

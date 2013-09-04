@@ -73,7 +73,7 @@ public class Ghasts extends ListenerModule
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean ghastDeflectArrows = CFG.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
+        final boolean ghastDeflectArrows = CFG.getInt(RootNode.GHASTS_DEFLECT_ARROWS, world.getName()) > 0;
         final int ghastExpMupliplier = CFG.getInt(RootNode.GHASTS_EXP_MULTIPLIER, world.getName());
         final int ghastDropsMultiplier = CFG.getInt(RootNode.GHASTS_DROPS_MULTIPLIER, world.getName());
 
@@ -104,7 +104,7 @@ public class Ghasts extends ListenerModule
         Entity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean ghastDeflectArrows = CFG.getBoolean(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
+        final int arrowDamagePercent = CFG.getInt(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
 
         EntityDamageByEntityEvent damageByEntityEvent = null;
         if (event instanceof EntityDamageByEntityEvent)
@@ -113,7 +113,7 @@ public class Ghasts extends ListenerModule
         }
 
         // FEATURE: ghasts deflect arrows and drop extra loot
-        if (ghastDeflectArrows)
+        if (arrowDamagePercent < 100)
         {
             // only ghasts, and only if damaged by another entity (as opposed to
             // environmental damage)
@@ -130,11 +130,8 @@ public class Ghasts extends ListenerModule
                     {
                         // check permissions when it's shot by a player
                         Player player = (Player) arrow.getShooter();
-                        event.setCancelled(!playerModule.playerBypasses(player, Feature.MONSTER_GHASTS));
-                    } else
-                    {
-                        // otherwise always deflect
-                        event.setCancelled(true);
+                        if (!playerModule.playerBypasses(player, Feature.MONSTER_GHASTS))
+                            event.setDamage(event.getDamage() * arrowDamagePercent / 100.0);
                     }
                 }
             }

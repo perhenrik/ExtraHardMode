@@ -90,7 +90,7 @@ public class ConfigPlotter
                     case ENHANCED_ENVIRONMENTAL_DAMAGE:
                     case EXTINGUISHING_FIRE_IGNITES_PLAYERS:
                     case FORTRESS_PIGS_DROP_WART:
-                    case GHASTS_DEFLECT_ARROWS:
+                    //case GHASTS_DEFLECT_ARROWS:
                     case IMPROVED_ENDERMAN_TELEPORTATION:
                     case INHIBIT_MONSTER_GRINDERS:
                     case LIMITED_BLOCK_PLACEMENT:
