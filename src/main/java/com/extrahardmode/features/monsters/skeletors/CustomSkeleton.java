@@ -63,6 +63,10 @@ public class CustomSkeleton
      */
     private final String identifier;
     /**
+     * Spawn Weight
+     */
+    private int spawnWeight;
+    /**
      * Key to mark the type of skeleton
      */
     public final static String skeliTypeStr = "extrahardmode.skeleton.type";
@@ -76,7 +80,7 @@ public class CustomSkeleton
     public final static String skeliTotalMinionCount = "extrahardmode.skeleton.minions.totalcount";
 
 
-    public CustomSkeleton(String identifier, PotionEffectType type, Minion minion, int releaseMinionPercent, boolean removeMinions, int arrowsReflectPerc, int knockbackPercent)
+    public CustomSkeleton(String identifier, PotionEffectType type, Minion minion, int releaseMinionPercent, boolean removeMinions, int arrowsReflectPerc, int knockbackPercent, int spawnWeight)
     {
         Validate.notEmpty(identifier);
         this.identifier = identifier;
@@ -86,6 +90,7 @@ public class CustomSkeleton
         this.removeMinions = removeMinions;
         this.arrowsReflectPerc = arrowsReflectPerc;
         this.knockbackPercent = knockbackPercent;
+        this.spawnWeight = spawnWeight;
     }
 
 
@@ -177,6 +182,12 @@ public class CustomSkeleton
     public void setKnockbackPercent(int knockbackPercent)
     {
         this.knockbackPercent = knockbackPercent;
+    }
+
+
+    public int getSpawnWeight()
+    {
+        return spawnWeight;
     }
 
 

@@ -24,6 +24,7 @@ package com.extrahardmode.features.monsters.skeletors;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.events.EhmSkeletonDeflectEvent;
 import com.extrahardmode.events.EhmSkeletonKnockbackEvent;
 import com.extrahardmode.events.EhmSkeletonShootSilverfishEvent;
@@ -43,9 +44,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Changes to Skeletons include:
@@ -65,7 +64,7 @@ public class Skeletors extends ListenerModule
     /**
      * All our custom Skeletons, 0 is the default skeleton. all other skeletons are identified by the id of their PotionEffectType
      */
-    private List<CustomSkeleton> customSkeletonsTypes = new ArrayList<CustomSkeleton>();
+    private Map<String, List<CustomSkeleton>> customSkeletonsTypes = new HashMap<String, List<CustomSkeleton>>();
 
 
     /**
@@ -78,13 +77,9 @@ public class Skeletors extends ListenerModule
         super(plugin);
         this.plugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
-        //TODO
-        Minion silverfishMinion = new Minion(OnDamage.NOTHING, EntityType.SILVERFISH, 0, 5, 20);
-        Minion slimeMinion = new Minion(OnDamage.SLOW, EntityType.SLIME, 40, 5, 20);
-        Minion magmaMinion = new Minion(OnDamage.BLIND, EntityType.MAGMA_CUBE, 40, 5, 10);
-        customSkeletonsTypes.add(new CustomSkeleton("silverfish-annoyer", null, silverfishMinion, 15, true, 100, 15));
-        customSkeletonsTypes.add(new CustomSkeleton("slime-dizzyness", PotionEffectType.HUNGER, slimeMinion, 100, true, 100, 15));
-        customSkeletonsTypes.add(new CustomSkeleton("magmacube-blind", PotionEffectType.FAST_DIGGING, magmaMinion, 100, true, 100, 15));
+        //Initlizes all CustomSkeletons for all the worlds that we are activated in.
+        for (String world : CFG.getEnabledWorlds())
+            initForWorld(world);
     }
 
 
@@ -100,11 +95,11 @@ public class Skeletors extends ListenerModule
             Skeleton skeli = (Skeleton) event.getEntity();
             World world = skeli.getWorld();
 
-            //final int deflect = CFG.getInt(RootNode.SKELETONS_DEFLECT_ARROWS, world.getName());
-            //final int knockBackPercent = CFG.getInt(RootNode.SKELETONS_KNOCK_BACK_PERCENT, world.getName());
+            //final int deflect = CFG.getInt(RootNode.SKELI_RED_DEFLECT_ARROWS, world.getName());
+            //final int knockBackPercent = CFG.getInt(RootNode.SKELI_GREY_KNOCK_BACK_PERCENT, world.getName());
 
             Entity damageSource = event.getDamager();
-            CustomSkeleton type = CustomSkeleton.getCustom(skeli, plugin, customSkeletonsTypes);
+            CustomSkeleton type = CustomSkeleton.getCustom(skeli, plugin, getSkelisForWorld(world.getName()));
 
             // only arrows
             if (damageSource instanceof Arrow)
@@ -149,7 +144,7 @@ public class Skeletors extends ListenerModule
             Arrow arrow = (Arrow) event.getDamager();
             if (arrow.getShooter() instanceof Skeleton)
             {
-                CustomSkeleton type = CustomSkeleton.getCustom(arrow.getShooter(), plugin, customSkeletonsTypes);
+                CustomSkeleton type = CustomSkeleton.getCustom(arrow.getShooter(), plugin, getSkelisForWorld(arrow.getWorld().getName()));
                 // FEATURE: skeletons can knock back
                 if (type.getKnockbackPercent() > 0)
                 {
@@ -182,7 +177,7 @@ public class Skeletors extends ListenerModule
             Player player = (Player) event.getEntity();
             Minion matched = null;
             //Search for the Skeli that spawns this type of Minion
-            for (CustomSkeleton skeli : customSkeletonsTypes)
+            for (CustomSkeleton skeli : getSkelisForWorld(event.getEntity().getWorld().getName()))
             {
                 if (skeli.getMinionType().getMinionType() == event.getDamager().getType())
                     matched = skeli.getMinionType();
@@ -251,7 +246,7 @@ public class Skeletors extends ListenerModule
             if (shooter instanceof Skeleton)
             {
                 Skeleton skeleton = (Skeleton) shooter;
-                CustomSkeleton customSkeleton = CustomSkeleton.getCustom(skeleton, plugin, customSkeletonsTypes);
+                CustomSkeleton customSkeleton = CustomSkeleton.getCustom(skeleton, plugin, getSkelisForWorld(world.getName()));
                 int currentSpawnLimit = customSkeleton.getMinionType().getCurrentSpawnLimit(),
                         totalSpawnLimit = customSkeleton.getMinionType().getTotalSpawnLimit();
                 if (skeleton.getTarget() instanceof Player && OurRandom.percentChance(customSkeleton.getReleaseMinionPercent())
@@ -301,7 +296,7 @@ public class Skeletors extends ListenerModule
         LivingEntity entity = event.getEntity();
         if (entity instanceof Skeleton && !customSkeletonsTypes.isEmpty())
         {
-            CustomSkeleton customSkeleton = CustomSkeleton.getCustom(entity, plugin, customSkeletonsTypes);
+            CustomSkeleton customSkeleton = CustomSkeleton.getCustom(entity, plugin, getSkelisForWorld(entity.getWorld().getName()));
             if (customSkeleton.willRemoveMinions())
             {
                 List<UUID> minionIds = CustomSkeleton.getSpawnedMinions(entity, plugin);
@@ -352,11 +347,20 @@ public class Skeletors extends ListenerModule
     @EventHandler
     public void onSkeletonSpawn(CreatureSpawnEvent event)
     {
+        World world = event.getLocation().getWorld();
         if (event.getEntity() instanceof Skeleton)
         {
-            //TODO weighted random
-            int type = OurRandom.nextInt(customSkeletonsTypes.size());
-            CustomSkeleton.setCustom(event.getEntity(), plugin, customSkeletonsTypes.get(type));
+            List<Integer> weights = new ArrayList<Integer>();
+            for (CustomSkeleton skeli : getSkelisForWorld(world.getName()))
+                weights.add(skeli.getSpawnWeight());
+            if (CFG.getBoolean(RootNode.SKELI_SWORDGUY_ENABLE, world.getName()))
+                weights.add(CFG.getInt(RootNode.SKELI_SWORDGUY_WEIGHT, world.getName()));
+            int type = OurRandom.weightedRandom(weights.toArray(new Integer[weights.size()]));
+            //Last index is our sword skeli
+            if (type + 1 == weights.size())
+                event.getEntity().getEquipment().setItemInHand(new ItemStack(Material.STONE_HOE));
+            else
+                CustomSkeleton.setCustom(event.getEntity(), plugin, getSkelisForWorld(world.getName()).get(type));
         }
     }
 
@@ -364,15 +368,97 @@ public class Skeletors extends ListenerModule
     @EventHandler
     public void onSilverfishSpawn(CreatureSpawnEvent event)
     {
-        if (event.getEntityType() == EntityType.SILVERFISH)
+        final boolean tempFix = CFG.getBoolean(RootNode.SILVERFISH_TEMP_POTION_EFFECT_FIX, event.getLocation().getWorld().getName());
+        if (event.getEntityType() == EntityType.SILVERFISH && tempFix)
             event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 1, false));
     }
 
 
-    @EventHandler
-    public void onPiggieSpawn(CreatureSpawnEvent event)
+    /**
+     * Get the CustomSkeleton types that can be spawned in a particular world
+     *
+     * @param world get skeletons for this world
+     *
+     * @return List of Skeletons or an empty List if no skeletons are enabled in the world
+     */
+    private List<CustomSkeleton> getSkelisForWorld(String world)
     {
-        if (event.getEntityType() == EntityType.SKELETON)
-            event.getEntity().getEquipment().setItemInHand(new ItemStack(Material.STONE_SWORD));
+        List<CustomSkeleton> skelis = Collections.emptyList();
+        if (CFG.isEnabledForAll() && !customSkeletonsTypes.containsKey(world))
+            skelis = customSkeletonsTypes.get(CFG.getAllWorldString());
+        else if (customSkeletonsTypes.containsKey(world))
+            skelis = customSkeletonsTypes.get(world);
+        return skelis;
+    }
+
+
+    /**
+     * Initializes the CustomSkeletons for a given world
+     */
+    private void initForWorld(String world)
+    {
+        List<CustomSkeleton> skeletons = new ArrayList<CustomSkeleton>(3);
+        //It's important that all customskelis have the same format for the ENUM otherwise you be getting an Enum not found error
+        {
+            boolean enabled = CFG.getBoolean(RootNode.SKELI_GREY_ENABLE, world);
+            if (enabled)
+            {
+                int spawnWeight = CFG.getInt(RootNode.SKELI_GREY_WEIGHT, world);
+                int knockbackPercent = CFG.getInt(RootNode.SKELI_GREY_KNOCK_BACK_PERCENT, world);
+                int deflectPercent = CFG.getInt(RootNode.SKELI_GREY_DEFLECT_ARROWS, world);
+
+                int minionReleasePercent = CFG.getInt(RootNode.SKELI_GREY_RELEASE_PERCENT, world);
+                int minionLimit = CFG.getInt(RootNode.SKELI_GREY_MINION_LIMIT, world);
+                int minionTotalLimit = CFG.getInt(RootNode.SKELI_GREY_MINION_TOTAL_LIMIT, world);
+                boolean minionDieWith = CFG.getBoolean(RootNode.SKELI_GREY_MINION_KILL_WITH, world);
+                int minionLootPercentage = CFG.getInt(RootNode.SKELI_GREY_MINION_LOOT_PERCENTAGE, world);
+
+                Minion myMinion = new Minion(OnDamage.NOTHING, EntityType.SILVERFISH, 0, minionLimit, minionTotalLimit, minionLootPercentage);
+                CustomSkeleton skeleton = new CustomSkeleton("ehm-skeli-grey", null, myMinion, minionReleasePercent, minionDieWith, deflectPercent, knockbackPercent, spawnWeight);
+                skeletons.add(skeleton);
+            }
+        }
+
+        {
+            boolean enabled = CFG.getBoolean(RootNode.SKELI_GREEN_ENABLE, world);
+            if (enabled)
+            {
+                int spawnWeight = CFG.getInt(RootNode.SKELI_GREEN_WEIGHT, world);
+                int knockbackPercent = CFG.getInt(RootNode.SKELI_GREEN_KNOCK_BACK_PERCENT, world);
+                int deflectPercent = CFG.getInt(RootNode.SKELI_GREEN_DEFLECT_ARROWS, world);
+
+                int minionReleasePercent = CFG.getInt(RootNode.SKELI_GREEN_RELEASE_PERCENT, world);
+                int minionLimit = CFG.getInt(RootNode.SKELI_GREEN_MINION_LIMIT, world);
+                int minionTotalLimit = CFG.getInt(RootNode.SKELI_GREEN_MINION_TOTAL_LIMIT, world);
+                boolean minionDieWith = CFG.getBoolean(RootNode.SKELI_GREEN_MINION_KILL_WITH, world);
+                int minionLootPercentage = CFG.getInt(RootNode.SKELI_GREEN_MINION_LOOT_PERCENTAGE, world);
+
+                Minion myMinion = new Minion(OnDamage.SLOW, EntityType.SLIME, 40, minionLimit, minionTotalLimit, minionLootPercentage);
+                CustomSkeleton skeleton = new CustomSkeleton("ehm-skeli-green", null, myMinion, minionReleasePercent, minionDieWith, deflectPercent, knockbackPercent, spawnWeight);
+                skeletons.add(skeleton);
+            }
+        }
+
+        {
+            boolean enabled = CFG.getBoolean(RootNode.SKELI_RED_ENABLE, world);
+            if (enabled)
+            {
+                int spawnWeight = CFG.getInt(RootNode.SKELI_RED_WEIGHT, world);
+                int knockbackPercent = CFG.getInt(RootNode.SKELI_RED_KNOCK_BACK_PERCENT, world);
+                int deflectPercent = CFG.getInt(RootNode.SKELI_RED_DEFLECT_ARROWS, world);
+
+                int minionReleasePercent = CFG.getInt(RootNode.SKELI_RED_RELEASE_PERCENT, world);
+                int minionLimit = CFG.getInt(RootNode.SKELI_RED_MINION_LIMIT, world);
+                int minionTotalLimit = CFG.getInt(RootNode.SKELI_RED_MINION_TOTAL_LIMIT, world);
+                boolean minionDieWith = CFG.getBoolean(RootNode.SKELI_RED_MINION_KILL_WITH, world);
+                int minionLootPercentage = CFG.getInt(RootNode.SKELI_RED_MINION_LOOT_PERCENTAGE, world);
+
+                Minion myMinion = new Minion(OnDamage.BLIND, EntityType.MAGMA_CUBE, 40, minionLimit, minionTotalLimit, minionLootPercentage);
+                CustomSkeleton skeleton = new CustomSkeleton("ehm-skeli-red", null, myMinion, minionReleasePercent, minionDieWith, deflectPercent, knockbackPercent, spawnWeight);
+                skeletons.add(skeleton);
+            }
+        }
+
+        customSkeletonsTypes.put(world, skeletons);
     }
 }

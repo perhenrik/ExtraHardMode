@@ -41,15 +41,23 @@ public class Minion
     private int duration;
     private int currentSpawnLimit;
     private int totalSpawnLimit;
+    private int lootPercentage;
 
 
-    public Minion(OnDamage damagePlayer, EntityType minionType, int duration, int currentSpawnLimit, int totalSpawnLimit)
+    public Minion(OnDamage damagePlayer, EntityType minionType, int duration, int currentSpawnLimit, int totalSpawnLimit, int lootPercentage)
     {
         this.damagePlayer = damagePlayer;
         this.minionType = minionType;
         this.duration = duration;
         this.currentSpawnLimit = currentSpawnLimit;
         this.totalSpawnLimit = totalSpawnLimit;
+        this.lootPercentage = lootPercentage;
+    }
+
+
+    public int getLootPercentage()
+    {
+        return lootPercentage;
     }
 
 

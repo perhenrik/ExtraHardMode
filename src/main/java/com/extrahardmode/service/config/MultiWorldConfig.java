@@ -40,8 +40,7 @@ import java.io.FilenameFilter;
 import java.util.*;
 
 /**
- * Modular configuration class that utilizes a ConfigNode enumeration as easy access and storage of configuration option
- * values.
+ * Modular configuration class that utilizes a ConfigNode enumeration as easy access and storage of configuration option values.
  *
  * @author Mitsugaru (original author)
  * @author Diemex (modifies to allow multiworld)
@@ -50,8 +49,7 @@ public abstract class MultiWorldConfig extends EHMModule
 {
 
     /**
-     * For mods like MystCraft which allow Players to create their own dimensions, so the admin doesnt have to add
-     * worlds manually
+     * For mods like MystCraft which allow Players to create their own dimensions, so the admin doesnt have to add worlds manually
      */
     protected boolean enabledForAll = false;
 
@@ -66,8 +64,7 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Plugin instance.
+     * @param plugin - Plugin instance.
      */
     public MultiWorldConfig(ExtraHardMode plugin)
     {
@@ -110,8 +107,7 @@ public abstract class MultiWorldConfig extends EHMModule
 
 
     /**
-     * Load the given Files in a List as Config Objects, which hold the reference to the File and the loaded
-     * FileConfiguration Ignores files that don't have the RootNode in them.
+     * Load the given Files in a List as Config Objects, which hold the reference to the File and the loaded FileConfiguration Ignores files that don't have the RootNode in them.
      *
      * @return a HashMap containing all valid FileConfigurations and config.yml
      */
@@ -147,12 +143,9 @@ public abstract class MultiWorldConfig extends EHMModule
      * Don't forget to set() if you want to save the returned value
      * </pre>
      *
-     * @param config
-     *         -  FileConfiguration to load from
-     * @param node
-     *         -  ConfigNode for the Path and DefaultValue
-     * @param defaults
-     *         -  will return the default value if not found in config
+     * @param config   -  FileConfiguration to load from
+     * @param node     -  ConfigNode for the Path and DefaultValue
+     * @param defaults -  will return the default value if not found in config
      *
      * @return the Object matching the type of the ConfigNode, otherwise null if not found
      */
@@ -256,12 +249,9 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Set a value for the given node and world
      *
-     * @param world
-     *         - World for the value
-     * @param node
-     *         - ConfigNode for the given value
-     * @param value
-     *         - the Object to save
+     * @param world - World for the value
+     * @param node  - ConfigNode for the given value
+     * @param value - the Object to save
      */
     public void set(final String world, final ConfigNode node, Object value)
     {
@@ -333,10 +323,24 @@ public abstract class MultiWorldConfig extends EHMModule
 
 
     /**
+     * Does this config apply to all loaded worlds
+     * @return if applies to all worlds
+     */
+    public boolean isEnabledForAll()
+    {
+        return enabledForAll;
+    }
+
+    public String getAllWorldString()
+    {
+        return ALL_WORLDS;
+    }
+
+
+    /**
      * Get the integer value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns -1 if unknown.
      */
@@ -367,8 +371,7 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Get the double value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns 0 if unknown.
      */
@@ -384,7 +387,7 @@ public abstract class MultiWorldConfig extends EHMModule
                     obj = OPTIONS.get(world, node);
                 else if (enabledForAll)
                     obj = OPTIONS.get(ALL_WORLDS, node);
-                d = obj instanceof Number ? ((Number)obj).doubleValue() : (Double) node.getValueToDisable();
+                d = obj instanceof Number ? ((Number) obj).doubleValue() : (Double) node.getValueToDisable();
                 break;
             }
             default:
@@ -399,8 +402,7 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Get the boolean value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns false if unknown.
      */
@@ -431,8 +433,7 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Get the string value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns and empty string if unknown.
      */
@@ -463,8 +464,7 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Get the list value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns an empty list if unknown.
      */
@@ -496,8 +496,7 @@ public abstract class MultiWorldConfig extends EHMModule
 
 
     /**
-     * Clear all the loaded config options.
-     * Primarily for unit testing purposes.
+     * Clear all the loaded config options. Primarily for unit testing purposes.
      */
     public void clearCache()
     {
@@ -508,10 +507,8 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Verify that the ConfigNode contains a valid value and is usable by the Plugin
      *
-     * @param node
-     *         the ConfigNode to validate, validates according to the SubType of the ConfigNode
-     * @param value
-     *         the current value to validate
+     * @param node  the ConfigNode to validate, validates according to the SubType of the ConfigNode
+     * @param value the current value to validate
      *
      * @return a Response containing if the Object has been adjusted and the value (adjusted/original)
      */
@@ -568,12 +565,9 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Validate Y coordinate limit for the given configuration option against the list of enabled worlds.
      *
-     * @param node
-     *         - Root node to validate.
-     * @param worlds
-     *         - List of worlds to check against.
-     * @param value
-     *         - Integer to validate
+     * @param node   - Root node to validate.
+     * @param worlds - List of worlds to check against.
+     * @param value  - Integer to validate
      *
      * @return a Response containing either the original value or adjusted if out of bounds and the Status
      */
@@ -608,10 +602,8 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Validate percentage (0-100) value for given configuration option.
      *
-     * @param node
-     *         - Root node to validate.
-     * @param value
-     *         - Integer to validate
+     * @param node  - Root node to validate.
+     * @param value - Integer to validate
      *
      * @return a Response containing either the original value or adjusted if out of bounds and the Status
      */
@@ -638,14 +630,10 @@ public abstract class MultiWorldConfig extends EHMModule
     /**
      * Validates a configOption with custom bounds
      *
-     * @param node
-     *         the configNode
-     * @param minVal
-     *         the minimum value the config is allowed to have
-     * @param maxVal
-     *         the maximum value for the config, if == minVal then it doesn't get checked
-     * @param value
-     *         - Integer to validate
+     * @param node   the configNode
+     * @param minVal the minimum value the config is allowed to have
+     * @param maxVal the maximum value for the config, if == minVal then it doesn't get checked
+     * @param value  - Integer to validate
      *
      * @return a Response containing either the original value or adjusted if out of bounds and the Status
      */

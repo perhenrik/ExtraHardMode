@@ -37,685 +37,697 @@ public enum RootNode implements ConfigNode
     /**
      * How this ConfigFile is going to be handled by the plugin
      */
-    MODE
-            ("Config Type", VarType.STRING, "MAIN"),
+    MODE("Config Type", VarType.STRING, "MAIN"),
     /**
      * list of worlds where extra hard mode rules apply
      */
-    WORLDS
-            ("Enabled Worlds", VarType.LIST, new ArrayList<String>()),
+    WORLDS("Enabled Worlds", VarType.LIST, new ArrayList<String>()),
 
+    /**
+     * #############
+     * # BYPASSING #
+     * #############
+     */
     /**
      * If we should check for the bypass permission
      */
-    BYPASS_PERMISSION
-            ("Bypassing.Check For Permission", VarType.BOOLEAN, true),
+    BYPASS_PERMISSION("Bypassing.Check For Permission", VarType.BOOLEAN, true),
     /**
      * If players in creative auto bypass (useful for building)
      */
-    BYPASS_CREATIVE
-            ("Bypassing.Creative Mode Bypasses", VarType.BOOLEAN, true),
+    BYPASS_CREATIVE("Bypassing.Creative Mode Bypasses", VarType.BOOLEAN, true),
     /**
      * If players with op should bypass by default
      */
-    BYPASS_OPS
-            ("Bypassing.Operators Bypass", VarType.BOOLEAN, true),
+    BYPASS_OPS("Bypassing.Operators Bypass", VarType.BOOLEAN, true),
 
     /**
-     * whether stone is hardened to encourage cave exploration over tunneling
+     * ##################
+     * # HARDENED STONE #
+     * ##################
      */
-    SUPER_HARD_STONE
-            ("World Rules.Mining.Inhibit Tunneling.Enable", VarType.BOOLEAN, true),
     /**
      * whether stone is hardened to encourage cave exploration over tunneling
      */
-    SUPER_HARD_STONE_TOOLS
-            ("World Rules.Mining.Inhibit Tunneling.Amount of Stone Tool Can Mine (Tool@Blocks)", VarType.LIST, new DefaultToolDurabilities()),
+    SUPER_HARD_STONE("World Rules.Mining.Inhibit Tunneling.Enable", VarType.BOOLEAN, true),
+    /**
+     * whether stone is hardened to encourage cave exploration over tunneling
+     */
+    SUPER_HARD_STONE_TOOLS("World Rules.Mining.Inhibit Tunneling.Amount of Stone Tool Can Mine (Tool@Blocks)", VarType.LIST, new DefaultToolDurabilities()),
     /**
      * Breaking an ore will cause surrounding stone to turn to cobble and fall
      */
-    SUPER_HARD_STONE_PHYSICS
-            ("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Enable", VarType.BOOLEAN, true),
+    SUPER_HARD_STONE_PHYSICS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Enable", VarType.BOOLEAN, true),
     /**
      * These Blocks will turn surrounding stone into cobblestone
      */
-    SUPER_HARD_STONE_PHYSICS_BLOCKS
-            ("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Blocks (Block@id,id2)", VarType.LIST, new DefaultPhysicsBlocks()),
+    SUPER_HARD_STONE_PHYSICS_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Blocks (Block@id,id2)", VarType.LIST, new DefaultPhysicsBlocks()),
+    /**
+     * ###########
+     * # TORCHES #
+     * ###########
+     */
     /**
      * maximum y for placing standard torches
      */
-    STANDARD_TORCH_MIN_Y
-            ("World Rules.Torches.No Placement Under Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 30),
+    STANDARD_TORCH_MIN_Y("World Rules.Torches.No Placement Under Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 30),
     /**
      * whether players are limited to placing torches against specific materials
      */
-    LIMITED_TORCH_PLACEMENT
-            ("World Rules.Torches.No Placement On Soft Materials", VarType.BOOLEAN, true),
+    LIMITED_TORCH_PLACEMENT("World Rules.Torches.No Placement On Soft Materials", VarType.BOOLEAN, true),
     /**
      * whether rain should break torches
      */
-    RAIN_BREAKS_TORCHES
-            ("World Rules.Torches.Rain Breaks Torches", VarType.BOOLEAN, true),
+    RAIN_BREAKS_TORCHES("World Rules.Torches.Rain Breaks Torches", VarType.BOOLEAN, true),
 
+    /**
+     * ##########
+     * # SOUNDS #
+     * ##########
+     */
     /**
      * Sound when torch placing fails
      */
-    SOUNDS_TORCH_FIZZ
-            ("World Rules.Play Sounds.Torch Fizzing", VarType.BOOLEAN, true),
+    SOUNDS_TORCH_FIZZ("World Rules.Play Sounds.Torch Fizzing", VarType.BOOLEAN, true),
     /**
      * Warning Sound when a creeper drops tnt
      */
-    SOUND_CREEPER_TNT
-            ("World Rules.Play Sounds.Creeper Tnt Warning", VarType.BOOLEAN, true),
+    SOUND_CREEPER_TNT("World Rules.Play Sounds.Creeper Tnt Warning", VarType.BOOLEAN, true),
+    /**
+     * #################
+     * # WORLD EFFECTS #
+     * #################
+     */
     /**
      * percent chance for broken netherrack to start a fire
      */
-    BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT
-            ("World Rules.Breaking Netherrack Starts Fire Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
+    BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT("World Rules.Breaking Netherrack Starts Fire Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
     /**
      * whether players may place blocks directly underneath themselves
      */
-    LIMITED_BLOCK_PLACEMENT
-            ("World Rules.Limited Block Placement", VarType.BOOLEAN, true),
+    LIMITED_BLOCK_PLACEMENT("World Rules.Limited Block Placement", VarType.BOOLEAN, true),
     /**
      * whether tree logs respect gravity
      */
-    BETTER_TREE_CHOPPING
-            ("World Rules.Better Tree Felling", VarType.BOOLEAN, true),
+    BETTER_TREE_CHOPPING("World Rules.Better Tree Felling", VarType.BOOLEAN, true),
     /**
      * whether players take additional damage and/or debuffs from environmental injuries
      */
-    ENHANCED_ENVIRONMENTAL_DAMAGE
-            ("Player.Enhanced Environmental Injuries", VarType.BOOLEAN, true),
+    ENHANCED_ENVIRONMENTAL_DAMAGE("Player.Enhanced Environmental Injuries", VarType.BOOLEAN, true),
     /**
      * whether players catch fire when extinguishing a fire up close
      */
-    EXTINGUISHING_FIRE_IGNITES_PLAYERS
-            ("Player.Extinguishing Fires Ignites Player", VarType.BOOLEAN, true),
+    EXTINGUISHING_FIRE_IGNITES_PLAYERS("Player.Extinguishing Fires Ignites Player", VarType.BOOLEAN, true),
+    /**
+     * ################
+     * # PLAYER DEATH #
+     * ################
+     */
     /**
      * percentage of item stacks lost on death
      */
-    PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT
-            ("Player.Death.Item Stacks Forfeit Percent", VarType.INTEGER, SubType.PERCENTAGE, 10),
+    PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("Player.Death.Item Stacks Forfeit Percent", VarType.INTEGER, SubType.PERCENTAGE, 10),
     /**
      * how much health after respawn
      */
-    PLAYER_RESPAWN_HEALTH
-            ("Player.Death.Respawn Health", VarType.DOUBLE, SubType.NATURAL_NUMBER, 15),
+    PLAYER_RESPAWN_HEALTH("Player.Death.Respawn Health", VarType.DOUBLE, SubType.NATURAL_NUMBER, 15),
     /**
      * how much food bar after respawn
      */
-    PLAYER_RESPAWN_FOOD_LEVEL
-            ("Player.Death.Respawn Foodlevel", VarType.INTEGER, SubType.HEALTH, 15),
+    PLAYER_RESPAWN_FOOD_LEVEL("Player.Death.Respawn Foodlevel", VarType.INTEGER, SubType.HEALTH, 15),
+    /**
+     * #########################
+     * # SWIMMING RESTRICTIONS #
+     * #########################
+     */
     /**
      * whether players may swim while wearing armor
      */
-    NO_SWIMMING_IN_ARMOR
-            ("Player.No Swimming When Too Heavy.Enable", VarType.BOOLEAN, true),
+    NO_SWIMMING_IN_ARMOR("Player.No Swimming When Too Heavy.Enable", VarType.BOOLEAN, true),
     /**
      * Block Swimming Up WaterFalls/WaterElevators
      */
-    NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS
-            ("Player.No Swimming When Too Heavy.Block Elevators/Waterfalls", VarType.BOOLEAN, true),
+    NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS("Player.No Swimming When Too Heavy.Block Elevators/Waterfalls", VarType.BOOLEAN, true),
     /**
      * The maximum amount of points you can have before being too heavy
      */
-    NO_SWIMMING_IN_ARMOR_MAX_POINTS
-            ("Player.No Swimming When Too Heavy.Max Points", VarType.DOUBLE, 18.0),
+    NO_SWIMMING_IN_ARMOR_MAX_POINTS("Player.No Swimming When Too Heavy.Max Points", VarType.DOUBLE, 18.0),
     /**
      * The amount of points a piece of armor adds to the max
      */
-    NO_SWIMMING_IN_ARMOR_ARMOR_POINTS
-            ("Player.No Swimming When Too Heavy.One Piece Of Worn Armor Adds", VarType.DOUBLE, 2.0),
+    NO_SWIMMING_IN_ARMOR_ARMOR_POINTS("Player.No Swimming When Too Heavy.One Piece Of Worn Armor Adds", VarType.DOUBLE, 2.0),
     /**
      * The amount of points that stuff in your inventory adds to the max
      */
-    NO_SWIMMING_IN_ARMOR_INV_POINTS
-            ("Player.No Swimming When Too Heavy.One Stack Adds", VarType.DOUBLE, 1.0),
+    NO_SWIMMING_IN_ARMOR_INV_POINTS("Player.No Swimming When Too Heavy.One Stack Adds", VarType.DOUBLE, 1.0),
     /**
      * How much a tool or item which doesn't stack adds to the max
      */
-    NO_SWIMMING_IN_ARMOR_TOOL_POINTS
-            ("Player.No Swimming When Too Heavy.One Tool Adds", VarType.DOUBLE, 0.5),
+    NO_SWIMMING_IN_ARMOR_TOOL_POINTS("Player.No Swimming When Too Heavy.One Tool Adds", VarType.DOUBLE, 0.5),
     /**
      * How fast do you drown, 100 (percent) = you drown no chance, 25 there is a chance you'll drown
      */
-    NO_SWIMMING_IN_ARMOR_DROWN_RATE
-            ("Player.No Swimming When Too Heavy.Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 35),
+    NO_SWIMMING_IN_ARMOR_DROWN_RATE("Player.No Swimming When Too Heavy.Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 35),
     /**
      * How much do you drown faster per weight over the max
      */
-    NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA
-            ("Player.No Swimming When Too Heavy.Overencumbrance Adds To Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 2),
+    NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA("Player.No Swimming When Too Heavy.Overencumbrance Adds To Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 2),
 
+    /**
+     * #########################
+     * # GENERAL MONSTER RULES #
+     * #########################
+     */
     /**
      * whether monster grinders (or "farms") should be inhibited
      */
-    INHIBIT_MONSTER_GRINDERS
-            ("General Monster Rules.Inhibit Monster Grinders", VarType.BOOLEAN, true),
+    INHIBIT_MONSTER_GRINDERS("General Monster Rules.Inhibit Monster Grinders", VarType.BOOLEAN, true),
     /**
      * max y value for extra monster spawns
      */
-    MORE_MONSTERS_MAX_Y
-            ("General Monster Rules.More Monsters.Max Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 55),
+    MORE_MONSTERS_MAX_Y("General Monster Rules.More Monsters.Max Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 55),
     /**
      * what to multiply monster spawns by
      */
-    MORE_MONSTERS_MULTIPLIER
-            ("General Monster Rules.More Monsters.Multiplier", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 2),
+    MORE_MONSTERS_MULTIPLIER("General Monster Rules.More Monsters.Multiplier", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 2),
     /**
      * max y value for monsters to spawn in the light
      */
-    MONSTER_SPAWNS_IN_LIGHT_MAX_Y
-            ("General Monster Rules.Monsters Spawn In Light Max Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 50),
+    MONSTER_SPAWNS_IN_LIGHT_MAX_Y("General Monster Rules.Monsters Spawn In Light Max Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 50),
 
+    /**
+     * ###########
+     * # ZOMBIES #
+     * ###########
+     */
     /**
      * whether zombies apply a debuff to players on hit
      */
-    ZOMBIES_DEBILITATE_PLAYERS
-            ("Zombies.Slow Players", VarType.BOOLEAN, true),
+    ZOMBIES_DEBILITATE_PLAYERS("Zombies.Slow Players", VarType.BOOLEAN, true),
     /**
      * percent chance for a zombie to reanimate after death
      */
-    ZOMBIES_REANIMATE_PERCENT
-            ("Zombies.Reanimate Percent", VarType.INTEGER, SubType.PERCENTAGE, 50),
+    ZOMBIES_REANIMATE_PERCENT("Zombies.Reanimate Percent", VarType.INTEGER, SubType.PERCENTAGE, 50),
 
+    /**
+     * ############# # SKELETONS # #############
+     */
+    SKELI_GREY_ENABLE("Skeletons.Grey.Enable", VarType.BOOLEAN, true),
+    SKELI_GREY_WEIGHT("Skeletons.Grey.Spawn Weight", VarType.INTEGER, 2),
     /**
      * percent chance skeletons have a chance to knock back targets with arrows
      */
-    SKELETONS_KNOCK_BACK_PERCENT
-            ("Skeletons.Arrows Knockback Percent", VarType.INTEGER, SubType.PERCENTAGE, 30),
-    /**
-     * percent chance skeletons will release silverfish instead of firing arrows
-     */
-    SKELETONS_RELEASE_SILVERFISH
-            ("Skeletons.Shoot Silverfish Percent", VarType.INTEGER, SubType.PERCENTAGE, 30),
+    SKELI_GREY_KNOCK_BACK_PERCENT("Skeletons.Grey.Arrows Knockback Percent", VarType.INTEGER, SubType.PERCENTAGE, 30),
     /**
      * whether or not arrows will pass harmlessly through skeletons
      */
-    SKELETONS_DEFLECT_ARROWS
-            ("Skeletons.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 100),
+    SKELI_GREY_DEFLECT_ARROWS("Skeletons.Grey.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 80),
+    SKELI_GREY_RELEASE_PERCENT("Skeletons.Grey.Silverfish Minion.Release Percent", VarType.INTEGER, 20),
+    SKELI_GREY_MINION_LIMIT("Skeletons.Grey.Silverfish Minion.Concurrent Spawned Limit", VarType.INTEGER, 5),
+    SKELI_GREY_MINION_TOTAL_LIMIT("Skeletons.Grey.Silverfish Minion.Stop Spawning After X Total Minions Have Been Released", VarType.INTEGER, 20),
+    SKELI_GREY_MINION_KILL_WITH("Skeletons.Grey.Silverfish Minion.Minions Die When Summoner Dies", VarType.BOOLEAN, true),
+    SKELI_GREY_MINION_LOOT_PERCENTAGE("Skeletons.Grey.Silverfish Minion.Drop Loot Percentage", VarType.INTEGER, 100),
+
+    SKELI_GREEN_ENABLE("Skeletons.Green.Enable", VarType.BOOLEAN, true),
+    SKELI_GREEN_WEIGHT("Skeletons.Green.Spawn Weight", VarType.INTEGER, 1),
+    SKELI_GREEN_KNOCK_BACK_PERCENT("Skeletons.Green.Arrows Knockback Percent", VarType.INTEGER, 30),
+    SKELI_GREEN_DEFLECT_ARROWS("Skeletons.Green.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 80),
+    SKELI_GREEN_RELEASE_PERCENT("Skeletons.Green.Slime Minion.Release Percent", VarType.INTEGER, 20),
+    SKELI_GREEN_MINION_LIMIT("Skeletons.Green.Slime Minion.Concurrent Spawned Limit", VarType.INTEGER, 5),
+    SKELI_GREEN_MINION_TOTAL_LIMIT("Skeletons.Green.Slime Minion.Stop Spawning After X Total Minions Have Been Released", VarType.INTEGER, 20),
+    SKELI_GREEN_MINION_KILL_WITH("Skeletons.Green.Slime Minion.Minions Die When Summoner Dies", VarType.BOOLEAN, true),
+    SKELI_GREEN_MINION_LOOT_PERCENTAGE("Skeletons.Green.Slime Minion.Drop Loot Percentage", VarType.INTEGER, 100),
+
+    SKELI_RED_ENABLE("Skeletons.Red.Enable", VarType.BOOLEAN, true),
+    SKELI_RED_WEIGHT("Skeletons.Red.Spawn Weight", VarType.INTEGER, 1),
+    SKELI_RED_KNOCK_BACK_PERCENT("Skeletons.Red.Arrows Knockback Percent", VarType.INTEGER, 30),
+    SKELI_RED_DEFLECT_ARROWS("Skeletons.Red.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 80),
+    SKELI_RED_RELEASE_PERCENT("Skeletons.Red.Magmacube Minion.Release Percent", VarType.INTEGER, 20),
+    SKELI_RED_MINION_LIMIT("Skeletons.Red.Magmacube Minion.Concurrent Spawned Limit", VarType.INTEGER, 5),
+    SKELI_RED_MINION_TOTAL_LIMIT("Skeletons.Red.Magmacube Minion.Stop Spawning After X Total Minions Have Been Released", VarType.INTEGER, 10),
+    SKELI_RED_MINION_KILL_WITH("Skeletons.Red.Magmacube Minion.Minions Die When Summoner Dies", VarType.BOOLEAN, true),
+    SKELI_RED_MINION_LOOT_PERCENTAGE("Skeletons.Red.Magmacube Minion.Drop Loot Percentage", VarType.INTEGER, 50),
+
+    SKELI_SWORDGUY_ENABLE("Skeletons.Sword Skeli.Enable", VarType.BOOLEAN, true),
+    SKELI_SWORDGUY_WEIGHT("Skeletons.Sword Skeli.Spawn Weight", VarType.INTEGER, 2),
+
+    /**
+     * ##############
+     * # SILVERFISH #
+     * ##############
+     */
     /**
      * If Silverfish cant enter stone etc and turn it into a silverfish block
      */
-    SILVERFISH_CANT_ENTER_BLOCKS
-            ("Silverfish.Cant enter blocks", VarType.BOOLEAN, true),
+    SILVERFISH_CANT_ENTER_BLOCKS("Silverfish.Cant enter blocks", VarType.BOOLEAN, true),
     /**
      * If spawned silverfish drop cobble on death
      */
-    SILVERFISH_DROP_COBBLE
-            ("Silverfish.Drop Cobble", VarType.BOOLEAN, true),
+    SILVERFISH_DROP_COBBLE("Silverfish.Drop Cobble", VarType.BOOLEAN, true),
+    /**
+     * Spawn with a potion effect so you can still see them when they glitch into the floor
+     */
+    SILVERFISH_TEMP_POTION_EFFECT_FIX("Silverfish.Show Particles To Make Better Visible", VarType.BOOLEAN, true),
 
+    /**
+     * ###########
+     * # SPIDERS #
+     * ###########
+     */
     /**
      * percentage of zombies which will be replaced with spiders under sea level
      */
-    BONUS_UNDERGROUND_SPIDER_SPAWN_PERCENT
-            ("Spiders.Bonus Underground Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
+    BONUS_UNDERGROUND_SPIDER_SPAWN_PERCENT("Spiders.Bonus Underground Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
     /**
      * whether spiders drop webbing when they die
      */
-    SPIDERS_DROP_WEB_ON_DEATH
-            ("Spiders.Drop Web On Death", VarType.BOOLEAN, true),
+    SPIDERS_DROP_WEB_ON_DEATH("Spiders.Drop Web On Death", VarType.BOOLEAN, true),
 
+    /**
+     * ############
+     * # CREEPERS #
+     * ############
+     */
     /**
      * percentage of creepers which will spawn charged
      */
-    CHARGED_CREEPER_SPAWN_PERCENT
-            ("Creepers.Charged Creeper Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 10),
+    CHARGED_CREEPER_SPAWN_PERCENT("Creepers.Charged Creeper Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 10),
     /**
      * percentage of creepers which spawn activated TNT on death
      */
-    CREEPERS_DROP_TNT_ON_DEATH_PERCENT
-            ("Creepers.Drop Tnt On Death.Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
+    CREEPERS_DROP_TNT_ON_DEATH_PERCENT("Creepers.Drop Tnt On Death.Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
     /**
      * max y for creepers to drop tnt, to restrict them to caves
      */
-    CREEPERS_DROP_TNT_ON_DEATH_MAX_Y
-            ("Creepers.Drop Tnt On Death.Max Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 50),
+    CREEPERS_DROP_TNT_ON_DEATH_MAX_Y("Creepers.Drop Tnt On Death.Max Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 50),
     /**
      * whether charged creepers explode when damaged
      */
-    CHARGED_CREEPERS_EXPLODE_ON_HIT
-            ("Creepers.Charged Creepers Explode On Damage", VarType.BOOLEAN, true),
+    CHARGED_CREEPERS_EXPLODE_ON_HIT("Creepers.Charged Creepers Explode On Damage", VarType.BOOLEAN, true),
     /**
      * whether creepers explode when caught on fire
      */
-    FLAMING_CREEPERS_EXPLODE
-            ("Creepers.Fire Triggers Explosion.Enable", VarType.BOOLEAN, true),
+    FLAMING_CREEPERS_EXPLODE("Creepers.Fire Triggers Explosion.Enable", VarType.BOOLEAN, true),
     /**
      * Number of Fireworks to show when creeper launches
      */
-    FLAMING_CREEPERS_FIREWORK
-            ("Creepers.Fire Triggers Explosion.Firework Count", VarType.INTEGER, 3),
+    FLAMING_CREEPERS_FIREWORK("Creepers.Fire Triggers Explosion.Firework Count", VarType.INTEGER, 3),
     /**
      * Speed at which a creeper ascends
      */
-    FLAMING_CREEPERS_ROCKET
-            ("Creepers.Fire Triggers Explosion.Launch In Air Speed", VarType.DOUBLE, 0.5),
+    FLAMING_CREEPERS_ROCKET("Creepers.Fire Triggers Explosion.Launch In Air Speed", VarType.DOUBLE, 0.5),
 
+    /**
+     * ##########
+     * # BLAZES #
+     * ##########
+     */
     /**
      * percentage of skeletons near bedrock which will be replaced with blazes
      */
-    NEAR_BEDROCK_BLAZE_SPAWN_PERCENT
-            ("Blazes.Near Bedrock Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 50),
+    NEAR_BEDROCK_BLAZE_SPAWN_PERCENT("Blazes.Near Bedrock Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 50),
     /**
      * percentage of pig zombies which will be replaced with blazes
      */
-    BONUS_NETHER_BLAZE_SPAWN_PERCENT
-            ("Blazes.Bonus Nether Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
+    BONUS_NETHER_BLAZE_SPAWN_PERCENT("Blazes.Bonus Nether Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
     /**
      * whether blazes drop fire when damaged
      */
-    BLAZES_DROP_FIRE_ON_DAMAGE
-            ("Blazes.Drop Fire On Damage", VarType.BOOLEAN, true),
+    BLAZES_DROP_FIRE_ON_DAMAGE("Blazes.Drop Fire On Damage", VarType.BOOLEAN, true),
     /**
      * whether blazes drop extra loot
      */
-    BLAZES_DROP_BONUS_LOOT
-            ("Blazes.Bonus Loot", VarType.BOOLEAN, true),
+    BLAZES_DROP_BONUS_LOOT("Blazes.Bonus Loot", VarType.BOOLEAN, true),
     /**
      * percentage chance that a blaze slain in the nether will split into two blazes
      */
-    NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT
-            ("Blazes.Nether Split On Death Percent", VarType.INTEGER, SubType.PERCENTAGE, 25),
+    NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT("Blazes.Nether Split On Death Percent", VarType.INTEGER, SubType.PERCENTAGE, 25),
 
     /**
      * percentage chance that a blaze spawn will trigger a flame slime spawn as well
      */
-    FLAME_SLIMES_SPAWN_WITH_NETHER_BLAZE_PERCENT
-            ("MagmaCubes.Spawn With Nether Blaze Percent", VarType.INTEGER, SubType.PERCENTAGE, 100),
+    FLAME_SLIMES_SPAWN_WITH_NETHER_BLAZE_PERCENT("MagmaCubes.Spawn With Nether Blaze Percent", VarType.INTEGER, SubType.PERCENTAGE, 100),
     /**
      * whether damaging a magma cube turns it into a blaze
      */
-    MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE
-            ("MagmaCubes.Grow Into Blazes On Damage", VarType.BOOLEAN, true),
+    MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE("MagmaCubes.Grow Into Blazes On Damage", VarType.BOOLEAN, true),
 
-
+    /**
+     * ##############
+     * # PIGZOMBIES #
+     * ##############
+     */
     /**
      * whether pig zombies are always hostile
      */
-    ALWAYS_ANGRY_PIG_ZOMBIES
-            ("PigZombies.Always Angry", VarType.BOOLEAN, true),
+    ALWAYS_ANGRY_PIG_ZOMBIES("PigZombies.Always Angry", VarType.BOOLEAN, true),
     /**
      * whether pig zombies always drop nether wart in nether fortresses
      */
-    FORTRESS_PIGS_DROP_WART
-            ("PigZombies.Always Drop Netherwart In Fortresses", VarType.BOOLEAN, true),
+    FORTRESS_PIGS_DROP_WART("PigZombies.Always Drop Netherwart In Fortresses", VarType.BOOLEAN, true),
     /**
      * Whether pig zombies should drop netherwart occasionally elsewhere in Nether
      */
-    NETHER_PIGS_DROP_WART
-            ("PigZombies.Percent Chance to Drop Netherwart Elsewhere In Nether", VarType.INTEGER, SubType.PERCENTAGE, 25),
+    NETHER_PIGS_DROP_WART("PigZombies.Percent Chance to Drop Netherwart Elsewhere In Nether", VarType.INTEGER, SubType.PERCENTAGE, 25),
     /**
      * PigMen get spawned when lighting strikes
      */
-    LIGHTNING_SPAWNS_PIGMEN
-            ("PigZombies.Spawn on Lighting Strikes.Enable", VarType.BOOLEAN, true),
+    LIGHTNING_SPAWNS_PIGMEN("PigZombies.Spawn on Lighting Strikes.Enable", VarType.BOOLEAN, true),
+    /**
+     * ##########
+     * # GHASTS #
+     * ##########
+     */
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
-    GHASTS_DEFLECT_ARROWS
-            ("Ghasts.Immune To Arrows", VarType.BOOLEAN, true),
+    GHASTS_DEFLECT_ARROWS("Ghasts.Immune To Arrows", VarType.BOOLEAN, true),
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
-    GHASTS_EXP_MULTIPLIER
-            ("Ghasts.Exp Multiplier", VarType.INTEGER, 10),
+    GHASTS_EXP_MULTIPLIER("Ghasts.Exp Multiplier", VarType.INTEGER, 10),
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
-    GHASTS_DROPS_MULTIPLIER
-            ("Ghasts.Drops Multiplier", VarType.INTEGER, 5),
+    GHASTS_DROPS_MULTIPLIER("Ghasts.Drops Multiplier", VarType.INTEGER, 5),
+    /**
+     * ############
+     * # ENDERMAN #
+     * ############
+     */
     /**
      * whether endermen may teleport players
      */
-    IMPROVED_ENDERMAN_TELEPORTATION
-            ("Endermen.May Teleport Players", VarType.BOOLEAN, true),
+    IMPROVED_ENDERMAN_TELEPORTATION("Endermen.May Teleport Players", VarType.BOOLEAN, true),
 
+    /**
+     * ###########
+     * # WITCHES #
+     * ###########
+     */
     /**
      * Do Witches have additional attacks
      */
-    WITCHES_ADDITIONAL_ATTACKS
-            ("Witches.Additional Attacks", VarType.BOOLEAN, true),
+    WITCHES_ADDITIONAL_ATTACKS("Witches.Additional Attacks", VarType.BOOLEAN, true),
     /**
      * percentage of surface zombies which spawn as witches
      */
-    BONUS_WITCH_SPAWN_PERCENT
-            ("Witches.Bonus Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 5),
+    BONUS_WITCH_SPAWN_PERCENT("Witches.Bonus Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 5),
 
+    /**
+     * ################
+     * # ENDER DRAGON #
+     * ################
+     */
     /**
      * whether the ender dragon respawns
      */
-    RESPAWN_ENDER_DRAGON
-            ("EnderDragon.Respawns", VarType.BOOLEAN, true),
+    RESPAWN_ENDER_DRAGON("EnderDragon.Respawns", VarType.BOOLEAN, true),
     /**
      * whether it drops an egg when slain
      */
-    ENDER_DRAGON_DROPS_EGG
-            ("EnderDragon.Drops Dragonegg", VarType.BOOLEAN, true),
+    ENDER_DRAGON_DROPS_EGG("EnderDragon.Drops Dragonegg", VarType.BOOLEAN, true),
     /**
      * whether it drops a pair of villager eggs when slain
      */
-    ENDER_DRAGON_DROPS_VILLAGER_EGGS
-            ("EnderDragon.Drops 2 Villager Eggs", VarType.BOOLEAN, true),
+    ENDER_DRAGON_DROPS_VILLAGER_EGGS("EnderDragon.Drops 2 Villager Eggs", VarType.BOOLEAN, true),
     /**
      * whether the dragon spits fireballs and summons minions
      */
-    ENDER_DRAGON_ADDITIONAL_ATTACKS
-            ("EnderDragon.Harder Battle", VarType.BOOLEAN, true),
+    ENDER_DRAGON_ADDITIONAL_ATTACKS("EnderDragon.Harder Battle", VarType.BOOLEAN, true),
     /**
      * whether server wide messages will broadcast player victories and defeats
      */
-    ENDER_DRAGON_COMBAT_ANNOUNCEMENTS
-            ("EnderDragon.Battle Announcements", VarType.BOOLEAN, true),
+    ENDER_DRAGON_COMBAT_ANNOUNCEMENTS("EnderDragon.Battle Announcements", VarType.BOOLEAN, true),
     /**
      * whether players will be allowed to build in the end
      */
-    ENDER_DRAGON_NO_BUILDING
-            ("EnderDragon.No Building Allowed", VarType.BOOLEAN, true),
+    ENDER_DRAGON_NO_BUILDING("EnderDragon.No Building Allowed", VarType.BOOLEAN, true),
 
+    /**
+     * ###########
+     * # FARMING #
+     * ###########
+     */
     /**
      * whether food crops die more easily
      */
-    WEAK_FOOD_CROPS
-            ("Farming.Weak Crops.Enable", VarType.BOOLEAN, true),
+    WEAK_FOOD_CROPS("Farming.Weak Crops.Enable", VarType.BOOLEAN, true),
     /**
      * How much percent of plants you loose
      */
-    WEAK_FOOD_CROPS_LOSS_RATE
-            ("Farming.Weak Crops.Loss Rate", VarType.INTEGER, SubType.PERCENTAGE, 25),
+    WEAK_FOOD_CROPS_LOSS_RATE("Farming.Weak Crops.Loss Rate", VarType.INTEGER, SubType.PERCENTAGE, 25),
     /**
      * Should desserts be really empty and hostile towards plants
      */
-    ARID_DESSERTS
-            ("Farming.Weak Crops.Infertile Deserts", VarType.BOOLEAN, true),
+    ARID_DESSERTS("Farming.Weak Crops.Infertile Deserts", VarType.BOOLEAN, true),
     /**
      * Weather Snow should break crops
      */
-    SNOW_BREAKS_CROPS
-            ("Farming.Weak Crops.Snow Breaks Crops", VarType.BOOLEAN, true),
+    SNOW_BREAKS_CROPS("Farming.Weak Crops.Snow Breaks Crops", VarType.BOOLEAN, true),
     /**
      * Should you be able to craft melonseeds
      */
-    CANT_CRAFT_MELONSEEDS
-            ("Farming.Cant Craft Melonseeds", VarType.BOOLEAN, true),
+    CANT_CRAFT_MELONSEEDS("Farming.Cant Craft Melonseeds", VarType.BOOLEAN, true),
     /**
      * whether bonemeal may be used on mushrooms
      */
-    NO_BONEMEAL_ON_MUSHROOMS
-            ("Farming.No Bonemeal On Mushrooms", VarType.BOOLEAN, true),
+    NO_BONEMEAL_ON_MUSHROOMS("Farming.No Bonemeal On Mushrooms", VarType.BOOLEAN, true),
     /**
      * whether nether wart will ever drop more than 1 wart when broken
      */
-    NO_FARMING_NETHER_WART
-            ("Farming.No Farming Nether Wart", VarType.BOOLEAN, true),
+    NO_FARMING_NETHER_WART("Farming.No Farming Nether Wart", VarType.BOOLEAN, true),
     /**
      * whether sheep will always regrow white wool
      */
-    SHEEP_REGROW_WHITE_WOOL
-            ("Farming.Sheep Grow Only White Wool", VarType.BOOLEAN, true),
+    SHEEP_REGROW_WHITE_WOOL("Farming.Sheep Grow Only White Wool", VarType.BOOLEAN, true),
     /**
      * whether players may move water source blocks
      */
-    DONT_MOVE_WATER_SOURCE_BLOCKS
-            ("Farming.Buckets Dont Move Water Sources", VarType.BOOLEAN, true),
+    DONT_MOVE_WATER_SOURCE_BLOCKS("Farming.Buckets Dont Move Water Sources", VarType.BOOLEAN, true),
     /**
      * wheter animals should drop exp
      */
-    ANIMAL_EXP_NERF
-            ("Farming.Animal Experience Nerf", VarType.BOOLEAN, true),
+    ANIMAL_EXP_NERF("Farming.Animal Experience Nerf", VarType.BOOLEAN, true),
     /**
      * Disable drops from Iron Golems, especially iron?
      */
-    IRON_GOLEM_NERF
-            ("Farming.Iron Golem Nerf", VarType.BOOLEAN, true),
+    IRON_GOLEM_NERF("Farming.Iron Golem Nerf", VarType.BOOLEAN, true),
+
+    /**
+     * #############################
+     * # ADDITIONAL FALLING BLOCKS #
+     * #############################
+     */
     /**
      * Wheter More Falling blocks should be enabled
      */
-    MORE_FALLING_BLOCKS_ENABLE
-            ("Additional Falling Blocks.Enable", VarType.BOOLEAN, true),
+    MORE_FALLING_BLOCKS_ENABLE("Additional Falling Blocks.Enable", VarType.BOOLEAN, true),
     /**
      * How much damage loose Falling Logs do to Players and Animals
      */
-    MORE_FALLING_BLOCKS_DMG_AMOUNT
-            ("Additional Falling Blocks.Dmg Amount When Hitting Players", VarType.INTEGER, 2),
+    MORE_FALLING_BLOCKS_DMG_AMOUNT("Additional Falling Blocks.Dmg Amount When Hitting Players", VarType.INTEGER, 2),
     /**
      * wheter falling grass/mycel turns into dirt
      */
-    MORE_FALLING_BLOCKS_TURN_TO_DIRT
-            ("Additional Falling Blocks.Turn Mycel/Grass To Dirt", VarType.BOOLEAN, true),
+    MORE_FALLING_BLOCKS_TURN_TO_DIRT("Additional Falling Blocks.Turn Mycel/Grass To Dirt", VarType.BOOLEAN, true),
     /**
      * which materials beyond sand and gravel should be subject to gravity
      */
-    MORE_FALLING_BLOCKS
-            ("Additional Falling Blocks.Enabled Blocks", VarType.LIST, new DefaultFallingBlocks()),
+    MORE_FALLING_BLOCKS("Additional Falling Blocks.Enabled Blocks", VarType.LIST, new DefaultFallingBlocks()),
 
+    /**
+     * ##############################
+     * # GENERAL EXPLOSION SETTINGS #
+     * ##############################
+     */
     /**
      * Should Stone be turned to cobblestone
      */
-    EXPLOSIONS_TURN_STONE_TO_COBLE
-            ("Explosions.Turn Stone To Cobble", VarType.BOOLEAN, true),
+    EXPLOSIONS_TURN_STONE_TO_COBLE("Explosions.Turn Stone To Cobble", VarType.BOOLEAN, true),
+    /**
+     * #####################
+     * # EXPLOSION PHYSICS #
+     * #####################
+     */
     /**
      * Enable cool flying blocks
      */
-    EXPLOSIONS_FYLING_BLOCKS_ENABLE
-            ("Explosions.Physics.Enable", VarType.BOOLEAN, true),
+    EXPLOSIONS_FYLING_BLOCKS_ENABLE("Explosions.Physics.Enable", VarType.BOOLEAN, true),
     /**
      * How many blocks will go flying
      */
-    EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE
-            ("Explosions.Physics.Blocks Affected Percentage", VarType.INTEGER, 20),
+    EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE("Explosions.Physics.Blocks Affected Percentage", VarType.INTEGER, 20),
     /**
      * How fast the blocks accelerate upwards
      */
-    EXPLOSIONS_FLYING_BLOCKS_UP_VEL
-            ("Explosions.Physics.Up Velocity", VarType.DOUBLE, 2.0),
+    EXPLOSIONS_FLYING_BLOCKS_UP_VEL("Explosions.Physics.Up Velocity", VarType.DOUBLE, 2.0),
     /**
      * How far the blocks spread
      */
-    EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL
-            ("Explosions.Physics.Spread Velocity", VarType.DOUBLE, 3.0),
+    EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL("Explosions.Physics.Spread Velocity", VarType.DOUBLE, 3.0),
     /**
      * In what radius the flying blocks shouldnt be placed
      */
-    EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS
-            ("Explosions.Physics.Exceed Radius Autoremove", VarType.INTEGER, 10),
+    EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS("Explosions.Physics.Exceed Radius Autoremove", VarType.INTEGER, 10),
     /**
      * This determines if the explosion is categorized as under or above
      */
-    EXPLOSIONS_Y
-            ("Explosions.Border Y", VarType.INTEGER, 55),
+    EXPLOSIONS_Y("Explosions.Border Y", VarType.INTEGER, 55),
 
     //WHEN ADDING NEW EXPLOSIONTYPES YOU HAVE TO ADD THE NODES TO EXPLOSIONTYPE AND ALSO UPDATE THE EXPLOSIONTASK
     /**
      * CREEPER Enable this custom explosion
      */
-    EXPLOSIONS_CREEPERS_ENABLE
-            ("Explosions.Creeper.Enable Custom Explosion", VarType.BOOLEAN, true),
+    EXPLOSIONS_CREEPERS_ENABLE("Explosions.Creeper.Enable Custom Explosion", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below border
      */
-    EXPLOSIONS_CREEPERS_BELOW_POWER
-            ("Explosions.Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
+    EXPLOSIONS_CREEPERS_BELOW_POWER("Explosions.Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_CREEPERS_BELOW_FIRE
-            ("Explosions.Creeper.Below Border.Set Fire", VarType.BOOLEAN, false),
+    EXPLOSIONS_CREEPERS_BELOW_FIRE("Explosions.Creeper.Below Border.Set Fire", VarType.BOOLEAN, false),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_CREEPERS_BELOW_WORLD_GRIEF
-            ("Explosions.Creeper.Below Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_CREEPERS_BELOW_WORLD_GRIEF("Explosions.Creeper.Below Border.World Damage", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below border
      */
-    EXPLOSIONS_CREEPERS_ABOVE_POWER
-            ("Explosions.Creeper.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
+    EXPLOSIONS_CREEPERS_ABOVE_POWER("Explosions.Creeper.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_CREEPERS_ABOVE_FIRE
-            ("Explosions.Creeper.Above Border.Set Fire", VarType.BOOLEAN, false),
+    EXPLOSIONS_CREEPERS_ABOVE_FIRE("Explosions.Creeper.Above Border.Set Fire", VarType.BOOLEAN, false),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_CREEPERS_ABOVE_WORLD_GRIEF
-            ("Explosions.Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_CREEPERS_ABOVE_WORLD_GRIEF("Explosions.Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
 
     /**
      * Charged CREEPER Enable?
      */
-    EXPLOSIONS_CHARGED_CREEPERS_ENABLE
-            ("Explosions.Charged Creeper.Enable Custom Explosion", VarType.BOOLEAN, true),
+    EXPLOSIONS_CHARGED_CREEPERS_ENABLE("Explosions.Charged Creeper.Enable Custom Explosion", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below the border
      */
-    EXPLOSIONS_CHARGED_CREEPERS_BELOW_POWER
-            ("Explosions.Charged Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+    EXPLOSIONS_CHARGED_CREEPERS_BELOW_POWER("Explosions.Charged Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_CHARGED_CREEPERS_BELOW_FIRE
-            ("Explosions.Charged Creeper.Below Border.Set Fire", VarType.BOOLEAN, false),
+    EXPLOSIONS_CHARGED_CREEPERS_BELOW_FIRE("Explosions.Charged Creeper.Below Border.Set Fire", VarType.BOOLEAN, false),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_CHARGED_CREEPERS_BELOW_WORLD_GRIEF
-            ("Explosions.Charged Creeper.Below Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_CHARGED_CREEPERS_BELOW_WORLD_GRIEF("Explosions.Charged Creeper.Below Border.World Damage", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below border
      */
-    EXPLOSIONS_CHARGED_CREEPERS_ABOVE_POWER
-            ("Explosions.Charged Creeper.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+    EXPLOSIONS_CHARGED_CREEPERS_ABOVE_POWER("Explosions.Charged Creeper.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_CHARGED_CREEPERS_ABOVE_FIRE
-            ("Explosions.Charged Creeper.Above Border.Set Fire", VarType.BOOLEAN, false),
+    EXPLOSIONS_CHARGED_CREEPERS_ABOVE_FIRE("Explosions.Charged Creeper.Above Border.Set Fire", VarType.BOOLEAN, false),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_CHARGED_CREEPERS_ABOVE_WORLD_GRIEF
-            ("Explosions.Charged Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_CHARGED_CREEPERS_ABOVE_WORLD_GRIEF("Explosions.Charged Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
 
     /**
      * TNT Enable Custom Explosion?
      */
-    EXPLOSIONS_TNT_ENABLE
-            ("Explosions.Tnt.Enable Custom Explosion", VarType.BOOLEAN, true),
+    EXPLOSIONS_TNT_ENABLE("Explosions.Tnt.Enable Custom Explosion", VarType.BOOLEAN, true),
     /**
      * whether TNT should explode multiple times
      */
-    BETTER_TNT
-            ("Explosions.Tnt.Enable Multiple Explosions", VarType.BOOLEAN, true),
+    BETTER_TNT("Explosions.Tnt.Enable Multiple Explosions", VarType.BOOLEAN, true),
     /**
      * wheter the crafting recipe should give more tnt
      */
-    MORE_TNT_NUMBER
-            ("Explosions.Tnt.Tnt Per Recipe", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 3),
+    MORE_TNT_NUMBER("Explosions.Tnt.Tnt Per Recipe", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 3),
     /**
      * Size of Explosion below the border
      */
-    EXPLOSIONS_TNT_BELOW_POWER
-            ("Explosions.Tnt.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
+    EXPLOSIONS_TNT_BELOW_POWER("Explosions.Tnt.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_TNT_BELOW_FIRE
-            ("Explosions.Tnt.Below Border.Set Fire", VarType.BOOLEAN, false),
+    EXPLOSIONS_TNT_BELOW_FIRE("Explosions.Tnt.Below Border.Set Fire", VarType.BOOLEAN, false),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_TNT_BELOW_WORLD_GRIEF
-            ("Explosions.Tnt.Below Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_TNT_BELOW_WORLD_GRIEF("Explosions.Tnt.Below Border.World Damage", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below border
      */
-    EXPLOSIONS_TNT_ABOVE_POWER
-            ("Explosions.Tnt.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
+    EXPLOSIONS_TNT_ABOVE_POWER("Explosions.Tnt.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_TNT_ABOVE_FIRE
-            ("Explosions.Tnt.Above Border.Set Fire", VarType.BOOLEAN, false),
+    EXPLOSIONS_TNT_ABOVE_FIRE("Explosions.Tnt.Above Border.Set Fire", VarType.BOOLEAN, false),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF
-            ("Explosions.Tnt.Above Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF("Explosions.Tnt.Above Border.World Damage", VarType.BOOLEAN, true),
 
     /**
      * BLAZE whether blazes explode and spread fire when they die
      */
-    BLAZES_EXPLODE_ON_DEATH
-            ("Explosions.Blazes Explode On Death.Enable", VarType.BOOLEAN, true),
+    BLAZES_EXPLODE_ON_DEATH("Explosions.Blazes Explode On Death.Enable", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below the border
      */
-    EXPLOSIONS_BLAZE_BELOW_POWER
-            ("Explosions.Blazes Explode On Death.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+    EXPLOSIONS_BLAZE_BELOW_POWER("Explosions.Blazes Explode On Death.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_BLAZE_BELOW_FIRE
-            ("Explosions.Blazes Explode On Death.Below Border.Set Fire", VarType.BOOLEAN, true),
+    EXPLOSIONS_BLAZE_BELOW_FIRE("Explosions.Blazes Explode On Death.Below Border.Set Fire", VarType.BOOLEAN, true),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_BLAZE_BELOW_WORLD_GRIEF
-            ("Explosions.Blazes Explode On Death.Below Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_BLAZE_BELOW_WORLD_GRIEF("Explosions.Blazes Explode On Death.Below Border.World Damage", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below border
      */
-    EXPLOSIONS_BLAZE_ABOVE_POWER
-            ("Explosions.Blazes Explode On Death.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
+    EXPLOSIONS_BLAZE_ABOVE_POWER("Explosions.Blazes Explode On Death.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 4),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_BLAZE_ABOVE_FIRE
-            ("Explosions.Blazes Explode On Death.Above Border.Set Fire", VarType.BOOLEAN, true),
+    EXPLOSIONS_BLAZE_ABOVE_FIRE("Explosions.Blazes Explode On Death.Above Border.Set Fire", VarType.BOOLEAN, true),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_BLAZE_ABOVE_WORLD_GRIEF
-            ("Explosions.Blazes Explode On Death.Above Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_BLAZE_ABOVE_WORLD_GRIEF("Explosions.Blazes Explode On Death.Above Border.World Damage", VarType.BOOLEAN, true),
 
     /**
      * Ghast Enable custom Explosion?
      */
-    EXPLOSIONS_GHASTS_ENABLE
-            ("Explosions.Ghasts.Enable Custom Explosion", VarType.BOOLEAN, true),
+    EXPLOSIONS_GHASTS_ENABLE("Explosions.Ghasts.Enable Custom Explosion", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below the border
      */
-    EXPLOSIONS_GHAST_BELOW_POWER
-            ("Explosions.Ghasts.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 2),
+    EXPLOSIONS_GHAST_BELOW_POWER("Explosions.Ghasts.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 2),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_GHAST_BELOW_FIRE
-            ("Explosions.Ghasts.Below Border.Set Fire", VarType.BOOLEAN, true),
+    EXPLOSIONS_GHAST_BELOW_FIRE("Explosions.Ghasts.Below Border.Set Fire", VarType.BOOLEAN, true),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_GHAST_BELOW_WORLD_GRIEF
-            ("Explosions.Ghasts.Below Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_GHAST_BELOW_WORLD_GRIEF("Explosions.Ghasts.Below Border.World Damage", VarType.BOOLEAN, true),
     /**
      * Size of Explosion below border
      */
-    EXPLOSIONS_GHAST_ABOVE_POWER
-            ("Explosions.Ghasts.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 2),
+    EXPLOSIONS_GHAST_ABOVE_POWER("Explosions.Ghasts.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 2),
     /**
      * Set Fire on Explosion below border
      */
-    EXPLOSIONS_GHAST_ABOVE_FIRE
-            ("Explosions.Ghasts.Above Border.Set Fire", VarType.BOOLEAN, true),
+    EXPLOSIONS_GHAST_ABOVE_FIRE("Explosions.Ghasts.Above Border.Set Fire", VarType.BOOLEAN, true),
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_GHAST_ABOVE_WORLD_GRIEF
-            ("Explosions.Ghasts.Above Border.World Damage", VarType.BOOLEAN, true),;
+    EXPLOSIONS_GHAST_ABOVE_WORLD_GRIEF("Explosions.Ghasts.Above Border.World Damage", VarType.BOOLEAN, true),;
 
     /**
      * Path.
@@ -746,12 +758,9 @@ public enum RootNode implements ConfigNode
     /**
      * Constructor.
      *
-     * @param path
-     *         - Configuration path.
-     * @param type
-     *         - Variable type.
-     * @param def
-     *         - Default value.
+     * @param path - Configuration path.
+     * @param type - Variable type.
+     * @param def  - Default value.
      */
     private RootNode(String path, VarType type, Object def)
     {
@@ -867,31 +876,31 @@ public enum RootNode implements ConfigNode
             {
                 obj = 0.0;
                 if (subType != null)
-                switch (subType)
-                {
-                    case NATURAL_NUMBER:
-                    case Y_VALUE:
+                    switch (subType)
                     {
-                        if (disableValue != null)
-                            obj = (Double) disableValue.get();
-                        break;
+                        case NATURAL_NUMBER:
+                        case Y_VALUE:
+                        {
+                            if (disableValue != null)
+                                obj = (Double) disableValue.get();
+                            break;
+                        }
+                        case HEALTH:
+                        {
+                            obj = 20.0;
+                            break;
+                        }
+                        case PERCENTAGE:
+                        {
+                            obj = 0.0;
+                            break;
+                        }
+                        default:
+                        {
+                            obj = defaultValue;
+                            throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
+                        }
                     }
-                    case HEALTH:
-                    {
-                        obj = 20.0;
-                        break;
-                    }
-                    case PERCENTAGE:
-                    {
-                        obj = 0.0;
-                        break;
-                    }
-                    default:
-                    {
-                        obj = defaultValue;
-                        throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
-                    }
-                }
                 break;
             }
             case STRING:
