@@ -38,19 +38,13 @@ import java.io.*;
 import java.util.List;
 import java.util.logging.Level;
 
-/**
- * Configuration handler for the messages.yml file.
- */
+/** Configuration handler for the messages.yml file. */
 public class MessageConfig extends ModularConfig
 {
-    /**
-     * File reference.
-     */
+    /** File reference. */
     private final File file;
 
-    /**
-     * Configuration object reference.
-     */
+    /** Configuration object reference. */
     private final YamlConfiguration config;
 
 
@@ -182,6 +176,8 @@ public class MessageConfig extends ModularConfig
         // Reload config from file.
         try
         {
+            if (!file.exists())
+                file.createNewFile();
             config.load(file);
             loadSettings(config);
         } catch (FileNotFoundException e)
@@ -266,8 +262,6 @@ public class MessageConfig extends ModularConfig
         }
         return obj instanceof MsgCategory ? (MsgCategory) obj : null;
     }
-
-
 
 
     /**
