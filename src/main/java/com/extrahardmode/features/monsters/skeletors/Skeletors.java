@@ -90,7 +90,7 @@ public class Skeletors extends ListenerModule
     public void onSkeletonHitByArrow(EntityDamageByEntityEvent event)
     {
         // FEATURE: arrows pass through skeletons
-        if (event.getEntityType() == EntityType.SKELETON)
+        if (event.getEntity() instanceof Skeleton &&! getSkelisForWorld(event.getEntity().getWorld().getName()).isEmpty())
         {
             Skeleton skeli = (Skeleton) event.getEntity();
             World world = skeli.getWorld();
@@ -139,7 +139,7 @@ public class Skeletors extends ListenerModule
     public void onPlayerHitByArrow(EntityDamageByEntityEvent event)
     {
         //Knockback player to some percentage
-        if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player)
+        if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player &&! getSkelisForWorld(event.getEntity().getWorld().getName()).isEmpty())
         {
             Arrow arrow = (Arrow) event.getDamager();
             if (arrow.getShooter() instanceof Skeleton)
@@ -236,10 +236,8 @@ public class Skeletors extends ListenerModule
         World world = location.getWorld();
         EntityType entityType = event.getEntityType();
 
-        //final int silverfishShootPercent = CFG.getInt(RootNode.SKELETONS_RELEASE_SILVERFISH, world.getName());
-
         // FEATURE: skeletons sometimes release silverfish to attack their targets
-        if (event.getEntity() != null && entityType == EntityType.ARROW)
+        if (event.getEntity() != null && event.getEntity() instanceof Arrow &&! getSkelisForWorld(world.getName()).isEmpty())
         {
             Arrow arrow = (Arrow) event.getEntity();
             LivingEntity shooter = arrow.getShooter();
@@ -294,7 +292,7 @@ public class Skeletors extends ListenerModule
     public void onSkeletonDeath(EntityDeathEvent event)
     {
         LivingEntity entity = event.getEntity();
-        if (entity instanceof Skeleton && !customSkeletonsTypes.isEmpty())
+        if (entity instanceof Skeleton && !customSkeletonsTypes.isEmpty() &&! getSkelisForWorld(entity.getWorld().getName()).isEmpty())
         {
             CustomSkeleton customSkeleton = CustomSkeleton.getCustom(entity, plugin, getSkelisForWorld(entity.getWorld().getName()));
             if (customSkeleton.willRemoveMinions())
