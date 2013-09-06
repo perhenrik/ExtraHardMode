@@ -297,7 +297,7 @@ public class AntiFarming extends ListenerModule
         final boolean sheepRegrowWhiteEnabled = CFG.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL, world.getName());
 
         //Breed Sheep spawn white
-        if (sheepRegrowWhiteEnabled && entityType == EntityType.SHEEP)
+        if (sheepRegrowWhiteEnabled && entity instanceof Sheep)
         {
             Sheep sheep = (Sheep) entity;
             if (reason.equals(CreatureSpawnEvent.SpawnReason.BREEDING))
