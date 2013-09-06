@@ -186,7 +186,12 @@
             <artifactId>metrics</artifactId>
             <version>R7</version>
         </dependency>
-
+        <!-- Persistence Framework -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.2.4.Final</version>
+        </dependency>
 
         <!-- Unit testing dependencies -->
         <!-- JUnit: Assertions and test framework -->

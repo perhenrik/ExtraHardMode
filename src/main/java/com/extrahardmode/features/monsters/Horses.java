@@ -32,7 +32,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.HorseJumpEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.HorseInventory;
@@ -86,21 +85,15 @@ public class Horses extends ListenerModule
         final Inventory inv = event.getInventory();
         final int maxHeight = CFG.getInt(RootNode.HORSE_CHEST_BLOCK_BELOW, event.getWhoClicked().getWorld().getName());
 
-        if (inv instanceof HorseInventory && event.getWhoClicked().getLocation().getBlockY() > maxHeight)
+        if (inv instanceof HorseInventory && event.getWhoClicked().getLocation().getBlockY() < maxHeight)
         {
             Inventory horseInv = event.getView().getTopInventory();
             int clickedSlot = event.getRawSlot();
 
-            //TODO allow saddle and armor placement
-            if (event.getWhoClicked().getLocation().getBlockY() < 60)
-            {
-                //In a horse inventory the first two slots are saddle + armor, a mule only has a saddle + potentially a chest
-                //Block usage of the chest in caves, but allow taking of the saddle
-                if (horseInv.getSize() > 2 && ((clickedSlot < horseInv.getSize() && clickedSlot > 0) || event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY))
-                {
-                    event.setCancelled(true);
-                }
-            }
+            //In a horse inventory the first two slots are saddle + armor, a mule only has a saddle + potentially a chest
+            //Block usage of the chest in caves, but allow taking of the saddle
+            if (horseInv.getSize() > 2 && ((clickedSlot < horseInv.getSize() && clickedSlot > 0) || event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY))
+                event.setCancelled(true);
         }
     }
 
@@ -144,30 +137,6 @@ public class Horses extends ListenerModule
                     break;
             }
         }
-    }
-
-
-    /**
-     * Reduce jump height significantly
-     */
-    @EventHandler
-    public void onHorseJump(HorseJumpEvent event)
-    {
-        String world = event.getEntity().getWorld().getName();
-
-        final float jumpModifier = (float) CFG.getDouble(RootNode.HORSE_JUMP_MODIFIER, world);
-        final float minHeight = (float) CFG.getDouble(RootNode.HORSE_MIN_JUMP, world);
-        final float maxHeight = (float) CFG.getDouble(RootNode.HORSE_MAX_JUMP, world);
-
-        float jumpHeight = event.getPower();
-        if (jumpHeight * jumpModifier < minHeight)
-            jumpHeight = minHeight;
-        else if (jumpHeight * jumpModifier > maxHeight)
-            jumpHeight = maxHeight;
-        else
-            jumpHeight *= jumpModifier;
-
-        event.setPower(jumpHeight);
     }
 
     /**

@@ -220,9 +220,6 @@ public enum RootNode implements ConfigNode
      * # HORSES #
      * ##########
      */
-    HORSE_MIN_JUMP ("Horses.Jump.Min Height", VarType.DOUBLE, 2.0),
-    HORSE_MAX_JUMP ("Horses.Jump.Max Height", VarType.DOUBLE, 4.0),
-    HORSE_JUMP_MODIFIER ("Horses.Jump.Multiply Height By", VarType.DOUBLE, 0.5),
     HORSE_CHEST_BLOCK_BELOW("Horses.Block Usage Of Chest Below", VarType.INTEGER, SubType.Y_VALUE, 55),
 
     /**
