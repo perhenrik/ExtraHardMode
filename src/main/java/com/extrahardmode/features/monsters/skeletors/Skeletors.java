@@ -346,7 +346,7 @@ public class Skeletors extends ListenerModule
     public void onSkeletonSpawn(CreatureSpawnEvent event)
     {
         World world = event.getLocation().getWorld();
-        if (event.getEntity() instanceof Skeleton)
+        if (event.getEntity() instanceof Skeleton &&! getSkelisForWorld(event.getEntity().getWorld().getName()).isEmpty() && world != null)
         {
             List<Integer> weights = new ArrayList<Integer>();
             for (CustomSkeleton skeli : getSkelisForWorld(world.getName()))
