@@ -12,6 +12,15 @@ commands:
     ehm:
         description: Root command for ExtraHardMode
         usage: /ehm - Show the main menu
+    ehm reload:
+        description: Reload the configuration and modules
+        usage: /ehm reload
+    ehm version:
+        description: Shows the version and build number
+        usage: /ehm version
+    ehm enabled:
+        description: Tells you if ExtraHardMode is enabled in the world
+        usage: /ehm enabled [world]
 permissions:
     ExtraHardMode.*:
         description: Grant ALL the permission nodes

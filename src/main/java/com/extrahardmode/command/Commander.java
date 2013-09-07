@@ -41,6 +41,7 @@ public class Commander extends CommandHandler
         registerCommand("?", help);
         registerCommand("reload", new ReloadCommand());
         registerCommand("version", new VersionCommand());
+        registerCommand("enabled", new EnabledCommand());
     }
 
 
@@ -54,6 +55,7 @@ public class Commander extends CommandHandler
         if (sender.hasPermission(PermissionNode.ADMIN.getNode()))
         {
             sender.sendMessage("    reload " + ChatColor.YELLOW + "- Reload the plugin");
+            sender.sendMessage("    enabled [world]" + ChatColor.YELLOW + "- Is extrahardmode enabled");
         }
         return true;
     }
