@@ -22,6 +22,7 @@
 package com.extrahardmode.features.monsters.skeletors;
 
 
+import com.extrahardmode.service.OurRandom;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -30,7 +31,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 public class CustomSkeleton
 {
@@ -157,7 +161,7 @@ public class CustomSkeleton
      */
     public boolean isArrowsPassThrough()
     {
-        return new Random().nextInt(101) < arrowsReflectPerc;
+        return OurRandom.percentChance(arrowsReflectPerc);
     }
 
 
@@ -225,7 +229,7 @@ public class CustomSkeleton
      * @param plugin          owning plugin for MetaData
      * @param customSkeletons List of CustomSkeletons, cant be empty, first entry is the default skeleton
      *
-     * @return the matched CustomSkeleton or the default Skeleton if no match found
+     * @return the matched CustomSkeleton or null if no skeleton found
      *
      * @throws InvalidArgumenException if List of Skelis is empty
      */
@@ -240,7 +244,7 @@ public class CustomSkeleton
                 if (skeleton.getIdentifier().equals(key))
                     return skeleton;
         }
-        return customSkeletons.get(0);
+        return null;
     }
 
 

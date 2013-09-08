@@ -248,7 +248,7 @@ public enum RootNode implements ConfigNode
     /**
      * whether or not arrows will pass harmlessly through skeletons
      */
-    SKELI_GREY_DEFLECT_ARROWS("Skeletons.Grey.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 80),
+    SKELI_GREY_DEFLECT_ARROWS("Skeletons.Grey.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 70),
     SKELI_GREY_RELEASE_PERCENT("Skeletons.Grey.Silverfish Minion.Release Percent", VarType.INTEGER, 20),
     SKELI_GREY_MINION_LIMIT("Skeletons.Grey.Silverfish Minion.Concurrent Spawned Limit", VarType.INTEGER, 5),
     SKELI_GREY_MINION_TOTAL_LIMIT("Skeletons.Grey.Silverfish Minion.Stop Spawning After X Total Minions Have Been Released", VarType.INTEGER, 20),
@@ -258,7 +258,7 @@ public enum RootNode implements ConfigNode
     SKELI_GREEN_ENABLE("Skeletons.Green.Enable", VarType.BOOLEAN, true),
     SKELI_GREEN_WEIGHT("Skeletons.Green.Spawn Weight", VarType.INTEGER, 1),
     SKELI_GREEN_KNOCK_BACK_PERCENT("Skeletons.Green.Arrows Knockback Percent", VarType.INTEGER, 30),
-    SKELI_GREEN_DEFLECT_ARROWS("Skeletons.Green.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 80),
+    SKELI_GREEN_DEFLECT_ARROWS("Skeletons.Green.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 70),
     SKELI_GREEN_RELEASE_PERCENT("Skeletons.Green.Slime Minion.Release Percent", VarType.INTEGER, 20),
     SKELI_GREEN_MINION_LIMIT("Skeletons.Green.Slime Minion.Concurrent Spawned Limit", VarType.INTEGER, 5),
     SKELI_GREEN_MINION_TOTAL_LIMIT("Skeletons.Green.Slime Minion.Stop Spawning After X Total Minions Have Been Released", VarType.INTEGER, 20),
@@ -268,7 +268,7 @@ public enum RootNode implements ConfigNode
     SKELI_RED_ENABLE("Skeletons.Red.Enable", VarType.BOOLEAN, true),
     SKELI_RED_WEIGHT("Skeletons.Red.Spawn Weight", VarType.INTEGER, 1),
     SKELI_RED_KNOCK_BACK_PERCENT("Skeletons.Red.Arrows Knockback Percent", VarType.INTEGER, 30),
-    SKELI_RED_DEFLECT_ARROWS("Skeletons.Red.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 80),
+    SKELI_RED_DEFLECT_ARROWS("Skeletons.Red.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 70),
     SKELI_RED_RELEASE_PERCENT("Skeletons.Red.Magmacube Minion.Release Percent", VarType.INTEGER, 20),
     SKELI_RED_MINION_LIMIT("Skeletons.Red.Magmacube Minion.Concurrent Spawned Limit", VarType.INTEGER, 5),
     SKELI_RED_MINION_TOTAL_LIMIT("Skeletons.Red.Magmacube Minion.Stop Spawning After X Total Minions Have Been Released", VarType.INTEGER, 10),
@@ -277,6 +277,7 @@ public enum RootNode implements ConfigNode
 
     SKELI_SWORDGUY_ENABLE("Skeletons.Sword Skeli.Enable", VarType.BOOLEAN, true),
     SKELI_SWORDGUY_WEIGHT("Skeletons.Sword Skeli.Spawn Weight", VarType.INTEGER, 2),
+    SKELI_SWORDGUY_DEFLECT_ARROWS("Skeletons.Sword Skeli.Deflect Arrows Percent", VarType.INTEGER, 0),
 
     /**
      * ##############

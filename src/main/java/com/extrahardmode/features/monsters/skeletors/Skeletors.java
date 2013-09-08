@@ -53,17 +53,11 @@ import java.util.*;
  */
 public class Skeletors extends ListenerModule
 {
-    /**
-     * Plugin
-     */
+    /** Plugin */
     private final ExtraHardMode plugin;
-    /**
-     * Configuration
-     */
+    /** Configuration */
     private final RootConfig CFG;
-    /**
-     * All our custom Skeletons, 0 is the default skeleton. all other skeletons are identified by the id of their PotionEffectType
-     */
+    /** All our custom Skeletons, 0 is the default skeleton. all other skeletons are identified by the id of their PotionEffectType */
     private Map<String, List<CustomSkeleton>> customSkeletonsTypes = new HashMap<String, List<CustomSkeleton>>();
 
 
@@ -83,48 +77,40 @@ public class Skeletors extends ListenerModule
     }
 
 
-    /**
-     * Arrows pass through skeletons
-     */
+    /** Arrows pass through skeletons */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onSkeletonHitByArrow(EntityDamageByEntityEvent event)
     {
         // FEATURE: arrows pass through skeletons
-        if (event.getEntity() instanceof Skeleton &&! getSkelisForWorld(event.getEntity().getWorld().getName()).isEmpty())
+        if (event.getEntity() instanceof Skeleton && !getSkelisForWorld(event.getEntity().getWorld().getName()).isEmpty())
         {
             Skeleton skeli = (Skeleton) event.getEntity();
             World world = skeli.getWorld();
-
-            //final int deflect = CFG.getInt(RootNode.SKELI_RED_DEFLECT_ARROWS, world.getName());
-            //final int knockBackPercent = CFG.getInt(RootNode.SKELI_GREY_KNOCK_BACK_PERCENT, world.getName());
 
             Entity damageSource = event.getDamager();
             CustomSkeleton type = CustomSkeleton.getCustom(skeli, plugin, getSkelisForWorld(world.getName()));
 
             // only arrows
-            if (damageSource instanceof Arrow)
+            if (damageSource instanceof Arrow && type != null)
             {
+                Arrow arrow = (Arrow) damageSource;
                 if (type.getArrowsReflectPerc() > 0)
                 {
-                    Arrow arrow = (Arrow) damageSource;
-
                     Player player = arrow.getShooter() instanceof Player ? (Player) arrow.getShooter() : null;
-                    if (player != null)
+                    //We also fire the event if the arrow doesnt pass through, in that case its cancelled by default
+                    EhmSkeletonDeflectEvent skeliEvent = new EhmSkeletonDeflectEvent(player, skeli, type.getArrowsReflectPerc(), type, !(type.isArrowsPassThrough() || player == null));
+                    plugin.getServer().getPluginManager().callEvent(skeliEvent);
+
+                    // percent chance
+                    if (!skeliEvent.isCancelled())
                     {
-                        EhmSkeletonDeflectEvent skeliEvent = new EhmSkeletonDeflectEvent(player, skeli, type.getArrowsReflectPerc(), type, !type.isArrowsPassThrough());
-                        plugin.getServer().getPluginManager().callEvent(skeliEvent);
+                        // cancel the damage
+                        event.setCancelled(true);
 
-                        // percent chance
-                        if (!skeliEvent.isCancelled())
-                        {
-                            // cancel the damage
-                            event.setCancelled(true);
-
-                            // teleport the arrow a single block farther along its flight path
-                            // note that .6 and 12 were the unexplained recommended values for speed and spread, reflectively, in the bukkit wiki
-                            arrow.remove();
-                            world.spawnArrow(arrow.getLocation().add((arrow.getVelocity().normalize()).multiply(2)), arrow.getVelocity(), 0.6f, 12.0f);
-                        }
+                        // teleport the arrow a single block farther along its flight path
+                        // note that .6 and 12 were the unexplained recommended values for speed and spread, reflectively, in the bukkit wiki
+                        arrow.remove();
+                        world.spawnArrow(arrow.getLocation().add((arrow.getVelocity().normalize()).multiply(2)), arrow.getVelocity(), 0.6f, 12.0f);
                     }
                 }
             }
@@ -132,14 +118,12 @@ public class Skeletors extends ListenerModule
     }
 
 
-    /**
-     * Skeletons sometimes hoot knockback arrows
-     */
+    /** Skeletons sometimes hoot knockback arrows */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerHitByArrow(EntityDamageByEntityEvent event)
     {
         //Knockback player to some percentage
-        if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player &&! getSkelisForWorld(event.getEntity().getWorld().getName()).isEmpty())
+        if (event.getDamager() instanceof Arrow && event.getEntity() instanceof Player && !getSkelisForWorld(event.getEntity().getWorld().getName()).isEmpty())
         {
             Arrow arrow = (Arrow) event.getDamager();
             if (arrow.getShooter() instanceof Skeleton)
@@ -165,9 +149,7 @@ public class Skeletors extends ListenerModule
     }
 
 
-    /**
-     * Some Minions can apply PotionEffects to the player when they attack
-     */
+    /** Some Minions can apply PotionEffects to the player when they attack */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerHurtByMinion(EntityDamageByEntityEvent event)
     {
@@ -179,7 +161,7 @@ public class Skeletors extends ListenerModule
             //Search for the Skeli that spawns this type of Minion
             for (CustomSkeleton skeli : getSkelisForWorld(event.getEntity().getWorld().getName()))
             {
-                if (skeli.getMinionType().getMinionType() == event.getDamager().getType())
+                if (skeli.getMinionType() != null && skeli.getMinionType().getMinionType() == event.getDamager().getType())
                     matched = skeli.getMinionType();
             }
 
@@ -204,9 +186,7 @@ public class Skeletors extends ListenerModule
     }
 
 
-    /**
-     * Minions can't be damaged by their summoners
-     */
+    /** Minions can't be damaged by their summoners */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onMinionDamageBySummoner(EntityDamageByEntityEvent event)
     {
@@ -234,10 +214,9 @@ public class Skeletors extends ListenerModule
     {
         Location location = event.getEntity().getLocation();
         World world = location.getWorld();
-        EntityType entityType = event.getEntityType();
 
         // FEATURE: skeletons sometimes release silverfish to attack their targets
-        if (event.getEntity() != null && event.getEntity() instanceof Arrow &&! getSkelisForWorld(world.getName()).isEmpty())
+        if (event.getEntity() != null && event.getEntity() instanceof Arrow && !getSkelisForWorld(world.getName()).isEmpty())
         {
             Arrow arrow = (Arrow) event.getEntity();
             LivingEntity shooter = arrow.getShooter();
@@ -292,7 +271,7 @@ public class Skeletors extends ListenerModule
     public void onSkeletonDeath(EntityDeathEvent event)
     {
         LivingEntity entity = event.getEntity();
-        if (entity instanceof Skeleton && !customSkeletonsTypes.isEmpty() &&! getSkelisForWorld(entity.getWorld().getName()).isEmpty())
+        if (entity instanceof Skeleton && !customSkeletonsTypes.isEmpty() && !getSkelisForWorld(entity.getWorld().getName()).isEmpty())
         {
             CustomSkeleton customSkeleton = CustomSkeleton.getCustom(entity, plugin, getSkelisForWorld(entity.getWorld().getName()));
             if (customSkeleton.willRemoveMinions())
@@ -346,19 +325,16 @@ public class Skeletors extends ListenerModule
     public void onSkeletonSpawn(CreatureSpawnEvent event)
     {
         World world = event.getLocation().getWorld();
-        if (event.getEntity() instanceof Skeleton &&! getSkelisForWorld(event.getEntity().getWorld().getName()).isEmpty() && world != null)
+        if (event.getEntity() instanceof Skeleton && !getSkelisForWorld(event.getEntity().getWorld().getName()).isEmpty() && world != null)
         {
             List<Integer> weights = new ArrayList<Integer>();
             for (CustomSkeleton skeli : getSkelisForWorld(world.getName()))
                 weights.add(skeli.getSpawnWeight());
-            if (CFG.getBoolean(RootNode.SKELI_SWORDGUY_ENABLE, world.getName()))
-                weights.add(CFG.getInt(RootNode.SKELI_SWORDGUY_WEIGHT, world.getName()));
             int type = OurRandom.weightedRandom(weights.toArray(new Integer[weights.size()]));
             //Last index is our sword skeli
-            if (type + 1 == weights.size())
+            if (getSkelisForWorld(world.getName()).get(type).getIdentifier().equals("ehm-skeli-swordguy"))
                 event.getEntity().getEquipment().setItemInHand(new ItemStack(Material.STONE_HOE));
-            else
-                CustomSkeleton.setCustom(event.getEntity(), plugin, getSkelisForWorld(world.getName()).get(type));
+            CustomSkeleton.setCustom(event.getEntity(), plugin, getSkelisForWorld(world.getName()).get(type));
         }
     }
 
@@ -390,9 +366,7 @@ public class Skeletors extends ListenerModule
     }
 
 
-    /**
-     * Initializes the CustomSkeletons for a given world
-     */
+    /** Initializes the CustomSkeletons for a given world */
     private void initForWorld(String world)
     {
         List<CustomSkeleton> skeletons = new ArrayList<CustomSkeleton>(3);
@@ -453,6 +427,23 @@ public class Skeletors extends ListenerModule
 
                 Minion myMinion = new Minion(OnDamage.BLIND, EntityType.MAGMA_CUBE, 40, minionLimit, minionTotalLimit, minionLootPercentage);
                 CustomSkeleton skeleton = new CustomSkeleton("ehm-skeli-red", null, myMinion, minionReleasePercent, minionDieWith, deflectPercent, knockbackPercent, spawnWeight);
+                skeletons.add(skeleton);
+            }
+        }
+
+        //mockup Sword Skeli
+        {
+            boolean enabled = CFG.getBoolean(RootNode.SKELI_SWORDGUY_ENABLE, world);
+            if (enabled)
+            {
+                int spawnWeight = CFG.getInt(RootNode.SKELI_SWORDGUY_WEIGHT, world);
+                int knockbackPercent = 0;
+                int deflectPercent = CFG.getInt(RootNode.SKELI_SWORDGUY_DEFLECT_ARROWS, world);
+
+                int minionReleasePercent = 0;
+                boolean minionDieWith = false;
+
+                CustomSkeleton skeleton = new CustomSkeleton("ehm-skeli-swordguy", null, null, minionReleasePercent, minionDieWith, deflectPercent, knockbackPercent, spawnWeight);
                 skeletons.add(skeleton);
             }
         }
