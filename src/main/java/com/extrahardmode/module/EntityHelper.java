@@ -38,25 +38,17 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Module that contains logic dealing with entities.
- */
+/** Module that contains logic dealing with entities. */
 public class EntityHelper
 {
 
-    /**
-     * Getter for environmental damage for the specified entity
-     */
+    /** Getter for environmental damage for the specified entity */
     private static final String IGNORE = "extrahardmode.ignore.me";
 
-    /**
-     * Getter to set a flag to ignore a entity in further processing
-     */
+    /** Getter to set a flag to ignore a entity in further processing */
     private static final String ENVIRONMENTAL_DAMAGE = "extrahard_environmentalDamage";
 
-    /**
-     * Process this Entity
-     */
+    /** Process this Entity */
     private static final String PROCESS_ENTITY = "extrahardmode_process_entity";
 
 
@@ -126,9 +118,7 @@ public class EntityHelper
     }
 
 
-    /**
-     * Flag an entity to be ignored in further processing. E.g if an event could be called multiple times
-     */
+    /** Flag an entity to be ignored in further processing. E.g if an event could be called multiple times */
     public static void flagIgnore(Plugin plugin, Entity entity)
     {
         if (entity instanceof LivingEntity)
@@ -138,9 +128,7 @@ public class EntityHelper
     }
 
 
-    /**
-     * Check if an entity has been flagged to be ignored
-     */
+    /** Check if an entity has been flagged to be ignored */
     public static boolean hasFlagIgnore(Entity entity)
     {
         if (entity instanceof LivingEntity)
@@ -154,9 +142,7 @@ public class EntityHelper
     }
 
 
-    /**
-     * Mark an Entity to be processed. E.g when only a small number of Entities should be processed
-     */
+    /** Mark an Entity to be processed. E.g when only a small number of Entities should be processed */
     public static void markForProcessing(Plugin plugin, Entity entity)
     {
         Validate.notNull(entity, "Entity can't be null");
@@ -166,9 +152,7 @@ public class EntityHelper
     }
 
 
-    /**
-     * Check if an entity has been flagged to be processed
-     */
+    /** Check if an entity has been flagged to be processed */
     public static boolean isMarkedForProcessing(Entity entity)
     {
         Validate.notNull(entity, "Entity can't be null");
@@ -178,9 +162,7 @@ public class EntityHelper
     }
 
 
-    /**
-     * Is the Monster farmable cattle, which drops something on death?
-     */
+    /** Is the Monster farmable cattle, which drops something on death? */
     public static boolean isCattle(Entity entity)
     {
         return entity instanceof Cow
@@ -189,9 +171,7 @@ public class EntityHelper
     }
 
 
-    /**
-     * Simple check if there is enough space for a monster to spawn
-     */
+    /** Simple check if there is enough space for a monster to spawn */
     public static boolean simpleIsLocSafeSpawn(Location loc)
     {
         //quickly check if 2 blocks above this is clear
@@ -270,9 +250,7 @@ public class EntityHelper
     }
 
 
-    /**
-     * Spawns a random monster with the probabilities given by the config
-     */
+    /** Spawns a random monster with the probabilities given by the config */
     public static Entity spawnRandomMob(Location loc)
     {
         int randomMonster = new Random().nextInt(90);
@@ -313,8 +291,11 @@ public class EntityHelper
         double squared = Math.pow(distance, 2.0);
         List<Player> otherEntities = loc.getWorld().getPlayers();
         for (Player player : otherEntities)
-            if (player.getLocation().distanceSquared(loc) > squared)
+        {
+            double playerDist = player.getLocation().distanceSquared(loc);
+            if (playerDist < squared)
                 return true;
+        }
         return false;
     }
 
