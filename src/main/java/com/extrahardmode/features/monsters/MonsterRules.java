@@ -85,7 +85,7 @@ public class MonsterRules extends ListenerModule
         CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
 
         //We don't know how to handle ghosts. (Mo Creatures)
-        if (!entityType.equals(EntityType.UNKNOWN) && reason != CreatureSpawnEvent.SpawnReason.CUSTOM)
+        if (!entityType.equals(EntityType.UNKNOWN) && reason == CreatureSpawnEvent.SpawnReason.NATURAL)
         {
             // FEATURE: extra monster spawns underground
             if (maxY > 0)
