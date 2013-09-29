@@ -39,6 +39,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -299,6 +300,15 @@ public class AntiGrinder extends ListenerModule
             if (damageCause != EntityDamageEvent.DamageCause.ENTITY_ATTACK && damageCause != EntityDamageEvent.DamageCause.PROJECTILE && damageCause != EntityDamageEvent.DamageCause.BLOCK_EXPLOSION)
             {
                 EntityHelper.addEnvironmentalDamage(plugin, (LivingEntity) entity, event.getDamage());
+            }
+            //Prevent people from using dogs to grind monsters
+            else if (event instanceof EntityDamageByEntityEvent)
+            {
+                EntityDamageByEntityEvent byEntityEvent = (EntityDamageByEntityEvent) event;
+                if (byEntityEvent.getDamager() instanceof Wolf)
+                {
+                    EntityHelper.addEnvironmentalDamage(plugin, (LivingEntity) entity, event.getDamage());
+                }
             }
         }
     }
