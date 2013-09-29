@@ -274,7 +274,7 @@ public class Skeletors extends ListenerModule
         if (entity instanceof Skeleton && !customSkeletonsTypes.isEmpty() && !getSkelisForWorld(entity.getWorld().getName()).isEmpty())
         {
             CustomSkeleton customSkeleton = CustomSkeleton.getCustom(entity, plugin, getSkelisForWorld(entity.getWorld().getName()));
-            if (customSkeleton.willRemoveMinions())
+            if (customSkeleton != null && customSkeleton.willRemoveMinions())
             {
                 List<UUID> minionIds = CustomSkeleton.getSpawnedMinions(entity, plugin);
                 //Only look for the type of minion we spawned, e.g. only Silverfish
