@@ -39,6 +39,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -74,7 +75,7 @@ public class Zombies extends ListenerModule
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final int zombiesReanimatePercent = CFG.getInt(RootNode.ZOMBIES_REANIMATE_PERCENT, world.getName());
+        int zombiesReanimatePercent = CFG.getInt(RootNode.ZOMBIES_REANIMATE_PERCENT, world.getName());
 
         // FEATURE: zombies may reanimate if not on fire when they die
         if (zombiesReanimatePercent > 0 &&! EntityHelper.hasFlagIgnore(entity))
@@ -87,14 +88,21 @@ public class Zombies extends ListenerModule
                 if (zombie.getTarget() instanceof Player)
                     player = (Player) zombie.getTarget();
 
+                //Zombies which have respawned already are less likely to respawn
+                int respawnCount = entity.getMetadata("extrahardmode.zombie.respawncount").size() > 0 ? entity.getMetadata("extrahardmode.zombie.respawncount").get(0).asInt() : 0;
+                respawnCount++;
+                zombiesReanimatePercent = 1 / respawnCount * zombiesReanimatePercent;
+
                 EhmZombieRespawnEvent zombieEvent = new EhmZombieRespawnEvent(player, zombie, zombiesReanimatePercent, !plugin.random(zombiesReanimatePercent));
                 plugin.getServer().getPluginManager().callEvent(zombieEvent);
                 if (!zombie.isVillager() && entity.getFireTicks() < 1 && !zombieEvent.isCancelled())
                 {
+                    //Save the incremented respawncount
+                    entity.setMetadata("extrahardmode.zombie.respawncount", new FixedMetadataValue(plugin, respawnCount));
+
                     RespawnZombieTask task = new RespawnZombieTask(plugin, entity.getLocation(), player);
                     int respawnSeconds = plugin.getRandom().nextInt(6) + 3; // 3-8 seconds
-                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 20L * respawnSeconds); // /20L
-                    // ~ 1 second
+                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 20L * respawnSeconds); // /20L ~ 1 second
                 }
             }
         }
@@ -141,6 +149,7 @@ public class Zombies extends ListenerModule
     /**
      * Flag Zombies that have been called in as reinforcements to not respawn
      */
+    @EventHandler
     public void onZombieReinforcements(CreatureSpawnEvent event)
     {
         if (event.getEntity() instanceof Zombie && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.REINFORCEMENTS)
