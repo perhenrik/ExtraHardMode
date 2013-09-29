@@ -26,6 +26,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.events.EhmZombieRespawnEvent;
+import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
@@ -34,6 +35,7 @@ import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -75,7 +77,7 @@ public class Zombies extends ListenerModule
         final int zombiesReanimatePercent = CFG.getInt(RootNode.ZOMBIES_REANIMATE_PERCENT, world.getName());
 
         // FEATURE: zombies may reanimate if not on fire when they die
-        if (zombiesReanimatePercent > 0)
+        if (zombiesReanimatePercent > 0 &&! EntityHelper.hasFlagIgnore(entity))
         {
             if (entity.getType() == EntityType.ZOMBIE)
             {
@@ -133,6 +135,17 @@ public class Zombies extends ListenerModule
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 10, 3));
                 }
             }
+        }
+    }
+
+    /**
+     * Flag Zombies that have been called in as reinforcements to not respawn
+     */
+    public void onZombieReinforcements(CreatureSpawnEvent event)
+    {
+        if (event.getEntity() instanceof Zombie && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.REINFORCEMENTS)
+        {
+            EntityHelper.flagIgnore(plugin, event.getEntity());
         }
     }
 }
