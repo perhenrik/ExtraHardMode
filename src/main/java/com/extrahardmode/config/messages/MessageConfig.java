@@ -123,7 +123,7 @@ public class MessageConfig extends ModularConfig
                     "One_Time: Will be sent to every player only once",
                     "Notification: Gets sent every time with a timeout to prevent spamming chat",
                     "Tutorial: Sent a limited number of times and not displayed after 3 times",
-                    "Broadcast: Shown to whole server. Only few messages make sense to be broadcast",
+                    "Broadcast: Shown to whole server. Only few messages make sense to be broadcasted",
                     "Variables:",
                     "$ALLCAPS is a variable and will be filled in for some messages",
                     "$PLAYER: Affected player",

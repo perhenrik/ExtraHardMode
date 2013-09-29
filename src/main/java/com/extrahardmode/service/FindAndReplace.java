@@ -33,18 +33,16 @@ public class FindAndReplace
 {
     private final String replaceWith;
 
-    private final String searchFor;
+    private final String[] searchFor;
 
 
     /**
      * Constructor
      *
-     * @param searchFor
-     *         a String
-     * @param replaceWith
-     *         some other String
+     * @param searchFor   a String
+     * @param replaceWith some other String
      */
-    public FindAndReplace(String searchFor, String replaceWith)
+    public FindAndReplace(String replaceWith, String... searchFor)
     {
         this.searchFor = searchFor;
         this.replaceWith = replaceWith;
@@ -67,9 +65,26 @@ public class FindAndReplace
      *
      * @return the search-String
      */
-    public String getSearchWord()
+    public String[] getSearchWord()
     {
         return searchFor;
+    }
+
+
+    /**
+     * Run the ReplaceOperation on the given String
+     *
+     * @param input string to search in
+     *
+     * @return the input string with the replaced strings
+     */
+    public String replace(String input)
+    {
+        for (String search : searchFor)
+        {
+            input = input.replace(search, replaceWith);
+        }
+        return input;
     }
 
 }

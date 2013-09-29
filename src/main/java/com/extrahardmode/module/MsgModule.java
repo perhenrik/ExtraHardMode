@@ -136,7 +136,7 @@ public class MsgModule extends EHMModule
      */
     public void broadcast(MessageNode node, FindAndReplace... replace)
     {
-        send(null, node, MsgCategory.BROADCAST, replace);
+        send(null, node, replace);
     }
 
 
@@ -158,12 +158,12 @@ public class MsgModule extends EHMModule
      * @param player  Player to send the message to
      * @param message to send
      */
-    public void send(Player player, MessageNode message, MsgCategory type, FindAndReplace... fars)
+    public void send(Player player, MessageNode message, FindAndReplace... fars)
     {
         String msgText = messages.getString(message);
         for (FindAndReplace far : fars)
         {   /* Replace the placeholder with the actual value */
-            msgText = msgText.replace(far.getSearchWord(), far.getReplaceWith());
+            msgText = far.replace(msgText);
         }
         send(player, message, msgText);
     }

@@ -88,7 +88,7 @@ public enum MessageNode implements ConfigNode
             ("PlayerKilledByDragon.Mode", MsgCategory.BROADCAST),
     END_DRAGON_PLAYER_KILLED
             ("PlayerKilledByDragon.Msg", MsgCategory.BROADCAST, "player_killed_dragon",
-                    "'" + variables.PLAYER.getVarName() + " was killed while fighting the dragon!"),
+                    variables.PLAYER.getVarName() + " was killed while fighting the dragon!"),
     END_DRAGON_PLAYER_CHALLENGING_MODE
             ("PlayerChallengingDragon.Mode", MsgCategory.BROADCAST),
     END_DRAGON_PLAYER_CHALLENGING
@@ -201,7 +201,7 @@ public enum MessageNode implements ConfigNode
             ("ListLostItemsOnDeath.Mode", MsgCategory.NOTIFICATION),
     LOST_ITEMS
             ("ListLostItemsOnDeath.Msg", MsgCategory.NOTIFICATION, "lost_items_broadcast",
-                    variables.DEATH_MSG + " and managed to loose " + variables.ITEMS.getVarName()),
+                    "&eYou managed to loose " + variables.ITEMS.getVarName()),
     LOST_ITEMS_PLAYER_MODE
             ("InformPlayerOnLostItems.Mode", MsgCategory.TUTORIAL),
     LOST_ITEMS_PLAYER
@@ -365,26 +365,36 @@ public enum MessageNode implements ConfigNode
      */
     public enum variables
     {
-        DEATH_MSG("$DEATH_MSG"),
-        PLAYER("$PLAYER"),
-        PLAYERS("$PLAYERS"),
-        ITEMS("$ITEMS");
+        //Search for this strings in the given order
+        //Remove the support for $VAR and use §VAR instead
+        //There were issues with $ being some kind of special char in yaml
+        PLAYER("$PLAYER", "PLAYER"),
+        PLAYERS("$PLAYERS", "PLAYERS"),
+        ITEMS("$ITEMS", "ITEMS");
 
-        private final String variable;
+        private final String[] variable;
 
 
-        private variables(String variable)
+        private variables(String ... variable)
         {
             this.variable = variable;
         }
 
 
         /**
-         * Get the identifier which represents this variable in the String
+         * Get the identifiers which represents this variable in the String
+         */
+        public String[] getVarNames()
+        {
+            return variable;
+        }
+
+        /**
+         * Get the primary identifier which represents this variable in the String
          */
         public String getVarName()
         {
-            return variable;
+            return variable[0];
         }
     }
 }

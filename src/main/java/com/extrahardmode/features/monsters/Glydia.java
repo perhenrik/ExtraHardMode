@@ -192,7 +192,7 @@ public class Glydia extends ListenerModule
                     builder.append(player).append(", ");
                 }
 
-                messenger.broadcast(MessageNode.END_DRAGON_KILLED, new FindAndReplace(MessageNode.variables.PLAYERS.getVarName(), builder.toString()));
+                messenger.broadcast(MessageNode.END_DRAGON_KILLED, new FindAndReplace(builder.toString(), MessageNode.variables.PLAYERS.getVarNames()));
             }
 
             if (glydiaDropsEggs)
@@ -228,7 +228,7 @@ public class Glydia extends ListenerModule
         List<String> playersFightingDragon = data.getPlayers();
         if (dragonAnnouncements && playersFightingDragon.contains(player.getName()))
         {
-            messenger.broadcast(MessageNode.END_DRAGON_PLAYER_KILLED, new FindAndReplace(MessageNode.variables.PLAYER.getVarName(), player.getName()));
+            messenger.broadcast(MessageNode.END_DRAGON_PLAYER_KILLED, new FindAndReplace(player.getName(), MessageNode.variables.PLAYER.getVarNames()));
             data.getPlayers().remove(player.getName());
         }
     }
@@ -296,7 +296,7 @@ public class Glydia extends ListenerModule
 
                     if (dragonAnnouncements)
                     {
-                        messenger.broadcast(MessageNode.END_DRAGON_PLAYER_CHALLENGING, new FindAndReplace(MessageNode.variables.PLAYER.getVarName(), damager.getName()));
+                        messenger.broadcast(MessageNode.END_DRAGON_PLAYER_CHALLENGING, new FindAndReplace(damager.getName(), MessageNode.variables.PLAYER.getVarNames()));
                     }
                 }
 

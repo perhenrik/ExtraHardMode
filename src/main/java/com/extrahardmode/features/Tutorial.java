@@ -12,6 +12,7 @@ import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MaterialHelper;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
+import com.extrahardmode.service.FindAndReplace;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -342,11 +343,7 @@ public class Tutorial implements Listener
         //Only print if items have been removed
         if (event.getStacksToRemove().size() > 0)
         {
-            String outPut = msgCfg.getString(MessageNode.LOST_ITEMS);
-            outPut = outPut.replace(MessageNode.variables.DEATH_MSG.getVarName(), event.getDeathEvent().getDeathMessage());
-            outPut = outPut.replace(MessageNode.variables.ITEMS.getVarName(), items.toString());
-            event.getDeathEvent().setDeathMessage(outPut);
-
+            messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS, new FindAndReplace(items.toString(), MessageNode.variables.ITEMS.getVarNames()));
             messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS_PLAYER);
         }
     }
