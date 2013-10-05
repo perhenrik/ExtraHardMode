@@ -224,37 +224,41 @@ public class Skeletors extends ListenerModule
             {
                 Skeleton skeleton = (Skeleton) shooter;
                 CustomSkeleton customSkeleton = CustomSkeleton.getCustom(skeleton, plugin, getSkelisForWorld(world.getName()));
-                int currentSpawnLimit = customSkeleton.getMinionType().getCurrentSpawnLimit(),
-                        totalSpawnLimit = customSkeleton.getMinionType().getTotalSpawnLimit();
-                if (skeleton.getTarget() instanceof Player && OurRandom.percentChance(customSkeleton.getReleaseMinionPercent())
-                        && (currentSpawnLimit < 0 || currentSpawnLimit > CustomSkeleton.getSpawnedMinions(skeleton, plugin).size()) //Prevent tons of Minions
-                        && (totalSpawnLimit < 0 || totalSpawnLimit > CustomSkeleton.getTotalSummoned(skeleton, plugin)))
+                //Can be null if no skeletons are activated
+                if (customSkeleton != null)
                 {
-                    // Cancel and replace arrow with a summoned minion
-                    event.setCancelled(true);
-                    final Player player = (Player) skeleton.getTarget();
-
-                    // replace with silverfish, quarter velocity of arrow, wants to attack same target as skeleton
-                    LivingEntity minion = (LivingEntity) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0.0, 1.5, 0.0), customSkeleton.getMinionType().getMinionType());
-                    minion.setVelocity(arrow.getVelocity().multiply(0.25));
-                    if (minion instanceof Creature)
-                        ((Creature) minion).setTarget(skeleton.getTarget());
-                    if (minion instanceof Slime) //Magmacubes extend Slime
-                        ((Slime) minion).setSize(2);
-                    if (minion instanceof MagmaCube) //ignore so they dont explode
-                        EntityHelper.flagIgnore(plugin, minion);
-                    EntityHelper.markLootLess(plugin, minion); // the minion doesn't drop loot
-                    Minion.setMinion(plugin, minion);
-                    Minion.setParent(skeleton, minion, plugin);
-                    CustomSkeleton.addMinion(skeleton, minion, plugin);
-
-                    EhmSkeletonShootSilverfishEvent shootSilverfishEvent = new EhmSkeletonShootSilverfishEvent(player, skeleton, minion, customSkeleton.getReleaseMinionPercent(), customSkeleton);
-                    plugin.getServer().getPluginManager().callEvent(shootSilverfishEvent);
-
-                    if (shootSilverfishEvent.isCancelled()) //Undo
+                    int currentSpawnLimit = customSkeleton.getMinionType().getCurrentSpawnLimit(),
+                            totalSpawnLimit = customSkeleton.getMinionType().getTotalSpawnLimit();
+                    if (skeleton.getTarget() instanceof Player && OurRandom.percentChance(customSkeleton.getReleaseMinionPercent())
+                            && (currentSpawnLimit < 0 || currentSpawnLimit > CustomSkeleton.getSpawnedMinions(skeleton, plugin).size()) //Prevent tons of Minions
+                            && (totalSpawnLimit < 0 || totalSpawnLimit > CustomSkeleton.getTotalSummoned(skeleton, plugin)))
                     {
-                        event.setCancelled(false);
-                        minion.remove();
+                        // Cancel and replace arrow with a summoned minion
+                        event.setCancelled(true);
+                        final Player player = (Player) skeleton.getTarget();
+
+                        // replace with silverfish, quarter velocity of arrow, wants to attack same target as skeleton
+                        LivingEntity minion = (LivingEntity) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0.0, 1.5, 0.0), customSkeleton.getMinionType().getMinionType());
+                        minion.setVelocity(arrow.getVelocity().multiply(0.25));
+                        if (minion instanceof Creature)
+                            ((Creature) minion).setTarget(skeleton.getTarget());
+                        if (minion instanceof Slime) //Magmacubes extend Slime
+                            ((Slime) minion).setSize(2);
+                        if (minion instanceof MagmaCube) //ignore so they dont explode
+                            EntityHelper.flagIgnore(plugin, minion);
+                        EntityHelper.markLootLess(plugin, minion); // the minion doesn't drop loot
+                        Minion.setMinion(plugin, minion);
+                        Minion.setParent(skeleton, minion, plugin);
+                        CustomSkeleton.addMinion(skeleton, minion, plugin);
+
+                        EhmSkeletonShootSilverfishEvent shootSilverfishEvent = new EhmSkeletonShootSilverfishEvent(player, skeleton, minion, customSkeleton.getReleaseMinionPercent(), customSkeleton);
+                        plugin.getServer().getPluginManager().callEvent(shootSilverfishEvent);
+
+                        if (shootSilverfishEvent.isCancelled()) //Undo
+                        {
+                            event.setCancelled(false);
+                            minion.remove();
+                        }
                     }
                 }
             }
