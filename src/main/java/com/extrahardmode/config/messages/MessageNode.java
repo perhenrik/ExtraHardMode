@@ -201,12 +201,12 @@ public enum MessageNode implements ConfigNode
             ("ListLostItemsOnDeath.Mode", MsgCategory.NOTIFICATION),
     LOST_ITEMS
             ("ListLostItemsOnDeath.Msg", MsgCategory.NOTIFICATION, "lost_items_broadcast",
-                    "&eYou managed to loose " + variables.ITEMS.getVarName()),
+                    "&eYou managed to lose " + variables.ITEMS.getVarName()),
     LOST_ITEMS_PLAYER_MODE
             ("InformPlayerOnLostItems.Mode", MsgCategory.TUTORIAL),
     LOST_ITEMS_PLAYER
             ("InformPlayerOnLostItems.Msg", MsgCategory.TUTORIAL, "lost_items",
-                    "On death there is a a chance you might loose some of your items!"),
+                    "On death there is a a chance you might lose some of your items!"),
 
     //Farming
     BUCKET_FILL_MODE
