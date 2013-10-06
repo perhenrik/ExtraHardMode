@@ -130,19 +130,31 @@ public class Skeletors extends ListenerModule
             {
                 CustomSkeleton type = CustomSkeleton.getCustom(arrow.getShooter(), plugin, getSkelisForWorld(arrow.getWorld().getName()));
                 // FEATURE: skeletons can knock back
-                if (type.getKnockbackPercent() > 0)
+                try
                 {
-                    if (plugin.random(type.getKnockbackPercent()))
+                    if (type.getKnockbackPercent() > 0)
                     {
-                        // Knockback is enough, reduce dmg
-                        event.setDamage(event.getDamage() / 2.0);
-                        // knock back target with half the arrow's velocity
-                        Vector knockback = arrow.getVelocity().multiply(0.5D);
+                        if (plugin.random(type.getKnockbackPercent()))
+                        {
+                            // Knockback is enough, reduce dmg
+                            event.setDamage(event.getDamage() / 2.0);
+                            // knock back target with half the arrow's velocity
+                            Vector knockback = arrow.getVelocity().multiply(0.5D);
 
-                        EhmSkeletonKnockbackEvent knockbackEvent = new EhmSkeletonKnockbackEvent(event.getEntity(), (Skeleton) arrow.getShooter(), knockback, type.getKnockbackPercent());
-                        if (!knockbackEvent.isCancelled())
-                            knockbackEvent.getEntity().setVelocity(knockbackEvent.getVelocity());
+                            EhmSkeletonKnockbackEvent knockbackEvent = new EhmSkeletonKnockbackEvent(event.getEntity(), (Skeleton) arrow.getShooter(), knockback, type.getKnockbackPercent());
+                            if (!knockbackEvent.isCancelled())
+                                knockbackEvent.getEntity().setVelocity(knockbackEvent.getVelocity());
+                        }
                     }
+                } catch (NullPointerException e)
+                {
+                    plugin.getLogger().severe("##########################BEGIN ERROR############################");
+                    plugin.getLogger().severe("CustomSkeli == " + type);
+                    plugin.getLogger().severe("World: " + arrow.getWorld().getName());
+                    plugin.getLogger().severe("Ehm is enabled: " + (Arrays.asList(plugin.getModuleForClass(RootConfig.class).getEnabledWorlds()).contains(arrow.getWorld().getName()) ? "true" : "false"));
+                    for (String world : plugin.getModuleForClass(RootConfig.class).getEnabledWorlds())
+                        plugin.getLogger().severe("CustomSkelis in " + world + ": " + getSkelisForWorld(world));
+                    plugin.getLogger().severe("##########################END ERROR############################");
                 }
             }
         }
@@ -227,38 +239,50 @@ public class Skeletors extends ListenerModule
                 //Can be null if no skeletons are activated
                 if (customSkeleton != null)
                 {
-                    int currentSpawnLimit = customSkeleton.getMinionType().getCurrentSpawnLimit(),
-                            totalSpawnLimit = customSkeleton.getMinionType().getTotalSpawnLimit();
-                    if (skeleton.getTarget() instanceof Player && OurRandom.percentChance(customSkeleton.getReleaseMinionPercent())
-                            && (currentSpawnLimit < 0 || currentSpawnLimit > CustomSkeleton.getSpawnedMinions(skeleton, plugin).size()) //Prevent tons of Minions
-                            && (totalSpawnLimit < 0 || totalSpawnLimit > CustomSkeleton.getTotalSummoned(skeleton, plugin)))
+                    try
                     {
-                        // Cancel and replace arrow with a summoned minion
-                        event.setCancelled(true);
-                        final Player player = (Player) skeleton.getTarget();
-
-                        // replace with silverfish, quarter velocity of arrow, wants to attack same target as skeleton
-                        LivingEntity minion = (LivingEntity) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0.0, 1.5, 0.0), customSkeleton.getMinionType().getMinionType());
-                        minion.setVelocity(arrow.getVelocity().multiply(0.25));
-                        if (minion instanceof Creature)
-                            ((Creature) minion).setTarget(skeleton.getTarget());
-                        if (minion instanceof Slime) //Magmacubes extend Slime
-                            ((Slime) minion).setSize(2);
-                        if (minion instanceof MagmaCube) //ignore so they dont explode
-                            EntityHelper.flagIgnore(plugin, minion);
-                        EntityHelper.markLootLess(plugin, minion); // the minion doesn't drop loot
-                        Minion.setMinion(plugin, minion);
-                        Minion.setParent(skeleton, minion, plugin);
-                        CustomSkeleton.addMinion(skeleton, minion, plugin);
-
-                        EhmSkeletonShootSilverfishEvent shootSilverfishEvent = new EhmSkeletonShootSilverfishEvent(player, skeleton, minion, customSkeleton.getReleaseMinionPercent(), customSkeleton);
-                        plugin.getServer().getPluginManager().callEvent(shootSilverfishEvent);
-
-                        if (shootSilverfishEvent.isCancelled()) //Undo
+                        int currentSpawnLimit = customSkeleton.getMinionType().getCurrentSpawnLimit(),
+                                totalSpawnLimit = customSkeleton.getMinionType().getTotalSpawnLimit();
+                        if (skeleton.getTarget() instanceof Player && OurRandom.percentChance(customSkeleton.getReleaseMinionPercent())
+                                && (currentSpawnLimit < 0 || currentSpawnLimit > CustomSkeleton.getSpawnedMinions(skeleton, plugin).size()) //Prevent tons of Minions
+                                && (totalSpawnLimit < 0 || totalSpawnLimit > CustomSkeleton.getTotalSummoned(skeleton, plugin)))
                         {
-                            event.setCancelled(false);
-                            minion.remove();
+                            // Cancel and replace arrow with a summoned minion
+                            event.setCancelled(true);
+                            final Player player = (Player) skeleton.getTarget();
+
+                            // replace with silverfish, quarter velocity of arrow, wants to attack same target as skeleton
+                            LivingEntity minion = (LivingEntity) skeleton.getWorld().spawnEntity(skeleton.getLocation().add(0.0, 1.5, 0.0), customSkeleton.getMinionType().getMinionType());
+                            minion.setVelocity(arrow.getVelocity().multiply(0.25));
+                            if (minion instanceof Creature)
+                                ((Creature) minion).setTarget(skeleton.getTarget());
+                            if (minion instanceof Slime) //Magmacubes extend Slime
+                                ((Slime) minion).setSize(2);
+                            if (minion instanceof MagmaCube) //ignore so they dont explode
+                                EntityHelper.flagIgnore(plugin, minion);
+                            EntityHelper.markLootLess(plugin, minion); // the minion doesn't drop loot
+                            Minion.setMinion(plugin, minion);
+                            Minion.setParent(skeleton, minion, plugin);
+                            CustomSkeleton.addMinion(skeleton, minion, plugin);
+
+                            EhmSkeletonShootSilverfishEvent shootSilverfishEvent = new EhmSkeletonShootSilverfishEvent(player, skeleton, minion, customSkeleton.getReleaseMinionPercent(), customSkeleton);
+                            plugin.getServer().getPluginManager().callEvent(shootSilverfishEvent);
+
+                            if (shootSilverfishEvent.isCancelled()) //Undo
+                            {
+                                event.setCancelled(false);
+                                minion.remove();
+                            }
                         }
+                    }catch (NullPointerException e)
+                    {
+                        plugin.getLogger().severe("##########################BEGIN ERROR############################");
+                        plugin.getLogger().severe("CustomSkeli == " + customSkeleton);
+                        plugin.getLogger().severe("World: " + arrow.getWorld().getName());
+                        plugin.getLogger().severe("Ehm is enabled: " + (Arrays.asList(plugin.getModuleForClass(RootConfig.class).getEnabledWorlds()).contains(arrow.getWorld().getName()) ? "true" : "false"));
+                        for (String worldName : plugin.getModuleForClass(RootConfig.class).getEnabledWorlds())
+                            plugin.getLogger().severe("CustomSkelis in " + worldName + ": " + getSkelisForWorld(worldName));
+                        plugin.getLogger().severe("##########################END ERROR############################");
                     }
                 }
             }

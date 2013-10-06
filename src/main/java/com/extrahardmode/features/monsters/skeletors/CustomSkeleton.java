@@ -38,49 +38,27 @@ import java.util.UUID;
 
 public class CustomSkeleton
 {
-    /**
-     * Potion effect to apply for the sake of visualisation, so player knows which minions to expect
-     */
+    /** Potion effect to apply for the sake of visualisation, so player knows which minions to expect */
     private PotionEffectType effectType;
-    /**
-     * Percentage of arrows to spawn a minion
-     */
+    /** Percentage of arrows to spawn a minion */
     private int releaseMinionPercent;
-    /**
-     * Type of minion to spawn
-     */
+    /** Type of minion to spawn */
     private Minion minion;
-    /**
-     * Remove minions after summoner has died
-     */
+    /** Remove minions after summoner has died */
     private boolean removeMinions;
-    /**
-     * The percentage of arrows that pass through skeletons
-     */
+    /** The percentage of arrows that pass through skeletons */
     private int arrowsReflectPerc;
-    /**
-     * Percentage of arrows that knock back
-     */
+    /** Percentage of arrows that knock back */
     private int knockbackPercent;
-    /**
-     * Id to tag the skeli as custom
-     */
+    /** Id to tag the skeli as custom */
     private final String identifier;
-    /**
-     * Spawn Weight
-     */
+    /** Spawn Weight */
     private int spawnWeight;
-    /**
-     * Key to mark the type of skeleton
-     */
+    /** Key to mark the type of skeleton */
     public final static String skeliTypeStr = "extrahardmode.skeleton.type";
-    /**
-     * Key to access the minions of the Skeleton
-     */
+    /** Key to access the minions of the Skeleton */
     public final static String skeliMinionStorage = "extrahardmode.skeleton.minions";
-    /**
-     * Total count of minions spawned by this host
-     */
+    /** Total count of minions spawned by this host */
     public final static String skeliTotalMinionCount = "extrahardmode.skeleton.minions.totalcount";
 
 
@@ -109,9 +87,7 @@ public class CustomSkeleton
     }
 
 
-    /**
-     * The potion effect to visulaize which skeleton is being dealt with
-     */
+    /** The potion effect to visulaize which skeleton is being dealt with */
     public PotionEffectType getEffectType()
     {
         return effectType;
@@ -124,9 +100,7 @@ public class CustomSkeleton
     }
 
 
-    /**
-     * Properties of the mob to be used as a minion
-     */
+    /** Properties of the mob to be used as a minion */
     public Minion getMinionType()
     {
         return minion;
@@ -139,9 +113,7 @@ public class CustomSkeleton
     }
 
 
-    /**
-     * Will minions be removed when the summoner has died
-     */
+    /** Will minions be removed when the summoner has died */
     public boolean willRemoveMinions()
     {
         return removeMinions;
@@ -302,6 +274,10 @@ public class CustomSkeleton
 
 
     /**
+        StringBuilder builder = new StringBuilder();
+        builder.append("Identifier: ");
+        builder.append(identifier);
+        builder.append()
      * Get all the Ids of the Minions spawned by this CustomSkeleton
      *
      * @param entity entity to get the minions for
@@ -341,5 +317,12 @@ public class CustomSkeleton
                 totalCount = (Integer) value.value();
         }
         return totalCount;
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return "Identifier: " + identifier + " Minion:" + (minion != null ? minion.toString() : null);
     }
 }
