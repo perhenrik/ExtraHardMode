@@ -130,31 +130,19 @@ public class Skeletors extends ListenerModule
             {
                 CustomSkeleton type = CustomSkeleton.getCustom(arrow.getShooter(), plugin, getSkelisForWorld(arrow.getWorld().getName()));
                 // FEATURE: skeletons can knock back
-                try
+                if (type != null && type.getKnockbackPercent() > 0)
                 {
-                    if (type.getKnockbackPercent() > 0)
+                    if (plugin.random(type.getKnockbackPercent()))
                     {
-                        if (plugin.random(type.getKnockbackPercent()))
-                        {
-                            // Knockback is enough, reduce dmg
-                            event.setDamage(event.getDamage() / 2.0);
-                            // knock back target with half the arrow's velocity
-                            Vector knockback = arrow.getVelocity().multiply(0.5D);
+                        // Knockback is enough, reduce dmg
+                        event.setDamage(event.getDamage() / 2.0);
+                        // knock back target with half the arrow's velocity
+                        Vector knockback = arrow.getVelocity().multiply(0.5D);
 
-                            EhmSkeletonKnockbackEvent knockbackEvent = new EhmSkeletonKnockbackEvent(event.getEntity(), (Skeleton) arrow.getShooter(), knockback, type.getKnockbackPercent());
-                            if (!knockbackEvent.isCancelled())
-                                knockbackEvent.getEntity().setVelocity(knockbackEvent.getVelocity());
-                        }
+                        EhmSkeletonKnockbackEvent knockbackEvent = new EhmSkeletonKnockbackEvent(event.getEntity(), (Skeleton) arrow.getShooter(), knockback, type.getKnockbackPercent());
+                        if (!knockbackEvent.isCancelled())
+                            knockbackEvent.getEntity().setVelocity(knockbackEvent.getVelocity());
                     }
-                } catch (NullPointerException e)
-                {
-                    plugin.getLogger().severe("##########################BEGIN ERROR############################");
-                    plugin.getLogger().severe("CustomSkeli == " + type);
-                    plugin.getLogger().severe("World: " + arrow.getWorld().getName());
-                    plugin.getLogger().severe("Ehm is enabled: " + (Arrays.asList(plugin.getModuleForClass(RootConfig.class).getEnabledWorlds()).contains(arrow.getWorld().getName()) ? "true" : "false"));
-                    for (String world : plugin.getModuleForClass(RootConfig.class).getEnabledWorlds())
-                        plugin.getLogger().severe("CustomSkelis in " + world + ": " + getSkelisForWorld(world));
-                    plugin.getLogger().severe("##########################END ERROR############################");
                 }
             }
         }
@@ -239,7 +227,8 @@ public class Skeletors extends ListenerModule
                 //Can be null if no skeletons are activated
                 if (customSkeleton != null)
                 {
-                    try
+                    //Some skeletons might not have a minion to spawn
+                    if (customSkeleton.getMinionType() != null)
                     {
                         int currentSpawnLimit = customSkeleton.getMinionType().getCurrentSpawnLimit(),
                                 totalSpawnLimit = customSkeleton.getMinionType().getTotalSpawnLimit();
@@ -274,15 +263,6 @@ public class Skeletors extends ListenerModule
                                 minion.remove();
                             }
                         }
-                    }catch (NullPointerException e)
-                    {
-                        plugin.getLogger().severe("##########################BEGIN ERROR############################");
-                        plugin.getLogger().severe("CustomSkeli == " + customSkeleton);
-                        plugin.getLogger().severe("World: " + arrow.getWorld().getName());
-                        plugin.getLogger().severe("Ehm is enabled: " + (Arrays.asList(plugin.getModuleForClass(RootConfig.class).getEnabledWorlds()).contains(arrow.getWorld().getName()) ? "true" : "false"));
-                        for (String worldName : plugin.getModuleForClass(RootConfig.class).getEnabledWorlds())
-                            plugin.getLogger().severe("CustomSkelis in " + worldName + ": " + getSkelisForWorld(worldName));
-                        plugin.getLogger().severe("##########################END ERROR############################");
                     }
                 }
             }
