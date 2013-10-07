@@ -99,12 +99,10 @@ public class Torches extends ListenerModule
             Material attachmentMaterial = block.getRelative(torch.getAttachedFace()).getType();
 
             if (attachmentMaterial == Material.DIRT || attachmentMaterial == Material.GRASS || attachmentMaterial == Material.LONG_GRASS
-                    || attachmentMaterial == Material.SAND)
+                    || attachmentMaterial == Material.SAND || attachmentMaterial == Material.GRAVEL)
             {
                 if (soundFizzEnabled)
-                {
                     messenger.send(player, MessageNode.LIMITED_TORCH_PLACEMENTS, PermissionNode.SILENT_LIMITED_TORCH_PLACEMENT, Sound.FIZZ, 20);
-                }
                 placeEvent.setCancelled(true);
             }
         }
