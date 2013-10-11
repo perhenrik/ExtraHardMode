@@ -31,7 +31,6 @@ import com.extrahardmode.mocks.MockLocation;
 import com.extrahardmode.mocks.MockWorld;
 import com.extrahardmode.mocks.events.MockCreatureSpawnEvent;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.UtilityModule;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
@@ -49,7 +48,7 @@ public class TestAntiGrinder
 
     private final RootConfig CFG = new RootConfig(plugin);
 
-    private final AntiGrinder module = new AntiGrinder(plugin, CFG, new BlockModule(plugin), new UtilityModule(plugin));
+    private final AntiGrinder module = new AntiGrinder(plugin, CFG, new BlockModule(plugin));
 
 
     @Before

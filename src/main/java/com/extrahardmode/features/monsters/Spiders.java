@@ -51,15 +51,19 @@ import java.util.List;
  */
 public class Spiders extends ListenerModule
 {
-    private final ExtraHardMode plugin;
-
-    private final RootConfig CFG;
+    private RootConfig CFG;
 
 
     public Spiders(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 

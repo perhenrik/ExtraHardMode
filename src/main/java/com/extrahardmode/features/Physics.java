@@ -55,22 +55,25 @@ import java.util.List;
  */
 public class Physics extends ListenerModule
 {
-    private final ExtraHardMode plugin;
+    private RootConfig CFG;
 
-    private final RootConfig CFG;
+    private BlockModule blockModule;
 
-    private final BlockModule blockModule;
-
-    private final PlayerModule playerModule;
+    private PlayerModule playerModule;
 
 
     public Physics(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
-
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 

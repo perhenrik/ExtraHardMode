@@ -30,7 +30,6 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
-import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.EvaporateWaterTask;
@@ -60,23 +59,24 @@ import org.bukkit.util.Vector;
  */
 public class AntiFarming extends ListenerModule
 {
-    private final ExtraHardMode plugin;
+    private RootConfig CFG;
 
-    private final RootConfig CFG;
+    private PlayerModule playerModule;
 
-    private final UtilityModule utils;
-
-    private final PlayerModule playerModule;
-
-    private final BlockModule blockModule;
+    private BlockModule blockModule;
 
 
     public AntiFarming(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
-        utils = plugin.getModuleForClass(UtilityModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
     }

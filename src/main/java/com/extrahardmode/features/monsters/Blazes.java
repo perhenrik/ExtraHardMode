@@ -54,21 +54,20 @@ import org.bukkit.util.Vector;
  */
 public class Blazes extends ListenerModule
 {
-    private ExtraHardMode plugin;
-
     private RootConfig CFG;
 
-    private final MessageConfig messages;
-
-    private UtilityModule utils;
 
     public Blazes(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
-        messages = plugin.getModuleForClass(MessageConfig.class);
-        utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
 
@@ -138,7 +137,7 @@ public class Blazes extends ListenerModule
         final int blazeSplitPercent = CFG.getInt(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT, world.getName());
 
         // FEATURE: nether blazes drop extra loot (glowstone and gunpowder)
-        if (bonusLoot && entity instanceof Blaze &&! EntityHelper.isLootLess(entity))
+        if (bonusLoot && entity instanceof Blaze && !EntityHelper.isLootLess(entity))
         {
             if (world.getEnvironment() == World.Environment.NETHER)
             {
@@ -208,7 +207,7 @@ public class Blazes extends ListenerModule
         final boolean blazeFireOnDmg = CFG.getBoolean(RootNode.BLAZES_DROP_FIRE_ON_DAMAGE, world.getName());
 
         // FEATURE: magma cubes become blazes when they take damage
-        if (magmacubesBlazeOnDmg && entityType == EntityType.MAGMA_CUBE && !entity.isDead() &&! EntityHelper.hasFlagIgnore(entity))
+        if (magmacubesBlazeOnDmg && entityType == EntityType.MAGMA_CUBE && !entity.isDead() && !EntityHelper.hasFlagIgnore(entity))
         {
             entity.remove(); // remove magma cube
             EntityHelper.spawn(entity.getLocation().add(0.0, 2.0, 0.0), EntityType.BLAZE); // replace with blaze
@@ -244,6 +243,5 @@ public class Blazes extends ListenerModule
                 }
             }
         }
-
     }
 }

@@ -41,29 +41,21 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-/**
- * @author Diemex
- */
+/** @author Diemex */
 public class Horses extends ListenerModule
 {
-    /**
-     * Store the food value of each horse
-     */
+    /** Store the food value of each horse */
     private Map<UUID/*HorseId*/, Integer/*Food Value*/> healthMap = new HashMap<UUID, Integer>(8);
 
-    /**
-     * Is the horse being ridden and should we drain its food
-     */
+    /** Is the horse being ridden and should we drain its food */
     private Set<UUID> horsesBeingRidden = new HashSet<UUID>(8);
 
-    private final RootConfig CFG;
+    private RootConfig CFG;
 
-    /**
-     * This horse has been right clicked with food and player shouldn't mount the horse
-     */
+    /** This horse has been right clicked with food and player shouldn't mount the horse */
     private Set<UUID> enterMap = new HashSet<UUID>(1);
 
-    private final MsgModule messenger;
+    private MsgModule messenger;
 
     private final String horseMessage = "extrahardmode.horse.health";
 
@@ -71,14 +63,19 @@ public class Horses extends ListenerModule
     public Horses(ExtraHardMode plugin)
     {
         super(plugin);
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         messenger = plugin.getModuleForClass(MsgModule.class);
     }
 
 
-    /**
-     * Block using of horse inventory in caves, prevent usage of horses as transportable chests
-     */
+    /** Block using of horse inventory in caves, prevent usage of horses as transportable chests */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onHorseInvClick(InventoryClickEvent event)
     {
@@ -101,9 +98,7 @@ public class Horses extends ListenerModule
     //TODO Save who is on a horse and who not
 
 
-    /**
-     * Greatly increase damage to horses
-     */
+    /** Greatly increase damage to horses */
     @EventHandler
     public void onHorseDamage(EntityDamageEvent event)
     {

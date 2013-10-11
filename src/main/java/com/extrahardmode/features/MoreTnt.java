@@ -18,25 +18,30 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.*;
 
-/**
- * @author Diemex
- */
+/** @author Diemex */
 public class MoreTnt extends ListenerModule
 {
-    private final RootConfig CFG;
-    private final PlayerModule playerModule;
+    private RootConfig CFG;
+
+    private PlayerModule playerModule;
+
 
     public MoreTnt(ExtraHardMode plugin)
     {
         super(plugin);
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
 
-    /**
-     * Gets called just when an ItemStack is about to be crafted Sets the amount in the result slot to the appropriate number
-     */
+    /** Gets called just when an ItemStack is about to be crafted Sets the amount in the result slot to the appropriate number */
     @EventHandler
     public void beforeCraft(PrepareItemCraftEvent event)
     {

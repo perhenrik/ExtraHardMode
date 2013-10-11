@@ -4,7 +4,6 @@ package com.extrahardmode.features;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.config.messages.MsgCategory;
 import com.extrahardmode.events.*;
@@ -13,6 +12,7 @@ import com.extrahardmode.module.MaterialHelper;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.FindAndReplace;
+import com.extrahardmode.service.ListenerModule;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -21,7 +21,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -38,30 +37,28 @@ import java.util.List;
 /**
  * @author Diemex
  */
-public class Tutorial implements Listener
+public class Tutorial extends ListenerModule
 {
-    private final ExtraHardMode plugin;
+    private MsgModule messenger;
 
-    private final MsgModule messenger;
+    private RootConfig CFG;
 
-    private final RootConfig CFG;
-
-    private final MessageConfig msgCfg;
-
-    private final BlockModule blockModule;
-
-    private final PlayerModule playerModule;
+    private BlockModule blockModule;
 
 
     public Tutorial(ExtraHardMode plugin)
     {
-        this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        this.messenger = plugin.getModuleForClass(MsgModule.class);
+        super(plugin);
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
+        messenger = plugin.getModuleForClass(MsgModule.class);
         CFG = plugin.getModuleForClass(RootConfig.class);
-        this.msgCfg = plugin.getModuleForClass(MessageConfig.class);
-        this.blockModule = plugin.getModuleForClass(BlockModule.class);
-        this.playerModule = plugin.getModuleForClass(PlayerModule.class);
+        blockModule = plugin.getModuleForClass(BlockModule.class);
     }
 
 

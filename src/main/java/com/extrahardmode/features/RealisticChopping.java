@@ -46,29 +46,24 @@ import org.bukkit.event.block.BlockBreakEvent;
 public class RealisticChopping extends ListenerModule
 {
     /**
-     * Plugin-Reference to get modules
-     */
-    private final ExtraHardMode plugin;
-
-    /**
      * Config Instance
      */
-    private final RootConfig CFG;
+    private RootConfig CFG;
 
     /**
      * Stuff like FallingBlocks etc.
      */
-    private final BlockModule blockModule;
+    private BlockModule blockModule;
 
     /**
      * Temporarily store data
      */
-    private final DataStoreModule dataStoreModule;
+    private DataStoreModule dataStoreModule;
 
     /**
      * Permissions etc.
      */
-    private final PlayerModule playerModule;
+    private PlayerModule playerModule;
 
 
     /**
@@ -77,7 +72,13 @@ public class RealisticChopping extends ListenerModule
     public RealisticChopping(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
         dataStoreModule = plugin.getModuleForClass(DataStoreModule.class);

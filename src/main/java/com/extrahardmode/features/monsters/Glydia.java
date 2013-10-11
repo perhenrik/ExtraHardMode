@@ -62,23 +62,27 @@ import java.util.List;
  */
 public class Glydia extends ListenerModule
 {
-    private ExtraHardMode plugin = null;
-
     private RootConfig CFG = null;
 
-    private final MessageConfig messages;
+    private MessageConfig messages;
 
-    private final DataStoreModule data;
+    private DataStoreModule data;
 
-    private final MsgModule messenger;
+    private MsgModule messenger;
 
-    private final PlayerModule playerModule;
+    private PlayerModule playerModule;
 
 
     public Glydia(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         data = plugin.getModuleForClass(DataStoreModule.class);

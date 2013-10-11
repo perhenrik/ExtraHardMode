@@ -41,19 +41,20 @@ import org.bukkit.inventory.PlayerInventory;
  */
 public class PlayerModule extends EHMModule
 {
-    private final RootConfig CFG;
-
-    private final BlockModule blockModule;
+    private RootConfig CFG;
 
 
-    /**
-     * Constructor
-     */
+    /** Constructor */
     public PlayerModule(ExtraHardMode plugin)
     {
         super(plugin);
+    }
+
+
+    @Override
+    public void starting()
+    {
         CFG = plugin.getModuleForClass(RootConfig.class);
-        blockModule = plugin.getModuleForClass(BlockModule.class);
     }
 
 
@@ -78,9 +79,7 @@ public class PlayerModule extends EHMModule
     }
 
 
-    /**
-     * Is the player currently on a ladder?
-     */
+    /** Is the player currently on a ladder? */
     public boolean isPlayerOnLadder(Player player)
     {
         return player.getLocation().getBlock().getType().equals(Material.LADDER);
@@ -90,12 +89,9 @@ public class PlayerModule extends EHMModule
     /**
      * Calculates the weight of the players inventory with the given amount of weight per item
      *
-     * @param armorPoints
-     *         Points per piece of worn armor
-     * @param inventoryPoints
-     *         Points per full stack of one item
-     * @param toolPoints
-     *         Points per tool (which doesn't stack)
+     * @param armorPoints     Points per piece of worn armor
+     * @param inventoryPoints Points per full stack of one item
+     * @param toolPoints      Points per tool (which doesn't stack)
      */
     public static float inventoryWeight(Player player, float armorPoints, float inventoryPoints, float toolPoints)
     {
@@ -135,10 +131,8 @@ public class PlayerModule extends EHMModule
     /**
      * Counts the number of items of a specific type
      *
-     * @param inv
-     *         to count in
-     * @param toCount
-     *         the Material to count
+     * @param inv     to count in
+     * @param toCount the Material to count
      *
      * @return the number of items as Integer
      */
@@ -159,8 +153,7 @@ public class PlayerModule extends EHMModule
     /**
      * Get the percentage of how much less damage a player will take.
      *
-     * @param player
-     *         to check the armor contents for
+     * @param player to check the armor contents for
      *
      * @return the percentage as double. Example 0.8 when full armor is worn
      */
@@ -212,14 +205,6 @@ public class PlayerModule extends EHMModule
             }
         }
         return points;
-    }
-
-
-    @Override
-
-
-    public void starting()
-    {
     }
 
 

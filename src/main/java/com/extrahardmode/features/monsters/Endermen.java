@@ -48,15 +48,19 @@ import org.bukkit.event.player.PlayerTeleportEvent;
  */
 public class Endermen extends ListenerModule
 {
-    private ExtraHardMode plugin = null;
-
     private RootConfig CFG = null;
 
 
     public Endermen(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 

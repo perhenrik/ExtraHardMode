@@ -25,10 +25,8 @@ package com.extrahardmode.features;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.EntityHelper;
-import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -43,21 +41,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-/**
- * A MonsterGrinder Inhibitor which disables drops for Monsters which appear to be farmed or which have been killed in
- * conditions where the Player had a clear advantage
- */
+/** A MonsterGrinder Inhibitor which disables drops for Monsters which appear to be farmed or which have been killed in conditions where the Player had a clear advantage */
 public class AntiGrinder extends ListenerModule
 {
-    private ExtraHardMode plugin;
+    private RootConfig CFG;
 
-    private final RootConfig CFG;
-
-    private MessageConfig messages;
-
-    private final BlockModule blockModule;
-
-    private final UtilityModule utils;
+    private BlockModule blockModule;
 
 
     /**
@@ -65,35 +54,31 @@ public class AntiGrinder extends ListenerModule
      * <p/>
      * Dependency Injection Constructor
      *
-     * @param CFG
-     *         instantiated RootConfig
-     * @param blockModule
-     *         BlockModule
-     * @param utils
-     *         UtilityModule
+     * @param CFG         instantiated RootConfig
+     * @param blockModule BlockModule
+     * @param utils       UtilityModule
      */
-    public AntiGrinder(ExtraHardMode plugin, RootConfig CFG, BlockModule blockModule, UtilityModule utils)
+    public AntiGrinder(ExtraHardMode plugin, RootConfig CFG, BlockModule blockModule)
     {
         super(plugin);
-        this.plugin = plugin;
         this.CFG = CFG;
         this.blockModule = blockModule;
-        this.utils = utils;
     }
 
 
-    /**
-     * Your basic constructor of choice
-     */
+    /** Your basic constructor of choice */
     public AntiGrinder(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
-        CFG = plugin.getModuleForClass(RootConfig.class);
-        messages = plugin.getModuleForClass(MessageConfig.class);
+    }
 
+
+    @Override
+    public void starting()
+    {
+        super.starting();
+        CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
-        utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
 

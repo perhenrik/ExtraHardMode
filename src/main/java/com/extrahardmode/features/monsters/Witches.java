@@ -48,15 +48,19 @@ import org.bukkit.event.entity.PotionSplashEvent;
  */
 public class Witches extends ListenerModule
 {
-    private final ExtraHardMode plugin;
-
-    private final RootConfig CFG;
+    private RootConfig CFG;
 
 
     public Witches(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
@@ -64,8 +68,7 @@ public class Witches extends ListenerModule
     /**
      * When an Entity spawns: Spawn a Witch above ground sometimes instead of a Zombie
      *
-     * @param event
-     *         which occurred
+     * @param event which occurred
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
@@ -94,8 +97,7 @@ public class Witches extends ListenerModule
     /**
      * When a potion breaks When Witches throw a potion we sometimes spawn explosions or monsters
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(priority = EventPriority.LOW)
     public void onPotionSplash(PotionSplashEvent event)

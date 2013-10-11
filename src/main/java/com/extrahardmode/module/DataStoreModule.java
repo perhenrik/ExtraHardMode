@@ -36,53 +36,39 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * Manages miscellaneous data.
- */
+/** Manages miscellaneous data. */
 public class DataStoreModule extends EHMModule
 {
 
-    /**
-     * In-memory cache for player data
-     */
+    /** In-memory cache for player data */
     private final Map<String, PlayerData> playerNameToPlayerDataMap = new ConcurrentHashMap<String, PlayerData>();
 
-    /**
-     * List of previous locations.
-     */
+    /** List of previous locations. */
     private final List<SimpleEntry<Player, Location>> previousLocations = new CopyOnWriteArrayList<SimpleEntry<Player, Location>>();
 
-    /**
-     * List of Players fighting the dragon
-     */
+    /** List of Players fighting the dragon */
     private final List<String> playersFightingDragon = new ArrayList<String>();
 
-    /**
-     * Config
-     */
-    private final RootConfig CFG;
+    /** Config */
+    private RootConfig CFG;
 
 
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Plugin instance.
+     * @param plugin - Plugin instance.
      */
     public DataStoreModule(ExtraHardMode plugin)
     {
         super(plugin);
-        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
 
     /**
-     * Constructor for dependency injection for testing purposes
+     * TestConstructor (dependency injection)
      *
-     * @param plugin
-     *         Plugin instance
-     * @param CFG
-     *         configinstance
+     * @param plugin Plugin instance
+     * @param CFG    configinstance
      */
     public DataStoreModule(ExtraHardMode plugin, RootConfig CFG)
     {
@@ -91,11 +77,26 @@ public class DataStoreModule extends EHMModule
     }
 
 
+    @Override
+    public void starting()
+    {
+        CFG = plugin.getModuleForClass(RootConfig.class);
+    }
+
+
+    @Override
+    public void closing()
+    {
+        playerNameToPlayerDataMap.clear();
+        previousLocations.clear();
+        playersFightingDragon.clear();
+    }
+
+
     /**
      * Retrieves player data from memory
      *
-     * @param playerName
-     *         - Name of player.
+     * @param playerName - Name of player.
      *
      * @return PlayerData associated with it.
      */
@@ -138,38 +139,16 @@ public class DataStoreModule extends EHMModule
     }
 
 
-    @Override
-    public void starting()
-    {
-    }
-
-
-    @Override
-    public void closing()
-    {
-        playerNameToPlayerDataMap.clear();
-        previousLocations.clear();
-    }
-
-
-    /**
-     * Holds all of ExtraHardMode's player-tied data
-     */
+    /** Holds all of ExtraHardMode's player-tied data */
     public class PlayerData
     {
-        /**
-         * Last message sent.
-         */
+        /** Last message sent. */
         public MessageNode lastMessageSent = null;
 
-        /**
-         * Last message timestamp.
-         */
+        /** Last message timestamp. */
         public long lastMessageTimestamp = 0;
 
-        /**
-         * Cached weight
-         */
+        /** Cached weight */
         public float cachedWeightStatus = -1.0F; //player can't have negative invetory....
     }
 }

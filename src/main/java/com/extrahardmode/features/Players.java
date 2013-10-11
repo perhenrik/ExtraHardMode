@@ -25,12 +25,10 @@ package com.extrahardmode.features;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.events.EhmPlayerExtinguishFireEvent;
 import com.extrahardmode.events.EhmPlayerInventoryLossEvent;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.PlayerModule;
-import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
@@ -61,15 +59,9 @@ import java.util.List;
  */
 public class Players extends ListenerModule
 {
-    private ExtraHardMode plugin = null;
-
     private RootConfig CFG = null;
 
-    private final MessageConfig messages;
-
-    private UtilityModule utils = null;
-
-    private final PlayerModule playerModule;
+    private PlayerModule playerModule;
 
 
     /**
@@ -78,10 +70,14 @@ public class Players extends ListenerModule
     public Players(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
-        messages = plugin.getModuleForClass(MessageConfig.class);
-        utils = plugin.getModuleForClass(UtilityModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 

@@ -34,9 +34,7 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Diemex
- */
+/** @author Diemex */
 public class MsgPersistModule extends EHMModule
 {
     private final String dbFile;
@@ -45,16 +43,12 @@ public class MsgPersistModule extends EHMModule
 
     private final String playerTable = "players";
 
-    private final MessageConfig messages;
+    private MessageConfig messages;
 
-    /**
-     * Buffer player ids (playerName, playerId)
-     */
+    /** Buffer player ids (playerName, playerId) */
     private Map<String, Integer> playerIdBuffer;
 
-    /**
-     * Buffer data from the db (playerid, message, value)
-     */
+    /** Buffer data from the db (playerid, message, value) */
     private Table<Integer, MessageNode, Integer> buffer;
 
 
@@ -67,13 +61,27 @@ public class MsgPersistModule extends EHMModule
     {
         super(plugin);
         this.dbFile = dbFile;
-        messages = plugin.getModuleForClass(MessageConfig.class);
     }
 
 
-    /**
-     * Make sure JDBC is enabled/loaded
-     */
+    @Override
+    public void starting()
+    {
+        messages = plugin.getModuleForClass(MessageConfig.class);
+        playerIdBuffer = new HashMap<String, Integer>();
+        testJDBC();
+        initializeTables();
+    }
+
+
+    @Override
+    public void closing()
+    {
+        playerIdBuffer = null;
+    }
+
+
+    /** Make sure JDBC is enabled/loaded */
     protected void testJDBC()
     {
         try
@@ -160,9 +168,7 @@ public class MsgPersistModule extends EHMModule
     }
 
 
-    /**
-     * Creates tables if they do not exist.
-     */
+    /** Creates tables if they do not exist. */
     private void initializeTables()
     {
         Connection conn = null;
@@ -353,21 +359,5 @@ public class MsgPersistModule extends EHMModule
                 set(node, playerId, 0);
             }
         }
-    }
-
-
-    @Override
-    public void starting()
-    {
-        playerIdBuffer = new HashMap<String, Integer>();
-        testJDBC();
-        initializeTables();
-    }
-
-
-    @Override
-    public void closing()
-    {
-        playerIdBuffer = null;
     }
 }

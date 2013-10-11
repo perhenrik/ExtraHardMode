@@ -44,25 +44,27 @@ import org.bukkit.inventory.ItemStack;
  */
 public class Silverfish extends ListenerModule
 {
-    private ExtraHardMode plugin = null;
-
     private RootConfig CFG = null;
 
 
     public Silverfish(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
 
     /**
-     * when an entity tries to change a block (does not include player block changes) don't allow silverfish to change
-     * blocks
+     * when an entity tries to change a block (does not include player block changes) don't allow silverfish to change blocks
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onEntityChangeBlock(EntityChangeBlockEvent event)
@@ -83,9 +85,7 @@ public class Silverfish extends ListenerModule
     }
 
 
-    /**
-     * When an entity dies, drop cobble for SilverFish
-     */
+    /** When an entity dies, drop cobble for SilverFish */
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event)
     {

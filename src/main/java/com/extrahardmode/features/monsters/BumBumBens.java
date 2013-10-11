@@ -51,19 +51,23 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class BumBumBens extends ListenerModule
 {
-    private ExtraHardMode plugin = null;
-
     private RootConfig CFG = null;
 
     private EntityHelper EntityHelper = null;
 
-    private final PlayerModule playerModule;
+    private PlayerModule playerModule;
 
 
     public BumBumBens(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }

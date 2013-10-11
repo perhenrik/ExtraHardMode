@@ -46,11 +46,9 @@ import org.bukkit.event.entity.EntityTargetEvent;
  */
 public class MonsterRules extends ListenerModule
 {
-    private ExtraHardMode plugin = null;
-
     private RootConfig CFG = null;
 
-    private final MessageConfig messages;
+    private MessageConfig messages;
 
     private UtilityModule utils = null;
 
@@ -58,7 +56,13 @@ public class MonsterRules extends ListenerModule
     public MonsterRules(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         messages = plugin.getModuleForClass(MessageConfig.class);
         utils = plugin.getModuleForClass(UtilityModule.class);

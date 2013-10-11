@@ -41,17 +41,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Module that manages blocks and physics logic.
- */
+/** Module that manages blocks and physics logic. */
 public class BlockModule extends EHMModule
 {
-    /**
-     * Marks a block/location for whatever reason... currently used by waterbucket restrictions
-     */
+    /** Marks a block/location for whatever reason... currently used by waterbucket restrictions */
     private final String MARK = "ExtraHardMode.Mark";
 
-    private final RootConfig CFG;
+    private RootConfig CFG;
 
 
     /**
@@ -62,6 +58,12 @@ public class BlockModule extends EHMModule
     public BlockModule(ExtraHardMode plugin)
     {
         super(plugin);
+    }
+
+
+    @Override
+    public void starting()
+    {
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
@@ -72,8 +74,7 @@ public class BlockModule extends EHMModule
      * @param block          - Target block.
      * @param recursionCount - Number of times to execute.
      * @param forceCheck     - Whether to force adjacent blocks to be checked for the first iteration
-     * @param wait           - how many ticks to wait before the next task, mainly to prevent crashes when FallingBlocks
-     *                       collide
+     * @param wait           - how many ticks to wait before the next task, mainly to prevent crashes when FallingBlocks collide
      */
     public void physicsCheck(Block block, int recursionCount, boolean forceCheck, int wait)
     {
@@ -225,9 +226,7 @@ public class BlockModule extends EHMModule
     }
 
 
-    /**
-     * Get all "touching" BlockFaces including top/bottom
-     */
+    /** Get all "touching" BlockFaces including top/bottom */
     public BlockFace[] getTouchingFaces()
     {
         return new BlockFace[]{
@@ -316,9 +315,7 @@ public class BlockModule extends EHMModule
     }
 
 
-    /**
-     * Returns if Material is a plant that should be affected by the farming Rules
-     */
+    /** Returns if Material is a plant that should be affected by the farming Rules */
     public boolean isPlant(Material material)
     {
         return material.equals(Material.CROPS)
@@ -346,9 +343,7 @@ public class BlockModule extends EHMModule
     }
 
 
-    /**
-     * Is the given material a tool, e.g. doesn't stack
-     */
+    /** Is the given material a tool, e.g. doesn't stack */
     public static boolean isTool(Material material)
     {
         return material.name().endsWith("AXE") //axe & pickaxe
@@ -364,9 +359,7 @@ public class BlockModule extends EHMModule
     }
 
 
-    /**
-     * is the given material armor
-     */
+    /** is the given material armor */
     public boolean isArmor(Material material)
     {
         return material.name().endsWith("HELMET")
@@ -376,9 +369,7 @@ public class BlockModule extends EHMModule
     }
 
 
-    /**
-     * Consider this block a natural block for spawning?
-     */
+    /** Consider this block a natural block for spawning? */
     public boolean isNaturalSpawnMaterial(Material material)
     {
         return material == Material.GRASS
@@ -395,9 +386,7 @@ public class BlockModule extends EHMModule
     }
 
 
-    /**
-     * Is this a natural block for netherspawning?
-     */
+    /** Is this a natural block for netherspawning? */
     public boolean isNaturalNetherSpawn(Material material)
     {
         return material == Material.NETHERRACK
@@ -466,12 +455,6 @@ public class BlockModule extends EHMModule
         }
         return mat;
     }
-
-
-
-    @Override
-    public void starting()
-    {/*ignored*/}
 
 
     @Override

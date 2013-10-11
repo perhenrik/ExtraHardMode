@@ -43,22 +43,24 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-/**
- * Zombies <p> can resurrect themselves , make players slow when hit </p>
- */
+/** Zombies <p> can resurrect themselves , make players slow when hit </p> */
 public class Zombies extends ListenerModule
 {
-    private final ExtraHardMode plugin;
+    private RootConfig CFG;
 
-    private final RootConfig CFG;
-
-    private final PlayerModule playerModule;
+    private PlayerModule playerModule;
 
 
     public Zombies(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
@@ -78,7 +80,7 @@ public class Zombies extends ListenerModule
         int zombiesReanimatePercent = CFG.getInt(RootNode.ZOMBIES_REANIMATE_PERCENT, world.getName());
 
         // FEATURE: zombies may reanimate if not on fire when they die
-        if (zombiesReanimatePercent > 0 &&! EntityHelper.hasFlagIgnore(entity))
+        if (zombiesReanimatePercent > 0 && !EntityHelper.hasFlagIgnore(entity))
         {
             if (entity.getType() == EntityType.ZOMBIE)
             {
@@ -146,9 +148,8 @@ public class Zombies extends ListenerModule
         }
     }
 
-    /**
-     * Flag Zombies that have been called in as reinforcements to not respawn
-     */
+
+    /** Flag Zombies that have been called in as reinforcements to not respawn */
     @EventHandler
     public void onZombieReinforcements(CreatureSpawnEvent event)
     {

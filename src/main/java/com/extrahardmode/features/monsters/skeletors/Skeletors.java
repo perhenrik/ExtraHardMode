@@ -53,10 +53,8 @@ import java.util.*;
  */
 public class Skeletors extends ListenerModule
 {
-    /** Plugin */
-    private final ExtraHardMode plugin;
     /** Configuration */
-    private final RootConfig CFG;
+    private RootConfig CFG;
     /** All our custom Skeletons, 0 is the default skeleton. all other skeletons are identified by the id of their PotionEffectType */
     private Map<String, List<CustomSkeleton>> customSkeletonsTypes = new HashMap<String, List<CustomSkeleton>>();
 
@@ -69,7 +67,13 @@ public class Skeletors extends ListenerModule
     public Skeletors(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         //Initlizes all CustomSkeletons for all the worlds that we are activated in.
         for (String world : CFG.getEnabledWorlds())

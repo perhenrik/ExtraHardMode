@@ -28,7 +28,6 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
-import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.PermissionNode;
@@ -53,23 +52,24 @@ import org.bukkit.material.Torch;
  */
 public class Torches extends ListenerModule
 {
-    private final ExtraHardMode plugin;
+    private RootConfig CFG;
 
-    private final RootConfig CFG;
+    private MsgModule messenger;
 
-    private final UtilityModule utils;
-
-    private final MsgModule messenger;
-
-    private final PlayerModule playerModule;
+    private PlayerModule playerModule;
 
 
     public Torches(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
-        utils = plugin.getModuleForClass(UtilityModule.class);
         messenger = plugin.getModuleForClass(MsgModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }

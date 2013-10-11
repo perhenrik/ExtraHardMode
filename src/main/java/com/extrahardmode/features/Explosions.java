@@ -27,9 +27,7 @@ import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CreateExplosionTask;
@@ -56,15 +54,7 @@ import java.util.List;
  */
 public class Explosions extends ListenerModule
 {
-    private final ExtraHardMode plugin;
-
-    private final RootConfig CFG;
-
-    private final MessageConfig messages;
-
-    private final UtilityModule utils;
-
-    private final PlayerModule playerModule;
+    private RootConfig CFG;
 
     private final String tag = "extrahardmode.explosion.fallingblock";
 
@@ -75,12 +65,14 @@ public class Explosions extends ListenerModule
     public Explosions(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
-        CFG = plugin.getModuleForClass(RootConfig.class);
-        messages = plugin.getModuleForClass(MessageConfig.class);
-        utils = plugin.getModuleForClass(UtilityModule.class);
+    }
 
-        playerModule = plugin.getModuleForClass(PlayerModule.class);
+
+    @Override
+    public void starting()
+    {
+        super.starting();
+        CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
 

@@ -41,14 +41,12 @@ import org.bukkit.entity.Player;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * @author Max
- */
+/** @author Max */
 public class MsgModule extends EHMModule
 {
-    private final MessageConfig messages;
+    private MessageConfig messages;
 
-    private final MsgPersistModule persistModule;
+    private MsgPersistModule persistModule;
 
     private SBPopupManager manager;
     private boolean popupsEnabled = false;
@@ -56,12 +54,16 @@ public class MsgModule extends EHMModule
     private final Table<String, MessageNode, Long> timeouts = HashBasedTable.create();
 
 
-    /**
-     * Constructor
-     */
+    /** Constructor */
     public MsgModule(ExtraHardMode plugin)
     {
         super(plugin);
+    }
+
+
+    @Override
+    public void starting()
+    {
         messages = plugin.getModuleForClass(MessageConfig.class);
         persistModule = plugin.getModuleForClass(MsgPersistModule.class);
         try
@@ -76,9 +78,16 @@ public class MsgModule extends EHMModule
     }
 
 
+    @Override
+    public void closing()
+    {
+        timeouts.clear();
+    }
+
+
     private void send(Player player, MessageNode node, String message)
     {
-         switch (messages.getCat(node))
+        switch (messages.getCat(node))
         {
             case NOTIFICATION:
                 if (player == null)
@@ -252,17 +261,5 @@ public class MsgModule extends EHMModule
     public boolean popupsAreEnabled()
     {
         return popupsEnabled;
-    }
-
-
-    @Override
-    public void starting()
-    {
-    }
-
-
-    @Override
-    public void closing()
-    {
     }
 }

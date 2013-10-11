@@ -46,17 +46,21 @@ import java.util.List;
  */
 public class Ghasts extends ListenerModule
 {
-    private final ExtraHardMode plugin;
+    private RootConfig CFG;
 
-    private final RootConfig CFG;
-
-    private final PlayerModule playerModule;
+    private PlayerModule playerModule;
 
 
     public Ghasts(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }

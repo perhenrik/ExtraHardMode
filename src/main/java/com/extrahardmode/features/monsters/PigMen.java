@@ -52,15 +52,19 @@ import org.bukkit.inventory.ItemStack;
  */
 public class PigMen extends ListenerModule
 {
-    private final ExtraHardMode plugin;
-
-    private final RootConfig CFG;
+    private RootConfig CFG;
 
 
     public PigMen(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
@@ -86,7 +90,7 @@ public class PigMen extends ListenerModule
             if (pigWartFortress && underBlock.getType() == Material.NETHER_BRICK)
                 event.getDrops().add(new ItemStack(Material.NETHER_STALK));
 
-            // FEATURE: pig zombies sometimes drop nether wart when slain elsewhere
+                // FEATURE: pig zombies sometimes drop nether wart when slain elsewhere
             else if (pigWartDropEveryWherePercent > 0 && plugin.random(pigWartDropEveryWherePercent))
                 event.getDrops().add(new ItemStack(Material.NETHER_STALK));
         }

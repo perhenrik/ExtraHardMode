@@ -59,25 +59,26 @@ import java.util.Map;
  */
 public class HardenedStone extends ListenerModule
 {
-    private final ExtraHardMode plugin;
+    private RootConfig CFG;
 
-    private final RootConfig CFG;
+    private MsgModule messenger;
 
-    private final UtilityModule utils;
+    private BlockModule blockModule;
 
-    private final MsgModule messenger;
-
-    private final BlockModule blockModule;
-
-    private final PlayerModule playerModule;
+    private PlayerModule playerModule;
 
 
     public HardenedStone(ExtraHardMode plugin)
     {
         super(plugin);
-        this.plugin = plugin;
+    }
+
+
+    @Override
+    public void starting()
+    {
+        super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
-        utils = plugin.getModuleForClass(UtilityModule.class);
         messenger = plugin.getModuleForClass(MsgModule.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
