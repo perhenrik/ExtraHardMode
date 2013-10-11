@@ -355,6 +355,10 @@ public enum RootNode implements ConfigNode
      */
     NEAR_BEDROCK_BLAZE_SPAWN_PERCENT("Blazes.Near Bedrock Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 50),
     /**
+     * Should drops be blocked in the overworld
+     */
+    BLAZES_BLOCK_DROPS_OVERWORLD("Blazes.Block Drops In Overworld", VarType.BOOLEAN, true),
+    /**
      * percentage of pig zombies which will be replaced with blazes
      */
     BONUS_NETHER_BLAZE_SPAWN_PERCENT("Blazes.Bonus Nether Spawn Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),

@@ -26,9 +26,7 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.EntityHelper;
-import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CreateExplosionTask;
 import org.bukkit.Location;
@@ -43,6 +41,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
 /**
@@ -133,8 +132,9 @@ public class Blazes extends ListenerModule
         World world = entity.getWorld();
 
         final boolean bonusLoot = CFG.getBoolean(RootNode.BLAZES_DROP_BONUS_LOOT, world.getName());
+        final boolean blockDrops = CFG.getBoolean(RootNode.BLAZES_BLOCK_DROPS_OVERWORLD, world.getName());
         final boolean blazesExplodeOnDeath = CFG.getBoolean(RootNode.BLAZES_EXPLODE_ON_DEATH, world.getName());
-        final int blazeSplitPercent = CFG.getInt(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT, world.getName());
+        int blazeSplitPercent = CFG.getInt(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT, world.getName());
 
         // FEATURE: nether blazes drop extra loot (glowstone and gunpowder)
         if (bonusLoot && entity instanceof Blaze && !EntityHelper.isLootLess(entity))
@@ -149,8 +149,7 @@ public class Blazes extends ListenerModule
                 {
                     event.getDrops().add(new ItemStack(Material.GLOWSTONE_DUST, 2));
                 }
-            } else // no drops in the normal world (restricting blaze rods to the
-            // nether)
+            } else if (blockDrops)// no drops in the normal world (restricting blaze rods to the nether)
             {
                 event.getDrops().clear();
             }
@@ -171,14 +170,21 @@ public class Blazes extends ListenerModule
         // FEATURE: nether blazes may multiply on death
         if (blazeSplitPercent > 0 && world.getEnvironment() == World.Environment.NETHER && entity instanceof Blaze)
         {
+            //Blazes which have split already are less likely to split
+            int respawnCount = entity.getMetadata("extrahardmode.blaze.splitcount").size() > 0 ? entity.getMetadata("extrahardmode.blaze.splitcount").get(0).asInt() : 0;
+            respawnCount++;
+            blazeSplitPercent = (int) (1.0D /  respawnCount * blazeSplitPercent);
             if (plugin.random(blazeSplitPercent))
             {
                 //TODO EhmBlazeSplitEvent
                 Entity firstNewBlaze = EntityHelper.spawn(entity.getLocation(), EntityType.BLAZE);
                 firstNewBlaze.setVelocity(new Vector(1, 0, 1));
+                //Save the new splitcounter
+                firstNewBlaze.setMetadata("extrahardmode.blaze.splitcount", new FixedMetadataValue(plugin, respawnCount));
 
                 Entity secondNewBlaze = EntityHelper.spawn(entity.getLocation(), EntityType.BLAZE);
                 secondNewBlaze.setVelocity(new Vector(-1, 0, -1));
+                secondNewBlaze.setMetadata("extrahardmode.blaze.splitcount", new FixedMetadataValue(plugin, respawnCount));
 
                 // if this blaze was marked lootless, mark the new blazes the same
                 if (EntityHelper.isLootLess(entity))
