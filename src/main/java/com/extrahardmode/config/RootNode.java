@@ -536,6 +536,10 @@ public enum RootNode implements ConfigNode
      */
     MORE_FALLING_BLOCKS_ENABLE("Additional Falling Blocks.Enable", VarType.BOOLEAN, true),
     /**
+     * Should Falling Blocks break torches when they land
+     */
+    MORE_FALLING_BLOCKS_BREAK_TORCHES("Additional Falling Blocks.Break Torches", VarType.BOOLEAN, true),
+    /**
      * How much damage loose Falling Logs do to Players and Animals
      */
     MORE_FALLING_BLOCKS_DMG_AMOUNT("Additional Falling Blocks.Dmg Amount When Hitting Players", VarType.INTEGER, 2),

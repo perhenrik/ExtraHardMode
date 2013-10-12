@@ -90,8 +90,9 @@ public class BlockModule extends EHMModule
     /**
      * Makes one single block subject to gravity
      *
-     * @param block          - Block to apply physics to.
-     * @param damageEntities - if Entities should be damaged
+     * @param block          Block to apply physics to.
+     * @param damageEntities if Entities should be damaged
+     * @param breakBlocks    if blocks that otherwise would break the FallingBlock when it lands should be broken
      *
      * @return the UUID of this FallingBlock
      */
@@ -103,20 +104,37 @@ public class BlockModule extends EHMModule
 
         // grass and mycel become dirt when they fall
         if ((block.getType() == Material.GRASS || block.getType() == Material.MYCEL) && CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_TURN_TO_DIRT, block.getWorld().getName()))
-        {
             block.setType(Material.DIRT);
-        }
 
         FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
         fallingBlock.setDropItem(false);
         // remove original block
         block.setType(Material.AIR);
 
-        if (damageEntities)
+        final boolean breakTorches = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_BREAK_TORCHES, block.getWorld().getName());
+        //TODO expand on this, it's only rudimentary, doesnt break torches if there are multiple fallingblocks (only breaks the first)
+        if (breakTorches)
         {
-            EntityHelper.markForProcessing(plugin, fallingBlock);
+            Block current = block;
+            Block below = block.getRelative(BlockFace.DOWN);
+            //Check downwards and break any obstructing blocks
+            for (int y = current.getY(); y > 0; y--)
+            {
+                //Only breaks if the block below is solid and the block on top is transparent
+                if (below.getType().isSolid())
+                {
+                    if (breaksFallingBlock(current.getType()))
+                        current.breakNaturally();
+                    //Will land on the block below
+                    break;
+                }
+                current = below;
+                below = current.getRelative(BlockFace.DOWN);
+            }
         }
 
+        if (damageEntities) //mark so we know the block is from us
+            EntityHelper.markForProcessing(plugin, fallingBlock);
 
         return fallingBlock.getUniqueId();
     }
@@ -301,17 +319,9 @@ public class BlockModule extends EHMModule
      */
     public boolean breaksFallingBlock(Material mat)
     {
-        return mat.name().contains("TORCH") //redstone torches aswell
-                || mat.name().endsWith("STEP")  //all SLABS (steps)
-                || mat.name().contains("RAIL")  //all RAILS
-                || mat == Material.RED_ROSE
-                || mat == Material.YELLOW_FLOWER
-                || mat == Material.BROWN_MUSHROOM
-                || mat == Material.SIGN
-                || mat == Material.TRAP_DOOR
-                || mat == Material.DEAD_BUSH
-                || mat == Material.LONG_GRASS
-                || mat == Material.WEB;
+        return mat.isTransparent() &&
+                mat != Material.PORTAL &&
+                mat != Material.ENDER_PORTAL;
     }
 
 
