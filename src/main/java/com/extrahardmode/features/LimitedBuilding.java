@@ -87,7 +87,8 @@ public class LimitedBuilding extends ListenerModule
 
         if (!playerBypasses && limitedBlockPlacement)
         {
-            Block playerBlock = player.getLocation().getBlock();
+            //When a Player stands on a halfslab the block beneath him is not the halfslab it's the block below the halfslab
+            Block playerBlock = world.getBlockAt(player.getLocation().getBlockX(), (int) Math.ceil(player.getLocation().getY()), player.getLocation().getBlockZ());
             Block underBlock = playerBlock.getRelative(BlockFace.DOWN);
             Block against = placeEvent.getBlockAgainst();
 
@@ -122,6 +123,15 @@ public class LimitedBuilding extends ListenerModule
             else if ((against.getX() == playerBlock.getX() && against.getZ() == playerBlock.getZ()) && (against.getX() != block.getX() || against.getZ() != block.getZ()))
             {
                 messenger.send(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
+                placeEvent.setCancelled(true);
+            }
+            //FIX: Jump Pillar Exploit
+            //We just want to block crouching over a block and placing blocks in the adjacent column while jumping
+            else if (underBlock.getType() == Material.AIR && block.getY() <= underBlock.getY() && block.getX() - underBlock.getX() <= 1 && block.getZ() - underBlock.getZ() <= 1 &&
+                    (underBlock.getRelative(BlockFace.EAST).getType() == Material.AIR && underBlock.getRelative(BlockFace.NORTH).getType() == Material.AIR &&
+                    underBlock.getRelative(BlockFace.SOUTH).getType() == Material.AIR && underBlock.getRelative(BlockFace.WEST).getType() == Material.AIR))
+            {
+                messenger.send(player, MessageNode.REALISTIC_BUILDING_BENEATH, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
             }
         }
