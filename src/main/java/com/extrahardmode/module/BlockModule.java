@@ -40,6 +40,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /** Module that manages blocks and physics logic. */
 public class BlockModule extends EHMModule
@@ -49,6 +50,7 @@ public class BlockModule extends EHMModule
 
     private RootConfig CFG;
 
+    private final Pattern slabPattern = Pattern.compile("(?!DOUBLE).*STEP");
 
     /**
      * Constructor.
@@ -319,9 +321,16 @@ public class BlockModule extends EHMModule
      */
     public boolean breaksFallingBlock(Material mat)
     {
-        return mat.isTransparent() &&
+        return  (mat.isTransparent() &&
                 mat != Material.PORTAL &&
-                mat != Material.ENDER_PORTAL;
+                mat != Material.ENDER_PORTAL) ||
+                mat == Material.WEB ||
+                mat == Material.DAYLIGHT_DETECTOR ||
+                mat == Material.TRAP_DOOR ||
+                mat == Material.SIGN_POST ||
+                mat == Material.WALL_SIGN ||
+                //Match all slabs besides double slab
+                slabPattern.matcher(mat.name()).matches();
     }
 
 
