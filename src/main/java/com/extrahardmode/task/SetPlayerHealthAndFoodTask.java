@@ -39,7 +39,7 @@ public class SetPlayerHealthAndFoodTask implements Runnable
     /**
      * Health level.
      */
-    private final double health;
+    private final double healthPercentage;
 
     /**
      * Food level.
@@ -52,15 +52,15 @@ public class SetPlayerHealthAndFoodTask implements Runnable
      *
      * @param player
      *         - Player to adjust.
-     * @param health
-     *         - Health level.
+     * @param healthPercentage
+     *         - Health level as a percentage of the total health.
      * @param food
      *         - Food level.
      */
-    public SetPlayerHealthAndFoodTask(Player player, double health, int food)
+    public SetPlayerHealthAndFoodTask(Player player, double healthPercentage, int food)
     {
         this.player = player;
-        this.health = health;
+        this.healthPercentage = healthPercentage;
         this.food = food;
     }
 
@@ -72,7 +72,7 @@ public class SetPlayerHealthAndFoodTask implements Runnable
         {
             try
             {
-                this.player.setHealth(this.health);
+                this.player.setHealth(player.getMaxHealth() * healthPercentage / 100.0);
             } catch (IllegalArgumentException ignored)
             {
             } // if less than zero or higher than max, no changes

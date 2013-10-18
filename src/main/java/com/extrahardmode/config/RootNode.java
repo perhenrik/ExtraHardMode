@@ -148,9 +148,13 @@ public enum RootNode implements ConfigNode
      */
     PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("Player.Death.Item Stacks Forfeit Percent", VarType.INTEGER, SubType.PERCENTAGE, 10),
     /**
+     * Enable custom Health
+     */
+    PLAYER_RESPAWN_HEALTH_ENABLE ("Player.Death.Respawn Health.Enable", VarType.BOOLEAN, true),
+    /**
      * how much health after respawn
      */
-    PLAYER_RESPAWN_HEALTH("Player.Death.Respawn Health", VarType.DOUBLE, SubType.NATURAL_NUMBER, 15),
+    PLAYER_RESPAWN_HEALTH_PERCENTAGE("Player.Death.Respawn Health.Percentage", VarType.DOUBLE, SubType.PERCENTAGE, 75),
     /**
      * how much food bar after respawn
      */

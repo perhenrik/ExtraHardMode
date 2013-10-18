@@ -97,7 +97,7 @@ public class Players extends ListenerModule
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.RESPAWN_FOOD_HEALTH);
 
         final double respawnHealth = playerBypasses ? player.getMaxHealth()
-                : CFG.getDouble(RootNode.PLAYER_RESPAWN_HEALTH, world.getName());
+                : CFG.getDouble(RootNode.PLAYER_RESPAWN_HEALTH_PERCENTAGE, world.getName());
         final int respawnFood = playerBypasses ? 20
                 : CFG.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, world.getName());
 
