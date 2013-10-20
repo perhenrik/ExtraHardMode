@@ -38,10 +38,7 @@ import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.potion.PotionEffectType;
 
 /**
@@ -52,8 +49,6 @@ import org.bukkit.potion.PotionEffectType;
 public class BumBumBens extends ListenerModule
 {
     private RootConfig CFG = null;
-
-    private EntityHelper EntityHelper = null;
 
     private PlayerModule playerModule;
 
@@ -219,6 +214,34 @@ public class BumBumBens extends ListenerModule
                     }
                 }
             }
+        }
+    }
+
+
+    /**
+     * When something explodes
+     * <p/>
+     * Increase size of Creeper explosions
+     */
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    //give some time for other plugins to block the event
+    public void onExplosion(EntityExplodeEvent event)
+    {
+        Entity entity = event.getEntity();
+        World world = event.getLocation().getWorld();
+
+        final boolean customCreeper = CFG.getBoolean(RootNode.EXPLOSIONS_CREEPERS_ENABLE, world.getName());
+
+        // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
+        // Charged creeper explosion is handled in onEntityDamage
+        if (customCreeper && entity instanceof Creeper && !EntityHelper.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
+        {
+            event.setCancelled(true);
+            EntityHelper.flagIgnore(plugin, entity);//Ignore this creeper in further calls to this method
+            if (((Creeper) entity).isPowered())
+                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED).run();
+            else //normal creeper
+                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER).run();
         }
     }
 }
