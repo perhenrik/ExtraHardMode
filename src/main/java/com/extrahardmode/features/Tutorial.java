@@ -277,17 +277,6 @@ public class Tutorial extends ListenerModule
 
 
     /**
-     * Inform about Silverfish
-     */
-    @EventHandler
-    public void onShootSilverfish(EhmSkeletonShootSilverfishEvent event)
-    {
-        //event.getSilverfish().addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 1, 1000));
-        //event.getSilverfish().setFireTicks(100);
-    }
-
-
-    /**
      * Inform about not being able to extinguish fire with bare hands
      */
     @EventHandler

@@ -237,47 +237,22 @@ public enum RootNode implements ConfigNode
     ZOMBIES_REANIMATE_PERCENT("Zombies.Reanimate Percent", VarType.INTEGER, SubType.PERCENTAGE, 50),
 
     /**
-     * ############# # SKELETONS # #############
+     * #############
+     * # SKELETONS #
+     * #############
      */
-    SKELI_GREY_ENABLE("Skeletons.Grey.Enable", VarType.BOOLEAN, true),
-    SKELI_GREY_WEIGHT("Skeletons.Grey.Spawn Weight", VarType.INTEGER, 2),
     /**
      * percent chance skeletons have a chance to knock back targets with arrows
      */
-    SKELI_GREY_KNOCK_BACK_PERCENT("Skeletons.Grey.Arrows Knockback Percent", VarType.INTEGER, SubType.PERCENTAGE, 30),
+    SKELETONS_KNOCK_BACK_PERCENT ("Skeletons.Arrows Knockback Percent", VarType.INTEGER, SubType.PERCENTAGE, 30),
+    /**
+     * percent chance skeletons will release silverfish instead of firing arrows
+     */
+    SKELETONS_RELEASE_SILVERFISH("Skeletons.Shoot Silverfish Percent", VarType.INTEGER, SubType.PERCENTAGE, 30),
     /**
      * whether or not arrows will pass harmlessly through skeletons
      */
-    SKELI_GREY_DEFLECT_ARROWS("Skeletons.Grey.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 70),
-    SKELI_GREY_RELEASE_PERCENT("Skeletons.Grey.Silverfish Minion.Release Percent", VarType.INTEGER, 20),
-    SKELI_GREY_MINION_LIMIT("Skeletons.Grey.Silverfish Minion.Concurrent Spawned Limit", VarType.INTEGER, 5),
-    SKELI_GREY_MINION_TOTAL_LIMIT("Skeletons.Grey.Silverfish Minion.Stop Spawning After X Total Minions Have Been Released", VarType.INTEGER, 20),
-    SKELI_GREY_MINION_KILL_WITH("Skeletons.Grey.Silverfish Minion.Minions Die When Summoner Dies", VarType.BOOLEAN, true),
-    SKELI_GREY_MINION_LOOT_PERCENTAGE("Skeletons.Grey.Silverfish Minion.Drop Loot Percentage", VarType.INTEGER, 100),
-
-    SKELI_GREEN_ENABLE("Skeletons.Green.Enable", VarType.BOOLEAN, true),
-    SKELI_GREEN_WEIGHT("Skeletons.Green.Spawn Weight", VarType.INTEGER, 1),
-    SKELI_GREEN_KNOCK_BACK_PERCENT("Skeletons.Green.Arrows Knockback Percent", VarType.INTEGER, 30),
-    SKELI_GREEN_DEFLECT_ARROWS("Skeletons.Green.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 70),
-    SKELI_GREEN_RELEASE_PERCENT("Skeletons.Green.Slime Minion.Release Percent", VarType.INTEGER, 20),
-    SKELI_GREEN_MINION_LIMIT("Skeletons.Green.Slime Minion.Concurrent Spawned Limit", VarType.INTEGER, 5),
-    SKELI_GREEN_MINION_TOTAL_LIMIT("Skeletons.Green.Slime Minion.Stop Spawning After X Total Minions Have Been Released", VarType.INTEGER, 20),
-    SKELI_GREEN_MINION_KILL_WITH("Skeletons.Green.Slime Minion.Minions Die When Summoner Dies", VarType.BOOLEAN, true),
-    SKELI_GREEN_MINION_LOOT_PERCENTAGE("Skeletons.Green.Slime Minion.Drop Loot Percentage", VarType.INTEGER, 100),
-
-    SKELI_RED_ENABLE("Skeletons.Red.Enable", VarType.BOOLEAN, true),
-    SKELI_RED_WEIGHT("Skeletons.Red.Spawn Weight", VarType.INTEGER, 1),
-    SKELI_RED_KNOCK_BACK_PERCENT("Skeletons.Red.Arrows Knockback Percent", VarType.INTEGER, 30),
-    SKELI_RED_DEFLECT_ARROWS("Skeletons.Red.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 70),
-    SKELI_RED_RELEASE_PERCENT("Skeletons.Red.Magmacube Minion.Release Percent", VarType.INTEGER, 20),
-    SKELI_RED_MINION_LIMIT("Skeletons.Red.Magmacube Minion.Concurrent Spawned Limit", VarType.INTEGER, 5),
-    SKELI_RED_MINION_TOTAL_LIMIT("Skeletons.Red.Magmacube Minion.Stop Spawning After X Total Minions Have Been Released", VarType.INTEGER, 10),
-    SKELI_RED_MINION_KILL_WITH("Skeletons.Red.Magmacube Minion.Minions Die When Summoner Dies", VarType.BOOLEAN, true),
-    SKELI_RED_MINION_LOOT_PERCENTAGE("Skeletons.Red.Magmacube Minion.Drop Loot Percentage", VarType.INTEGER, 50),
-
-    SKELI_SWORDGUY_ENABLE("Skeletons.Sword Skeli.Enable", VarType.BOOLEAN, true),
-    SKELI_SWORDGUY_WEIGHT("Skeletons.Sword Skeli.Spawn Weight", VarType.INTEGER, 2),
-    SKELI_SWORDGUY_DEFLECT_ARROWS("Skeletons.Sword Skeli.Deflect Arrows Percent", VarType.INTEGER, 0),
+    SKELETONS_DEFLECT_ARROWS("Skeletons.Deflect Arrows Percent", VarType.INTEGER, SubType.PERCENTAGE, 100),
 
     /**
      * ##############
