@@ -150,11 +150,11 @@ public enum RootNode implements ConfigNode
     /**
      * Enable custom Health
      */
-    PLAYER_RESPAWN_HEALTH_ENABLE ("Player.Death.Respawn Health.Enable", VarType.BOOLEAN, true),
+    PLAYER_RESPAWN_HEALTH_ENABLE ("Player.Death.Override Respawn Health.Enable", VarType.BOOLEAN, true),
     /**
      * how much health after respawn
      */
-    PLAYER_RESPAWN_HEALTH_PERCENTAGE("Player.Death.Respawn Health.Percentage", VarType.DOUBLE, SubType.PERCENTAGE, 75),
+    PLAYER_RESPAWN_HEALTH_PERCENTAGE("Player.Death.Override Respawn Health.Percentage", VarType.INTEGER, SubType.PERCENTAGE, 75),
     /**
      * how much food bar after respawn
      */

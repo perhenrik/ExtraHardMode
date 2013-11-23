@@ -284,8 +284,11 @@ public abstract class MultiWorldConfig extends EHMModule
             }
             case INTEGER:
             {
-                if (value instanceof Integer)
+                if (value instanceof Integer || value instanceof Double)
                 {
+                    //fix error when double is provided which can be casted
+                    if (value instanceof  Double)
+                        value = ((Double) value).intValue();
                     OPTIONS.put(world, node, value);
                     break;
                 }

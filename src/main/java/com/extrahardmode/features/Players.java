@@ -96,15 +96,15 @@ public class Players extends ListenerModule
 
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.RESPAWN_FOOD_HEALTH);
 
-        final double respawnHealth = playerBypasses ? player.getMaxHealth()
-                : CFG.getDouble(RootNode.PLAYER_RESPAWN_HEALTH_PERCENTAGE, world.getName());
+        final int respawnHealthPercentage = playerBypasses ? 100
+                : CFG.getInt(RootNode.PLAYER_RESPAWN_HEALTH_PERCENTAGE, world.getName());
         final int respawnFood = playerBypasses ? 20
                 : CFG.getInt(RootNode.PLAYER_RESPAWN_FOOD_LEVEL, world.getName());
 
-        if ((respawnFood < 20 || respawnHealth < player.getMaxHealth()) && respawnHealth > 0.0) //maxHealth and maxFoodLevel are both 20, but there is no method for maxFoodLevel
+        if (respawnFood < 20 && respawnHealthPercentage > 0 && respawnHealthPercentage < 100)
         {
             //TODO HIGH EhmPlayerRespawnEvent
-            SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, respawnHealth, respawnFood);
+            SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, player.getMaxHealth() * respawnHealthPercentage / 100.0D, respawnFood);
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L); // half-second delay
         }
         // FEATURE: players can't swim when they're carrying a lot of weight, reset the cached value
