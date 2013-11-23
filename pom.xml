@@ -37,8 +37,8 @@
         <project.mainclass>com.extrahardmode.ExtraHardMode</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
-        <mc-version>1.6.2</mc-version>
-        <bukkit-ver>R1.1-SNAPSHOT</bukkit-ver>
+        <mc-version>1.6.4</mc-version>
+        <bukkit-ver>R2.1-SNAPSHOT</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/java/</srcDir>
         <!--Jenkins Build-Number to be included in the jar manifest and will be parsed by the /version command-->

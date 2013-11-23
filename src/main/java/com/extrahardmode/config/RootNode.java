@@ -242,13 +242,62 @@ public enum RootNode implements ConfigNode
      * #############
      */
     /**
-     * percent chance skeletons have a chance to knock back targets with arrows
+     * Enable Snowball Arrows
      */
-    SKELETONS_KNOCK_BACK_PERCENT ("Skeletons.Arrows Knockback Percent", VarType.INTEGER, SubType.PERCENTAGE, 30),
+    SKELETONS_SNOWBALLS_ENABLE("Skeletons.Shoot Snowballs.Enable", VarType.BOOLEAN, true),
+    /**
+     * How often should a snowball be shot
+     */
+    SKELETONS_SNOWBALLS_PERCENT("Skeletons.Shoot Snowballs.Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
+    /**
+     * Slowness length
+     */
+    SKELETONS_SNOWBALLS_SLOW_LEN("Skeletons.Shoot Snowballs.Slow Player (ticks)", VarType.INTEGER, SubType.NATURAL_NUMBER, 100),
+
+    /**
+     * Shoot Fireworks
+     */
+    SKELETONS_FIREWORK_ENABLE("Skeletons.Shoot Fireworks.Enable", VarType.BOOLEAN, true),
+    /**
+     * Knockback Players?
+     */
+    SKELETONS_FIREWORK_PERCENT("Skeletons.Shoot Fireworks.Percent", VarType.INTEGER, SubType.PERCENTAGE, 30),
+    /**
+     * Knockback Player strength, multiplier
+     */
+    SKELETONS_FIREWORK_KNOCKBACK_VEL("Skeletons.Shoot Fireworks.Knockback Player Velocity", VarType.DOUBLE, 1.0D),
+
+    /**
+     * Skeletons can shoot fireballs whcih set you on fire
+     */
+    SKELETONS_FIREBALL_ENABLE("Skeletons.Shoot Fireballs.Enable", VarType.BOOLEAN, true),
+
+
+    SKELETONS_FIREBALL_PERCENTAGE("Skeletons.Shoot Fireballs.Percentage", VarType.INTEGER, SubType.PERCENTAGE, 10),
+
+
+    SKELETONS_FIREBALL_PLAYER_FIRETICKS("Skeletons.Shoot Fireballs.Player Fireticks", VarType.INTEGER, SubType.NATURAL_NUMBER, 40),
+
+    /**
+     * enable skeletons shooting silverfish instead of firing arrows
+     */
+    SKELETONS_RELEASE_SILVERFISH_ENABLE("Skeletons.Shoot Silverfish.Enable", VarType.BOOLEAN, true),
     /**
      * percent chance skeletons will release silverfish instead of firing arrows
      */
-    SKELETONS_RELEASE_SILVERFISH("Skeletons.Shoot Silverfish Percent", VarType.INTEGER, SubType.PERCENTAGE, 30),
+    SKELETONS_RELEASE_SILVERFISH_PERCENT("Skeletons.Shoot Silverfish.Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
+    /**
+     * Kill the silverfish after the skeleton died
+     */
+    SKELETONS_RELEASE_SILVERFISH_KILL("Skeletons.Shoot Silverfish.Kill Silverfish After Skeleton Died", VarType.BOOLEAN, true),
+    /**
+     * percent chance skeletons will release silverfish instead of firing arrows
+     */
+    SKELETONS_RELEASE_SILVERFISH_LIMIT("Skeletons.Shoot Silverfish.Limit To X Spawned At A Time", VarType.INTEGER, SubType.NATURAL_NUMBER, 5),
+    /**
+     * total limit of silverfish
+     */
+    SKELETONS_RELEASE_SILVERFISH_LIMIT_TOTAL("Skeletons.Shoot Silverfish.Limit To X Spawned In Total", VarType.INTEGER, SubType.NATURAL_NUMBER, 15),
     /**
      * whether or not arrows will pass harmlessly through skeletons
      */
