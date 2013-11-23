@@ -30,6 +30,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
 /**
  * Task to remove exposed torches.
@@ -73,8 +74,6 @@ public class RemoveExposedTorchesTask implements Runnable
     {
         final boolean rainBreaksTorches = CFG.getBoolean(RootNode.RAIN_BREAKS_TORCHES, this.chunk.getWorld().getName());
         final boolean snowBreaksCrops = CFG.getBoolean(RootNode.SNOW_BREAKS_CROPS, this.chunk.getWorld().getName());
-
-        long time = System.currentTimeMillis();
 
         if (this.chunk.getWorld().hasStorm())
         {
@@ -131,6 +130,9 @@ public class RemoveExposedTorchesTask implements Runnable
                                         {
                                             if (plugin.getRandom().nextInt(5) == 1)
                                                 block.breakNaturally();
+                                            //Snow can't be placed if its tilled soil
+                                            if (block.getRelative(BlockFace.DOWN).getType() == Material.SOIL)
+                                                block.getRelative(BlockFace.DOWN).setType(Material.DIRT);
                                             block.setType(Material.SNOW);
                                             if (plugin.getRandom().nextBoolean())
                                             {

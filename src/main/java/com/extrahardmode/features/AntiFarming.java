@@ -187,7 +187,7 @@ public class AntiFarming extends ListenerModule
         if (weakCropsEnabled && plugin.getModuleForClass(BlockModule.class).plantDies(event.getBlock(), event.getNewState().getData().getData()))
         {
             event.setCancelled(true);
-            event.getBlock().setType(Material.LONG_GRASS); // dead shrub
+            event.getBlock().setType(Material.DEAD_BUSH); // dead shrub
         }
     }
 
