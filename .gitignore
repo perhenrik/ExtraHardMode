@@ -165,6 +165,7 @@ pip-log.txt
 # Maven
 /target
 settings.xml
+profiles.xml
 
 #outputdir
 artifacts

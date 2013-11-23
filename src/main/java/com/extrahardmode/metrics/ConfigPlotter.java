@@ -96,13 +96,13 @@ public class ConfigPlotter
                     case LIMITED_BLOCK_PLACEMENT:
                     case LIMITED_TORCH_PLACEMENT:
                     case MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE:
-                        //case MORE_MONSTERS_MULTIPLIER:
-                        //case NETHER_PIGS_DROP_WART:
+                    //case MORE_MONSTERS_MULTIPLIER:
+                    //case NETHER_PIGS_DROP_WART:
                     case NO_BONEMEAL_ON_MUSHROOMS:
                     case NO_FARMING_NETHER_WART:
                     case NO_SWIMMING_IN_ARMOR:
                     case RAIN_BREAKS_TORCHES:
-                        //case SILVERFISH_CANT_ENTER_BLOCKS:
+                    //case SILVERFISH_CANT_ENTER_BLOCKS:
                     case SNOW_BREAKS_CROPS:
                     case SUPER_HARD_STONE:
                     case SUPER_HARD_STONE_PHYSICS:
@@ -155,14 +155,6 @@ public class ConfigPlotter
         }
     }
 
-
-    /**
-     * Split the last part of the ConfigNode path
-     *
-     * @param node path to split
-     *
-     * @return string at end of path
-     */
     public static String getLastPart(ConfigNode node)
     {
         String path = node.getPath();
