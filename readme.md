@@ -14,17 +14,44 @@ build: 57
 
 ## Setup
 
-``` yaml
-Enabled Worlds: [world, world_nether]
-# or: (this is a comment in yaml and will be ignored)
-Enabled Worlds:
-- world
-- world_nether 
-```
-
 By default the plugin is disabled for all worlds. You need to manually set the worlds where you want to have it enabled.
 
-It doesn't matter which difficulty you set your server on. The difficulty level in your server.properties file determines how much damage monsters do to players and how much damage a player can take from starvation. On "hard" difficulty, zombies can break down wooden doors.
+It doesn't matter which difficulty you set your server on. The difficulty level in your server.properties file determines how much damage monsters do to players and how much damage a player can take from starvation. On "hard" difficulty, zombies can break down wooden doors and spawn in reinforcements.
+
+``` yaml
+Enabled Worlds: [world, world_nether]
+# or:
+Enabled Worlds:
+- world
+- world_nether
+```
+
+## Basic information on the configuration
+
+The config cleans itself automatically and corrects incorrect input. So if something resets that means that you most likely did something wrong.
+Don't use tabs in yaml, you will get a nice error in the console and large parts of your config might reset.
+
+``` yaml
+
+# Lists can either be inputed like so
+
+Option: [world, world2, etc]
+
+# or
+
+Option:
+- world
+- world2
+- etc
+
+```
+
+If you see any '@' symbols in the config that means that the info behind the '@' symbol is extra information.
+For example this can be damage values which would define the type of slab.
+In the default falling blocks you can find "STEP@3". That is a slab with damage value 3, which is a cobblestone slab.
+
+In general if you can input a material/blocktype in the config you can either use bukkit names or the minecraft id, which can be from a mod too.
+Use which is easier for you. Note that ids will be converted to bukkit names automatically if recognized.
 
 ## Bypassing
 By default operators, players in creative and players with the [bypass permission](#permissions) bypass all player related features of extrahardmode. You can change it so that your ops can also play like regular players.
