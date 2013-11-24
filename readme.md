@@ -191,22 +191,116 @@ Killing a creeper may drop ignited tnt. The dropped tnt will act the same as pla
 A creeper which dies while being on fire will launch in the air and explode with some fireworks. Small gimmick, doesn't really increase difficulty ;).
 
 ### Blazes 
-```
-#continue here
+Blazes will spawn in the nether naturally and near bedrock in the overworld.
+
+``` yaml
+#Should blazes spawn in the overworld near lava level, set to 0 to disable 
 Near Bedrock Spawn Percent: 50
+# Percentage of blazes spawning outside of fortresses 
 Bonus Nether Spawn Percent: 20
+# Drop fire around a blaze when hit
 Drop Fire On Damage: true
+# Bonus loot including gunpowder for nether blazes
 Bonus Loot: true
+# Should blazes split into 2 blazes when slain in the nether
 Nether Split On Death Percent: 25
-``` 
+```
+
+### MagmaCubes
+
+``` yaml
+MagmaCubes:
+# How often a magmacube should spawn when a blaze spawns
+    Spawn With Nether Blaze Percent: 100
+# Should a magmacube explode and turn into a blaze    
+    Grow Into Blazes On Damage: true
+```
+
+Make magmacubes turn into blazes on hit and increase the spawns.
+
+### PigZombie
+
+``` yaml
+PigZombies:
+	# Should PigZombies be aggressive all the time
+    Always Angry: true
+    # Drop 1 netherwart in fortresses
+    Always Drop Netherwart In Fortresses: true
+    Percent Chance to Drop Netherwart Elsewhere In Nether: 25
+    #If 1-3 PigZombies should spawn when a lightning strikes
+    Spawn on Lighting Strikes:
+      Enable: true
+```
+
+Make the nether truely fearsome by having always aggroed PigZombies!
+
+### Ghasts
+
+``` yaml
+
+Ghasts:
+    Arrows Do % Damage: 20
+    Exp Multiplier: 10
+    Drops Multiplier: 5
+
+```
+Turn those white baloons into fearsome enemies by greatly increasing the amount of arrows it takes to kill them. Good loot encourage players to still pursue them.
+
+### Enderman
+
+Enderman are easy you think? Sitting behind your wall or 2 high roof? No longer! With their teleporting powers they can teleport you too. Now you better not mess with these guys...
+
+``` yaml
+
+Endermen:
+# Enable improved enderman teleportation
+    May Teleport Players: true
+
+```
+
+### Witches
+
+``` yaml 
+
+Witches:
+    Additional Attacks: true
+    Bonus Spawn Percent: 5
+
+```
+
+Add new attacks like explosions and baby zombies to the arsenal of witches. Witches naturally spawn on the surface on grass.
+
+### EnderDragon
+
+Is the EnderDragon boring, just flying around and doing nothing? No more! This dragon is really tough. She spawns lots of minions and can call enderman to help her out. Good gear will be required to beat her, but the rewards are great.
+
+``` yaml
+
+EnderDragon:
+    # Respawn the dragon once all players leave the end
+    Respawns: true
+    # Add a dragonegg to the drops
+    Drops Dragonegg: true
+    # Drop villager eggs to encourage building of a city 
+    Drops 2 Villager Eggs: true
+    # The additional attacks
+    Harder Battle: true
+    # Announce when players challenge the dragon
+    Battle Announcements: true
+    # Block building in the end, to prevent fortifications
+    No Building Allowed: true
+
+```
 
 ## Commands
 
 ### ehm
 help menu
+
 ### ehm reload
 reloads the config and restarts some tasks
 requires admin permission
+
 ### ehm version
 shows the version number of the plugin
 
@@ -230,13 +324,18 @@ Bypasses all creeper rules
 
 #### extrahardmode.silent.*
 Grants ALL silent permission nodes
+
 #### extrahardmode.silent.stone_mining_help
 Hides the stone mining help message
+
 #### extrahardmode.silent.no_placing_ore_against_stone
 Hides the no placing ore against stone message
+
 #### extrahardmode.silent.realistic_building
 Hides the realistic building message
+
 #### extrahardmode.silent.limited_torch_placement
 Hides the limited torch placement message
+
 #### extrahardmode.silent.no_torches_here
 Hides the no torches here message
