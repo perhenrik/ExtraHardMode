@@ -1,8 +1,11 @@
 # ExtraHardMode
-version: 3.4-SNAPSHOT
-  build: 57
 
-> Accept the challenges so that you can feel the exhilaration of victory.
+version: 3.4-SNAPSHOT
+
+build: 57
+
+> Accept the challenges so that you can 
+> feel the exhilaration of victory.
 > --George S. Patton
 
 ## Useful Links
@@ -11,8 +14,6 @@ version: 3.4-SNAPSHOT
 
 ## Setup
 
-By default the plugin is disabled for all worlds. You need to manually set the worlds where you want to have it enabled.
-
 ``` yaml
 Enabled Worlds: [world, world_nether]
 # or: (this is a comment in yaml and will be ignored)
@@ -20,6 +21,8 @@ Enabled Worlds:
 - world
 - world_nether 
 ```
+
+By default the plugin is disabled for all worlds. You need to manually set the worlds where you want to have it enabled.
 
 It doesn't matter which difficulty you set your server on. The difficulty level in your server.properties file determines how much damage monsters do to players and how much damage a player can take from starvation. On "hard" difficulty, zombies can break down wooden doors.
 
@@ -30,10 +33,13 @@ By default operators, players in creative and players with the [bypass permissio
 All the features that affect your world or how players perceive your world.
 
 ### Mining
+
 This module contains an "anti-branchmining" and basic "physics" module. 
 
 #### Inhibit Tunelling
-Inhibit Tunneling basically wears down tools quicker when breaking stone.
+
+Inhibit Tunneling basically wears down tools quicker when breaking stone. This is to discourage players from branchmining as you need to use more materials than you gain.
+
 ``` yaml
 Amount of Stone Tool Can Mine (Tool@Blocks):
 # Tool can be an item id or a bukkit-tool-name, f.e.
@@ -45,6 +51,7 @@ Amount of Stone Tool Can Mine (Tool@Blocks):
 ```
 
 #### Breaking Blocks Softens Surrounding Stone: 
+
 If breaking any of the blocks listed stone blocks touching the block that has been broken will turn into cobblestone. The cobblestone will then fall down.
 ``` yaml
 #A list of blocks (ores) that will soften the surrounding stone
@@ -291,6 +298,129 @@ EnderDragon:
     No Building Allowed: true
 
 ```
+
+## Farming
+
+Includes a few farming fixes and nerfes.
+
+### Weak Crops
+
+``` yaml
+
+Weak Crops:
+	  # Enable plants being able to die and requiring light etc.
+      Enable: true
+      # Percentage of plants that will die even when taking care
+      Loss Rate: 25
+      # Block trees from growing and make farming in the desert not profitable
+      Infertile Deserts: true
+      # Direct exposure to snow will kill your crops eventually
+      Snow Breaks Crops: true
+
+```
+
+Plants can die if not tended to correctly. This includes exposure to daylight, sufficient water to keep your crops alive.
+
+``` yaml
+
+	# Require players to find melonseeds, by disabling crafting
+    Cant Craft Melonseeds: true
+    # block easy mushroom farming by use of bonemeal
+    No Bonemeal On Mushrooms: true
+    # Netherwart has to be either found in fortresses or earned by killing pigmen
+    No Farming Nether Wart: true
+    # Players need to craft dyes and can't just get colored wool indefinitely
+    Sheep Grow Only White Wool: true
+    # This is a cool one, it forces players to build farms around lakes. This makes the farms look more natural. You can still use ice to create sourceblocks-
+    Buckets Dont Move Water Sources: true
+    # Animals don't drop exp
+    Animal Experience Nerf: true
+    # Block iron farms by removing iron golem drops
+    Iron Golem Nerf: true 
+
+```
+
+## Additional Falling Blocks
+
+More blocks act like sand/gravel. Make cave ins more dangerous by making falling blocks damage players.
+
+``` yaml
+Additional Falling Blocks:
+    Enable: true
+    # wheter falling blocks can break torches, effectively blocking the easy way to farm sand.
+    Break Torches: true
+    # dmg amount in hearts
+    Dmg Amount When Hitting Players: 2
+    # falling grass turns into dirt when landing
+    Turn Mycel/Grass To Dirt: true
+    # list of blocks, use bukkit names or ids
+    Enabled Blocks:
+    - GRASS
+    - MOSSY_COBBLESTONE
+    - DIRT
+    - COBBLESTONE
+    - MYCEL
+    - DOUBLE_STEP@3
+    - STEP@3,11
+
+```
+
+## Explosions
+
+Explosions are a big part of ehm and what makes it pretty awesome. We have custom explosion physics and allow you to tweak explosions to your heart's content.
+
+``` yaml
+
+Explosions:
+	# turn stone into cobble instead of breaking it
+    Turn Stone To Cobble: true
+    # Flying blocks
+    Physics:
+      Enable: true
+      # How many blocks will go flying
+      Blocks Affected Percentage: 20
+      How much blocks are propelled upwards, set higher if you want them to fly faster
+      Up Velocity: 2.0
+      # How much blocks fly to the side
+      Spread Velocity: 3.0
+      # Blocks that exceed this radius from the center of the explosion will not be placed
+      Exceed Radius Autoremove: 10
+
+```
+
+``` yaml
+
+Creeper:
+      # Override the vanilla explosion
+      Enable Custom Explosion: true
+      # settings for below the border we set 
+      Below Border:
+        # size of explosion
+        Explosion Power: 3
+        # 1/3 of blocks catch fire
+        Set Fire: false
+        # cause block damage, if false still damages players
+        World Damage: true
+      # settings for above border, e.g. surface
+      Above Border:
+        Explosion Power: 3
+        Set Fire: false
+        World Damage: true
+
+```
+
+The idea behind the explosions is that you can set them up to be different on the surface and in caves. E.g. disabling explosions on the surface.
+
+You set a border and can set the explosions below and above the border.
+
+Vanilla power values:
+
+- 1 Ghast
+- 3 Creeper
+- 4 Tnt
+- 6 Charged creeper
+
+
 
 ## Commands
 
