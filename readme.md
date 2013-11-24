@@ -5,9 +5,6 @@ version: 3.4-SNAPSHOT
 > Accept the challenges so that you can feel the exhilaration of victory.
 > --George S. Patton
 
-
-Read more at http://www.brainyquote.com/quotes/quotes/g/georgespa122094.html#jqGFtMtlOUfDQsFx.99
-
 ## Useful Links
  [Materials in Bukkit >](http://jd.bukkit.org/rb/apidocs/org/bukkit/Material.html)
  [Minecraft ids >](http://minecraft.gamepedia.com/Data_values)
@@ -84,6 +81,7 @@ Sets the player on fire when mining netherrack. This is to make it tuffer to dig
 ### Limited Block Placement 
 Will make building things harder. 
 It blocks:
+
 - Straight pillaring up (jumping and placing a block directly beneath you)
 - Building bridges in the sky (branching out with no blocks to support)
 
