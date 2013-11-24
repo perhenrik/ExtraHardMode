@@ -1,14 +1,15 @@
-<center><table>
-<tr><td>version</td><td>3.4-SNAPSHOT</td></tr>
-<tr><td>build</td><td>57</td></tr>
-</table></center>
+# ExtraHardMode
+version: 3.4-SNAPSHOT
+  build: 57
 
 ## Useful Links
-* [[http://jd.bukkit.org/rb/apidocs/org/bukkit/Material.html|Names of materials in bukkit]]
-* [[http://minecraft.gamepedia.com/Data_values|Minecraft ids with their possible datavalues]]
+* [Materials in Bukkit >](http://jd.bukkit.org/rb/apidocs/org/bukkit/Material.html)
+* [Minecraft ids >](http://minecraft.gamepedia.com/Data_values)
 
-## Enabled Worlds
-By default the plugin is disabled for all worlds.
+## Setup
+
+By default the plugin is disabled for all worlds. You need to manually set the worlds where you want to have it enabled.
+
 ``` yaml
 Enabled Worlds: [world, world_nether]
 # or: (this is a comment in yaml and will be ignored)
@@ -17,8 +18,10 @@ Enabled Worlds:
 - world_nether 
 ```
 
+It doesn't matter which difficulty you set your server on. The difficulty level in your server.properties file determines how much damage monsters do to players and how much damage a player can take from starvation. On "hard" difficulty, zombies can break down wooden doors.
+
 ## Bypassing
-By default operators, players in creative and players with the bypass permission bypass all player related features of extrahardmode. You can change it so that your ops can also play like regular players.
+By default operators, players in creative and players with the [bypass permission](#Permissions) bypass all player related features of extrahardmode. You can change it so that your ops can also play like regular players.
 
 ## World Rules
 All the features that affect your world or how players perceive your world.
@@ -192,3 +195,41 @@ Drop Fire On Damage: true
 Bonus Loot: true
 Nether Split On Death Percent: 25
 ``` 
+
+## Commands
+
+### ehm
+help menu
+### ehm reload
+reloads the config and restarts some tasks
+requires admin permission
+### ehm version
+shows the version number of the plugin
+
+
+## Permissions
+### extrahardmode.admin
+Needed for commands like reload
+
+### Bypassing
+
+#### extrahardmode.bypass.*
+Bypasses all features which are triggered by a player, defaults to op
+
+#### extrahardmode.bypass.creepers
+Bypasses all creeper rules
+
+### Silence
+
+#### extrahardmode.silent.*
+Grants ALL silent permission nodes
+#### extrahardmode.silent.stone_mining_help
+Hides the stone mining help message
+#### extrahardmode.silent.no_placing_ore_against_stone
+Hides the no placing ore against stone message
+#### extrahardmode.silent.realistic_building
+Hides the realistic building message
+#### extrahardmode.silent.limited_torch_placement
+Hides the limited torch placement message
+#### extrahardmode.silent.no_torches_here
+Hides the no torches here message
