@@ -215,6 +215,9 @@ Nether Split On Death Percent: 25
 
 ### MagmaCubes
 
+Make magmacubes turn into blazes on hit and increase the spawns.
+
+
 ``` yaml
 MagmaCubes:
 # How often a magmacube should spawn when a blaze spawns
@@ -223,9 +226,11 @@ MagmaCubes:
     Grow Into Blazes On Damage: true
 ```
 
-Make magmacubes turn into blazes on hit and increase the spawns.
-
 ### PigZombie
+
+
+Make the nether truely fearsome by having always aggroed PigZombies!
+
 
 ``` yaml
 PigZombies:
@@ -239,9 +244,9 @@ PigZombies:
       Enable: true
 ```
 
-Make the nether truely fearsome by having always aggroed PigZombies!
-
 ### Ghasts
+
+Turn those white baloons into fearsome enemies by greatly increasing the amount of arrows it takes to kill them. Good loot encourage players to still pursue them.
 
 ``` yaml
 
@@ -251,7 +256,6 @@ Ghasts:
     Drops Multiplier: 5
 
 ```
-Turn those white baloons into fearsome enemies by greatly increasing the amount of arrows it takes to kill them. Good loot encourage players to still pursue them.
 
 ### Enderman
 
@@ -267,6 +271,8 @@ Endermen:
 
 ### Witches
 
+Add new attacks like explosions and baby zombies to the arsenal of witches. Witches naturally spawn on the surface on grass.
+
 ``` yaml 
 
 Witches:
@@ -274,8 +280,6 @@ Witches:
     Bonus Spawn Percent: 5
 
 ```
-
-Add new attacks like explosions and baby zombies to the arsenal of witches. Witches naturally spawn on the surface on grass.
 
 ### EnderDragon
 
@@ -307,6 +311,8 @@ Includes a few farming fixes and nerfes.
 
 ``` yaml
 
+Plants can die if not tended to correctly. This includes exposure to daylight, sufficient water to keep your crops alive.
+
 Weak Crops:
 	  # Enable plants being able to die and requiring light etc.
       Enable: true
@@ -316,12 +322,6 @@ Weak Crops:
       Infertile Deserts: true
       # Direct exposure to snow will kill your crops eventually
       Snow Breaks Crops: true
-
-```
-
-Plants can die if not tended to correctly. This includes exposure to daylight, sufficient water to keep your crops alive.
-
-``` yaml
 
 	# Require players to find melonseeds, by disabling crafting
     Cant Craft Melonseeds: true
@@ -388,6 +388,17 @@ Explosions:
 
 ```
 
+The idea behind the explosions is that you can set them up to be different on the surface and in caves. E.g. disabling explosions on the surface.
+
+You set a border and can set the explosions below and above the border.
+
+Vanilla power values:
+
+- Ghast: 1
+- Creeper: 3
+- Tnt: 4
+- Charged creeper: 6
+
 ``` yaml
 
 Creeper:
@@ -408,19 +419,6 @@ Creeper:
         World Damage: true
 
 ```
-
-The idea behind the explosions is that you can set them up to be different on the surface and in caves. E.g. disabling explosions on the surface.
-
-You set a border and can set the explosions below and above the border.
-
-Vanilla power values:
-
-- 1 Ghast
-- 3 Creeper
-- 4 Tnt
-- 6 Charged creeper
-
-
 
 ## Commands
 
