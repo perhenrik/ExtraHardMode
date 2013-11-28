@@ -57,13 +57,13 @@ Use which is easier for you. Note that ids will be converted to bukkit names aut
 By default operators, players in creative and players with the [bypass permission](#permissions) bypass all player related features of extrahardmode. You can change it so that your ops can also play like regular players.
 
 ``` yaml
-    Bypassing:
-        # Check for bypass permissions extrahardmode.bypass.xyz
-        Check For Permission: true
-        # as ehm doesn't make sense for creative mode players bypass
-        Creative Mode Bypasses: true
-        # If you are an op bypass, I use this for testing.
-        Operators Bypass: false
+Bypassing:
+    # Check for bypass permissions extrahardmode.bypass.xyz
+    Check For Permission: true
+    # as ehm doesn't make sense for creative mode players bypass
+    Creative Mode Bypasses: true
+    # If you are an op bypass, I use this for testing.
+    Operators Bypass: false
 ```
 
 ## World Rules
@@ -80,14 +80,16 @@ The most successful players will be those who map the surface and develop a clev
 Inhibit Tunneling basically wears down tools quicker when breaking stone. This is to discourage players from branchmining as you need to use more materials than you gain.
 
 ``` yaml
+Inhibit Tunneling:
+    Enable: true
 
-Amount of Stone Tool Can Mine (Tool@Blocks):
-# Tool can be an item id or a bukkit-tool-name, f.e.
-- IRON_PICKAXE@32
-# which means that you can mine 32 blocks of stone before your pickaxe will break
+    Amount of Stone Tool Can Mine (Tool@Blocks):
+    # Tool can be an item id or a bukkit-tool-name, f.e.
+    - IRON_PICKAXE@32
+    # which means that you can mine 32 blocks of stone before your pickaxe will break
 
-#257 is the minecraft id of a iron pickaxe and and basically means the same as "IRON_PICKAXE@32"
-- 257@32
+    #257 is the minecraft id of a iron pickaxe and and basically means the same as "IRON_PICKAXE@32"
+    - 257@32
 
 #Note: You can also use item ids from mods that add new tools (mcpc+)!
 
@@ -101,17 +103,20 @@ Of course, TNT can make a really big mess, since it also softens stone to subjec
 
 ``` yaml
 
-#A list of blocks (ores) that will soften the surrounding stone
-Blocks (Block@id,id2):
+Breaking Blocks Softens Surrounding Stone:
+    Enable: true
 
-# You can use minecraft ids and data
-# If f.e. you wanted only spruce wood planks to soften surrounding stone and not the other planks
-# you would check http://minecraft.gamepedia.com/Data_values#Wood_Planks for the data of spruce wood which is 1
+    #A list of blocks (ores) that will soften the surrounding stone
+    Blocks (Block@id,id2):
 
-- WOOD@1 # = spruce wood
-- WOOD@1,2 # spruce and birch wood
+    # You can use minecraft ids and data
+    # If f.e. you wanted only spruce wood planks to soften surrounding stone and not the other planks
+    # you would check http://minecraft.gamepedia.com/Data_values#Wood_Planks for the data of spruce wood which is 1
 
-- ADD_OTHER_BLOCKS
+    - WOOD@1 # = spruce wood
+    - WOOD@1,2 # spruce and birch wood
+
+    - ADD_OTHER_BLOCKS
 
 ```
 
@@ -123,13 +128,13 @@ Blocks (Block@id,id2):
 
 
 ``` yaml
-
-#Block placement of torches below y-level 30. Makes for scarrier caves on the lower levels, increases mob spawns and makes diamonds harder to get. Set to 0 to disable.
-No Placement Under Y: 30
-#Soft materials include sand and dirt. Idea is that players don't litter the landscape with torches.
-No Placement On Soft Materials: true
-# When it rains there is a chance that torches will be removed in a chunk. The torches wil drop to the ground. Even a nonsolid block is enough to protect your torches.
-Rain Breaks Torches: true
+Torches:
+    #Block placement of torches below y-level 30. Makes for scarrier caves on the lower levels, increases mob spawns and makes diamonds harder to get. Set to 0 to disable.
+    No Placement Under Y: 30
+    #Soft materials include sand and dirt. Idea is that players don't litter the landscape with torches.
+    No Placement On Soft Materials: true
+    # When it rains there is a chance that torches will be removed in a chunk. The torches wil drop to the ground. Even a nonsolid block is enough to protect your torches.
+    Rain Breaks Torches: true
 
 ```
 
@@ -138,8 +143,9 @@ Rain Breaks Torches: true
 Warn player when a creeper is about to drop tnt and play a fizzing when torch goes out. Sounds only play if appropriate options are activated.
 
 ``` yaml
-Torch Fizzing: true #A lava fizz when a torch's placement has been blocked
-Creeper Tnt Warning: true #A Ghast shriek when a creeper drops tnt
+Play Sounds:
+    Torch Fizzing: true #A lava fizz when a torch's placement has been blocked
+    Creeper Tnt Warning: true #A Ghast shriek when a creeper drops tnt
 ```
 
 ### Breaking Netherrack Starts Fire Percent
@@ -147,8 +153,8 @@ Creeper Tnt Warning: true #A Ghast shriek when a creeper drops tnt
 Sparks a fire when mining netherrack. The careless player will put out the fire by hand, which will set him on fire. This results in it being tuffer to dig tunnels in the nether and avoid all dangers by doing so.
 
 ``` yaml
-    # 0 disables
-    Breaking Netherrack Starts Fire Percent: 20
+# 0 disables
+Breaking Netherrack Starts Fire Percent: 20
 ```
 #cfg
 
@@ -227,23 +233,23 @@ Death:
 Adds a weight system to your inventory. If your inventory exceeds the weight you will be pulled down and eventually drown. This is to encourage players to use boats and make swimming up waterfalls harder.
 
 ``` yaml
-
-Enable: true #Enable feature
-#Set to false if you want to exempt players from drowning when swimming up 1x1 waterstreams
-Block Elevators/Waterfalls: true
-#The maximum inventory weight you can have before starting to drown
-Max Points: 18.0
-#One piece of worn armor would add 2.0 weight. So full set of armor adds 8.0
-One Piece Of Worn Armor Adds: 2.0
-#A stack of any item adds 1.0, half a stack add 0.5 so it calculates fractions
-One Stack Adds: 1.0
-#A tool is any item that doesn't stack, swords, axes, not worn armor, shears etc
-One Tool Adds: 0.5
-#Basically an esoteric percentage of how fast you drown. 35 actually doesnt really make you drown. 50 would make you drown
-Drown Rate: 35
-#If your inventory weight exceeds the max weight every weightpoint will add 2 to the drownrate.
-Weight = 25 => (base) + (exceeding) * (modifier) = 35 + 7 * 2 = 49 (new drown rate)
-Overencumbrance Adds To Drown Rate: 2
+No Swimming When Too Heavy:
+    Enable: true #Enable feature
+    #Set to false if you want to exempt players from drowning when swimming up 1x1 waterstreams
+    Block Elevators/Waterfalls: true
+    #The maximum inventory weight you can have before starting to drown
+    Max Points: 18.0
+    #One piece of worn armor would add 2.0 weight. So full set of armor adds 8.0
+    One Piece Of Worn Armor Adds: 2.0
+    #A stack of any item adds 1.0, half a stack add 0.5 so it calculates fractions
+    One Stack Adds: 1.0
+    #A tool is any item that doesn't stack, swords, axes, not worn armor, shears etc
+    One Tool Adds: 0.5
+    #Basically an esoteric percentage of how fast you drown. 35 actually doesnt really make you drown. 50 would make you drown
+    Drown Rate: 35
+    #If your inventory weight exceeds the max weight every weightpoint will add 2 to the drownrate.
+    Weight = 25 => (base) + (exceeding) * (modifier) = 35 + 7 * 2 = 49 (new drown rate)
+    Overencumbrance Adds To Drown Rate: 2
 
 ```
 
@@ -270,10 +276,11 @@ It does this by increasing the packspawns with random monsters. So if a pack of 
 
 ``` yaml
 
-#Maximum y value where packspawns are increased. Set to 0 to disable
-Max Y: 55
-#Multiplier. Normal packspawns are 1-4 monsters. A setting of 2 would increase it to 2-8. Note that this doesn't increase spawnlimits. If the spawnlimit is reached and no natural spawns occur this won't increase the limit.
-Multiplier: 2
+More Monsters:
+    #Maximum y value where packspawns are increased. Set to 0 to disable
+    Max Y: 55
+    #Multiplier. Normal packspawns are 1-4 monsters. A setting of 2 would increase it to 2-8. Note that this doesn't increase spawnlimits. If the spawnlimit is reached and no natural spawns occur this won't increase the limit.
+    Multiplier: 2
 
 ```
 
@@ -282,16 +289,19 @@ Multiplier: 2
 This works indepent from "More Monsters". It spawns monsters even if there is sufficient light. Currently it will spawn monsters in locations where you have been previously. It's meant to make players not feel completely safe once they have lit up caves.
 
 ``` yaml
-#Feature enabled below 55 (caves). Set to 1 to disable 
-Max Y: 55
+
+#Feature enabled below 55 (caves). Set to 0 to disable
+Monsters Spawn In Light Max Y: 55
+
 ```
 
 #### Horses 
 WIP: Will include food as requirement for horses.
 
 ``` yaml
-#Block the usage of chests on horses in caves, to prevent usage of horses as mobile chests.
-Block Usage Of Chest Below: 55
+Horses:
+    #Block the usage of chests on horses in caves, to prevent usage of horses as mobile chests.
+    Block Usage Of Chest Below: 55
 ```
 
 ### Zombies 
@@ -388,16 +398,17 @@ A creeper which dies while being on fire will launch in the air and explode with
 Blazes will spawn in the nether naturally and near bedrock in the overworld.
 
 ``` yaml
-#Should blazes spawn in the overworld near lava level, set to 0 to disable 
-Near Bedrock Spawn Percent: 50
-# Percentage of blazes spawning outside of fortresses 
-Bonus Nether Spawn Percent: 20
-# Drop fire around a blaze when hit
-Drop Fire On Damage: true
-# Bonus loot including gunpowder for nether blazes
-Bonus Loot: true
-# Should blazes split into 2 blazes when slain in the nether
-Nether Split On Death Percent: 25
+Blazes:
+    #Should blazes spawn in the overworld near lava level, set to 0 to disable
+    Near Bedrock Spawn Percent: 50
+    # Percentage of blazes spawning outside of fortresses
+    Bonus Nether Spawn Percent: 20
+    # Drop fire around a blaze when hit
+    Drop Fire On Damage: true
+    # Bonus loot including gunpowder for nether blazes
+    Bonus Loot: true
+    # Should blazes split into 2 blazes when slain in the nether
+    Nether Split On Death Percent: 25
 ```
 
 ### MagmaCubes
@@ -407,9 +418,9 @@ Make magmacubes turn into blazes on hit and increase the spawns.
 
 ``` yaml
 MagmaCubes:
-# How often a magmacube should spawn when a blaze spawns
+    # How often a magmacube should spawn when a blaze spawns
     Spawn With Nether Blaze Percent: 100
-# Should a magmacube explode and turn into a blaze    
+    # Should a magmacube explode and turn into a blaze
     Grow Into Blazes On Damage: true
 ```
 
@@ -451,7 +462,7 @@ Enderman are easy you think? Sitting behind your wall or 2 high roof? No longer!
 ``` yaml
 
 Endermen:
-# Enable improved enderman teleportation
+    # Enable improved enderman teleportation
     May Teleport Players: true
 
 ```
@@ -501,14 +512,14 @@ Includes a few farming fixes and nerfes.
 Plants can die if not tended to correctly. This includes exposure to daylight, sufficient water to keep your crops alive.
 
 Weak Crops:
-	  # Enable plants being able to die and requiring light etc.
-      Enable: true
-      # Percentage of plants that will die even when taking care
-      Loss Rate: 25
-      # Block trees from growing and make farming in the desert not profitable
-      Infertile Deserts: true
-      # Direct exposure to snow will kill your crops eventually
-      Snow Breaks Crops: true
+    # Enable plants being able to die and requiring light etc.
+    Enable: true
+    # Percentage of plants that will die even when taking care
+    Loss Rate: 25
+    # Block trees from growing and make farming in the desert not profitable
+    Infertile Deserts: true
+    # Direct exposure to snow will kill your crops eventually
+    Snow Breaks Crops: true
 
 	# Require players to find melonseeds, by disabling crafting
     Cant Craft Melonseeds: true
