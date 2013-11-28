@@ -77,7 +77,9 @@ The most successful players will be those who map the surface and develop a clev
 
 #### Inhibit Tunelling
 
-Inhibit Tunneling basically wears down tools quicker when breaking stone. This is to discourage players from branchmining as you need to use more materials than you gain.
+Stone is extremely hard, making tunneling with a pickaxe impractical. Players will have to scout the wilderness for natural caverns, or make their own caves with much-improved TNT (see below).
+This brings exploration, navigation, and risk-taking to the forefront of gameplay.
+The most successful players will be those who map the surface and develop a clever marking system for caverns.
 
 ``` yaml
 Inhibit Tunneling:
@@ -164,7 +166,7 @@ Breaking Netherrack Starts Fire Percent: 20
 
 ### Limited Block Placement
 
-Will make building things harder. 
+Realistic block placement rules will force players to think a little harder about construction, especially when climbing higher or crossing water, lava, or a trench.
 It blocks:
 
 - Straight pillaring up (jumping and placing a block directly beneath you)
@@ -265,7 +267,7 @@ Rules affecting all types of monsters.
 ### Inhibit Monster Grinders
 
 Players should go out adventuring while taking risks to gain rewards. The use of monster grinders imbalances the game
-and makes good weapons "worthless". By forcing players to work for their gear, they will treasure it more.
+and makes good weapons "worthless", because they are easily obtainable. By forcing players to work for their gear, they will treasure it more.
 This module completely removes drops if it recognizes grinders or when a player has a great advantage over a monster.
 
 ``` yaml
@@ -313,10 +315,7 @@ Horses:
 
 ### Zombies 
 
-#### Slow Players 
 Instead of speeding Zombies up, a Zombie will slow a player down for a few seconds when the player is hit by a zombie.
-
-#### Resurrecting 
 Zombies may resurrect when slain. They will respawn after a few seconds and might ambush a player.
 
 ``` yaml
@@ -389,24 +388,46 @@ Silverfish:
 
 ### Spiders 
 
-#### Bonus Underground Spawns 
-Increase spawns of spiders in cave to make them a bit creepier and increase the number of spiderwebs.
+Spiders are more common under sea level and randomly drop web around them when slain,
+potentially introducing obstacles into an ongoing combat situation. Monsters can break through web if stuck.
+The webs will be removed on the surface after a while, but stay in caves.
 
-#### Drop Webs 
-Slaying a spider will drop web blocks in which a player can get stuck. The webs will be removed on the surface after a while, but stay in caves.
+``` yaml
 
-### Creepers 
-#### Charged Creepers 
+Spiders:
+    Bonus Underground Spawn Percent: 20
+    Drop Web On Death: true
+
+```
+
+### Creepers
+
 Charged creepers will spawn natually and explode on death. It's supposed to be a fearsome monster and fighting it should be avoided.
-
-#### Drop Tnt 
 Killing a creeper may drop ignited tnt. The dropped tnt will act the same as player ignited tnt which can be configured at the bottom.
-
-#### Fire Triggers Explosion 
 A creeper which dies while being on fire will launch in the air and explode with some fireworks. Small gimmick, doesn't really increase difficulty ;).
+
+``` yaml
+
+Creepers:
+    Charged Creeper Spawn Percent: 10
+    Drop Tnt On Death:
+      Percent: 20
+      Max Y: 50
+    Charged Creepers Explode On Damage: true
+    # a burning creeper will launch launch in the air
+    Fire Triggers Explosion:
+      Enable: true
+      # how many creeper style explosions
+      Firework Count: 3
+      # how fast they should be propelled upwards,
+      # set it a bit higher to have real creeper rockets.
+      Launch In Air Speed: 0.5
+
+```
 
 ### Blazes 
 Blazes will spawn in the nether naturally and near bedrock in the overworld.
+Blazes in the overworld are unstable and will explode on death and cause cave ins.
 
 ``` yaml
 Blazes:
@@ -493,6 +514,11 @@ Witches:
 ### EnderDragon
 
 Is the EnderDragon boring, just flying around and doing nothing? No more! This dragon is really tough. She spawns lots of minions and can call enderman to help her out. Good gear will be required to beat her, but the rewards are great.
+
+* The Ender Dragon respawns so that all players have a challenging common goal, and she always drops a dragon egg when killed. It makes a great trophy for the slayer's house.
+* The Ender Dragon spews explosive fireballs which throw flaming shrapnel on impact. She also summons minions to his aid, making combat challenging and frenzied - forcing players to hit a moving target with arrows while simultaneously dodging fireballs and battling minions.
+* Building is not allowed in the end, so players must face the dragon and his minions head-on.
+* All players are notified when a player challenges the dragon, and will also be notified of the outcome of the battle. When the dragon defeats a player, she regains 25% of his health.
 
 ``` yaml
 
@@ -586,7 +612,20 @@ Explosions are a big part of ehm and what makes it pretty awesome. We have custo
 The TNT recipe produces 3 TNT, and each TNT explodes 100% more violently versus Vanilla TNT, making TNT a useful tool for mining and worthwhile to craft.
 Further, exploding TNT will produce a more "natural" devastation with lots of fallen rock and other rubble.
 
-# config
+``` yaml
+
+Tnt:
+    # Override vanilla explosion
+    Enable Custom Explosion: true
+    # Add more explosions to make the crater look more random
+    # and not so symmetrical like in vanilla
+    Enable Multiple Explosions: true
+    # Produce more tnt per recipe to encourage usage of tnt
+    Tnt Per Recipe: 3
+
+```
+
+### Custom Explosions
 
 ``` yaml
 
