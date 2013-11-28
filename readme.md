@@ -110,8 +110,10 @@ Breaking Blocks Softens Surrounding Stone:
     Blocks (Block@id,id2):
 
     # You can use minecraft ids and data
-    # If f.e. you wanted only spruce wood planks to soften surrounding stone and not the other planks
-    # you would check http://minecraft.gamepedia.com/Data_values#Wood_Planks for the data of spruce wood which is 1
+    # If f.e. you wanted only spruce wood planks to soften surrounding stone
+    # and not the other planks you would check
+    # http://minecraft.gamepedia.com/Data_values#Wood_Planks
+    # for the data of spruce wood which is 1
 
     - WOOD@1 # = spruce wood
     - WOOD@1,2 # spruce and birch wood
@@ -129,11 +131,13 @@ Breaking Blocks Softens Surrounding Stone:
 
 ``` yaml
 Torches:
-    #Block placement of torches below y-level 30. Makes for scarrier caves on the lower levels, increases mob spawns and makes diamonds harder to get. Set to 0 to disable.
+    #Block placement of torches below y-level 30. Makes for scarrier caves on the lower levels,
+    increases mob spawns and makes diamonds harder to get. Set to 0 to disable.
     No Placement Under Y: 30
     #Soft materials include sand and dirt. Idea is that players don't litter the landscape with torches.
     No Placement On Soft Materials: true
-    # When it rains there is a chance that torches will be removed in a chunk. The torches wil drop to the ground. Even a nonsolid block is enough to protect your torches.
+    # When it rains there is a chance that torches will be removed in a chunk.
+    The torches wil drop to the ground. Even a nonsolid block is enough to protect your torches.
     Rain Breaks Torches: true
 
 ```
@@ -150,13 +154,13 @@ Play Sounds:
 
 ### Breaking Netherrack Starts Fire Percent
 
-Sparks a fire when mining netherrack. The careless player will put out the fire by hand, which will set him on fire. This results in it being tuffer to dig tunnels in the nether and avoid all dangers by doing so.
+Sparks a fire when mining netherrack. The careless player will put out the fire by hand, which will set him on fire.
+This results in it being tuffer to dig tunnels in the nether and avoid all dangers by doing so.
 
 ``` yaml
 # 0 disables
 Breaking Netherrack Starts Fire Percent: 20
 ```
-#cfg
 
 ### Limited Block Placement
 
@@ -172,7 +176,7 @@ Limited Block Placement: true
 
 ```
 
-It's a bit hard to explain, try it out. #vid
+It's a bit hard to explain, try it out. -vid
 
 ### Better Tree Felling
 
@@ -184,7 +188,7 @@ Better Tree Felling: true
 
 ```
 
-#vid
+-vid
 
 ### Player
 
@@ -235,20 +239,21 @@ Adds a weight system to your inventory. If your inventory exceeds the weight you
 ``` yaml
 No Swimming When Too Heavy:
     Enable: true #Enable feature
-    #Set to false if you want to exempt players from drowning when swimming up 1x1 waterstreams
+    # Set to false if you want to exempt players from drowning when swimming up 1x1 waterstreams
     Block Elevators/Waterfalls: true
-    #The maximum inventory weight you can have before starting to drown
+    # The maximum inventory weight you can have before starting to drown
     Max Points: 18.0
-    #One piece of worn armor would add 2.0 weight. So full set of armor adds 8.0
+    # One piece of worn armor would add 2.0 weight. So full set of armor adds 8.0
     One Piece Of Worn Armor Adds: 2.0
-    #A stack of any item adds 1.0, half a stack add 0.5 so it calculates fractions
+    # A stack of any item adds 1.0, half a stack add 0.5 so it calculates fractions
     One Stack Adds: 1.0
-    #A tool is any item that doesn't stack, swords, axes, not worn armor, shears etc
+    # A tool is any item that doesn't stack, swords, axes, not worn armor, shears etc
     One Tool Adds: 0.5
-    #Basically an esoteric percentage of how fast you drown. 35 actually doesnt really make you drown. 50 would make you drown
+    # Basically an esoteric percentage of how fast you drown.
+    # 35 actually doesnt really make you drown. 50 would make you drown
     Drown Rate: 35
-    #If your inventory weight exceeds the max weight every weightpoint will add 2 to the drownrate.
-    Weight = 25 => (base) + (exceeding) * (modifier) = 35 + 7 * 2 = 49 (new drown rate)
+    # If your inventory weight exceeds the max weight every weightpoint will add 2 to the drownrate.
+    # Weight = 25 => (base) + (exceeding) * (modifier) = 35 + 7 * 2 = 49 (new drown rate)
     Overencumbrance Adds To Drown Rate: 2
 
 ```
@@ -279,7 +284,9 @@ It does this by increasing the packspawns with random monsters. So if a pack of 
 More Monsters:
     #Maximum y value where packspawns are increased. Set to 0 to disable
     Max Y: 55
-    #Multiplier. Normal packspawns are 1-4 monsters. A setting of 2 would increase it to 2-8. Note that this doesn't increase spawnlimits. If the spawnlimit is reached and no natural spawns occur this won't increase the limit.
+    # Multiplier. Normal packspawns are 1-4 monsters. A setting of 2 would increase it to 2-8.
+    # Note that this doesn't increase spawnlimits.
+    # If the spawnlimit is reached and no natural spawns occur this won't increase the limit.
     Multiplier: 2
 
 ```
@@ -328,8 +335,9 @@ Skeletons have special abilities like shooting knockback, blindness and fire arr
 
 ``` yaml
 
-# Plugin goes through all possible arrows when evaluating which to shoot in the order they are in the config.
-# If you set one to 100% the ones behind that will never fire. The percentage is like a chance not an actual percentage.
+# Plugin goes through all possible arrows when evaluating which to shoot
+# in the order they are in the config. If you set one to 100% the ones behind
+# that will never fire. The percentage is like a chance not an actual percentage.
 Skeletons:
     # snowballs will make the player blind for a few seconds
     Shoot Snowballs:
@@ -345,7 +353,8 @@ Skeletons:
     Shoot Fireballs:
       Enable: true
       Percentage: 10
-      # how long player should burn from the arrow. 40 ticks = 4 seconds. Default from fireball is 50
+      # how long player should burn from the arrow.
+      # 40 ticks = 4 seconds. Default from fireball is 50
       Player Fireticks: 40
     Shoot Silverfish:
       Enable: true
@@ -368,12 +377,14 @@ Silverfish may spawn naturally in caves if "More Monsters" is activated and may 
 These buggers are easily overseen and a not often seen monster. Sadly silverfish are glitching in to floors atm, this is an issue with the game I cannot fix.
 
 ``` yaml
-#Block silverfish from entering blocks like stone and cobblestone to prevent them from despawning.
-Cant enter blocks: true
-#Drop 1 cobble on death
-Drop Cobble: true
-#Show particles to make silverfish more visible. This is to combat silverfish glitching into blocks and not being visible.
-Particles To Make Better Visible: true
+Silverfish:
+    # Block silverfish from entering blocks like stone and cobblestone to prevent them from despawning.
+    Cant enter blocks: true
+    # Drop 1 cobble on death
+    Drop Cobble: true
+    # Show particles to make silverfish more visible.
+    # This is to combat silverfish glitching into blocks and not being visible.
+    Particles To Make Better Visible: true
 ```
 
 ### Spiders 
@@ -399,7 +410,7 @@ Blazes will spawn in the nether naturally and near bedrock in the overworld.
 
 ``` yaml
 Blazes:
-    #Should blazes spawn in the overworld near lava level, set to 0 to disable
+    # Should blazes spawn in the overworld near lava level, set to 0 to disable
     Near Bedrock Spawn Percent: 50
     # Percentage of blazes spawning outside of fortresses
     Bonus Nether Spawn Percent: 20
@@ -507,9 +518,9 @@ Includes a few farming fixes and nerfes.
 
 ### Weak Crops
 
-``` yaml
-
 Plants can die if not tended to correctly. This includes exposure to daylight, sufficient water to keep your crops alive.
+
+``` yaml
 
 Weak Crops:
     # Enable plants being able to die and requiring light etc.
@@ -529,7 +540,8 @@ Weak Crops:
     No Farming Nether Wart: true
     # Players need to craft dyes and can't just get colored wool indefinitely
     Sheep Grow Only White Wool: true
-    # This is a cool one, it forces players to build farms around lakes. This makes the farms look more natural. You can still use ice to create sourceblocks-
+    # This is a cool one, it forces players to build farms around lakes.
+    # This makes the farms look more natural. You can still use ice to create sourceblocks-
     Buckets Dont Move Water Sources: true
     # Animals don't drop exp
     Animal Experience Nerf: true
