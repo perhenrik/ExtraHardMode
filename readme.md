@@ -342,7 +342,7 @@ Skeletons:
     Shoot Snowballs:
       Enable: true
       Percent: 20
-      Slow Player (ticks): 100
+      Blind Player (ticks): 100
     Shoot Fireworks:
       Enable: true
       Percent: 30
