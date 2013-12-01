@@ -256,7 +256,7 @@ public enum RootNode implements ConfigNode
     /**
      * Slowness length
      */
-    SKELETONS_SNOWBALLS_SLOW_LEN("Skeletons.Shoot Snowballs.Slow Player (ticks)", VarType.INTEGER, SubType.NATURAL_NUMBER, 100),
+    SKELETONS_SNOWBALLS_SLOW_LEN("Skeletons.Shoot Snowballs.Blind Player (ticks)", VarType.INTEGER, SubType.NATURAL_NUMBER, 100),
 
     /**
      * Shoot Fireworks

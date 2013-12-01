@@ -26,7 +26,7 @@
     <!-- Project properties. -->
     <groupId>com.extrahardmode</groupId>
     <artifactId>ExtraHardMode</artifactId>
-    <version>3.4</version>
+    <version>3.4.1-SNAPSHOT</version>
     <name>ExtraHardMode</name>
     <description>New game rules and mechanics for Minecraft.</description>
     <url>http://dev.bukkit.org/server-mods/fun-hard-mode</url>
@@ -37,8 +37,8 @@
         <project.mainclass>com.extrahardmode.ExtraHardMode</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
-        <mc-version>1.6.4</mc-version>
-        <bukkit-ver>R2.0</bukkit-ver>
+        <mc-version>1.7.2</mc-version>
+        <bukkit-ver>R0.1-SNAPSHOT</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/java/</srcDir>
         <!--Jenkins Build-Number to be included in the jar manifest and will be parsed by the /version command-->
