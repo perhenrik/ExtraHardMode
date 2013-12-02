@@ -181,9 +181,10 @@ public class Skeletors extends ListenerModule
         final boolean fireworks = CFG.getBoolean(RootNode.SKELETONS_FIREWORK_ENABLE, world.getName());
         final int fireworksPercent = CFG.getInt(RootNode.SKELETONS_FIREWORK_PERCENT, world.getName());
 
-        final boolean explosionArrowKey = CFG.getBoolean(RootNode.SKELETONS_FIREBALL_ENABLE, world.getName());//CFG.getBoolean(RootNode.);
+        final boolean explosionArrowEnable = CFG.getBoolean(RootNode.SKELETONS_FIREBALL_ENABLE, world.getName());//CFG.getBoolean(RootNode.);
         final int explosionPercent = CFG.getInt(RootNode.SKELETONS_FIREBALL_PERCENTAGE, world.getName());
 
+        final boolean silverfishEnable = CFG.getBoolean(RootNode.SKELETONS_RELEASE_SILVERFISH_ENABLE, world.getName());
         final int silverfishPercent = CFG.getInt(RootNode.SKELETONS_RELEASE_SILVERFISH_PERCENT, world.getName());
         final int currentLimit = CFG.getInt(RootNode.SKELETONS_RELEASE_SILVERFISH_LIMIT, world.getName());
         final int totalLimit = CFG.getInt(RootNode.SKELETONS_RELEASE_SILVERFISH_LIMIT_TOTAL, world.getName());
@@ -210,12 +211,13 @@ public class Skeletors extends ListenerModule
                 peng.setVelocity(arrow.getVelocity());
             }
             //Explosion arrows
-            else if (explosionArrowKey && OurRandom.percentChance(explosionPercent))
+            else if (explosionArrowEnable && OurRandom.percentChance(explosionPercent))
             {
                 arrow.setMetadata(key_fireArrow, new FixedMetadataValue(plugin, true));
                 SmallFireball fireball = world.spawn(arrow.getLocation(), SmallFireball.class);
                 fireball.setVelocity(arrow.getVelocity());
-            } else if (skeleton.getTarget() instanceof Player && OurRandom.percentChance(silverfishPercent)) //To prevent tons of Silverfish
+            //Silverfish
+            } else if (skeleton.getTarget() instanceof Player && silverfishEnable && OurRandom.percentChance(silverfishPercent)) //To prevent tons of Silverfish
             {
                 //respect summoning limits
                 if (getMinionsSpawnedBySkeli(skeleton, plugin).size() < currentLimit
