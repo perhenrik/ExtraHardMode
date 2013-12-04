@@ -186,7 +186,7 @@ public class BumBumBens extends ListenerModule
                     EntityHelper.markLootLess(plugin, (LivingEntity) entity);
                     entity.remove();
                     if (customCharged)
-                        new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED).run(); // equal to a TNT blast
+                        new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED, entity).run(); // equal to a TNT blast
                     return;
                 }
             }
@@ -239,9 +239,9 @@ public class BumBumBens extends ListenerModule
             event.setCancelled(true);
             EntityHelper.flagIgnore(plugin, entity);//Ignore this creeper in further calls to this method
             if (((Creeper) entity).isPowered())
-                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED).run();
+                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED, entity).run();
             else //normal creeper
-                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER).run();
+                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER, entity).run();
         }
     }
 }

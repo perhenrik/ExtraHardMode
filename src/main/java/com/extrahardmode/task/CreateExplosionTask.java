@@ -27,9 +27,12 @@ import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
+import com.extrahardmode.module.EntityHelper;
+import com.extrahardmode.module.ExplosionCompatStorage;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.minecart.ExplosiveMinecart;
 
@@ -67,11 +70,7 @@ public class CreateExplosionTask implements Runnable
     /**
      * Instance of a the Entity which caused the Explosion
      */
-    private Creeper creeper;
-
-    private TNTPrimed tnt;
-
-    private ExplosiveMinecart minecartTnt;
+    private Entity explosionCause;
 
 
     /**
@@ -82,11 +81,12 @@ public class CreateExplosionTask implements Runnable
      * @param type
      *         Type that determines size and possible blockdamage or fire of explosion.
      */
-    public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type)
+    public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type, Entity entity)
     {
         this.location = location;
         this.type = type;
         this.plugin = plugin;
+        this.explosionCause = entity;
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
@@ -180,12 +180,18 @@ public class CreateExplosionTask implements Runnable
             }
         }
 
-        if (validateLocationSafe(loc, type))
-        {
-            if (CompatHandler.isExplosionProtected(loc))
-                damageWorld = false;
+        //if (validateLocationSafe(loc, type))
+        //{
+            //if (CompatHandler.isExplosionProtected(loc))
+            //    damageWorld = false;
+            if (explosionCause != null) //ignore pure "visual" explosions
+                plugin.getModuleForClass(ExplosionCompatStorage.class).queueExplosion(location, explosionCause);
+
+
+            //entity should be ignored so our code doesn't think that it's a regular creeper etc.
+            EntityHelper.flagIgnore(plugin, explosionCause);
             loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, damageWorld);
-        }
+        //}
     }
 
 
@@ -197,12 +203,12 @@ public class CreateExplosionTask implements Runnable
      * @param type
      *         ExplosionType determining the size of the Explosion and size of the area to check
      */
-    boolean validateLocationSafe(Location loc, ExplosionType type)
+    /*boolean validateLocationSafe(Location loc, ExplosionType type)
     {
         boolean isSafe = true;
 
         return isSafe;
-    }
+    }*/
 
 
     /**
@@ -210,7 +216,7 @@ public class CreateExplosionTask implements Runnable
      * cuboid selection system then there is no way that an explosion can reach into a protected area without atleast on
      * corner touching it
      */
-    private ArrayList<Block> getBlockList(Location loc, int boomSize)
+    /*private ArrayList<Block> getBlockList(Location loc, int boomSize)
     {
         //Doesn't aim to be accurate, just to prevent explosions on the edges of protected land
         ArrayList<Block> boundaries = new ArrayList<Block>();
@@ -252,5 +258,5 @@ public class CreateExplosionTask implements Runnable
             }
         }
         return boundaries;
-    }
+    }*/
 }

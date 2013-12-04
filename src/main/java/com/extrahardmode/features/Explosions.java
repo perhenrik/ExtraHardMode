@@ -28,6 +28,8 @@ import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
+import com.extrahardmode.module.EntityHelper;
+import com.extrahardmode.module.ExplosionCompatStorage;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CreateExplosionTask;
@@ -49,9 +51,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Various changes to Explosions including:
- */
+/** Various changes to Explosions including: */
 public class Explosions extends ListenerModule
 {
     private RootConfig CFG;
@@ -59,9 +59,7 @@ public class Explosions extends ListenerModule
     private final String tag = "extrahardmode.explosion.fallingblock";
 
 
-    /**
-     * Your constructor of choice
-     */
+    /** Your constructor of choice */
     public Explosions(ExtraHardMode plugin)
     {
         super(plugin);
@@ -77,32 +75,23 @@ public class Explosions extends ListenerModule
 
 
     /**
-     * Handles all of EHM's custom explosions, this includes bigger random tnt explosions , bigger ghast explosion , turn stone into cobble in hardened stone mode ,
+     * Replace tnt explosion with multiple random explosions
      *
-     * @param event - Event that occurred.
+     * @param event Event that occured
      */
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onExplosion(EntityExplodeEvent event)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onTntExplosion(EntityExplodeEvent event)
     {
-        World world = event.getLocation().getWorld();
         Entity entity = event.getEntity();
+        World world = event.getLocation().getWorld();
 
         final boolean customTntExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ENABLE, world.getName());
-        final boolean customGhastExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_GHASTS_ENABLE, world.getName());
         final boolean multipleExplosions = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
-        final boolean turnStoneToCobble = CFG.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
-        //cancel explosion if no worldDamage should be done
-        final boolean tntWorldDamage = event.getLocation().getBlockY() > CFG.getInt(RootNode.EXPLOSIONS_Y, world.getName())
-                ? CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF, world.getName())
-                : CFG.getBoolean(RootNode.EXPLOSIONS_TNT_BELOW_WORLD_GRIEF, world.getName());
 
-        if (entity != null && (entity.getType() == EntityType.CREEPER || entity.getType() == EntityType.PRIMED_TNT))
-            event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
-
-        // FEATURE: bigger TNT booms, all explosions have 100% block yield
+        // FEATURE: bigger TNT booms
         if (customTntExplosion)
         {
-            if (entity != null && entity.getType() == EntityType.PRIMED_TNT)
+            if (entity != null && entity.getType() == EntityType.PRIMED_TNT && !EntityHelper.hasFlagIgnore(entity))
             {
                 // create more explosions nearby
                 long serverTime = world.getFullTime();
@@ -121,55 +110,119 @@ public class Explosions extends ListenerModule
 
                 for (int i = 0; i < explosionsNum; i++)
                 {
-                    CreateExplosionTask task = new CreateExplosionTask(plugin, locations[i], ExplosionType.TNT);
+                    CreateExplosionTask task = new CreateExplosionTask(plugin, locations[i], ExplosionType.TNT, entity);
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 3L * (i + 1));
                 }
-
-                // FEATURE: in hardened stone mode, TNT only softens stone to cobble
-                if (turnStoneToCobble)
-                {
-                    List<Block> blocks = event.blockList();
-                    Iterator<Block> iter = blocks.iterator();
-                    while (iter.hasNext())
-                    {
-                        Block block = iter.next();
-                        if (block.getType() == Material.STONE)
-                        {
-                            block.setType(Material.COBBLESTONE);
-                            iter.remove();
-                        }
-                    }
-                }
-
-                //FEATURE: World damage based on the y-coordinate
-                if (!tntWorldDamage)
-                    event.setCancelled(true);
-            }
-        }
-
-        // FEATURE: more powerful ghast fireballs
-        if (entity != null && entity instanceof Fireball && customGhastExplosion)
-        {
-            Fireball fireball = (Fireball) entity;
-            if (fireball.getShooter() != null && fireball.getShooter().getType() == EntityType.GHAST)
-            {
-                event.setCancelled(true);
-                // same as vanilla TNT, plus fire
-                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.GHAST_FIREBALL).run();
             }
         }
     }
 
 
     /**
-     * Provide Compat for block protection plugins
+     * bigger ghast explosion , turn stone into cobble in hardened stone mode ,
      *
-     * @param event
+     * @param event - Event that occurred.
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST) //because
+    public void onExplosion(EntityExplodeEvent event)
+    {
+        World world = event.getLocation().getWorld();
+        Entity entity = event.getEntity();
+
+        final boolean customGhastExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_GHASTS_ENABLE, world.getName());
+
+        final boolean turnStoneToCobble = CFG.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
+        //cancel explosion if no worldDamage should be done
+        final boolean tntWorldDamage = event.getLocation().getBlockY() > CFG.getInt(RootNode.EXPLOSIONS_Y, world.getName())
+                ? CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF, world.getName())
+                : CFG.getBoolean(RootNode.EXPLOSIONS_TNT_BELOW_WORLD_GRIEF, world.getName());
+
+        if (entity != null && (entity.getType() == EntityType.CREEPER || entity.getType() == EntityType.PRIMED_TNT))
+            event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
+
+
+        // FEATURE: in hardened stone mode, TNT only softens stone to cobble
+        if (turnStoneToCobble && entity == null) //
+        {
+            List<Block> blocks = event.blockList();
+            Iterator<Block> iter = blocks.iterator();
+            while (iter.hasNext())
+            {
+                Block block = iter.next();
+                if (block.getType() == Material.STONE && !CompatHandler.isExplosionProtected(block.getLocation()))
+                {
+                    block.setType(Material.COBBLESTONE);
+                    iter.remove();
+                }
+            }
+        }
+
+        //FEATURE: World damage based on the y-coordinate
+        if (!tntWorldDamage)
+            event.setCancelled(true);
+
+
+        // FEATURE: more powerful ghast fireballs
+        if (entity != null && entity instanceof Fireball && customGhastExplosion && !EntityHelper.hasFlagIgnore(entity))
+        {
+            Fireball fireball = (Fireball) entity;
+            if (fireball.getShooter() != null && fireball.getShooter().getType() == EntityType.GHAST)
+            {
+                event.setCancelled(true);
+                // same as vanilla TNT, plus fire
+                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.GHAST_FIREBALL, entity).run();
+            }
+        }
+    }
+
+
+    /**
+     * Provide Compat for block protection and logging plugins. This is done by firing an explosion event with an entity and checking if the event has been cancelled or the
+     * blocklist has been modified. Clear out the blocklist of the actual event so that it is not recorded by blockloggers and manually break the blocks for the explosion and
+     * set optional fire.
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onAnyExplosion(EntityExplodeEvent event)
     {
-        //Remove Blocks that are in protected area
+        //Only (our) custom explosions have no entity
+        if (event.getEntity() == null)
+        {
+            ExplosionCompatStorage explosionStorage = plugin.getModuleForClass(ExplosionCompatStorage.class);
+            if (!explosionStorage.queueEmpty())
+            {
+                //Just make sure that this explosion is in fact from us
+                if (explosionStorage.getCenterLocation().distanceSquared(event.getLocation()) == 0)
+                {
+                    // There is now way for us to pass the actual cause (the entity) of an explosion to bukkit other than this additional event
+                    EntityHelper.flagIgnore(plugin, explosionStorage.getExplosionCause());
+                    EntityExplodeEvent compatEvent = new EntityExplodeEvent(explosionStorage.getExplosionCause(), explosionStorage.getCenterLocation(), event.blockList(), event.getYield());
+                    plugin.getServer().getPluginManager().callEvent(compatEvent);
+
+                    if (compatEvent.isCancelled())
+                        event.setCancelled(true);
+
+                    //Some plugins might decide to clear the blocklist instead of cancelling the event, in that case the modified blocklist is the same
+                    //Handle blockbreaking and setting fire ourselves
+                    for (Block block : event.blockList())
+                        switch (block.getType())
+                        {
+                            case FIRE:
+                                //block.setType(Material.FIRE); do nuthing
+                                break;
+                            case AIR:
+                                break; //dunno why some plugins log breaking of air :D
+                            default:
+                                block.breakNaturally();
+                        }
+                    List<Block> copy = new ArrayList<Block>(event.blockList());
+                    event.blockList().clear(); //we don't want this event to be recorded
+                    compatEvent.blockList().addAll(copy);
+
+                    explosionStorage.clearQueue();
+                }
+            }
+        }
+        /*//Remove Blocks that are in protected area
         Iterator<Block> iter= event.blockList().iterator();
         while (iter.hasNext())
         {
@@ -180,13 +233,11 @@ public class Explosions extends ListenerModule
                 //Restore old block
                 //block.setType(block.getLocation().getBlock().getType());
             }
-        }
+        }*/
     }
 
 
-    /**
-     * Apply Physics after explosion
-     */
+    /** Apply Physics after explosion */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPhysicsApply(final EntityExplodeEvent event)
     {
@@ -197,7 +248,7 @@ public class Explosions extends ListenerModule
             final double upVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_UP_VEL, worldName);
             final double spreadVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL, worldName);
 
-            //if (event.getEntity() instanceof TNTPrimed)
+            if (event.getEntity() != null && !EntityHelper.hasFlagIgnore(event.getEntity()))
             {
                 final List<FallingBlock> fallingBlockList = new ArrayList<FallingBlock>();
                 for (Block block : event.blockList())

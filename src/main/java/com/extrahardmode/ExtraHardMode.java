@@ -95,7 +95,7 @@ public class ExtraHardMode extends JavaPlugin
         //Basic Modules
         registerModule(AntiFarming.class, new AntiFarming(this));
         registerModule(AntiGrinder.class, new AntiGrinder(this));
-        registerModule(Explosions.class, new Explosions(this));
+        registerModule(Explosions.class, new Explosions(this));;
         registerModule(HardenedStone.class, new HardenedStone(this));
         registerModule(LimitedBuilding.class, new LimitedBuilding(this));
         registerModule(MoreTnt.class, new MoreTnt(this));
@@ -122,6 +122,7 @@ public class ExtraHardMode extends JavaPlugin
 
         //Compatibility
         registerModule(CompatHandler.class, new CompatHandler(this));
+        registerModule(ExplosionCompatStorage.class, new ExplosionCompatStorage(this));
 
         //TODO make modules
         new Tutorial(this);

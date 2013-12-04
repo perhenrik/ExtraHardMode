@@ -121,22 +121,16 @@ public class EntityHelper
     /** Flag an entity to be ignored in further processing. E.g if an event could be called multiple times */
     public static void flagIgnore(Plugin plugin, Entity entity)
     {
-        if (entity instanceof LivingEntity)
-        {
-            entity.setMetadata(IGNORE, new FixedMetadataValue(plugin, true));
-        }
+        entity.setMetadata(IGNORE, new FixedMetadataValue(plugin, true));
     }
 
 
     /** Check if an entity has been flagged to be ignored */
     public static boolean hasFlagIgnore(Entity entity)
     {
-        if (entity instanceof LivingEntity)
+        if (entity.hasMetadata(IGNORE))
         {
-            if (entity.hasMetadata(IGNORE))
-            {
-                return true;
-            }
+            return true;
         }
         return false;
     }

@@ -158,8 +158,10 @@ public class Blazes extends ListenerModule
         // FEATURE: blazes explode on death in normal world
         if (blazesExplodeOnDeath && entity instanceof Blaze && world.getEnvironment() == World.Environment.NORMAL)
         {
-            // create explosion
-            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.OVERWORLD_BLAZE).run(); // equal to a TNT blast, sets fires
+            //Label explosion as creeper
+            Creeper creeper = world.spawn(entity.getLocation(), Creeper.class);
+            creeper.remove();
+            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.OVERWORLD_BLAZE, creeper).run(); // equal to a TNT blast, sets fires
             // fire a fireball straight up in normal worlds
             Fireball fireball = (Fireball) world.spawnEntity(entity.getLocation(), EntityType.FIREBALL);
             fireball.setDirection(new Vector(0, 10, 0));
@@ -215,9 +217,14 @@ public class Blazes extends ListenerModule
         // FEATURE: magma cubes become blazes when they take damage
         if (magmacubesBlazeOnDmg && entityType == EntityType.MAGMA_CUBE && !entity.isDead() && !EntityHelper.hasFlagIgnore(entity))
         {
-            entity.remove(); // remove magma cube
+            //Magmacube gets replaced by blaze
+            entity.remove();
             EntityHelper.spawn(entity.getLocation().add(0.0, 2.0, 0.0), EntityType.BLAZE); // replace with blaze
-            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.MAGMACUBE_FIRE).run(); // fiery explosion for effect
+
+            //Explosion labeled as fireball
+            Fireball ball = world.spawn(entity.getLocation(), Fireball.class);
+            ball.remove();
+            new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.MAGMACUBE_FIRE, ball).run(); // fiery explosion for effect
             //TODO EhmMagmaCubeExplodeEvent
         }
 

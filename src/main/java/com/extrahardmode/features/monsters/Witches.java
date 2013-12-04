@@ -178,7 +178,7 @@ public class Witches extends ListenerModule
             if (makeExplosion)
             {
                 // explosion just for show, no damage
-                new CreateExplosionTask(plugin, location, ExplosionType.EFFECT).run();
+                new CreateExplosionTask(plugin, location, ExplosionType.EFFECT, null).run();
 
                 for (LivingEntity target : event.getAffectedEntities())
                 {
