@@ -599,6 +599,10 @@ public enum RootNode implements ConfigNode
      */
     EXPLOSIONS_FYLING_BLOCKS_ENABLE("Explosions.Physics.Enable", VarType.BOOLEAN, true),
     /**
+     * If explosions from other plugins should also be affected (disabled by default)
+     */
+    EXPLOSIONS_FYLING_BLOCKS_ENABLE_OTHER("Explosions.Physics.Enable For Plugin Created Explosions", VarType.BOOLEAN, false),
+    /**
      * How many blocks will go flying
      */
     EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE("Explosions.Physics.Blocks Affected Percentage", VarType.INTEGER, 20),

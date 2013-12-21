@@ -244,11 +244,12 @@ public class Explosions extends ListenerModule
         String worldName = event.getLocation().getWorld().getName();
         if (CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE, worldName))
         {
+            final boolean flyOtherPlugins = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE_OTHER, worldName);
             final int flyPercentage = CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE, worldName);
             final double upVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_UP_VEL, worldName);
             final double spreadVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL, worldName);
 
-            if (event.getEntity() != null && !EntityHelper.hasFlagIgnore(event.getEntity()))
+            if ((flyOtherPlugins || event.getEntity() != null) && !EntityHelper.hasFlagIgnore(event.getEntity()))
             {
                 final List<FallingBlock> fallingBlockList = new ArrayList<FallingBlock>();
                 for (Block block : event.blockList())
