@@ -324,6 +324,11 @@ public abstract class MultiWorldConfig extends EHMModule
         return worlds.toArray(new String[worlds.size()]);
     }
 
+    public boolean isEnabledIn(String world)
+    {
+        return OPTIONS.containsRow(world);
+    }
+
 
     /**
      * Does this config apply to all loaded worlds

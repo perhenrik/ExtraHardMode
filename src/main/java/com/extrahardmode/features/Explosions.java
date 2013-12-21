@@ -158,7 +158,7 @@ public class Explosions extends ListenerModule
         }
 
         //FEATURE: World damage based on the y-coordinate
-        if (!tntWorldDamage)
+        if (!tntWorldDamage && CFG.isEnabledIn(world.getName()))
             event.setCancelled(true);
 
 
