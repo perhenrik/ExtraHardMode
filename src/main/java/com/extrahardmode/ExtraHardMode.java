@@ -125,7 +125,7 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(ExplosionCompatStorage.class, new ExplosionCompatStorage(this));
 
         //TODO make modules
-        new Tutorial(this);
+        registerModule(Tutorial.class, new Tutorial(this));
 
         OurRandom.reload();
 
