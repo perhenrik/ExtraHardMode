@@ -23,6 +23,7 @@ package com.extrahardmode.module;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.config.messages.MsgCategory;
@@ -31,8 +32,7 @@ import com.extrahardmode.service.FindAndReplace;
 import com.extrahardmode.service.PermissionNode;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import de.diemex.sbpopupapi.SBPopupAPI;
-import de.diemex.sbpopupapi.SBPopupManager;
+import de.diemex.scoreboardnotifier.NotificationManager;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -45,11 +45,9 @@ import java.util.List;
 public class MsgModule extends EHMModule
 {
     private MessageConfig messages;
-
     private MsgPersistModule persistModule;
 
-    private SBPopupManager manager;
-    private boolean popupsEnabled = false;
+    private NotificationManager manager;
 
     private final Table<String, MessageNode, Long> timeouts = HashBasedTable.create();
 
@@ -66,7 +64,8 @@ public class MsgModule extends EHMModule
     {
         messages = plugin.getModuleForClass(MessageConfig.class);
         persistModule = plugin.getModuleForClass(MsgPersistModule.class);
-        try
+        manager = new NotificationManager(plugin);
+        /*try
         {
             SBPopupAPI api = (SBPopupAPI) plugin.getServer().getPluginManager().getPlugin("SBPopupAPI");
             popupsEnabled = api != null;
@@ -74,7 +73,7 @@ public class MsgModule extends EHMModule
                 manager = api.getSBManager();
         } catch (Exception ignored)
         {
-        }
+        }*/
     }
 
 
@@ -101,7 +100,7 @@ public class MsgModule extends EHMModule
 
                     if (!node.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
                     {
-                        if (popupsAreEnabled())
+                        if (popupsAreEnabled(MsgCategory.NOTIFICATION))
                             sendPopup(player, MsgCategory.NOTIFICATION, message);
                         else
                             player.sendMessage(message);
@@ -215,28 +214,110 @@ public class MsgModule extends EHMModule
     /**
      * Send a short message using SbPopupAPI
      *
-     * @param player  player to send the message to
-     * @param type    type defines the length color for consistency
-     * @param message text to display
+     * @param player    player to send the message to
+     * @param category  type defines the length color for consistency
+     * @param message   text to display
      */
     public void sendPopup(Player player, MsgCategory category, String message)
     {
-        if (popupsAreEnabled())
-            manager.showPopup(player.getName(), category.getUniqueIdentifier(), category.getLength(), category.getTitleColor(), category.getTitleColor(), "ExtraHardMode", message);
-    }
+        if (popupsAreEnabled(category))
+        {
+            int length;
+            ChatColor titleColor;
+            ChatColor textColor;
+            String titleText = messages.getString(MessageNode.SB_MSG_TITLE);
 
+            if (messages.getBoolean(MessageNode.SB_MSG_REMOVE_COLOR))
+                message = ChatColor.stripColor(message);
+
+            switch(category)
+            {
+                case BROADCAST:
+                    length = messages.getInt(MessageNode.SB_MSG_BROADCAST_LEN);
+                    titleColor = null;
+                    textColor = messages.getColor(MessageNode.SB_MSG_BROADCAST_TEXT_CLR);
+                    break;
+                case ONE_TIME:
+                case NOTIFICATION:
+                    length = messages.getInt(MessageNode.SB_MSG_NOTIFICATION_LEN);
+                    titleColor = null;
+                    textColor = messages.getColor(MessageNode.SB_MSG_NOTIFICATION_TEXT_CLR);
+                    break;
+                case TUTORIAL:
+                    length = messages.getInt(MessageNode.SB_MSG_TUTORIAL_LEN);
+                    titleColor = null;
+                    textColor = messages.getColor(MessageNode.SB_MSG_TUTORIAL_TEXT_CLR);
+                    break;
+                case DISABLED:
+                default:
+                    length = 0;
+                    titleColor = null;
+                    textColor = null;
+            }
+
+            manager.showPopup(player.getName(), category.getUniqueIdentifier(), length, titleColor, textColor, titleText, message);
+        }
+    }
 
     /**
      * Send a short message using SbPopupAPI
      *
-     * @param player  player to send the message to
-     * @param type    type defines the length color for consistency
-     * @param message text already seperated into lines
+     * @param player    player to send the message to
+     * @param category  type defines the length color for consistency
+     * @param message   text already seperated into lines
      */
-    public void sendPopup(Player player, MsgCategory category, List<String> message)
+    public void sendPopup (Player player, MsgCategory category, List<String> message)
     {
-        if (popupsAreEnabled())
-            manager.showPopup(player.getName(), category.getUniqueIdentifier(), category.getLength(), category.getTitleColor(), category.getTitleColor(), "ExtraHardMode", message);
+        sendPopup(player, category, message, messages.getBoolean(MessageNode.SB_MSG_REMOVE_COLOR));
+    }
+
+    /**
+     * Send a short message using SbPopupAPI
+     *
+     * @param player        player to send the message to
+     * @param category      type defines the length color for consistency
+     * @param message       text already seperated into lines
+     * @param stripColors   if colors should be removed from the message
+     */
+    public void sendPopup(Player player, MsgCategory category, List<String> message, boolean stripColors)
+    {
+        if (popupsAreEnabled(category))
+        {
+            int length;
+            ChatColor titleColor;
+            ChatColor textColor;
+            String titleText = messages.getString(MessageNode.SB_MSG_TITLE);
+
+            if (stripColors)
+                for (int i = 0; i < message.size(); i++)
+                    message.set(i, ChatColor.stripColor(message.get(i)));
+
+            switch(category)
+            {
+                case BROADCAST:
+                    length = messages.getInt(MessageNode.SB_MSG_BROADCAST_LEN);
+                    titleColor = null;
+                    textColor = messages.getColor(MessageNode.SB_MSG_BROADCAST_TEXT_CLR);
+                    break;
+                case ONE_TIME:
+                case NOTIFICATION:
+                    length = messages.getInt(MessageNode.SB_MSG_NOTIFICATION_LEN);
+                    titleColor = null;
+                    textColor = messages.getColor(MessageNode.SB_MSG_NOTIFICATION_TEXT_CLR);
+                    break;
+                case TUTORIAL:
+                    length = messages.getInt(MessageNode.SB_MSG_TUTORIAL_LEN);
+                    titleColor = null;
+                    textColor = messages.getColor(MessageNode.SB_MSG_TUTORIAL_TEXT_CLR);
+                    break;
+                case DISABLED:
+                default:
+                    length = 0;
+                    titleColor = null;
+                    textColor = null;
+            }
+            manager.showPopup(player.getName(), category.getUniqueIdentifier(), length, titleColor, textColor, titleText, message);
+        }
     }
 
 
@@ -258,8 +339,20 @@ public class MsgModule extends EHMModule
      *
      * @return if popupmanager is loaded
      */
-    public boolean popupsAreEnabled()
+    public boolean popupsAreEnabled(MsgCategory category)
     {
-        return popupsEnabled;
+        if (messages.getBoolean(MessageNode.SB_MSG_ENABLE))
+            switch (category.getSubcategory() != null ? category.getSubcategory() : category) //Some messages might inherit from another MsgCategory
+            {
+                case TUTORIAL:
+                    return messages.getBoolean(MessageNode.SB_MSG_TUTORIAL);
+                case NOTIFICATION:
+                    return messages.getBoolean(MessageNode.SB_MSG_NOTIFICATION);
+                case BROADCAST:
+                    return messages.getBoolean(MessageNode.SB_MSG_BROADCAST);
+                default:
+                    return false;
+            }
+        return false;
     }
 }

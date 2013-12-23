@@ -24,12 +24,69 @@ package com.extrahardmode.config.messages;
 
 
 import com.extrahardmode.service.config.ConfigNode;
+import org.bukkit.ChatColor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Configuration nodes for messages.yml configuration file.
  */
 public enum MessageNode implements ConfigNode
 {
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_ENABLE ("Display Messages In Scoreboard.Enable", VarType.BOOLEAN, true),
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_TITLE ("Display Messages In Scoreboard.Scoreboard Title", VarType.STRING, SubType.PLAYER_NAME, ChatColor.RED + "ExtraHardMode"),
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_REMOVE_COLOR ("Display Messages In Scoreboard.Remove All Color Codes", VarType.BOOLEAN, true),
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_NOTIFICATION ("Display Messages In Scoreboard.Notification.Enable", VarType.BOOLEAN, true),
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_NOTIFICATION_LEN ("Display Messages In Scoreboard.Notification.Displaytime In Ticks", VarType.INTEGER, 600),
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_NOTIFICATION_TEXT_CLR ("Display Messages In Scoreboard.Notification.Textcolor", VarType.COLOR, "NONE"),
+
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_TUTORIAL ("Display Messages In Scoreboard.Tutorial.Enable", VarType.BOOLEAN, true),
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_TUTORIAL_LEN ("Display Messages In Scoreboard.Tutorial.Displaytime In Ticks", VarType.INTEGER, 1800),
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_TUTORIAL_TEXT_CLR ("Display Messages In Scoreboard.Tutorial.Textcolor", VarType.COLOR, "NONE"),
+
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_BROADCAST ("Display Messages In Scoreboard.Broadcast.Enable", VarType.BOOLEAN, true),
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_BROADCAST_LEN ("Display Messages In Scoreboard.Broadcast.Displaytime In Ticks", VarType.INTEGER, 1200),
+    /**
+     * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
+     */
+    SB_MSG_BROADCAST_TEXT_CLR ("Display Messages In Scoreboard.Broadcast.Textcolor", VarType.COLOR, "NONE"),
+
+
     //Mode-Nodes have to be have the exact same name + _MODE
     NO_TORCHES_HERE_MODE
             ("NoTorchesHere.Mode", MsgCategory.NOTIFICATION),
@@ -245,12 +302,17 @@ public enum MessageNode implements ConfigNode
     /**
      * Default value
      */
-    private final String value;
+    private final Object value;
 
     /**
      * Messages are always strings.
      */
-    private final VarType varType = VarType.STRING;
+    private final VarType varType;
+
+    /**
+     * SubType for validation
+     */
+    private final SubType subType;
 
     /**
      * Name of the column to be used for persistence
@@ -274,6 +336,8 @@ public enum MessageNode implements ConfigNode
         this.path = path;
         this.msgCategory = msgCategory;
         this.column = null;
+        this.varType = VarType.STRING;
+        this.subType = null;
         this.value = msgCategory.name().toLowerCase();
     }
 
@@ -286,8 +350,27 @@ public enum MessageNode implements ConfigNode
     private MessageNode(String path, MsgCategory msgCategory, String column, String value)
     {
         this.path = path;
-        this.msgCategory = null;
+        this.msgCategory = null; //This is important: Shows that this node actually holds a value and not the mode of a node
         this.column = column;
+        this.varType = VarType.STRING;
+        this.subType = null;
+        this.value = value;
+    }
+
+
+    private MessageNode (String path, VarType varType, Object value)
+    {
+        this(path, varType, null, value);
+    }
+
+
+    private MessageNode(String path, VarType varType, SubType subType, Object value)
+    {
+        this.path = path;
+        this.msgCategory = null;
+        this.column = null;
+        this.varType = varType;
+        this.subType = subType;
         this.value = value;
     }
 
@@ -308,8 +391,8 @@ public enum MessageNode implements ConfigNode
 
     @Override
     public SubType getSubType()
-    {/*ignored*/
-        return null;
+    {
+        return subType;
     }
 
 
@@ -344,6 +427,43 @@ public enum MessageNode implements ConfigNode
     public boolean isCategoryNode()
     {
         return msgCategory != null;
+    }
+
+
+    /**
+     * Get all nodes that hold a string value, aka a message to be displayed
+     */
+    public static Collection<MessageNode> getMessageNodes()
+    {
+        List<MessageNode> categories = new ArrayList<MessageNode>();
+        for (MessageNode node : MessageNode.values())
+            if (node.name().toUpperCase().endsWith("_MODE"))
+            {
+                MessageNode msg = null;
+                try
+                {
+                    msg = MessageNode.valueOf(node.name().replace("_MODE", "")); //Every message has a node with the message and an accompanying node holding the type of message
+                } catch (IllegalArgumentException ignored)
+                {
+                } finally
+                {
+                    if (msg != null)
+                        categories.add(msg);
+                }
+            }
+        return categories;
+    }
+
+    /**
+     * Get all Nodes that hold the category of a node //TODO describe better
+     */
+    public static Collection<MessageNode> getCategoryNodes()
+    {
+        List<MessageNode> categories = new ArrayList<MessageNode>();
+        for (MessageNode node : MessageNode.values())
+            if (node.name().toUpperCase().endsWith("_MODE"))
+                categories.add(node);
+        return categories;
     }
 
 

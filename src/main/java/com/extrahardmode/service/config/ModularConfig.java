@@ -39,6 +39,8 @@ package com.extrahardmode.service.config;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.EHMModule;
+import com.extrahardmode.service.SpecialParsers;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -112,6 +114,12 @@ public abstract class ModularConfig extends EHMModule
             case BOOLEAN:
             {
                 OPTIONS.put(node, config.getBoolean(node.getPath(), (Boolean) node.getDefaultValue()));
+                break;
+            }
+            case COLOR:
+            {
+                ChatColor color = SpecialParsers.parseColor(config.getString(node.getPath(), node.getDefaultValue() instanceof String ? (String) node.getDefaultValue() : ""));
+                OPTIONS.put(node, color != null ? color : "NONE");
                 break;
             }
             default:
@@ -311,6 +319,35 @@ public abstract class ModularConfig extends EHMModule
         return bool;
     }
 
+    /**
+     * Get the (chat)color value of the node.
+     *
+     * @param node
+     *         - Node to use.
+     *
+     * @return Value of the node. Returns null if no color set.
+     */
+    public ChatColor getColor(final ConfigNode node)
+    {
+        ChatColor color;
+        switch (node.getVarType())
+        {
+            case COLOR:
+            {
+                Object value = OPTIONS.get(node);
+                if (value instanceof ChatColor)
+                    color = (ChatColor) value;
+                else //ConcurrentHashMap doesn't allow null values, so we just put an object of another type in the map to symbolize a null value
+                    color = null;
+                break;
+            }
+            default:
+            {
+                throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a color.");
+            }
+        }
+        return color;
+    }
 
     /**
      * Reloads info from yaml file(s).

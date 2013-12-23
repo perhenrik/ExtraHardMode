@@ -23,7 +23,7 @@ package com.extrahardmode.config;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.service.BlockItemMetaParser;
+import com.extrahardmode.service.SpecialParsers;
 import com.extrahardmode.service.Response;
 import com.extrahardmode.service.config.*;
 import com.google.common.collect.HashBasedTable;
@@ -335,7 +335,7 @@ public class RootConfig extends MultiWorldConfig
                 {
                     if (response.getContent() instanceof List)
                     {
-                        Response parsedBlocks = BlockItemMetaParser.parse((List<String>) response.getContent());
+                        Response parsedBlocks = SpecialParsers.parseMaterials((List<String>) response.getContent());
                         if (parsedBlocks.getStatusCode() == Status.NEEDS_TO_BE_ADJUSTED)
                             config.setStatus(Status.ADJUSTED);
                         for (String world : worlds)
@@ -392,8 +392,8 @@ public class RootConfig extends MultiWorldConfig
                 case MORE_FALLING_BLOCKS:
                 {
                     reorderedConfig.set(node.getPath(),
-                            BlockItemMetaParser.getStringsFor(
-                                    BlockItemMetaParser.parse(config.getConfig().getStringList(node.getPath())).getContent()));
+                            SpecialParsers.convertToStringList(
+                                    SpecialParsers.parseMaterials(config.getConfig().getStringList(node.getPath())).getContent()));
                     break;
                 }
                 default:

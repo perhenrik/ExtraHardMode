@@ -70,7 +70,8 @@ public interface ConfigNode
         INTEGER,
         DOUBLE,
         BOOLEAN,
-        LIST
+        LIST,
+        COLOR
     }
 
 
@@ -82,6 +83,7 @@ public interface ConfigNode
         PERCENTAGE,
         Y_VALUE,
         HEALTH,
-        NATURAL_NUMBER
+        NATURAL_NUMBER,
+        PLAYER_NAME //limited to 16 chars
     }
 }

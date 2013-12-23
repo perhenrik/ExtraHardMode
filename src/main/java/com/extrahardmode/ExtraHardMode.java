@@ -89,9 +89,6 @@ public class ExtraHardMode extends JavaPlugin
         //Register command
         getCommand("ehm").setExecutor(new Commander(this));
 
-        // register for events
-        PluginManager pluginManager = this.getServer().getPluginManager();
-
         //Basic Modules
         registerModule(AntiFarming.class, new AntiFarming(this));
         registerModule(AntiGrinder.class, new AntiGrinder(this));

@@ -126,7 +126,7 @@ public class Tutorial extends ListenerModule
                 case MAGMA_CUBE:
                 {
                     if (CFG.getBoolean(RootNode.MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE, world.getName()))
-                        messenger.send(player, MessageNode.PIGZOMBIE_TARGET);
+                        messenger.send(player, MessageNode.MAGMACUBE_TARGET);
                     break;
                 }
                 case SKELETON:
@@ -342,7 +342,7 @@ public class Tutorial extends ListenerModule
     public void onInventoryClick(InventoryClickEvent event)
     {
         if (CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, event.getWhoClicked().getWorld().getName()))
-            if (event.getWhoClicked() instanceof Player && messenger.popupsAreEnabled())
+            if (event.getWhoClicked() instanceof Player && event.getWhoClicked() != null && messenger.popupsAreEnabled(MsgCategory.NOTIFICATION))
             {
                 final Player player = (Player) event.getWhoClicked();
 
@@ -362,7 +362,7 @@ public class Tutorial extends ListenerModule
                         List<String> weightMessage = new ArrayList<String>(2);
                         weightMessage.add(String.format("Weight %.1f/%.1f", weight, maxPoints));
                         weightMessage.add(weight > maxPoints ? ChatColor.RED + "U will drown" : ChatColor.GREEN + "U won't drown");
-                        messenger.sendPopup(player, MsgCategory.WEIGHT_MSG, weightMessage);
+                        messenger.sendPopup(player, MsgCategory.WEIGHT_MSG, weightMessage, false);
                     }
                 });
             }

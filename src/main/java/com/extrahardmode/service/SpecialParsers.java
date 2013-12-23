@@ -23,8 +23,11 @@ package com.extrahardmode.service;
 
 
 import com.extrahardmode.service.config.Status;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,8 +45,32 @@ import java.util.regex.Pattern;
  *
  * @author Max
  */
-public class BlockItemMetaParser
+public class SpecialParsers
 {
+
+    /**
+     * Match a ChatColor
+     *
+     * @param input input string to match
+     *
+     * @return ChatColor or null if not a valid ChatColor
+     */
+    public static ChatColor parseColor(String input)
+    {
+        ChatColor color = null;
+        if (input == null)
+            return null;
+        try
+        {
+            color = ChatColor.valueOf(input.toUpperCase());
+        } catch (IllegalArgumentException ignored)
+        {
+            //color = ChatColor.getByChar(input.replaceAll("[^0-9a-f]", "").substring(0, 1)); //TODO test
+        }
+        return color;
+
+    }
+
 
     /**
      * Parse a given List of Strings which represent Blocks and their Metadata
@@ -54,7 +81,7 @@ public class BlockItemMetaParser
      * @return a Map which is usable by a plugin and the StatusCode. <br> OK = the input has been completely valid, <br>
      *         NEEDS_TO_BE_ADJUSTED = input not valid but has been corrected and can be written back to config
      */
-    public static Response<Map<Integer/*block id*/, List<Byte>>> parse(List<String> stringList)
+    public static Response<Map<Integer/*block id*/, List<Byte>>> parseMaterials(List<String> stringList)
     {
         Status status = Status.OK;
 
@@ -167,7 +194,7 @@ public class BlockItemMetaParser
      *
      * @return List to be written to config
      */
-    public static List<String> getStringsFor(Map<Integer, List<Byte>> blocksWithMeta)
+    public static List<String> convertToStringList(Map<Integer, List<Byte>> blocksWithMeta)
     {
         List<String> blockList = new ArrayList<String>(blocksWithMeta.size());
 

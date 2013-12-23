@@ -1,8 +1,6 @@
 package com.extrahardmode.config.messages;
 
 
-import org.bukkit.ChatColor;
-
 /**
  * @author Diemex
  */
@@ -11,19 +9,19 @@ public enum MsgCategory
     /**
      * A message which will only be shown a few times and then won't show anymore at all
      */
-    TUTORIAL(1000),
+    TUTORIAL,
     /**
      * An informative message which will show always but with a timeout
      */
-    NOTIFICATION(300),
+    NOTIFICATION,
     /**
      * A message which get's broadcast to the whole server
      */
-    BROADCAST(500),
+    BROADCAST,
     /**
      * Will only be shown once
      */
-    ONE_TIME(500),
+    ONE_TIME,
     /**
      * Currently disabled
      */
@@ -36,41 +34,31 @@ public enum MsgCategory
 
     private MsgCategory()
     {
-        this(null, 0, null, null);
-    }
-
-
-    private MsgCategory(int lenght)
-    {
-        this(null, lenght, null, null);
+        this(null, null);
     }
 
 
     private MsgCategory(String identifier, MsgCategory owning)
     {
-        this(identifier, 0,owning.getTitleColor(), owning.getTextColor());
-    }
-
-
-    private MsgCategory(int lenght, ChatColor titleColor, ChatColor textColor)
-    {
-        this(null, lenght, titleColor, textColor);
-    }
-
-
-    private MsgCategory(String identifier, int lenght, ChatColor titleColor, ChatColor textColor)
-    {
         this.identifier = identifier;
-        this.lenght = lenght;
-        this.titleColor = titleColor;
-        this.textColor = textColor;
+        this.cat = owning;
     }
 
 
     private final String identifier;
-    private final int lenght;
-    private final ChatColor titleColor;
-    private final ChatColor textColor;
+    private final MsgCategory cat;
+
+
+    public boolean hasSubcategory()
+    {
+        return cat != null;
+    }
+
+
+    public MsgCategory getSubcategory()
+    {
+        return cat;
+    }
 
 
     public boolean hasUniqueIdentifier()
@@ -82,23 +70,5 @@ public enum MsgCategory
     public String getUniqueIdentifier()
     {
         return identifier;
-    }
-
-
-    public int getLength()
-    {
-        return lenght;
-    }
-
-
-    public ChatColor getTitleColor()
-    {
-        return titleColor;
-    }
-
-
-    public ChatColor getTextColor()
-    {
-        return textColor;
     }
 }

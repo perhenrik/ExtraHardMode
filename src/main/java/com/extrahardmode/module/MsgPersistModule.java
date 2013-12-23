@@ -185,7 +185,7 @@ public class MsgPersistModule extends EHMModule
 
             //One column for every message
             StringBuilder columns = new StringBuilder();
-            for (MessageNode node : MessageNode.values())
+            for (MessageNode node : MessageNode.getMessageNodes())
             {
                 MsgCategory cat = messages.getCat(node);
                 if (node.getColumnName() != null && (cat == MsgCategory.TUTORIAL || cat == MsgCategory.ONE_TIME))
@@ -202,7 +202,7 @@ public class MsgPersistModule extends EHMModule
             //Check if all columns are present
             DatabaseMetaData dmd = conn.getMetaData();
             //Add missing columns
-            for (MessageNode node : MessageNode.values())
+            for (MessageNode node : MessageNode.getMessageNodes())
             {
                 MsgCategory cat = messages.getCat(node);
                 if (cat == MsgCategory.TUTORIAL || cat == MsgCategory.ONE_TIME)

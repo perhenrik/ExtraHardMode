@@ -29,6 +29,7 @@ import com.extrahardmode.service.config.ModularConfig;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -88,10 +89,20 @@ public class MessageConfig extends ModularConfig
             FileConfiguration reorderedConfig = new YamlConfiguration();
             for (MessageNode node : MessageNode.values())
             {
-                if (node.isCategoryNode())
+                if (node.isCategoryNode()) //convert the parsed enum value to a string representation
                     reorderedConfig.set(node.getPath(), getCat(node).name().toLowerCase());
                 else
-                    reorderedConfig.set(node.getPath(), getString(node));
+                switch (node.getVarType())
+                {
+                    case COLOR:
+                        if (getColor(node) == null)
+                            reorderedConfig.set(node.getPath(), "NONE");
+                        else
+                            reorderedConfig.set(node.getPath(), getColor(node).name());
+                        break;
+                    default:
+                        reorderedConfig.set(node.getPath(), OPTIONS.get(node));
+                }
             }
             reorderedConfig.save(file);
         } catch (IOException e)
@@ -180,6 +191,7 @@ public class MessageConfig extends ModularConfig
                 file.createNewFile();
             config.load(file);
             loadSettings(config);
+            boundsCheck();
         } catch (FileNotFoundException e)
         {
             plugin.getLogger().log(Level.SEVERE, "File messages.yml not found.", e);
@@ -244,6 +256,13 @@ public class MessageConfig extends ModularConfig
     }
 
 
+    /**
+     * Match the value of the node to the MsgCategory, also gets the mode of a given message if found
+     *
+     * @param node node to check
+     *
+     * @return the {@link com.extrahardmode.config.messages.MsgCategory} enum value of the node or null if the enum name of the node doesn't end with _MODE or value of the node is not found.
+     */
     public MsgCategory getCat(MessageNode node)
     {
         MessageNode modeNode = null;
@@ -255,8 +274,8 @@ public class MessageConfig extends ModularConfig
         {
         } finally
         {
-            if (!node.name().endsWith("_MODE"))
-                Validate.notNull(modeNode, "There is no MODE node set for " + node.name());
+            //if (!node.name().endsWith("_MODE"))
+                //Validate.notNull(modeNode, "There is no MODE node set for " + node.name());
             if (modeNode != null)
                 obj = OPTIONS.get(modeNode);
         }
@@ -290,33 +309,15 @@ public class MessageConfig extends ModularConfig
     @Override
     public void boundsCheck()
     {
-    }
-
-
-    @Override
-    public int getInt(ConfigNode node)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public List<String> getStringList(ConfigNode node)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public double getDouble(ConfigNode node)
-    {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
-    public boolean getBoolean(ConfigNode node)
-    {
-        throw new UnsupportedOperationException();
+        for (ConfigNode node : MessageNode.values())
+        {
+            if (node.getSubType() == ConfigNode.SubType.PLAYER_NAME)
+            {
+                String nodeValue = config.getString(node.getPath());
+                if (nodeValue != null)
+                    set(node, nodeValue.length() > 16 ? nodeValue.substring(0, 16) : nodeValue);
+                updateOption(node, config); //Kinda a quick workaround for the set() method in the super class not being implemented
+            }
+        }
     }
 }

@@ -46,7 +46,7 @@ public class TestBlockItemMetaParser
         List<String> fallingBlocks = new ArrayList<String>(2);
         fallingBlocks.add(String.valueOf(Material.ANVIL.getId()));
         fallingBlocks.add(String.valueOf(Material.COBBLESTONE.getId()));
-        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = SpecialParsers.parseMaterials(fallingBlocks);
 
         assertTrue("Basic data retrival", retrievedData.getContent().containsKey(Material.ANVIL.getId()));
         assertEquals("No data inserted so we should get no data back", Collections.<Byte>emptyList(), retrievedData.getContent().get(Material.ANVIL.getId()));
@@ -66,7 +66,7 @@ public class TestBlockItemMetaParser
         List<String> fallingBlocks = new ArrayList<String>(1);
         fallingBlocks.add("   3 4 ");
 
-        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = SpecialParsers.parseMaterials(fallingBlocks);
 
         assertTrue("Will the String be trimmed and still get recognixed", retrievedData.getContent().containsKey(34));
         assertEquals("No data inserted", Collections.<Byte>emptyList(), retrievedData.getContent().get(34));
@@ -85,7 +85,7 @@ public class TestBlockItemMetaParser
         fallingBlocks.add(Material.ANVIL.name());
         fallingBlocks.add(Material.BEACON.name());
 
-        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = SpecialParsers.parseMaterials(fallingBlocks);
 
         assertTrue(retrievedData.getContent().containsKey(Material.ANVIL.getId()));
         assertTrue(retrievedData.getContent().containsKey(Material.BEACON.getId()));
@@ -107,7 +107,7 @@ public class TestBlockItemMetaParser
         List<String> fallingBlocks = new ArrayList<String>(1);
         fallingBlocks.add(Material.BED.getId() + "@" + "1");
 
-        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = SpecialParsers.parseMaterials(fallingBlocks);
 
         assertTrue(retrievedData.getContent().containsKey(Material.BED.getId()));
 
@@ -127,7 +127,7 @@ public class TestBlockItemMetaParser
         List<String> fallingBlocks = new ArrayList<String>(1);
         fallingBlocks.add(Material.BED.getId() + "@1,2,3");
 
-        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = SpecialParsers.parseMaterials(fallingBlocks);
 
         assertTrue(retrievedData.getContent().containsKey(Material.BED.getId()));
 
@@ -151,7 +151,7 @@ public class TestBlockItemMetaParser
         fallingBlocks.add("34@12fag4");
         fallingBlocks.add("25adsaf:12d");
 
-        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = SpecialParsers.parseMaterials(fallingBlocks);
 
         assertEquals(true, retrievedData.getContent().containsKey(34));
         assertEquals((byte) 124, (byte) retrievedData.getContent().get(34).get(0));
@@ -173,7 +173,7 @@ public class TestBlockItemMetaParser
         fallingBlocks.add("12:1");
         fallingBlocks.add("12:2");
 
-        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = SpecialParsers.parseMaterials(fallingBlocks);
 
         assertEquals((byte) 1, (byte) retrievedData.getContent().get(12).get(0));
         assertEquals((byte) 2, (byte) retrievedData.getContent().get(12).get(1));
@@ -191,7 +191,7 @@ public class TestBlockItemMetaParser
         List<String> fallingBlocks = new ArrayList<String>();
         fallingBlocks.add("1200");
 
-        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = SpecialParsers.parseMaterials(fallingBlocks);
 
         assertTrue("Keep blockids for mod compatibility", retrievedData.getContent().containsKey(1200));
 
@@ -208,7 +208,7 @@ public class TestBlockItemMetaParser
         List<String> fallingBlocks = new ArrayList<String>();
         fallingBlocks.add("1200:1200");
 
-        Response<Map<Integer, List<Byte>>> retrievedData = BlockItemMetaParser.parse(fallingBlocks);
+        Response<Map<Integer, List<Byte>>> retrievedData = SpecialParsers.parseMaterials(fallingBlocks);
 
         assertEquals((byte) Byte.MAX_VALUE, (byte) retrievedData.getContent().get(1200).get(0));
 
@@ -230,7 +230,7 @@ public class TestBlockItemMetaParser
         Map<Integer, List<Byte>> blocks = new HashMap<Integer, List<Byte>>(1);
         blocks.put(12, myMeta);
 
-        List outPutStrings = BlockItemMetaParser.getStringsFor(blocks);
+        List outPutStrings = SpecialParsers.convertToStringList(blocks);
 
         assertEquals("blockname@meta1,meta2,meta3 is the expected format", "SAND@1,2,3", outPutStrings.get(0));
     }
@@ -251,7 +251,7 @@ public class TestBlockItemMetaParser
         blocks.put(12, null);
         blocks.put(1, Collections.<Byte>emptyList());
 
-        List outPutStrings = BlockItemMetaParser.getStringsFor(blocks);
+        List outPutStrings = SpecialParsers.convertToStringList(blocks);
 
         assertEquals("plain enum expected", "SAND", outPutStrings.get(0));
         assertEquals("plain enum expected aswell", "STONE", outPutStrings.get(1));
