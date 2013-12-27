@@ -56,6 +56,8 @@ public class Explosions extends ListenerModule
 {
     private RootConfig CFG;
 
+    private BlockModule blockModule;
+
     private final String tag = "extrahardmode.explosion.fallingblock";
 
 
@@ -71,6 +73,7 @@ public class Explosions extends ListenerModule
     {
         super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
+        blockModule = plugin.getModuleForClass(BlockModule.class);
     }
 
 
@@ -241,7 +244,10 @@ public class Explosions extends ListenerModule
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPhysicsApply(final EntityExplodeEvent event)
     {
-        String worldName = event.getLocation().getWorld().getName();
+        final String worldName = event.getLocation().getWorld().getName();
+
+        final boolean damagePlayer = CFG.getInt(RootNode.MORE_FALLING_BLOCKS_DMG_AMOUNT, worldName) > 0;
+
         if (CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE, worldName))
         {
             final boolean flyOtherPlugins = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE_OTHER, worldName);
@@ -285,6 +291,12 @@ public class Explosions extends ListenerModule
                     }
                 }, 2L);
             }
+        }
+
+        if (CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, worldName))
+        {
+            blockModule.physicsCheck(event.getLocation().add(0, 5, 0).getBlock(), 5, true, 3); //loosen ceiling
+            blockModule.physicsCheck(event.getLocation().add(0, -3, 0).getBlock(), 5, true, 6); //ground loosen
         }
     }
 
