@@ -240,36 +240,39 @@ public class Tutorial extends ListenerModule
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event)
     {
-        final Player player = event.getPlayer();
-        final Block block = event.getBlock();
-        //Too dark
-        if (block.getType() == Material.SOIL)
+        if (CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, event.getBlock().getWorld().getName()))
         {
-            Block above = block.getRelative(BlockFace.UP);
-            if (above.getLightFromSky() < 10)
+            final Player player = event.getPlayer();
+            final Block block = event.getBlock();
+            //Too dark
+            if (block.getType() == Material.SOIL)
             {
-                messenger.send(player, MessageNode.ANTIFARMING_NO_LIGHT);
-            }
-        }
-
-        Block below = block.getRelative(BlockFace.DOWN);
-
-        //Unwatered
-        if (blockModule.isPlant(block.getType()) && below.getState().getData().getData() == (byte) 0)
-        {
-            messenger.send(player, MessageNode.ANTIFARMING_UNWATERD);
-        }
-
-        //Warn players before they build big farms in the desert
-        if (block.getType() == Material.DIRT)
-        {
-            switch (block.getBiome())
-            {
-                case DESERT:
-                case DESERT_HILLS:
+                Block above = block.getRelative(BlockFace.UP);
+                if (above.getLightFromSky() < 10)
                 {
-                    messenger.send(player, MessageNode.ANTIFARMING_DESSERT_WARNING);
-                    break;
+                    messenger.send(player, MessageNode.ANTIFARMING_NO_LIGHT);
+                }
+            }
+
+            Block below = block.getRelative(BlockFace.DOWN);
+
+            //Unwatered
+            if (blockModule.isPlant(block.getType()) && below.getState().getData().getData() == (byte) 0)
+            {
+                messenger.send(player, MessageNode.ANTIFARMING_UNWATERD);
+            }
+
+            //Warn players before they build big farms in the desert
+            if (block.getType() == Material.DIRT)
+            {
+                switch (block.getBiome())
+                {
+                    case DESERT:
+                    case DESERT_HILLS:
+                    {
+                        messenger.send(player, MessageNode.ANTIFARMING_DESSERT_WARNING);
+                        break;
+                    }
                 }
             }
         }
