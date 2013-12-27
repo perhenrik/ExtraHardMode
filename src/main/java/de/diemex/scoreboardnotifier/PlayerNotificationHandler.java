@@ -85,7 +85,7 @@ public class PlayerNotificationHandler
      */
     public int displayMessage(NotificationHolder popup)
     {
-       Player player = Bukkit.getPlayer(playerName);
+        Player player = Bukkit.getPlayer(playerName);
         if (player != null && player.isOnline())
         {
             //Init if no scoreboard active

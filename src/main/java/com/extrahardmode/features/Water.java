@@ -79,8 +79,7 @@ public class Water extends ListenerModule
     /**
      * when a player moves...
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(priority = EventPriority.NORMAL)
     void onPlayerMove(PlayerMoveEvent event)
@@ -198,8 +197,7 @@ public class Water extends ListenerModule
     /**
      * when a player drops an item
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void onPlayerDropItem(PlayerDropItemEvent event)
@@ -214,8 +212,7 @@ public class Water extends ListenerModule
     /**
      * when a player picks up an item
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void onPlayerPickupItem(PlayerPickupItemEvent event)
@@ -230,8 +227,7 @@ public class Water extends ListenerModule
     /**
      * When a player interacts with an inventory.
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void onPlayerInventoryClick(InventoryClickEvent event)

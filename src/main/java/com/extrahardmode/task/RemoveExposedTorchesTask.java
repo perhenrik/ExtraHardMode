@@ -56,10 +56,8 @@ public class RemoveExposedTorchesTask implements Runnable
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Plugin instance.
-     * @param chunk
-     *         - Target chunk.
+     * @param plugin - Plugin instance.
+     * @param chunk  - Target chunk.
      */
     public RemoveExposedTorchesTask(ExtraHardMode plugin, Chunk chunk)
     {

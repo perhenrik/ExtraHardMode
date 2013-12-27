@@ -15,6 +15,7 @@ public class CompatLogBlock implements ICompat, IBlockLogger
     private final Plugin plugin;
     private final Consumer consumer;
 
+
     public CompatLogBlock(Plugin plugin)
     {
         this.plugin = plugin;
@@ -24,6 +25,7 @@ public class CompatLogBlock implements ICompat, IBlockLogger
         else
             consumer = null;
     }
+
 
     @Override
     public void logFallingBlockFall(Block block)

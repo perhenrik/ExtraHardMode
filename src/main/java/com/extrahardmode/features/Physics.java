@@ -82,8 +82,7 @@ public class Physics extends ListenerModule
      * <p/>
      * Check the surrounding blocks for gravity
      *
-     * @param placeEvent
-     *         - Event that occurred
+     * @param placeEvent - Event that occurred
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH/*so this gets called after the building limitations*/)
     public void onBlockPlace(BlockPlaceEvent placeEvent)
@@ -108,8 +107,7 @@ public class Physics extends ListenerModule
      * <p/>
      * Check if the surrounding blocks should fall
      *
-     * @param breakEvent
-     *         - Event that occurred.
+     * @param breakEvent - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
@@ -148,7 +146,7 @@ public class Physics extends ListenerModule
      * Called when an Entity forms a Block - Damage Player when a FallingBlock hits him
      * provide compatibility for block loggers that don't log correctly
      */
-    @EventHandler (priority = EventPriority.HIGHEST) //so we are pretty late and hopefully don't get cancelled afterwards
+    @EventHandler(priority = EventPriority.HIGHEST) //so we are pretty late and hopefully don't get cancelled afterwards
     public void whenBlockLands(EntityChangeBlockEvent event)
     {
         Entity entity = event.getEntity();

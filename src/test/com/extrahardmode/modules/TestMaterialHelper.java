@@ -35,6 +35,7 @@ public class TestMaterialHelper
         assertEquals("1 ironhorsearmor", MaterialHelper.print(new ItemStack(Material.IRON_BARDING, 1)));
     }
 
+
     @Test
     public void print_multiSpecial()
     {

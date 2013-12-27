@@ -48,10 +48,8 @@ class DropItemsTask implements Runnable
     /**
      * Constructor.
      *
-     * @param itemsToDrop
-     *         - List of items to drop.
-     * @param location
-     *         - Drop point location.
+     * @param itemsToDrop - List of items to drop.
+     * @param location    - Drop point location.
      */
     public DropItemsTask(List<ItemStack> itemsToDrop, Location location)
     {

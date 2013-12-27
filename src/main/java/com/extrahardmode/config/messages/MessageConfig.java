@@ -27,16 +27,13 @@ import com.extrahardmode.module.IoHelper;
 import com.extrahardmode.service.config.ConfigNode;
 import com.extrahardmode.service.config.ModularConfig;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
-import java.util.List;
 import java.util.logging.Level;
 
 /** Configuration handler for the messages.yml file. */
@@ -92,17 +89,17 @@ public class MessageConfig extends ModularConfig
                 if (node.isCategoryNode()) //convert the parsed enum value to a string representation
                     reorderedConfig.set(node.getPath(), getCat(node).name().toLowerCase());
                 else
-                switch (node.getVarType())
-                {
-                    case COLOR:
-                        if (getColor(node) == null)
-                            reorderedConfig.set(node.getPath(), "NONE");
-                        else
-                            reorderedConfig.set(node.getPath(), getColor(node).name());
-                        break;
-                    default:
-                        reorderedConfig.set(node.getPath(), OPTIONS.get(node));
-                }
+                    switch (node.getVarType())
+                    {
+                        case COLOR:
+                            if (getColor(node) == null)
+                                reorderedConfig.set(node.getPath(), "NONE");
+                            else
+                                reorderedConfig.set(node.getPath(), getColor(node).name());
+                            break;
+                        default:
+                            reorderedConfig.set(node.getPath(), OPTIONS.get(node));
+                    }
             }
             reorderedConfig.save(file);
         } catch (IOException e)
@@ -275,7 +272,7 @@ public class MessageConfig extends ModularConfig
         } finally
         {
             //if (!node.name().endsWith("_MODE"))
-                //Validate.notNull(modeNode, "There is no MODE node set for " + node.name());
+            //Validate.notNull(modeNode, "There is no MODE node set for " + node.name());
             if (modeNode != null)
                 obj = OPTIONS.get(modeNode);
         }

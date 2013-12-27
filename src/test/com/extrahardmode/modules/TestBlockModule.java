@@ -74,6 +74,7 @@ public class TestBlockModule
         assertFalse(module.breaksFallingBlock(Material.LOG));
     }
 
+
     @Test
     public void testIsOffAxis()
     {
@@ -89,6 +90,7 @@ public class TestBlockModule
 
         assertTrue(BlockModule.isOffAxis(player.get(), placedBlock.get(), againstBlock.get()));
     }
+
 
     @Test
     public void testIsOffAxisBut()

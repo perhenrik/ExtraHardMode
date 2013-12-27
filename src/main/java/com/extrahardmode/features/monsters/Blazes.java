@@ -175,7 +175,7 @@ public class Blazes extends ListenerModule
             //Blazes which have split already are less likely to split
             int respawnCount = entity.getMetadata("extrahardmode.blaze.splitcount").size() > 0 ? entity.getMetadata("extrahardmode.blaze.splitcount").get(0).asInt() : 0;
             respawnCount++;
-            blazeSplitPercent = (int) (1.0D /  respawnCount * blazeSplitPercent);
+            blazeSplitPercent = (int) (1.0D / respawnCount * blazeSplitPercent);
             if (plugin.random(blazeSplitPercent))
             {
                 //TODO EhmBlazeSplitEvent

@@ -83,8 +83,7 @@ public enum Feature
      * <p/>
      * for Features with a dedicated bypass permission
      *
-     * @param node
-     *         which will bypass
+     * @param node which will bypass
      */
     private Feature(PermissionNode node)
     {

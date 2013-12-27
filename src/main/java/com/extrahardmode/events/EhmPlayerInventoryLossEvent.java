@@ -47,10 +47,9 @@ public class EhmPlayerInventoryLossEvent extends Event implements Cancellable
     /**
      * Constructor
      *
-     * @param player
-     *         Player who died
-     * @param drops
-     *         all items that got lost
+     * @param event death event that caused the loss of items
+     * @param drops  all items that got lost
+     * @param stacksToRemove stacks that will be removed
      */
     public EhmPlayerInventoryLossEvent(PlayerDeathEvent event, List<ItemStack> drops, List<ItemStack> stacksToRemove)
     {
@@ -134,8 +133,7 @@ public class EhmPlayerInventoryLossEvent extends Event implements Cancellable
 
 
     /**
-     * @param cancelled
-     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)

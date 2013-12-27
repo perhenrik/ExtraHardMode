@@ -24,10 +24,8 @@ package com.extrahardmode.service;
 
 import com.extrahardmode.service.config.Status;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Material;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,11 +73,10 @@ public class SpecialParsers
     /**
      * Parse a given List of Strings which represent Blocks and their Metadata
      *
-     * @param stringlist
-     *         of representing blocks
+     * @param stringList of representing blocks
      *
      * @return a Map which is usable by a plugin and the StatusCode. <br> OK = the input has been completely valid, <br>
-     *         NEEDS_TO_BE_ADJUSTED = input not valid but has been corrected and can be written back to config
+     * NEEDS_TO_BE_ADJUSTED = input not valid but has been corrected and can be written back to config
      */
     public static Response<Map<Integer/*block id*/, List<Byte>>> parseMaterials(List<String> stringList)
     {

@@ -1,8 +1,8 @@
 package de.diemex.scoreboardnotifier;
 
 
-import de.diemex.scoreboardnotifier.message.MsgSettings;
 import de.diemex.scoreboardnotifier.message.MsgLineHolder;
+import de.diemex.scoreboardnotifier.message.MsgSettings;
 import de.diemex.scoreboardnotifier.message.StringUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

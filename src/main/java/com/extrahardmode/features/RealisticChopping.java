@@ -89,8 +89,7 @@ public class RealisticChopping extends ListenerModule
     /**
      * When a player breaks a block...
      *
-     * @param breakEvent
-     *         - Event that occurred.
+     * @param breakEvent - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)

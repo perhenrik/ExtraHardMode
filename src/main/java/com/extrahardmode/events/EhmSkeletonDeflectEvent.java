@@ -26,12 +26,9 @@ public class EhmSkeletonDeflectEvent extends Event implements Cancellable
     /**
      * Constructor
      *
-     * @param shooter
-     *         Player shooting the arrow
-     * @param skeleton
-     *         Skeleton getting hit
-     * @param deflectPercentage
-     *         the percentage of arrows a Skeleton deflects
+     * @param shooter           Player shooting the arrow
+     * @param skeleton          Skeleton getting hit
+     * @param deflectPercentage the percentage of arrows a Skeleton deflects
      */
     public EhmSkeletonDeflectEvent(Player shooter, Skeleton skeleton, int deflectPercentage)
     {
@@ -44,12 +41,9 @@ public class EhmSkeletonDeflectEvent extends Event implements Cancellable
     /**
      * Constructor
      *
-     * @param shooter
-     *         Player shooting the arrow
-     * @param skeleton
-     *         Skeleton getting hit
-     * @param deflectPercentage
-     *         the percentage of arrows a Skeleton deflects
+     * @param shooter           Player shooting the arrow
+     * @param skeleton          Skeleton getting hit
+     * @param deflectPercentage the percentage of arrows a Skeleton deflects
      */
     public EhmSkeletonDeflectEvent(Player shooter, Skeleton skeleton, int deflectPercentage, boolean cancelled)
     {
@@ -87,8 +81,7 @@ public class EhmSkeletonDeflectEvent extends Event implements Cancellable
 
 
     /**
-     * @param cancelled
-     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)

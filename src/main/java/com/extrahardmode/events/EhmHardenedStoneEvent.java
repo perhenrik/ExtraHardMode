@@ -58,10 +58,8 @@ public class EhmHardenedStoneEvent extends Event
     /**
      * Constructor
      *
-     * @param toolId
-     *         the tool which broke the Stone
-     * @param numOfBlocks
-     *         amount of blocks tool can mine
+     * @param tool      the tool which broke the Stone
+     * @param numOfBlocks amount of blocks tool can mine
      */
     public EhmHardenedStoneEvent(Player player, ItemStack tool, short numOfBlocks)
     {

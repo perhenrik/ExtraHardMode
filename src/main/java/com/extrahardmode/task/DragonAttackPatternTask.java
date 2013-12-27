@@ -67,14 +67,10 @@ public class DragonAttackPatternTask implements Runnable
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - plugin instance.
-     * @param dragon
-     *         - Dragon.
-     * @param player
-     *         - Target player.
-     * @param playersFightingDragon
-     *         - All fighting players.
+     * @param plugin                - plugin instance.
+     * @param dragon                - Dragon.
+     * @param player                - Target player.
+     * @param playersFightingDragon - All fighting players.
      */
     public DragonAttackPatternTask(ExtraHardMode plugin, LivingEntity dragon, Player player, List<String> playersFightingDragon)
     {

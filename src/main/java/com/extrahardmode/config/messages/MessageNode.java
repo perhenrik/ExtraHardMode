@@ -38,53 +38,53 @@ public enum MessageNode implements ConfigNode
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_ENABLE ("Display Messages In Scoreboard.Enable", VarType.BOOLEAN, true),
+    SB_MSG_ENABLE("Display Messages In Scoreboard.Enable", VarType.BOOLEAN, true),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_TITLE ("Display Messages In Scoreboard.Scoreboard Title", VarType.STRING, SubType.PLAYER_NAME, ChatColor.RED + "ExtraHardMode"),
+    SB_MSG_TITLE("Display Messages In Scoreboard.Scoreboard Title", VarType.STRING, SubType.PLAYER_NAME, ChatColor.RED + "ExtraHardMode"),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_REMOVE_COLOR ("Display Messages In Scoreboard.Remove All Color Codes", VarType.BOOLEAN, true),
+    SB_MSG_REMOVE_COLOR("Display Messages In Scoreboard.Remove All Color Codes", VarType.BOOLEAN, true),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_NOTIFICATION ("Display Messages In Scoreboard.Notification.Enable", VarType.BOOLEAN, true),
+    SB_MSG_NOTIFICATION("Display Messages In Scoreboard.Notification.Enable", VarType.BOOLEAN, true),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_NOTIFICATION_LEN ("Display Messages In Scoreboard.Notification.Displaytime In Ticks", VarType.INTEGER, 600),
+    SB_MSG_NOTIFICATION_LEN("Display Messages In Scoreboard.Notification.Displaytime In Ticks", VarType.INTEGER, 600),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_NOTIFICATION_TEXT_CLR ("Display Messages In Scoreboard.Notification.Textcolor", VarType.COLOR, "NONE"),
+    SB_MSG_NOTIFICATION_TEXT_CLR("Display Messages In Scoreboard.Notification.Textcolor", VarType.COLOR, "NONE"),
 
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_TUTORIAL ("Display Messages In Scoreboard.Tutorial.Enable", VarType.BOOLEAN, true),
+    SB_MSG_TUTORIAL("Display Messages In Scoreboard.Tutorial.Enable", VarType.BOOLEAN, true),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_TUTORIAL_LEN ("Display Messages In Scoreboard.Tutorial.Displaytime In Ticks", VarType.INTEGER, 1800),
+    SB_MSG_TUTORIAL_LEN("Display Messages In Scoreboard.Tutorial.Displaytime In Ticks", VarType.INTEGER, 1800),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_TUTORIAL_TEXT_CLR ("Display Messages In Scoreboard.Tutorial.Textcolor", VarType.COLOR, "NONE"),
+    SB_MSG_TUTORIAL_TEXT_CLR("Display Messages In Scoreboard.Tutorial.Textcolor", VarType.COLOR, "NONE"),
 
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_BROADCAST ("Display Messages In Scoreboard.Broadcast.Enable", VarType.BOOLEAN, true),
+    SB_MSG_BROADCAST("Display Messages In Scoreboard.Broadcast.Enable", VarType.BOOLEAN, true),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_BROADCAST_LEN ("Display Messages In Scoreboard.Broadcast.Displaytime In Ticks", VarType.INTEGER, 1200),
+    SB_MSG_BROADCAST_LEN("Display Messages In Scoreboard.Broadcast.Displaytime In Ticks", VarType.INTEGER, 1200),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_BROADCAST_TEXT_CLR ("Display Messages In Scoreboard.Broadcast.Textcolor", VarType.COLOR, "NONE"),
+    SB_MSG_BROADCAST_TEXT_CLR("Display Messages In Scoreboard.Broadcast.Textcolor", VarType.COLOR, "NONE"),
 
 
     //Mode-Nodes have to be have the exact same name + _MODE
@@ -358,7 +358,7 @@ public enum MessageNode implements ConfigNode
     }
 
 
-    private MessageNode (String path, VarType varType, Object value)
+    private MessageNode(String path, VarType varType, Object value)
     {
         this(path, varType, null, value);
     }
@@ -454,6 +454,7 @@ public enum MessageNode implements ConfigNode
         return categories;
     }
 
+
     /**
      * Get all Nodes that hold the category of a node //TODO describe better
      */
@@ -495,7 +496,7 @@ public enum MessageNode implements ConfigNode
         private final String[] variable;
 
 
-        private variables(String ... variable)
+        private variables(String... variable)
         {
             this.variable = variable;
         }
@@ -508,6 +509,7 @@ public enum MessageNode implements ConfigNode
         {
             return variable;
         }
+
 
         /**
          * Get the primary identifier which represents this variable in the String

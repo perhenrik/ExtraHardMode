@@ -287,7 +287,7 @@ public abstract class MultiWorldConfig extends EHMModule
                 if (value instanceof Integer || value instanceof Double)
                 {
                     //fix error when double is provided which can be casted
-                    if (value instanceof  Double)
+                    if (value instanceof Double)
                         value = ((Double) value).intValue();
                     OPTIONS.put(world, node, value);
                     break;
@@ -324,6 +324,7 @@ public abstract class MultiWorldConfig extends EHMModule
         return worlds.toArray(new String[worlds.size()]);
     }
 
+
     public boolean isEnabledIn(String world)
     {
         return OPTIONS.containsRow(world);
@@ -332,12 +333,14 @@ public abstract class MultiWorldConfig extends EHMModule
 
     /**
      * Does this config apply to all loaded worlds
+     *
      * @return if applies to all worlds
      */
     public boolean isEnabledForAll()
     {
         return enabledForAll;
     }
+
 
     public String getAllWorldString()
     {

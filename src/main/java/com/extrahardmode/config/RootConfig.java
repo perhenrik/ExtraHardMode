@@ -23,8 +23,8 @@ package com.extrahardmode.config;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.service.SpecialParsers;
 import com.extrahardmode.service.Response;
+import com.extrahardmode.service.SpecialParsers;
 import com.extrahardmode.service.config.*;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;

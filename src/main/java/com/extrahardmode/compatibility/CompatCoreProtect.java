@@ -15,11 +15,13 @@ public class CompatCoreProtect implements ICompat, IBlockLogger
     private final Plugin plugin;
     private final CoreProtectAPI coreProtectAPI;
 
+
     public CompatCoreProtect(Plugin plugin)
     {
         this.plugin = plugin;
         this.coreProtectAPI = getCoreProtect();
     }
+
 
     @Override
     public void logFallingBlockFall(Block block)
@@ -40,6 +42,7 @@ public class CompatCoreProtect implements ICompat, IBlockLogger
     {
         return coreProtectAPI != null;
     }
+
 
     private CoreProtectAPI getCoreProtect()
     {

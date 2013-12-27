@@ -87,8 +87,7 @@ public class AntiFarming extends ListenerModule
      * <p/>
      * No bonemeal on mushrooms , bonemeal doesn't always succeed
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(priority = EventPriority.LOWEST)
     void onPlayerInteract(PlayerInteractEvent event)
@@ -197,8 +196,7 @@ public class AntiFarming extends ListenerModule
      * <p/>
      * no big plant growth in deserts
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onStructureGrow(StructureGrowEvent event)
@@ -223,8 +221,7 @@ public class AntiFarming extends ListenerModule
     /**
      * when a dispenser dispenses...
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     void onBlockDispense(BlockDispenseEvent event)
@@ -266,8 +263,7 @@ public class AntiFarming extends ListenerModule
     /**
      * when a sheep regrows its wool...
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler
     public void onSheepRegrowWool(SheepRegrowWoolEvent event)
@@ -345,8 +341,7 @@ public class AntiFarming extends ListenerModule
     /**
      * when a player crafts something...
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onItemCrafted(CraftItemEvent event)
@@ -383,8 +378,7 @@ public class AntiFarming extends ListenerModule
     /**
      * when a player empties a bucket...
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerEmptyBucket(PlayerBucketEmptyEvent event)

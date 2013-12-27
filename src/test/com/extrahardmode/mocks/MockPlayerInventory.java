@@ -60,8 +60,7 @@ public class MockPlayerInventory
     /**
      * Constructor
      *
-     * @param player
-     *         name of the Player to whom this inventory belongs to
+     * @param player name of the Player to whom this inventory belongs to
      */
     public MockPlayerInventory(Player player, ItemStack[] armorContents, ItemStack[] inventoryContents)
     {

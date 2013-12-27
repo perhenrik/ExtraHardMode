@@ -30,10 +30,8 @@ public class EhmPlayerExtinguishFireEvent extends Event implements Cancellable
     /**
      * Constructor
      *
-     * @param toolId
-     *         the tool which broke the Stone
-     * @param numOfBlocks
-     *         amount of blocks tool can mine
+     * @param player player that hit fire
+     * @param burnTicks ticks player will be on fire
      */
     public EhmPlayerExtinguishFireEvent(Player player, int burnTicks)
     {
@@ -84,8 +82,7 @@ public class EhmPlayerExtinguishFireEvent extends Event implements Cancellable
 
 
     /**
-     * @param cancelled
-     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)

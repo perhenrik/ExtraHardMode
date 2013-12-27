@@ -53,6 +53,7 @@ public class BlockModule extends EHMModule
 
     private final Pattern slabPattern = Pattern.compile("(?!DOUBLE).*STEP");
 
+
     /**
      * Constructor.
      *
@@ -324,7 +325,7 @@ public class BlockModule extends EHMModule
      */
     public boolean breaksFallingBlock(Material mat)
     {
-        return  (mat.isTransparent() &&
+        return (mat.isTransparent() &&
                 mat != Material.PORTAL &&
                 mat != Material.ENDER_PORTAL) ||
                 mat == Material.WEB ||

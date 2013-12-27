@@ -216,7 +216,7 @@ public class Skeletors extends ListenerModule
                 arrow.setMetadata(key_fireArrow, new FixedMetadataValue(plugin, true));
                 SmallFireball fireball = world.spawn(arrow.getLocation(), SmallFireball.class);
                 fireball.setVelocity(arrow.getVelocity());
-            //Silverfish
+                //Silverfish
             } else if (skeleton.getTarget() instanceof Player && silverfishEnable && OurRandom.percentChance(silverfishPercent)) //To prevent tons of Silverfish
             {
                 //respect summoning limits

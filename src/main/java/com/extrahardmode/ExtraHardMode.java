@@ -34,7 +34,6 @@ import com.extrahardmode.module.*;
 import com.extrahardmode.service.IModule;
 import com.extrahardmode.service.OurRandom;
 import com.extrahardmode.task.MoreMonstersTask;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -92,7 +91,8 @@ public class ExtraHardMode extends JavaPlugin
         //Basic Modules
         registerModule(AntiFarming.class, new AntiFarming(this));
         registerModule(AntiGrinder.class, new AntiGrinder(this));
-        registerModule(Explosions.class, new Explosions(this));;
+        registerModule(Explosions.class, new Explosions(this));
+        ;
         registerModule(HardenedStone.class, new HardenedStone(this));
         registerModule(LimitedBuilding.class, new LimitedBuilding(this));
         registerModule(MoreTnt.class, new MoreTnt(this));
@@ -149,8 +149,7 @@ public class ExtraHardMode extends JavaPlugin
     /**
      * Computes random chance
      *
-     * @param percentChance
-     *         - Percentage of success.
+     * @param percentChance - Percentage of success.
      *
      * @return True if it was successful, else false.
      */
@@ -180,13 +179,10 @@ public class ExtraHardMode extends JavaPlugin
     /**
      * Register a module.
      *
-     * @param clazz
-     *         - Class of the instance.
-     * @param module
-     *         - Module instance.
+     * @param clazz  - Class of the instance.
+     * @param module - Module instance.
      *
-     * @throws IllegalArgumentException
-     *         - Thrown if an argument is null.
+     * @throws IllegalArgumentException - Thrown if an argument is null.
      */
     <T extends IModule> void registerModule(Class<T> clazz, T module)
     {
@@ -208,8 +204,7 @@ public class ExtraHardMode extends JavaPlugin
     /**
      * Deregister a module.
      *
-     * @param clazz
-     *         - Class of the instance.
+     * @param clazz - Class of the instance.
      *
      * @return Module that was removed. Returns null if no instance of the module is registered.
      */
@@ -233,8 +228,7 @@ public class ExtraHardMode extends JavaPlugin
     /**
      * Retrieve a registered module.
      *
-     * @param clazz
-     *         - Class identifier.
+     * @param clazz - Class identifier.
      *
      * @return Module instance. Returns null is an instance of the given class has not been registered with the API.
      */

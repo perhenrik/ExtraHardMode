@@ -34,8 +34,7 @@ public class SlowKillTask extends BukkitRunnable
         {
             entity.damage(1.0);
             EntityHelper.addEnvironmentalDamage(plugin, entity, 1.0);
-        }
-        else
+        } else
             cancel();
     }
 }

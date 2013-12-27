@@ -72,12 +72,9 @@ public class MockCreatureSpawnEvent
     /**
      * Constructor param entity Pass in an Entity with a mocked getWorld()-method
      *
-     * @param type
-     *         of the spawned Entity
-     * @param worldName
-     *         name of the world where this Event occured
-     * @param reason
-     *         what caused the event
+     * @param type      of the spawned Entity
+     * @param worldName name of the world where this Event occured
+     * @param reason    what caused the event
      */
     public MockCreatureSpawnEvent(EntityType type, String worldName, CreatureSpawnEvent.SpawnReason reason)
     {
@@ -113,8 +110,7 @@ public class MockCreatureSpawnEvent
     /**
      * Set the MockWorld Object for this Event
      *
-     * @param world
-     *         MockWorld where this Event occured
+     * @param world MockWorld where this Event occured
      */
     public void setWorld(MockWorld world)
     {

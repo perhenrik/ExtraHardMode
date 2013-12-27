@@ -48,8 +48,7 @@ public class EvaporateWaterTask implements Runnable
     /**
      * Constructor.
      *
-     * @param block
-     *         - Target block.
+     * @param block - Target block.
      */
     public EvaporateWaterTask(Block block, ExtraHardMode plugin)
     {

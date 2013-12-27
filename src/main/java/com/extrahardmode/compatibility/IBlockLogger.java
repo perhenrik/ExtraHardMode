@@ -31,5 +31,5 @@ public interface IBlockLogger
      *
      * @param block falling block that landed
      */
-    public void logFallingBlockLand (BlockState block);
+    public void logFallingBlockLand(BlockState block);
 }

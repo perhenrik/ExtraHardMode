@@ -23,20 +23,13 @@ package com.extrahardmode.task;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.ExplosionCompatStorage;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.entity.minecart.ExplosiveMinecart;
-
-import java.util.ArrayList;
 
 /**
  * Creates Explosions. The type determines the power, if there should be fire and the blockDmg. The size of the
@@ -76,10 +69,8 @@ public class CreateExplosionTask implements Runnable
     /**
      * Constructor.
      *
-     * @param location
-     *         - Location to make explosion occur.
-     * @param type
-     *         Type that determines size and possible blockdamage or fire of explosion.
+     * @param location - Location to make explosion occur.
+     * @param type     Type that determines size and possible blockdamage or fire of explosion.
      */
     public CreateExplosionTask(ExtraHardMode plugin, Location location, ExplosionType type, Entity entity)
     {
@@ -182,15 +173,15 @@ public class CreateExplosionTask implements Runnable
 
         //if (validateLocationSafe(loc, type))
         //{
-            //if (CompatHandler.isExplosionProtected(loc))
-            //    damageWorld = false;
-            if (explosionCause != null) //ignore pure "visual" explosions
-                plugin.getModuleForClass(ExplosionCompatStorage.class).queueExplosion(location, explosionCause);
+        //if (CompatHandler.isExplosionProtected(loc))
+        //    damageWorld = false;
+        if (explosionCause != null) //ignore pure "visual" explosions
+            plugin.getModuleForClass(ExplosionCompatStorage.class).queueExplosion(location, explosionCause);
 
 
-            //entity should be ignored so our code doesn't think that it's a regular creeper etc.
-            EntityHelper.flagIgnore(plugin, explosionCause);
-            loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, damageWorld);
+        //entity should be ignored so our code doesn't think that it's a regular creeper etc.
+        EntityHelper.flagIgnore(plugin, explosionCause);
+        loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, damageWorld);
         //}
     }
 

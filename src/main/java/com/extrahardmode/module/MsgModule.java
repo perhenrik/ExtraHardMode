@@ -23,7 +23,6 @@ package com.extrahardmode.module;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.config.messages.MsgCategory;
@@ -214,9 +213,9 @@ public class MsgModule extends EHMModule
     /**
      * Send a short message using SbPopupAPI
      *
-     * @param player    player to send the message to
-     * @param category  type defines the length color for consistency
-     * @param message   text to display
+     * @param player   player to send the message to
+     * @param category type defines the length color for consistency
+     * @param message  text to display
      */
     public void sendPopup(Player player, MsgCategory category, String message)
     {
@@ -230,7 +229,7 @@ public class MsgModule extends EHMModule
             if (messages.getBoolean(MessageNode.SB_MSG_REMOVE_COLOR))
                 message = ChatColor.stripColor(message);
 
-            switch(category)
+            switch (category)
             {
                 case BROADCAST:
                     length = messages.getInt(MessageNode.SB_MSG_BROADCAST_LEN);
@@ -259,25 +258,27 @@ public class MsgModule extends EHMModule
         }
     }
 
-    /**
-     * Send a short message using SbPopupAPI
-     *
-     * @param player    player to send the message to
-     * @param category  type defines the length color for consistency
-     * @param message   text already seperated into lines
-     */
-    public void sendPopup (Player player, MsgCategory category, List<String> message)
-    {
-        sendPopup(player, category, message, messages.getBoolean(MessageNode.SB_MSG_REMOVE_COLOR));
-    }
 
     /**
      * Send a short message using SbPopupAPI
      *
-     * @param player        player to send the message to
-     * @param category      type defines the length color for consistency
-     * @param message       text already seperated into lines
-     * @param stripColors   if colors should be removed from the message
+     * @param player   player to send the message to
+     * @param category type defines the length color for consistency
+     * @param message  text already seperated into lines
+     */
+    public void sendPopup(Player player, MsgCategory category, List<String> message)
+    {
+        sendPopup(player, category, message, messages.getBoolean(MessageNode.SB_MSG_REMOVE_COLOR));
+    }
+
+
+    /**
+     * Send a short message using SbPopupAPI
+     *
+     * @param player      player to send the message to
+     * @param category    type defines the length color for consistency
+     * @param message     text already seperated into lines
+     * @param stripColors if colors should be removed from the message
      */
     public void sendPopup(Player player, MsgCategory category, List<String> message, boolean stripColors)
     {
@@ -292,7 +293,7 @@ public class MsgModule extends EHMModule
                 for (int i = 0; i < message.size(); i++)
                     message.set(i, ChatColor.stripColor(message.get(i)));
 
-            switch(category)
+            switch (category)
             {
                 case BROADCAST:
                     length = messages.getInt(MessageNode.SB_MSG_BROADCAST_LEN);

@@ -48,12 +48,9 @@ public class EhmCreeperDropTntEvent extends Event implements Cancellable
     /**
      * This looks like a constructor
      *
-     * @param player
-     *         Player who killed the Creeper, can be null if not a Player kill
-     * @param creeper
-     *         who has been killed and dropped the tnt
-     * @param location
-     *         of the tnt-drop
+     * @param player   Player who killed the Creeper, can be null if not a Player kill
+     * @param creeper  who has been killed and dropped the tnt
+     * @param location of the tnt-drop
      */
     public EhmCreeperDropTntEvent(final Player player, final Creeper creeper, Location location)
     {
@@ -77,8 +74,7 @@ public class EhmCreeperDropTntEvent extends Event implements Cancellable
     /**
      * Set the location where the tnt will drop
      *
-     * @param location
-     *         the location to set
+     * @param location the location to set
      */
     public void setLocation(Location location)
     {
@@ -119,8 +115,7 @@ public class EhmCreeperDropTntEvent extends Event implements Cancellable
 
 
     /**
-     * @param cancelled
-     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)

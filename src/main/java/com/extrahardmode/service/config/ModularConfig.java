@@ -66,8 +66,7 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - plugin instance.
+     * @param plugin - plugin instance.
      */
     protected ModularConfig(ExtraHardMode plugin)
     {
@@ -78,8 +77,7 @@ public abstract class ModularConfig extends EHMModule
     /**
      * This updates a configuration option from the file.
      *
-     * @param node
-     *         - ConfigNode to update.
+     * @param node - ConfigNode to update.
      */
     @SuppressWarnings("unchecked")
     protected void updateOption(final ConfigNode node, final ConfigurationSection config)
@@ -141,10 +139,8 @@ public abstract class ModularConfig extends EHMModule
      * <p/>
      * Note, there is no type checking with this method.
      *
-     * @param node
-     *         - ConfigNode path to use.
-     * @param value
-     *         - Value to use.
+     * @param node  - ConfigNode path to use.
+     * @param value - Value to use.
      */
     public void set(final ConfigNode node, final Object value)
     {
@@ -155,10 +151,8 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Set the given path for the given value.
      *
-     * @param path
-     *         - Path to use.
-     * @param value
-     *         - Value to use.
+     * @param path  - Path to use.
+     * @param value - Value to use.
      */
     protected abstract void set(final String path, final Object value);
 
@@ -166,8 +160,7 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Get the integer value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns -1 if unknown.
      */
@@ -199,8 +192,7 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Get the string value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns and empty string if unknown.
      */
@@ -230,8 +222,7 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Get the list value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns an empty list if unknown.
      */
@@ -263,8 +254,7 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Get the double value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns 0 if unknown.
      */
@@ -296,8 +286,7 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Get the boolean value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns false if unknown.
      */
@@ -319,11 +308,11 @@ public abstract class ModularConfig extends EHMModule
         return bool;
     }
 
+
     /**
      * Get the (chat)color value of the node.
      *
-     * @param node
-     *         - Node to use.
+     * @param node - Node to use.
      *
      * @return Value of the node. Returns null if no color set.
      */
@@ -349,6 +338,7 @@ public abstract class ModularConfig extends EHMModule
         return color;
     }
 
+
     /**
      * Reloads info from yaml file(s).
      */
@@ -357,16 +347,14 @@ public abstract class ModularConfig extends EHMModule
     /**
      * Update settings that can be changed on the fly.
      *
-     * @param config
-     *         - Main config to load from.
+     * @param config - Main config to load from.
      */
     public abstract void loadSettings(final ConfigurationSection config);
 
     /**
      * Load defaults.
      *
-     * @param config
-     *         - Main config to load to.
+     * @param config - Main config to load to.
      */
     public abstract void loadDefaults(final ConfigurationSection config);
 

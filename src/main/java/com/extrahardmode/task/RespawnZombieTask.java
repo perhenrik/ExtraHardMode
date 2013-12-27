@@ -56,12 +56,9 @@ public class RespawnZombieTask implements Runnable
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Plugin instance.
-     * @param location
-     *         - Respawn location.
-     * @param target
-     *         - Target player.
+     * @param plugin   - Plugin instance.
+     * @param location - Respawn location.
+     * @param target   - Target player.
      */
     public RespawnZombieTask(ExtraHardMode plugin, Location location, Player target)
     {

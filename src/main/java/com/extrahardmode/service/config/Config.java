@@ -58,10 +58,8 @@ public class Config
     /**
      * Constructor
      *
-     * @param config
-     *         that's loaded                         config
-     * @param fullFilePath
-     *         fileName including the directory!
+     * @param config       that's loaded                         config
+     * @param fullFilePath fileName including the directory!
      */
     public Config(FileConfiguration config, String fullFilePath)
     {
@@ -85,10 +83,8 @@ public class Config
     /**
      * Constructor
      *
-     * @param config
-     *         that's loaded
-     * @param file
-     *         File-Object to save to
+     * @param config that's loaded
+     * @param file   File-Object to save to
      */
     public Config(FileConfiguration config, File file)
     {
@@ -156,8 +152,7 @@ public class Config
     /**
      * Set the Mode with which this Config should be loaded
      *
-     * @param mode
-     *         to set
+     * @param mode to set
      */
     public void setMode(Mode mode)
     {
@@ -179,8 +174,7 @@ public class Config
     /**
      * Set the Status of this Config
      *
-     * @param status
-     *         of the Config
+     * @param status of the Config
      */
     public void setStatus(Status status)
     {

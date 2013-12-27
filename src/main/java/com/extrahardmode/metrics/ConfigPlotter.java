@@ -90,19 +90,19 @@ public class ConfigPlotter
                     case ENHANCED_ENVIRONMENTAL_DAMAGE:
                     case EXTINGUISHING_FIRE_IGNITES_PLAYERS:
                     case FORTRESS_PIGS_DROP_WART:
-                    //case GHASTS_DEFLECT_ARROWS:
+                        //case GHASTS_DEFLECT_ARROWS:
                     case IMPROVED_ENDERMAN_TELEPORTATION:
                     case INHIBIT_MONSTER_GRINDERS:
                     case LIMITED_BLOCK_PLACEMENT:
                     case LIMITED_TORCH_PLACEMENT:
                     case MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE:
-                    //case MORE_MONSTERS_MULTIPLIER:
-                    //case NETHER_PIGS_DROP_WART:
+                        //case MORE_MONSTERS_MULTIPLIER:
+                        //case NETHER_PIGS_DROP_WART:
                     case NO_BONEMEAL_ON_MUSHROOMS:
                     case NO_FARMING_NETHER_WART:
                     case NO_SWIMMING_IN_ARMOR:
                     case RAIN_BREAKS_TORCHES:
-                    //case SILVERFISH_CANT_ENTER_BLOCKS:
+                        //case SILVERFISH_CANT_ENTER_BLOCKS:
                     case SNOW_BREAKS_CROPS:
                     case SUPER_HARD_STONE:
                     case SUPER_HARD_STONE_PHYSICS:
@@ -154,6 +154,7 @@ public class ConfigPlotter
             e.printStackTrace();
         }
     }
+
 
     public static String getLastPart(ConfigNode node)
     {

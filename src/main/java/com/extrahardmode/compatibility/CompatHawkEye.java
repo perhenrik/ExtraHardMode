@@ -19,16 +19,19 @@ public class CompatHawkEye implements ICompat, IBlockLogger
     private final JavaPlugin plugin;
     private boolean hawkEyeEnabled = true;
 
+
     public CompatHawkEye(Plugin plugin)
     {
         this.plugin = (JavaPlugin) plugin;
-        try {
+        try
+        {
             Class.forName("uk.co.oliwali.HawkEye.util.HawkEyeAPI");
         } catch (ClassNotFoundException ignored)
         {
             hawkEyeEnabled = false;
         }
     }
+
 
     @Override
     public void logFallingBlockFall(Block block)

@@ -67,15 +67,11 @@ public class BlockPhysicsCheckTask implements Runnable
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Plugin instance.
-     * @param block
-     *         - Target block for task.
-     * @param recursionCount
-     *         - Recursion count for task.
-     * @param force
-     *         - do we want to check adjacent blocks no matter if the center block falls or not? Also checks a lot
-     *         further down
+     * @param plugin         - Plugin instance.
+     * @param block          - Target block for task.
+     * @param recursionCount - Recursion count for task.
+     * @param force          - do we want to check adjacent blocks no matter if the center block falls or not? Also checks a lot
+     *                       further down
      */
     public BlockPhysicsCheckTask(ExtraHardMode plugin, Block block, int recursionCount, boolean force)
     {

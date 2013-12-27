@@ -155,6 +155,7 @@ public class EntityHelper
         return entity.hasMetadata(PROCESS_ENTITY) && meta != null;
     }
 
+
     /** Mark an Entity to be processed. E.g when only a small number of Entities should be processed */
     public static void markAsOurs(Plugin plugin, Entity entity)
     {

@@ -110,9 +110,7 @@ public class LimitedBuilding extends ListenerModule
                 //TODO EhmLimitedBuildingEvent Case.PLAYER_ABOVE_UNSAFE_LOC
                 messenger.send(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
-            }
-
-            else if (BlockModule.isOffAxis(playerBlock, block, against))
+            } else if (BlockModule.isOffAxis(playerBlock, block, against))
             {
                 messenger.send(player, MessageNode.REALISTIC_BUILDING, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);
@@ -129,7 +127,7 @@ public class LimitedBuilding extends ListenerModule
             //We just want to block crouching over a block and placing blocks in the adjacent column while jumping
             else if (underBlock.getType() == Material.AIR && block.getY() <= underBlock.getY() && block.getX() - underBlock.getX() <= 1 && block.getZ() - underBlock.getZ() <= 1 &&
                     (underBlock.getRelative(BlockFace.EAST).getType() == Material.AIR && underBlock.getRelative(BlockFace.NORTH).getType() == Material.AIR &&
-                    underBlock.getRelative(BlockFace.SOUTH).getType() == Material.AIR && underBlock.getRelative(BlockFace.WEST).getType() == Material.AIR))
+                            underBlock.getRelative(BlockFace.SOUTH).getType() == Material.AIR && underBlock.getRelative(BlockFace.WEST).getType() == Material.AIR))
             {
                 messenger.send(player, MessageNode.REALISTIC_BUILDING_BENEATH, PermissionNode.SILENT_REALISTIC_BUILDING);
                 placeEvent.setCancelled(true);

@@ -85,8 +85,7 @@ public class Players extends ListenerModule
     /**
      * FEATURE: respawning players start without full health or food
      *
-     * @param respawnEvent
-     *         - Event that occurred.
+     * @param respawnEvent - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawn(PlayerRespawnEvent respawnEvent)
@@ -203,8 +202,7 @@ public class Players extends ListenerModule
     /**
      * when a player interacts with the world
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(priority = EventPriority.LOWEST)
     void onPlayerInteract(PlayerInteractEvent event)

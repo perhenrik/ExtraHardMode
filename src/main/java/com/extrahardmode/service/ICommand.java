@@ -36,14 +36,10 @@ public interface ICommand
     /**
      * Execution method for the command.
      *
-     * @param sender
-     *         - Sender of the command.
-     * @param command
-     *         - Command used.
-     * @param label
-     *         - Label.
-     * @param args
-     *         - Command arguments.
+     * @param sender  - Sender of the command.
+     * @param command - Command used.
+     * @param label   - Label.
+     * @param args    - Command arguments.
      *
      * @return True if valid command and executed. Else false.
      */

@@ -157,7 +157,6 @@ public class NotificationHolder
     }
 
 
-
     /**
      * Add a prefix to every line. This is needed when a message has lines which are similar/same and we need to make them slightly different
      *

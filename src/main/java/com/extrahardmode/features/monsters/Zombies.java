@@ -93,7 +93,7 @@ public class Zombies extends ListenerModule
                 //Zombies which have respawned already are less likely to respawn
                 int respawnCount = entity.getMetadata("extrahardmode.zombie.respawncount").size() > 0 ? entity.getMetadata("extrahardmode.zombie.respawncount").get(0).asInt() : 0;
                 respawnCount++;
-                zombiesReanimatePercent = (int) (1.0D /  respawnCount * zombiesReanimatePercent);
+                zombiesReanimatePercent = (int) (1.0D / respawnCount * zombiesReanimatePercent);
 
                 EhmZombieRespawnEvent zombieEvent = new EhmZombieRespawnEvent(player, zombie, zombiesReanimatePercent, !plugin.random(zombiesReanimatePercent));
                 plugin.getServer().getPluginManager().callEvent(zombieEvent);

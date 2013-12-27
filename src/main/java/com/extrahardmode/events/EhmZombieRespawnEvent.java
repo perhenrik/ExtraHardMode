@@ -26,12 +26,9 @@ public class EhmZombieRespawnEvent extends Event implements Cancellable
     /**
      * Your constructor of choice
      *
-     * @param player
-     *         killer if it was a Player kill
-     * @param zombie
-     *         that was killed
-     * @param respawnChance
-     *         percentage that was used
+     * @param player        killer if it was a Player kill
+     * @param zombie        that was killed
+     * @param respawnChance percentage that was used
      */
     public EhmZombieRespawnEvent(final Player player, final Zombie zombie, int respawnChance)
     {
@@ -44,14 +41,10 @@ public class EhmZombieRespawnEvent extends Event implements Cancellable
     /**
      * Your constructor of choice
      *
-     * @param player
-     *         killer if it was a Player kill
-     * @param zombie
-     *         that was killed
-     * @param respawnChance
-     *         percentage that was used
-     * @param cancelled
-     *         if the Event is cancelled by default
+     * @param player        killer if it was a Player kill
+     * @param zombie        that was killed
+     * @param respawnChance percentage that was used
+     * @param cancelled     if the Event is cancelled by default
      */
     public EhmZombieRespawnEvent(final Player player, final Zombie zombie, int respawnChance, boolean cancelled)
     {
@@ -99,8 +92,7 @@ public class EhmZombieRespawnEvent extends Event implements Cancellable
 
 
     /**
-     * @param cancelled
-     *         if true Zombie won't be respawned
+     * @param cancelled if true Zombie won't be respawned
      */
     public void setCancelled(boolean cancelled)
     {

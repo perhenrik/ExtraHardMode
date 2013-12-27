@@ -67,8 +67,7 @@ public enum PermissionNode
     /**
      * Constructor.
      *
-     * @param subperm
-     *         - specific permission path.
+     * @param subperm - specific permission path.
      */
     private PermissionNode(String subperm)
     {

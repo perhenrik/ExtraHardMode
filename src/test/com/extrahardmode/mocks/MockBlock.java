@@ -41,6 +41,7 @@ public class MockBlock
 {
     private final Block block = mock(Block.class);
 
+
     public MockBlock setWorld(World world)
     {
         when(block.getWorld()).thenReturn(world);
@@ -48,7 +49,7 @@ public class MockBlock
     }
 
 
-    public MockBlock setLocation (int x, int y, int z)
+    public MockBlock setLocation(int x, int y, int z)
     {
         when(this.block.getX()).thenReturn(x);
         when(this.block.getY()).thenReturn(y);

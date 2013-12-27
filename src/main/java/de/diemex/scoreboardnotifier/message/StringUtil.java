@@ -15,7 +15,6 @@ public class StringUtil
     /**
      * Wrap words in an intelligent way to display in a scoreboard
      *
-     *
      * @param message to wrap
      *
      * @return the wrapped lines
@@ -28,7 +27,6 @@ public class StringUtil
 
     /**
      * Wrap words in an intelligent way to display in a scoreboard
-     *
      *
      * @param message to wrap
      *

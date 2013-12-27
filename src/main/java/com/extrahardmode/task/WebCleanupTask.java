@@ -44,8 +44,7 @@ public class WebCleanupTask implements Runnable
     /**
      * Constructor.
      *
-     * @param changedBlocks
-     *         - Block to check.
+     * @param changedBlocks - Block to check.
      */
     public WebCleanupTask(List<Block> changedBlocks)
     {

@@ -42,10 +42,8 @@ public class MockLivingEntity
     /**
      * Basic constructor
      *
-     * @param world
-     *         the world where this Entity resides in
-     * @param type
-     *         to stub
+     * @param world the world where this Entity resides in
+     * @param type  to stub
      */
     public MockLivingEntity(World world, EntityType type)
     {

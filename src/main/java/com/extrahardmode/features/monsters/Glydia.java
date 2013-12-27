@@ -328,8 +328,7 @@ public class Glydia extends ListenerModule
     /**
      * when a player changes from the End to another world, clean up if End empty
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(priority = EventPriority.MONITOR)
     void onPlayerChangeWorld(PlayerChangedWorldEvent event)
@@ -378,8 +377,7 @@ public class Glydia extends ListenerModule
     /**
      * when an item spawns
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onItemSpawn(ItemSpawnEvent event)
@@ -398,8 +396,7 @@ public class Glydia extends ListenerModule
     /**
      * when an entity targets something (as in to attack it)...
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler
     public void onEntityTarget(EntityTargetEvent event)

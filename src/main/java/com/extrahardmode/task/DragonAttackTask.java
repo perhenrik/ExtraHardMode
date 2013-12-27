@@ -54,12 +54,9 @@ public class DragonAttackTask implements Runnable
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Plugin instance.
-     * @param dragon
-     *         - Dragon.
-     * @param player
-     *         - Target player.
+     * @param plugin - Plugin instance.
+     * @param dragon - Dragon.
+     * @param player - Target player.
      */
     public DragonAttackTask(ExtraHardMode plugin, Entity dragon, Player player)
     {

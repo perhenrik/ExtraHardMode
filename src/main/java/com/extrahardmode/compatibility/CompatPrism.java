@@ -21,6 +21,7 @@ public class CompatPrism implements ICompat, IBlockLogger
         this.plugin = plugin;
     }
 
+
     @Override
     public void logFallingBlockFall(Block block)
     {

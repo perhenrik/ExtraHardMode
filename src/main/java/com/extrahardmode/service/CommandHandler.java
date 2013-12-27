@@ -64,8 +64,7 @@ public abstract class CommandHandler implements CommandExecutor
     /**
      * Constructor.
      *
-     * @param plugin
-     *         - Root plugin.
+     * @param plugin - Root plugin.
      */
     protected CommandHandler(ExtraHardMode plugin, String cmd)
     {
@@ -77,10 +76,8 @@ public abstract class CommandHandler implements CommandExecutor
     /**
      * Register a command with an execution handler.
      *
-     * @param label
-     *         - Command to listen for.
-     * @param command
-     *         - Execution handler that will handle the logic behind the command.
+     * @param label   - Command to listen for.
+     * @param command - Execution handler that will handle the logic behind the command.
      */
     protected void registerCommand(String label, ICommand command)
     {
@@ -95,8 +92,7 @@ public abstract class CommandHandler implements CommandExecutor
     /**
      * Unregister a command for this handler.
      *
-     * @param label
-     *         - Command to stop handling.
+     * @param label - Command to stop handling.
      */
     public void unregisterCommand(String label)
     {
@@ -107,8 +103,7 @@ public abstract class CommandHandler implements CommandExecutor
     /**
      * Register a subcommand with a command handler.
      *
-     * @param handler
-     *         - Command handler.
+     * @param handler - Command handler.
      */
     public void registerHandler(CommandHandler handler)
     {
@@ -123,8 +118,7 @@ public abstract class CommandHandler implements CommandExecutor
     /**
      * Unregister a subcommand.
      *
-     * @param label
-     *         - Subcommand to remove.
+     * @param label - Subcommand to remove.
      */
     public void unregisterHandler(String label)
     {
@@ -175,12 +169,9 @@ public abstract class CommandHandler implements CommandExecutor
      * Method that is called on a CommandHandler if there is no additional arguments given that specify a specific
      * command.
      *
-     * @param sender
-     *         - Sender of the command.
-     * @param command
-     *         - Command used.
-     * @param label
-     *         - Command label.
+     * @param sender  - Sender of the command.
+     * @param command - Command used.
+     * @param label   - Command label.
      *
      * @return True if handled. Should not need to return false...
      */
@@ -190,14 +181,10 @@ public abstract class CommandHandler implements CommandExecutor
      * Allow for the command handler to have special logic for unknown commands. Useful for when expecting a player name
      * parameter on a root command handler command.
      *
-     * @param sender
-     *         - Sender of the command.
-     * @param command
-     *         - Command used.
-     * @param label
-     *         - Command label.
-     * @param args
-     *         - Arguments.
+     * @param sender  - Sender of the command.
+     * @param command - Command used.
+     * @param label   - Command label.
+     * @param args    - Arguments.
      *
      * @return True if handled. Should not need to return false...
      */
@@ -207,8 +194,7 @@ public abstract class CommandHandler implements CommandExecutor
     /**
      * Shortens the given string array by removing the first entry.
      *
-     * @param args
-     *         - Array to shorten.
+     * @param args - Array to shorten.
      *
      * @return Shortened array.
      */

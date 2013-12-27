@@ -47,13 +47,6 @@ public class EhmEndermanTeleportEvent extends Event implements Cancellable
 
     /**
      * Constructor
-     *
-     * @param shooter
-     *         Player shooting the arrow
-     * @param skeleton
-     *         Skeleton getting hit
-     * @param deflectPercentage
-     *         the percentage of arrows a Skeleton deflects
      */
     public EhmEndermanTeleportEvent(Player player, Enderman enderman, Location teleportTo)
     {
@@ -66,12 +59,7 @@ public class EhmEndermanTeleportEvent extends Event implements Cancellable
     /**
      * Constructor
      *
-     * @param shooter
-     *         Player shooting the arrow
-     * @param skeleton
-     *         Skeleton getting hit
-     * @param deflectPercentage
-     *         the percentage of arrows a Skeleton deflects
+     * @param shooter           Player shooting the arrow
      */
     public EhmEndermanTeleportEvent(Player shooter, Enderman enderman, Location teleportTo, boolean cancelled)
     {
@@ -110,8 +98,7 @@ public class EhmEndermanTeleportEvent extends Event implements Cancellable
     /**
      * Set the Location where the Enderman should teleport the Player
      *
-     * @param teleportTo
-     *         location to set
+     * @param teleportTo location to set
      */
     public void setTeleportTo(Location teleportTo)
     {
@@ -130,8 +117,7 @@ public class EhmEndermanTeleportEvent extends Event implements Cancellable
 
 
     /**
-     * @param cancelled
-     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)

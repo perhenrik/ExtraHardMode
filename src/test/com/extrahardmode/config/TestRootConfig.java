@@ -178,6 +178,7 @@ public class TestRootConfig
         assertTrue(expectedWorlds.equals(inputWorlds));
     }
 
+
     @Test
     public void testMetricsEnabledAll()
     {
@@ -188,6 +189,7 @@ public class TestRootConfig
 
         assertEquals(1, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
     }
+
 
     @Test
     public void testMetricsEnabledSome1()
@@ -200,6 +202,7 @@ public class TestRootConfig
         assertEquals(2, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
     }
 
+
     @Test
     public void testMetricsEnabledSome2()
     {
@@ -210,6 +213,7 @@ public class TestRootConfig
 
         assertEquals(2, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
     }
+
 
     @Test
     public void testMetricsDisabled()

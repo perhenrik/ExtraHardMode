@@ -4,7 +4,6 @@ package com.extrahardmode.compatibility;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.EHMModule;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 
@@ -23,6 +22,7 @@ public class CompatHandler extends EHMModule
     private static Set<IBlockLogger> blockLoggerPls;
 
     private static Set<IMonsterProtection> monsterProtectionPls;
+
 
     public CompatHandler(ExtraHardMode plugin)
     {
@@ -48,14 +48,14 @@ public class CompatHandler extends EHMModule
     }
 
 
-    public static void logFallingBlockFall (Block block)
+    public static void logFallingBlockFall(Block block)
     {
         for (IBlockLogger logger : blockLoggerPls)
             logger.logFallingBlockFall(block);
     }
 
 
-    public static void logFallingBlockLand (BlockState block)
+    public static void logFallingBlockLand(BlockState block)
     {
         for (IBlockLogger logger : blockLoggerPls)
             logger.logFallingBlockLand(block);

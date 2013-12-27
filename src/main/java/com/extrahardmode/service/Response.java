@@ -83,8 +83,7 @@ public class Response<T>
     /**
      * Set the status of the Response
      *
-     * @param status
-     *         code to set
+     * @param status code to set
      */
     public void setStatus(Status status)
     {
@@ -95,8 +94,7 @@ public class Response<T>
     /**
      * Set the returned content of the Response
      *
-     * @param response
-     *         to set
+     * @param response to set
      */
     public void setContent(T response)
     {

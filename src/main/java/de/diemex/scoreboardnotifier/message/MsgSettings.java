@@ -15,20 +15,24 @@ public class MsgSettings
     private final ChatColor titleColor;
     private ChatColor textColor;
 
+
     public MsgSettings(int length)
     {
         this(null, length, null, null);
     }
+
 
     public MsgSettings(int length, ChatColor titleColor)
     {
         this(null, length, titleColor, null);
     }
 
+
     public MsgSettings(int length, ChatColor titleColor, ChatColor textColor)
     {
         this(null, length, titleColor, textColor);
     }
+
 
     public MsgSettings(String uniqueIdentifier, int length, ChatColor titleColor, ChatColor textColor)
     {

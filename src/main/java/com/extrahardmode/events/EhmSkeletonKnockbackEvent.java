@@ -29,12 +29,9 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
     /**
      * Constructor
      *
-     * @param entity
-     *         the Entity getting shot by the Skeli
-     * @param skeleton
-     *         Skeleton shooting the Player
-     * @param deflectPercentage
-     *         the percentage of arrows knocking the Player back
+     * @param entity            the Entity getting shot by the Skeli
+     * @param skeleton          Skeleton shooting the Player
+     * @param knockbackPercentage the percentage of arrows knocking the Player back
      */
     public EhmSkeletonKnockbackEvent(Entity entity, Skeleton skeleton, Vector velocity, int knockbackPercentage)
     {
@@ -48,14 +45,10 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
     /**
      * Constructor
      *
-     * @param entity
-     *         the Entity getting shot by the Skeli
-     * @param skeleton
-     *         Skeleton shooting the Player
-     * @param deflectPercentage
-     *         the percentage of arrows knocking the Player back
-     * @param cancelled
-     *         if the Event should be cancelled by default
+     * @param entity            the Entity getting shot by the Skeli
+     * @param skeleton          Skeleton shooting the Player
+     * @param deflectPercentage the percentage of arrows knocking the Player back
+     * @param cancelled         if the Event should be cancelled by default
      */
     public EhmSkeletonKnockbackEvent(Entity entity, Skeleton skeleton, Vector velocity, int deflectPercentage, boolean cancelled)
     {
@@ -122,8 +115,7 @@ public class EhmSkeletonKnockbackEvent extends Event implements Cancellable
 
 
     /**
-     * @param cancelled
-     *         set if the Event is cancelled which mean that the Skeleton will take normal damage
+     * @param cancelled set if the Event is cancelled which mean that the Skeleton will take normal damage
      */
     @Override
     public void setCancelled(boolean cancelled)

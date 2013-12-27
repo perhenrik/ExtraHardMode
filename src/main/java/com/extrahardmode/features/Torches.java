@@ -126,8 +126,7 @@ public class Torches extends ListenerModule
     /**
      * When the weather changes... rainfall breaks exposed torches (exposed to the sky)
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onWeatherChange(WeatherChangeEvent event)

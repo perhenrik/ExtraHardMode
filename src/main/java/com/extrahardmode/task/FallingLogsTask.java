@@ -62,10 +62,8 @@ public class FallingLogsTask implements Runnable
     /**
      * Constructor
      *
-     * @param plugin
-     *         reference to the plugin
-     * @param block
-     *         to apply physics to
+     * @param plugin reference to the plugin
+     * @param block  to apply physics to
      */
 
     public FallingLogsTask(ExtraHardMode plugin, Block block)

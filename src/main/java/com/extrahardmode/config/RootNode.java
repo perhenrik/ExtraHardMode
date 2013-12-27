@@ -150,7 +150,7 @@ public enum RootNode implements ConfigNode
     /**
      * Enable custom Health
      */
-    PLAYER_RESPAWN_HEALTH_ENABLE ("Player.Death.Override Respawn Health.Enable", VarType.BOOLEAN, true),
+    PLAYER_RESPAWN_HEALTH_ENABLE("Player.Death.Override Respawn Health.Enable", VarType.BOOLEAN, true),
     /**
      * how much health after respawn
      */

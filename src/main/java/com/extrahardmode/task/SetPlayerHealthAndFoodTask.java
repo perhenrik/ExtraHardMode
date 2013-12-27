@@ -50,12 +50,9 @@ public class SetPlayerHealthAndFoodTask implements Runnable
     /**
      * Constructor.
      *
-     * @param player
-     *         - Player to adjust.
-     * @param health
-     *         - Health level
-     * @param food
-     *         - Food level.
+     * @param player - Player to adjust.
+     * @param health - Health level
+     * @param food   - Food level.
      */
     public SetPlayerHealthAndFoodTask(Player player, double health, int food)
     {

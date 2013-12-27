@@ -187,8 +187,7 @@ public class HardenedStone extends ListenerModule
      * When a piston extends prevent players from circumventing hardened stone rules by placing ore, then pushing the
      * ore next to stone before breaking it
      *
-     * @param event
-     *         - Event that occurred
+     * @param event - Event that occurred
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockPistonExtend(BlockPistonExtendEvent event)
@@ -221,8 +220,7 @@ public class HardenedStone extends ListenerModule
      * When a piston pulls... prevent players from circumventing hardened stone rules by placing ore, then pulling the
      * ore next to stone before breaking it
      *
-     * @param event
-     *         - Event that occurred.
+     * @param event - Event that occurred.
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockPistonRetract(BlockPistonRetractEvent event)
