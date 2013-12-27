@@ -23,6 +23,7 @@ package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
@@ -34,10 +35,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -147,8 +146,9 @@ public class Physics extends ListenerModule
 
     /**
      * Called when an Entity forms a Block - Damage Player when a FallingBlock hits him
+     * provide compatibility for block loggers that don't log correctly
      */
-    @EventHandler
+    @EventHandler (priority = EventPriority.HIGHEST) //so we are pretty late and hopefully don't get cancelled afterwards
     public void whenBlockLands(EntityChangeBlockEvent event)
     {
         Entity entity = event.getEntity();
@@ -172,6 +172,13 @@ public class Physics extends ListenerModule
                         entityWithDamagedHead.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 140, 10));
                 }
             }
+        }
+
+        if (event.getEntity() instanceof FallingBlock && EntityHelper.isMarkedAsOurs(event.getEntity()))
+        {
+            BlockState newState = event.getBlock().getState();
+            newState.setType(event.getTo());
+            CompatHandler.logFallingBlockLand(newState);
         }
     }
 

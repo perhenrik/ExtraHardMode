@@ -4,6 +4,9 @@ package com.extrahardmode.compatibility;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.EHMModule;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +20,7 @@ public class CompatHandler extends EHMModule
 {
     private static Set<IBlockProtection> blockProtectionPls;
 
+    private static Set<IBlockLogger> blockLoggerPls;
 
     private static Set<IMonsterProtection> monsterProtectionPls;
 
@@ -44,15 +48,54 @@ public class CompatHandler extends EHMModule
     }
 
 
+    public static void logFallingBlockFall (Block block)
+    {
+        for (IBlockLogger logger : blockLoggerPls)
+            logger.logFallingBlockFall(block);
+    }
+
+
+    public static void logFallingBlockLand (BlockState block)
+    {
+        for (IBlockLogger logger : blockLoggerPls)
+            logger.logFallingBlockLand(block);
+    }
+
+
     @Override
     public void starting()
     {
         blockProtectionPls = new HashSet<IBlockProtection>();
         monsterProtectionPls = new HashSet<IMonsterProtection>();
+        blockLoggerPls = new HashSet<IBlockLogger>();
+
         //BlockProtection plugins
-        WorldGuard w = new WorldGuard();
+        CompatWorldGuard w = new CompatWorldGuard();
         if (w.isEnabled())
+        {
             blockProtectionPls.add(w);
+            monsterProtectionPls.add(w);
+        }
+
+        //BlockLoggers
+        CompatPrism prismCompat = new CompatPrism(plugin);
+        if (prismCompat.isEnabled())
+            blockLoggerPls.add(prismCompat);
+
+        //HawkEye Reloaded
+        CompatHawkEye compatHawkEye = new CompatHawkEye(plugin);
+        if (compatHawkEye.isEnabled())
+            blockLoggerPls.add(compatHawkEye);
+
+        //CoreProtect
+        CompatCoreProtect compatCoreProtect = new CompatCoreProtect(plugin);
+        if (compatCoreProtect.isEnabled())
+            blockLoggerPls.add(compatCoreProtect);
+
+        //LogBlock
+        CompatLogBlock compatLogBlock = new CompatLogBlock(plugin);
+        if (compatLogBlock.isEnabled())
+            blockLoggerPls.add(compatLogBlock);
     }
 
 

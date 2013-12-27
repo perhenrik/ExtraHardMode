@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin;
 /**
  * @author Diemex
  */
-public class WorldGuard implements ICompat, IBlockProtection, IMonsterProtection
+public class CompatWorldGuard implements ICompat, IBlockProtection, IMonsterProtection
 {
     private WorldGuardPlugin worldguardPlugin = null;
 

@@ -38,7 +38,7 @@
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
         <mc-version>1.7.2</mc-version>
-        <bukkit-ver>R0.3-SNAPSHOT</bukkit-ver>
+        <bukkit-ver>R0.2</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/java/</srcDir>
         <!--Jenkins Build-Number to be included in the jar manifest and will be parsed by the /version command-->
@@ -50,12 +50,12 @@
         <repository>
             <id>ehm-release</id>
             <name>extrahardmode.com Releases</name>
-            <url>http://extrahardmode.com:8081/content/repositories/bukkit-plugins/</url>
+            <url>http://maven.extrahardmode.com/content/repositories/bukkit-plugins/</url>
         </repository>
         <snapshotRepository>
             <id>ehm-snapshot</id>
             <name>extrahardmode.com Snapshots</name>
-            <url>http://extrahardmode.com:8081/content/repositories/bukkit-plugins-snapshot/</url>
+            <url>http://maven.extrahardmode.com/content/repositories/bukkit-plugins-snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -153,7 +153,7 @@
         <!-- ExtraHardMode.com, we have all the dependencies here so we don't have offline maven repos all the time -->
         <repository>
             <id>extrahardmode.com</id>
-            <url>http://extrahardmode.com:8081/content/groups/public/</url>
+            <url>http://maven.extrahardmode.com/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -228,6 +228,33 @@
             <artifactId>worldguard</artifactId>
             <version>5.8</version>
         </dependency>
+
+        <!-- Block Loggers -->
+        <!-- Prism -->
+        <dependency>
+            <groupId>me.botsko</groupId>
+            <artifactId>prism</artifactId>
+            <version>2.0Beta3</version>
+        </dependency>
+        <!-- CoreProtect -->
+        <dependency>
+            <groupId>net.coreprotect.CoreProtect</groupId>
+            <artifactId>CoreProtect</artifactId>
+            <version>2.0.8</version>
+        </dependency>
+        <!-- LogBlock -->
+        <dependency>
+            <groupId>de.diddiz</groupId>
+            <artifactId>logblock</artifactId>
+            <version>1.8</version>
+        </dependency>
+        <!-- HawkEye -->
+        <dependency>
+            <groupId>uk.co.oliwali</groupId>
+            <artifactId>HawkEye</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
     </dependencies>
 
     <!-- Developers -->

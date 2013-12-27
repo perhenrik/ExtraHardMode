@@ -51,6 +51,9 @@ public class EntityHelper
     /** Process this Entity */
     private static final String PROCESS_ENTITY = "extrahardmode_process_entity";
 
+    /** Our Entity - created by us */
+    private static final String OURS = "extrahardmode_our_entity";
+
 
     /**
      * Marks an entity so that the plugin can remember not to drop loot or experience if it's killed.
@@ -150,6 +153,25 @@ public class EntityHelper
         List<MetadataValue> meta = entity.getMetadata(PROCESS_ENTITY);
 
         return entity.hasMetadata(PROCESS_ENTITY) && meta != null;
+    }
+
+    /** Mark an Entity to be processed. E.g when only a small number of Entities should be processed */
+    public static void markAsOurs(Plugin plugin, Entity entity)
+    {
+        Validate.notNull(entity, "Entity can't be null");
+        {
+            entity.setMetadata(OURS, new FixedMetadataValue(plugin, true));
+        }
+    }
+
+
+    /** Check if an entity has been flagged to be processed */
+    public static boolean isMarkedAsOurs(Entity entity)
+    {
+        Validate.notNull(entity, "Entity can't be null");
+        List<MetadataValue> meta = entity.getMetadata(PROCESS_ENTITY);
+
+        return entity.hasMetadata(OURS) && meta != null;
     }
 
 

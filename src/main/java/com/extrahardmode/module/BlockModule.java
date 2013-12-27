@@ -24,6 +24,7 @@ package com.extrahardmode.module;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.service.EHMModule;
@@ -94,7 +95,6 @@ public class BlockModule extends EHMModule
      *
      * @param block          Block to apply physics to.
      * @param damageEntities if Entities should be damaged
-     * @param breakBlocks    if blocks that otherwise would break the FallingBlock when it lands should be broken
      *
      * @return the UUID of this FallingBlock
      */
@@ -111,6 +111,7 @@ public class BlockModule extends EHMModule
         FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
         fallingBlock.setDropItem(false);
         // remove original block
+        CompatHandler.logFallingBlockFall(block);
         block.setType(Material.AIR);
 
         final boolean breakTorches = CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_BREAK_TORCHES, block.getWorld().getName());
@@ -137,6 +138,8 @@ public class BlockModule extends EHMModule
 
         if (damageEntities) //mark so we know the block is from us
             EntityHelper.markForProcessing(plugin, fallingBlock);
+
+        EntityHelper.markAsOurs(plugin, fallingBlock);
 
         return fallingBlock.getUniqueId();
     }
