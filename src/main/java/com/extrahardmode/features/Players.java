@@ -36,6 +36,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -183,7 +184,10 @@ public class Players extends ListenerModule
                         event.setDamage(event.getDamage() * 2.0);
                         break;
                     case SUFFOCATION:
-                        event.setDamage(event.getDamage() * 5.0);
+                        if (player.getVehicle() instanceof Horse)  //Reduced because you can easily glitch into blocks
+                            event.setDamage(event.getDamage() * 2.0);
+                        else
+                            event.setDamage(event.getDamage() * 5.0);
                         break;
                     case LAVA:
                         event.setDamage(event.getDamage() * 2.0);
