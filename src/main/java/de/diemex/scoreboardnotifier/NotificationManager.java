@@ -42,7 +42,7 @@ public class NotificationManager implements Listener
     }
 
 
-    private boolean showPopup(final String player, final String scoreboardTitle, final MsgSettings type, final List<MsgLineHolder> msg)
+    private boolean show_Popup(final String player, final String scoreboardTitle, final MsgSettings type, final List<MsgLineHolder> msg)
     {
         NotificationHolder popup = new NotificationHolder(type, scoreboardTitle, msg);
 
@@ -67,9 +67,9 @@ public class NotificationManager implements Listener
      *
      * @return a boolean for whatever reason I cant remember
      */
-    private boolean showPopup(final String player, final MsgSettings type, final String scoreboardTitle, final List<String> msg)
+    private boolean showTimedPopup(final String player, final MsgSettings type, final String scoreboardTitle, final List<String> msg)
     {
-        return showPopup(player, scoreboardTitle, type, MsgLineHolder.fromString(msg, type.getTextColor()));
+        return show_Popup(player, scoreboardTitle, type, MsgLineHolder.fromString(msg, type.getTextColor()));
     }
 
 
@@ -83,9 +83,9 @@ public class NotificationManager implements Listener
      *
      * @return a boolean for whatever reason I cant remember
      */
-    private boolean showPopup(final String player, final MsgSettings type, final String scoreboardTitle, final String msg)
+    private boolean showTimedPopup(final String player, final MsgSettings type, final String scoreboardTitle, final String msg)
     {
-        return showPopup(player, scoreboardTitle, type, StringUtil.getLines(msg, type.getTextColor()));
+        return show_Popup(player, scoreboardTitle, type, StringUtil.getLines(msg, type.getTextColor()));
     }
 
 
@@ -99,18 +99,19 @@ public class NotificationManager implements Listener
      *
      * @return a boolean for whatever reason I cant remember
      */
-    public boolean showPopup(final String player, int length, final String scoreboardTitle, final String msg)
+    public boolean showTimedPopup(final String player, int length, final String scoreboardTitle, final String msg)
     {
-        return showPopup(player, scoreboardTitle, new MsgSettings(length), StringUtil.getLines(msg));
+        return show_Popup(player, scoreboardTitle, new MsgSettings(length), StringUtil.getLines(msg));
     }
 
 
     /**
      * Shows a popup in the scoreboard. Breaks msg into lines automatically, keep in mind Color codes reduce line size.
+     * This method should only be used if you want to be able to change the message contents or remove the message from your plugin.
      *
      * @param player          player for whom to show it
      * @param identifier      ídentifier of this message, message can be removed by its identifier later
-     * @param length          how long in ticks the message should display
+     * @param length          how long in ticks the message should display, set to 0 if you want the message to remove the message yourself
      * @param titleColor      color of the title line
      * @param textColor       general textcolor of the message
      * @param scoreboardTitle scoreboard title is used
@@ -120,16 +121,17 @@ public class NotificationManager implements Listener
      */
     public boolean showPopup(final String player, final String identifier, int length, ChatColor titleColor, ChatColor textColor, final String scoreboardTitle, final String msg)
     {
-        return showPopup(player, scoreboardTitle, new MsgSettings(identifier, length, titleColor, textColor), StringUtil.getLines(msg, textColor));
+        return show_Popup(player, scoreboardTitle, new MsgSettings(identifier, length, titleColor, textColor), StringUtil.getLines(msg, textColor));
     }
 
 
     /**
      * Shows a popup in the scoreboard. Breaks msg into lines automatically, keep in mind Color codes reduce line size.
+     * This method should only be used if you want to be able to change the message contents or remove the message from your plugin.
      *
      * @param player          player for whom to show it
      * @param identifier      ídentifier of this message, message can be removed by its identifier later
-     * @param length          how long in ticks the message should display
+     * @param length          how long in ticks the message should display, set to 0 if you want the message to remove the message yourself
      * @param titleColor      color of the title line
      * @param textColor       general textcolor of the message
      * @param scoreboardTitle scoreboard title is used
@@ -139,11 +141,11 @@ public class NotificationManager implements Listener
      */
     public boolean showPopup(final String player, final String identifier, int length, ChatColor titleColor, ChatColor textColor, final String scoreboardTitle, final List<String> msg)
     {
-        return showPopup(player, new MsgSettings(identifier, length, titleColor, textColor), scoreboardTitle, msg);
+        return showTimedPopup(player, new MsgSettings(identifier, length, titleColor, textColor), scoreboardTitle, msg);
     }
 
 
-    private boolean broadcastPopup(final String scoreboardTitle, MsgSettings type, final List<MsgLineHolder> msg)
+    private boolean broadcast_Popup(final String scoreboardTitle, MsgSettings type, final List<MsgLineHolder> msg)
     {
         NotificationHolder popup = new NotificationHolder(type, scoreboardTitle, msg);
 
@@ -171,7 +173,7 @@ public class NotificationManager implements Listener
      */
     public boolean broadcastPopup(MsgSettings type, final String scoreboardTitle, final List<String> msg)
     {
-        return broadcastPopup(scoreboardTitle, type, MsgLineHolder.fromString(msg, type.getTextColor()));
+        return broadcast_Popup(scoreboardTitle, type, MsgLineHolder.fromString(msg, type.getTextColor()));
     }
 
 
@@ -186,12 +188,12 @@ public class NotificationManager implements Listener
      */
     public boolean broadcastPopup(MsgSettings type, final String scoreboardTitle, final String msg)
     {
-        return broadcastPopup(scoreboardTitle, type, StringUtil.getLines(msg, type.getTextColor()));
+        return broadcast_Popup(scoreboardTitle, type, StringUtil.getLines(msg, type.getTextColor()));
     }
 
 
     /**
-     * Remove a message with the given (plugin set) identifier
+     * Remove a message with the given identifier that you used when you created the message
      *
      * @param player     name of the player
      * @param identifier identifier for example: "de.myplugin.deathmsg"

@@ -4,9 +4,7 @@ package de.diemex.scoreboardnotifier.message;
 import org.bukkit.ChatColor;
 
 /**
- * A MsgType that gets constructed from parameters passed in
- *
- * @author Diemex
+ * Settings for a Popup to be displayed, internal holder class
  */
 public class MsgSettings
 {

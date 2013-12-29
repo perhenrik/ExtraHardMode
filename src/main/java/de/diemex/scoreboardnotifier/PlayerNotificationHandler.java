@@ -75,6 +75,9 @@ public class PlayerNotificationHandler
         this.plugin = plugin;
         this.playerName = playerName;
         msgBoard = Bukkit.getScoreboardManager().getNewScoreboard();
+        Player player = Bukkit.getPlayer(playerName);
+        if (player != null)
+            previousBoard = player.getScoreboard();
     }
 
 
@@ -153,6 +156,9 @@ public class PlayerNotificationHandler
             int index = idMap.get(id);
             idMap.remove(id);
             removeMessage(index);
+            updateIndexes();
+            if (!messagesScheduled())
+                restoreScoreboard();
         }
     }
 
@@ -176,6 +182,8 @@ public class PlayerNotificationHandler
             notifications.remove(id);
             //Update all the line numbers
             updateIndexes();
+            if (!messagesScheduled())
+                restoreScoreboard();
         }
     }
 
@@ -268,5 +276,13 @@ public class PlayerNotificationHandler
     public boolean messagesScheduled()
     {
         return !notifications.isEmpty();
+    }
+
+
+    private void restoreScoreboard()
+    {
+        Player player = Bukkit.getPlayer(playerName);
+        if (player != null)
+            player.setScoreboard(previousBoard);
     }
 }

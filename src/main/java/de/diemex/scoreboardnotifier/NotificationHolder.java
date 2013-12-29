@@ -9,9 +9,7 @@ import org.apache.commons.lang.Validate;
 import java.util.List;
 
 /**
- * Represents a message to be displayed in the scoreboard
- *
- * @author Diemex
+ * Holds information about a message to be displayed
  */
 public class NotificationHolder
 {

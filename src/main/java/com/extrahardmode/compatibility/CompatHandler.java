@@ -32,33 +32,37 @@ public class CompatHandler extends EHMModule
 
     public static boolean isExplosionProtected(Location loc)
     {
-        for (IBlockProtection prot : blockProtectionPls)
-            if (prot.isExplosionProtected(loc))
-                return true;
+        if (loc != null)
+            for (IBlockProtection prot : blockProtectionPls)
+                if (prot.isExplosionProtected(loc))
+                    return true;
         return false;
     }
 
 
     public static boolean canMonsterSpawn(Location loc)
     {
-        for (IMonsterProtection prot : monsterProtectionPls)
-            if (prot.denySpawn(loc))
-                return true;
+        if (loc != null)
+            for (IMonsterProtection prot : monsterProtectionPls)
+                if (prot.denySpawn(loc))
+                    return true;
         return false;
     }
 
 
     public static void logFallingBlockFall(Block block)
     {
-        for (IBlockLogger logger : blockLoggerPls)
-            logger.logFallingBlockFall(block);
+        if (block != null)
+            for (IBlockLogger logger : blockLoggerPls)
+                logger.logFallingBlockFall(block);
     }
 
 
     public static void logFallingBlockLand(BlockState block)
     {
-        for (IBlockLogger logger : blockLoggerPls)
-            logger.logFallingBlockLand(block);
+        if (block != null)
+            for (IBlockLogger logger : blockLoggerPls)
+                logger.logFallingBlockLand(block);
     }
 
 
