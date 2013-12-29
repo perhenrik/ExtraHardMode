@@ -6,6 +6,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import uk.co.oliwali.HawkEye.DataType;
+import uk.co.oliwali.HawkEye.HawkEye;
 import uk.co.oliwali.HawkEye.entry.BlockChangeEntry;
 import uk.co.oliwali.HawkEye.entry.BlockEntry;
 import uk.co.oliwali.HawkEye.util.BlockUtil;
@@ -17,19 +18,14 @@ import uk.co.oliwali.HawkEye.util.HawkEyeAPI;
 public class CompatHawkEye implements ICompat, IBlockLogger
 {
     private final JavaPlugin plugin;
-    private boolean hawkEyeEnabled = true;
+    private boolean hawkEyeEnabled;
 
 
     public CompatHawkEye(Plugin plugin)
     {
         this.plugin = (JavaPlugin) plugin;
-        try
-        {
-            Class.forName("uk.co.oliwali.HawkEye.util.HawkEyeAPI");
-        } catch (ClassNotFoundException ignored)
-        {
-            hawkEyeEnabled = false;
-        }
+        Plugin hawkPlugin = plugin.getServer().getPluginManager().getPlugin("HawkEye");
+        hawkEyeEnabled = hawkPlugin instanceof HawkEye;
     }
 
 
