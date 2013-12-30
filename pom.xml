@@ -136,20 +136,6 @@
 
     <!-- Repositories -->
     <repositories>
-        <repository>
-            <id>Bukkit</id>
-            <url>http://repo.bukkit.org/content/groups/public</url>
-        </repository>
-        <!-- Mocking -->
-        <repository>
-            <id>powermock-repo</id>
-            <url>http://powermock.googlecode.com/svn/repo/</url>
-        </repository>
-        <!-- Metrics -->
-        <repository>
-            <id>mcStats</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
         <!-- ExtraHardMode.com, we have all the dependencies here so we don't have offline maven repos all the time -->
         <repository>
             <id>extrahardmode.com</id>
@@ -226,7 +212,7 @@
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldguard</artifactId>
-            <version>5.8</version>
+            <version>5.7.3</version>
         </dependency>
 
         <!-- Block Loggers -->
