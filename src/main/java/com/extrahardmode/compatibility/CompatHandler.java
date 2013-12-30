@@ -74,12 +74,12 @@ public class CompatHandler extends EHMModule
         blockLoggerPls = new HashSet<IBlockLogger>();
 
         //BlockProtection plugins
-        CompatWorldGuard w = new CompatWorldGuard();
-        if (w.isEnabled())
-        {
-            blockProtectionPls.add(w);
-            monsterProtectionPls.add(w);
-        }
+//        CompatWorldGuard w = new CompatWorldGuard();
+//        if (w.isEnabled())
+//        {
+//            blockProtectionPls.add(w);
+//            monsterProtectionPls.add(w);
+//        }
 
         //BlockLoggers
         CompatPrism prismCompat = new CompatPrism(plugin);

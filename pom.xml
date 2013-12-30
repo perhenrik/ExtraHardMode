@@ -136,7 +136,7 @@
 
     <!-- Repositories -->
     <repositories>
-        <!-- ExtraHardMode.com, we have all the dependencies here so we don't have offline maven repos all the time -->
+        <!-- We have all the dependencies here so we don't have to rely on other peoples unreliable maven repositories -->
         <repository>
             <id>extrahardmode.com</id>
             <url>http://maven.extrahardmode.com/content/groups/public/</url>
@@ -209,11 +209,11 @@
 
         <!-- Compatibility Dependencies -->
         <!-- WorldGuard -->
-        <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldguard</artifactId>
-            <version>5.7.3</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>com.sk89q</groupId>-->
+        <!--<artifactId>worldguard</artifactId>-->
+        <!--<version>5.8</version>-->
+        <!--</dependency>-->
 
         <!-- Block Loggers -->
         <!-- Prism -->
