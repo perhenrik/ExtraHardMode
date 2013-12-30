@@ -12,13 +12,11 @@ import org.bukkit.plugin.Plugin;
  */
 public class CompatLogBlock implements ICompat, IBlockLogger
 {
-    private final Plugin plugin;
     private final Consumer consumer;
 
 
     public CompatLogBlock(Plugin plugin)
     {
-        this.plugin = plugin;
         Plugin logBlockPlugin = plugin.getServer().getPluginManager().getPlugin("LogBlock");
         if (logBlockPlugin instanceof LogBlock)
             consumer = ((LogBlock) logBlockPlugin).getConsumer();

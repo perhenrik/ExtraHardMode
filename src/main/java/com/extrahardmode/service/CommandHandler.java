@@ -29,7 +29,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -201,15 +201,10 @@ public abstract class CommandHandler implements CommandExecutor
     String[] shortenArgs(String[] args)
     {
         if (args.length == 0)
-        {
             return args;
-        }
-        final List<String> argList = new ArrayList<String>();
-        for (int i = 1; i < args.length; i++)
-        {
-            argList.add(args[i]);
-        }
-        return argList.toArray(new String[0]);
+        final List<String> argList = Arrays.asList(args);
+        argList.remove(0);
+        return argList.toArray(new String[argList.size()]);
     }
 
 

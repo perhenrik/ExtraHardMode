@@ -171,7 +171,7 @@ public class SpecialParsers
             /* merge data if the block is in here already */
             if (myFallingBlocks.containsKey(blockNumber))
             {
-                List<Byte> oldMeta = myFallingBlocks.get(material.getId());
+                List<Byte> oldMeta = myFallingBlocks.get(blockNumber);
                 meta.addAll(oldMeta);
                 Collections.sort(meta);
                 status = Status.NEEDS_TO_BE_ADJUSTED;

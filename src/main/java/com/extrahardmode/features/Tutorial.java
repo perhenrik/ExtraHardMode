@@ -290,7 +290,7 @@ public class Tutorial extends ListenerModule
 
 
     /**
-     * @param event
+     * @param event event that occurred
      */
     @EventHandler
     public void onPlayerInventoryLoss(EhmPlayerInventoryLossEvent event)

@@ -54,9 +54,9 @@ public class AntiGrinder extends ListenerModule
      * <p/>
      * Dependency Injection Constructor
      *
+     * @param plugin      plugin instance
      * @param CFG         instantiated RootConfig
      * @param blockModule BlockModule
-     * @param utils       UtilityModule
      */
     public AntiGrinder(ExtraHardMode plugin, RootConfig CFG, BlockModule blockModule)
     {

@@ -121,7 +121,7 @@ public class CoolCreeperExplosion implements Runnable
                 for (int i = 0; i < 10; i++)
                 {
                     scheduler.runTaskLater(plugin, new RiseToGlory(), (long) ticksInbetween);
-                    ticksInbetween += ticksInbetween;
+                    ticksInbetween += i;
                 }
                 scheduler.runTaskLater(plugin, new Suicide(), ticksBeforeSuicide);
             }

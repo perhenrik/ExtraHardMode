@@ -25,8 +25,6 @@ package com.extrahardmode.task;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
-import com.extrahardmode.config.RootNode;
-import com.extrahardmode.module.DataStoreModule;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -58,10 +56,6 @@ public class DragonAttackPatternTask implements Runnable
      */
     private final LivingEntity dragon;
 
-    /**
-     * We save the Players fighting the dragon here
-     */
-    private final DataStoreModule data;
 
 
     /**
@@ -78,7 +72,6 @@ public class DragonAttackPatternTask implements Runnable
         CFG = plugin.getModuleForClass(RootConfig.class);
         this.dragon = dragon;
         this.player = player;
-        data = plugin.getModuleForClass(DataStoreModule.class);
     }
 
 
@@ -90,13 +83,11 @@ public class DragonAttackPatternTask implements Runnable
 
         World world = this.dragon.getWorld();
 
-        final boolean dragonAnnouncements = CFG.getBoolean(RootNode.ENDER_DRAGON_COMBAT_ANNOUNCEMENTS, world.getName());
-
         // if the player has been defeated
         if (!this.player.isOnline() || world != this.player.getWorld() || this.player.isDead())
         {
             // restore some of the dragon's health
-            int newHealth = (int) ((double) this.dragon.getHealth() + (double) this.dragon.getMaxHealth() * 0.25);
+            int newHealth = (int) (this.dragon.getHealth() + this.dragon.getMaxHealth() * 0.25);
             if (newHealth > this.dragon.getMaxHealth())
             {
                 this.dragon.setHealth(this.dragon.getMaxHealth());

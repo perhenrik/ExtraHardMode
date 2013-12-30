@@ -137,7 +137,7 @@ public class Zombies extends ListenerModule
             }
 
             // FEATURE: zombies can apply a debilitating effect
-            if (zombiesSlowPlayers && player != null && !playerBypasses)
+            if (zombiesSlowPlayers && !playerBypasses)
             {
                 if (damageByEntityEvent != null && damageByEntityEvent.getDamager() instanceof Zombie)
                 {

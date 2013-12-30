@@ -102,7 +102,7 @@ public abstract class MultiWorldConfig extends EHMModule
         ArrayList<File> files = new ArrayList<File>();
         for (String fileName : filePaths)
             files.add(new File(plugin.getDataFolder() + File.separator + fileName));
-        return files.toArray(new File[]{});
+        return files.toArray(new File[files.size()]);
     }
 
 

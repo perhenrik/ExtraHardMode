@@ -25,7 +25,6 @@ package com.extrahardmode.features;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MsgModule;
@@ -97,7 +96,6 @@ public class AntiFarming extends ListenerModule
         Action action = event.getAction();
 
         final boolean noBonemealOnMushrooms = CFG.getBoolean(RootNode.NO_BONEMEAL_ON_MUSHROOMS, world.getName());
-        final boolean weakFoodCrops = CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ANTIFARMING);
 
         // FEATURE: bonemeal doesn't work on mushrooms
@@ -183,7 +181,7 @@ public class AntiFarming extends ListenerModule
         final boolean weakCropsEnabled = CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, world.getName());
 
         // FEATURE:
-        if (weakCropsEnabled && plugin.getModuleForClass(BlockModule.class).plantDies(event.getBlock(), event.getNewState().getData().getData()))
+        if (weakCropsEnabled && plugin.getModuleForClass(BlockModule.class).plantDies(event.getBlock(), event.getNewState().getData()))
         {
             event.setCancelled(true);
             event.getBlock().setType(Material.DEAD_BUSH); // dead shrub
@@ -287,7 +285,6 @@ public class AntiFarming extends ListenerModule
     {
         LivingEntity entity = event.getEntity();
         CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
-        EntityType entityType = entity.getType();
         World world = event.getLocation().getWorld();
 
         final boolean sheepRegrowWhiteEnabled = CFG.getBoolean(RootNode.SHEEP_REGROW_WHITE_WOOL, world.getName());
@@ -359,13 +356,11 @@ public class AntiFarming extends ListenerModule
         final boolean cantCraftMelons = world != null && CFG.getBoolean(RootNode.CANT_CRAFT_MELONSEEDS, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.ANTIFARMING);
 
-        MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
-
 
         if (!playerBypasses && cantCraftMelons)
         {
             // FEATURE: no crafting melon seeds
-            if (cantCraftMelons && (result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS))
+            if (result == Material.MELON_SEEDS || result == Material.PUMPKIN_SEEDS)
             {
                 event.setCancelled(true);
                 plugin.getModuleForClass(MsgModule.class).send(player, MessageNode.NO_CRAFTING_MELON_SEEDS);
@@ -413,8 +408,17 @@ public class AntiFarming extends ListenerModule
         if (blockModule.isMarked(block))
         {
             event.setCancelled(true);
-            //Bucket displays as full
-            event.getPlayer().updateInventory();
+            final Player player = event.getPlayer();
+            //Bucket displays as full, derpy inventories, run next tick
+            plugin.getServer().getScheduler().runTask(plugin, new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if (player != null)
+                        player.updateInventory();
+                }
+            });
         }
     }
 }

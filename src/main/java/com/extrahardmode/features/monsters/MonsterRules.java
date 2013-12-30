@@ -25,9 +25,7 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.module.EntityHelper;
-import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -48,10 +46,6 @@ public class MonsterRules extends ListenerModule
 {
     private RootConfig CFG = null;
 
-    private MessageConfig messages;
-
-    private UtilityModule utils = null;
-
 
     public MonsterRules(ExtraHardMode plugin)
     {
@@ -64,8 +58,6 @@ public class MonsterRules extends ListenerModule
     {
         super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
-        messages = plugin.getModuleForClass(MessageConfig.class);
-        utils = plugin.getModuleForClass(UtilityModule.class);
     }
 
 
@@ -148,7 +140,6 @@ public class MonsterRules extends ListenerModule
     {
         Entity entity = event.getEntity();
         EntityType entityType = entity.getType();
-        World world = entity.getWorld();
 
         //TODO Remove
 

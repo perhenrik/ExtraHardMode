@@ -25,7 +25,6 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.service.ListenerModule;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
@@ -55,8 +54,6 @@ public class Horses extends ListenerModule
     /** This horse has been right clicked with food and player shouldn't mount the horse */
     private Set<UUID> enterMap = new HashSet<UUID>(1);
 
-    private MsgModule messenger;
-
     private final String horseMessage = "extrahardmode.horse.health";
 
 
@@ -71,7 +68,6 @@ public class Horses extends ListenerModule
     {
         super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
-        messenger = plugin.getModuleForClass(MsgModule.class);
     }
 
 

@@ -24,7 +24,6 @@ package com.extrahardmode.task;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.DataStoreModule;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -42,11 +41,6 @@ public class FallingLogsTask implements Runnable
      * Reference to the plugin using this class
      */
     private final ExtraHardMode plugin;
-
-    /**
-     * Where our "loose" Logs are stored
-     */
-    private final DataStoreModule dataStoreModule;
 
     /**
      * BlockModule to spawn FallingBlocks
@@ -73,7 +67,6 @@ public class FallingLogsTask implements Runnable
 
         this.block = block;
         this.plugin = plugin;
-        dataStoreModule = plugin.getModuleForClass(DataStoreModule.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
     }
 

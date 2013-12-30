@@ -25,7 +25,6 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityHelper;
@@ -64,8 +63,6 @@ public class Glydia extends ListenerModule
 {
     private RootConfig CFG = null;
 
-    private MessageConfig messages;
-
     private DataStoreModule data;
 
     private MsgModule messenger;
@@ -84,7 +81,6 @@ public class Glydia extends ListenerModule
     {
         super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
-        messages = plugin.getModuleForClass(MessageConfig.class);
         data = plugin.getModuleForClass(DataStoreModule.class);
         messenger = plugin.getModuleForClass(MsgModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
@@ -402,7 +398,6 @@ public class Glydia extends ListenerModule
     public void onEntityTarget(EntityTargetEvent event)
     {
         Entity entity = event.getEntity();
-        World world = entity.getWorld();
 
         // FEATURE: monsters don't target the ender dragon
         if (event.getTarget() != null && event.getTarget() instanceof EnderDragon)

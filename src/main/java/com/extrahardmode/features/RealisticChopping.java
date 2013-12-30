@@ -26,7 +26,6 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
@@ -56,11 +55,6 @@ public class RealisticChopping extends ListenerModule
     private BlockModule blockModule;
 
     /**
-     * Temporarily store data
-     */
-    private DataStoreModule dataStoreModule;
-
-    /**
      * Permissions etc.
      */
     private PlayerModule playerModule;
@@ -81,7 +75,6 @@ public class RealisticChopping extends ListenerModule
         super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         blockModule = plugin.getModuleForClass(BlockModule.class);
-        dataStoreModule = plugin.getModuleForClass(DataStoreModule.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
     }
 
