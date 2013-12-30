@@ -6,7 +6,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import uk.co.oliwali.HawkEye.DataType;
-import uk.co.oliwali.HawkEye.HawkEye;
 import uk.co.oliwali.HawkEye.entry.BlockChangeEntry;
 import uk.co.oliwali.HawkEye.entry.BlockEntry;
 import uk.co.oliwali.HawkEye.util.BlockUtil;
@@ -24,8 +23,7 @@ public class CompatHawkEye implements ICompat, IBlockLogger
     public CompatHawkEye(Plugin plugin)
     {
         this.plugin = (JavaPlugin) plugin;
-        Plugin hawkPlugin = plugin.getServer().getPluginManager().getPlugin("HawkEye");
-        hawkEyeEnabled = hawkPlugin instanceof HawkEye;
+        hawkEyeEnabled = plugin.getServer().getPluginManager().getPlugin("HawkEye").isEnabled();
     }
 
 
