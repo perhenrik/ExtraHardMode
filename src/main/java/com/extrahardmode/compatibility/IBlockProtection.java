@@ -1,12 +1,12 @@
 package com.extrahardmode.compatibility;
 
 
-import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 /**
  * @author Diemex
  */
 public interface IBlockProtection
 {
-    boolean isExplosionProtected(Location loc);
+    boolean isProtectedBlock(Block block, String playerName);
 }

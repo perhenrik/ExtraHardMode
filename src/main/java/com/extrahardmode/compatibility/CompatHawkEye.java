@@ -23,7 +23,7 @@ public class CompatHawkEye implements ICompat, IBlockLogger
     public CompatHawkEye(Plugin plugin)
     {
         this.plugin = (JavaPlugin) plugin;
-        hawkEyeEnabled = plugin.getServer().getPluginManager().getPlugin("HawkEye").isEnabled();
+        hawkEyeEnabled = plugin.getServer().getPluginManager().isPluginEnabled("HawkEye");
     }
 
 

@@ -23,6 +23,7 @@ package com.extrahardmode.features.monsters;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.compatibility.fakeevents.FakeBlockBreakEvent;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
@@ -95,6 +96,8 @@ public class Glydia extends ListenerModule
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
     {
+        if (breakEvent instanceof FakeBlockBreakEvent)
+            return;
         Block block = breakEvent.getBlock();
         World world = block.getWorld();
         Player player = breakEvent.getPlayer();

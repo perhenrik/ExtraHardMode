@@ -30,13 +30,19 @@ public class CompatHandler extends EHMModule
     }
 
 
-    public static boolean isExplosionProtected(Location loc)
+    public static boolean isProtectedBlock(Block block, String playerName)
     {
-        if (loc != null)
+        if (block != null && playerName != null)
             for (IBlockProtection prot : blockProtectionPls)
-                if (prot.isExplosionProtected(loc))
+                if (prot.isProtectedBlock(block, playerName))
                     return true;
         return false;
+    }
+
+
+    public static boolean isProtectedBlock(Block block)
+    {
+        return isProtectedBlock(block, "");
     }
 
 
@@ -80,6 +86,11 @@ public class CompatHandler extends EHMModule
 //            blockProtectionPls.add(w);
 //            monsterProtectionPls.add(w);
 //        }
+
+        //FakeEvents
+        CompatGeneralBlockProtection generalProt = new CompatGeneralBlockProtection(plugin);
+        if (generalProt.isEnabled())
+            blockProtectionPls.add(generalProt);
 
         //BlockLoggers
         CompatPrism prismCompat = new CompatPrism(plugin);

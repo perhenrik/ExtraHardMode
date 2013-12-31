@@ -23,6 +23,7 @@ package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.compatibility.fakeevents.FakeBlockBreakEvent;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
@@ -91,6 +92,8 @@ public class HardenedStone extends ListenerModule
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event)
     {
+        if (event instanceof FakeBlockBreakEvent)
+            return;
         Block block = event.getBlock();
         World world = block.getWorld();
         Player player = event.getPlayer();

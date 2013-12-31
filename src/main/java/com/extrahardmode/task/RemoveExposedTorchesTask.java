@@ -24,6 +24,8 @@ package com.extrahardmode.task;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.compatibility.CompatHandler;
+import com.extrahardmode.compatibility.SafeMethods;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import org.bukkit.Chunk;
@@ -98,10 +100,11 @@ public class RemoveExposedTorchesTask implements Runnable
                                     /* Reduce lag by torches lying on the ground */
                                     if (plugin.getRandom().nextInt(5) == 1)
                                     {
-                                        block.breakNaturally();
+                                        SafeMethods.breakNaturally(block);
                                     } else
                                     {
-                                        block.setType(Material.AIR);
+                                        if (!CompatHandler.isProtectedBlock(block))
+                                            block.setType(Material.AIR);
                                     }
                                 }
                                 break loopDown;
@@ -127,7 +130,7 @@ public class RemoveExposedTorchesTask implements Runnable
                                         case TAIGA_HILLS:
                                         {
                                             if (plugin.getRandom().nextInt(5) == 1)
-                                                block.breakNaturally();
+                                                SafeMethods.breakNaturally(block);
                                             //Snow can't be placed if its tilled soil
                                             if (block.getRelative(BlockFace.DOWN).getType() == Material.SOIL)
                                                 block.getRelative(BlockFace.DOWN).setType(Material.DIRT);

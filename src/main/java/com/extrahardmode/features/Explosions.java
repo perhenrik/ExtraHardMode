@@ -23,7 +23,6 @@ package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -152,7 +151,7 @@ public class Explosions extends ListenerModule
             while (iter.hasNext())
             {
                 Block block = iter.next();
-                if (block.getType() == Material.STONE && !CompatHandler.isExplosionProtected(block.getLocation()))
+                if (block.getType() == Material.STONE)
                 {
                     block.setType(Material.COBBLESTONE);
                     iter.remove();
@@ -295,8 +294,8 @@ public class Explosions extends ListenerModule
 
         if (CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, worldName))
         {
-            blockModule.physicsCheck(event.getLocation().add(0, 5, 0).getBlock(), 5, true, 3); //loosen ceiling
-            blockModule.physicsCheck(event.getLocation().add(0, -3, 0).getBlock(), 5, true, 6); //ground loosen
+            blockModule.physicsCheck(event.getLocation().add(0, 5, 0).getBlock(), 5, true, 3, null); //loosen ceiling
+            blockModule.physicsCheck(event.getLocation().add(0, -3, 0).getBlock(), 5, true, 6, null); //ground loosen
         }
     }
 

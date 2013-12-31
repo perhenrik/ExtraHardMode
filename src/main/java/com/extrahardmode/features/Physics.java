@@ -24,6 +24,7 @@ package com.extrahardmode.features;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.compatibility.CompatHandler;
+import com.extrahardmode.compatibility.fakeevents.FakeBlockBreakEvent;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.module.BlockModule;
@@ -97,7 +98,7 @@ public class Physics extends ListenerModule
         if (physixEnabled && !playerBypasses)
         {
             //TODO EhmPhysicCheckEvent
-            blockModule.physicsCheck(block, 10, true, 0);
+            blockModule.physicsCheck(block, 10, true, 0, placeEvent.getPlayer().getName());
         }
     }
 
@@ -112,6 +113,8 @@ public class Physics extends ListenerModule
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
     {
+        if (breakEvent instanceof FakeBlockBreakEvent)
+            return;
         Block block = breakEvent.getBlock();
         World world = block.getWorld();
         Player player = breakEvent.getPlayer();
@@ -125,7 +128,7 @@ public class Physics extends ListenerModule
         if (moreFallingBlocksEnabled && !playerBypasses)
         {
             //TODO EhmPhysicCheckEvent
-            blockModule.physicsCheck(block, 10, true, 5);
+            blockModule.physicsCheck(block, 10, true, 5, breakEvent.getPlayer().getName());
         }
 
         // FEATURE: breaking netherrack may start a fire
