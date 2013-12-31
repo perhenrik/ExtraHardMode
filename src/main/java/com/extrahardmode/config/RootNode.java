@@ -568,6 +568,10 @@ public enum RootNode implements ConfigNode
      */
     MORE_FALLING_BLOCKS_BREAK_TORCHES("Additional Falling Blocks.Break Torches", VarType.BOOLEAN, true),
     /**
+     * Cascading falling blocks
+     */
+    MORE_FALLING_BLOCKS_CASCADE("Additional Falling Blocks.Landed Blocks Can Cause Blocks To Fall", VarType.BOOLEAN, true),
+    /**
      * How much damage loose Falling Logs do to Players and Animals
      */
     MORE_FALLING_BLOCKS_DMG_AMOUNT("Additional Falling Blocks.Dmg Amount When Hitting Players", VarType.INTEGER, 2),

@@ -180,6 +180,8 @@ public class Physics extends ListenerModule
             BlockState newState = event.getBlock().getState();
             newState.setType(event.getTo());
             CompatHandler.logFallingBlockLand(newState);
+
+            blockModule.physicsCheck(event.getBlock().getRelative(BlockFace.DOWN), 10, false, 1, null);
         }
     }
 
