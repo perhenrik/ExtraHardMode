@@ -33,7 +33,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -77,7 +76,7 @@ public class Ghasts extends ListenerModule
         LivingEntity entity = event.getEntity();
         World world = entity.getWorld();
 
-        final boolean ghastDeflectArrows = CFG.getInt(RootNode.GHASTS_DEFLECT_ARROWS, world.getName()) > 0;
+        final boolean ghastDeflectArrows = CFG.getInt(RootNode.GHASTS_DEFLECT_ARROWS, world.getName()) != 100;
         final int ghastExpMupliplier = CFG.getInt(RootNode.GHASTS_EXP_MULTIPLIER, world.getName());
         final int ghastDropsMultiplier = CFG.getInt(RootNode.GHASTS_DROPS_MULTIPLIER, world.getName());
 
@@ -103,27 +102,21 @@ public class Ghasts extends ListenerModule
      * Ghasts don't take damage from arrows
      */
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onEntityDamage(EntityDamageEvent event)
+    public void onEntityDamage(EntityDamageByEntityEvent event)
     {
         Entity entity = event.getEntity();
         World world = entity.getWorld();
 
         final int arrowDamagePercent = CFG.getInt(RootNode.GHASTS_DEFLECT_ARROWS, world.getName());
 
-        EntityDamageByEntityEvent damageByEntityEvent = null;
-        if (event instanceof EntityDamageByEntityEvent)
-        {
-            damageByEntityEvent = (EntityDamageByEntityEvent) event;
-        }
-
         // FEATURE: ghasts deflect arrows and drop extra loot
         if (arrowDamagePercent < 100)
         {
             // only ghasts, and only if damaged by another entity (as opposed to
             // environmental damage)
-            if (entity instanceof Ghast && event instanceof EntityDamageByEntityEvent)
+            if (entity instanceof Ghast)
             {
-                Entity damageSource = damageByEntityEvent.getDamager();
+                Entity damageSource = event.getDamager();
 
                 // only arrows
                 if (damageSource instanceof Arrow)

@@ -154,7 +154,7 @@ public enum RootNode implements ConfigNode
     /**
      * how much health after respawn
      */
-    PLAYER_RESPAWN_HEALTH_PERCENTAGE("Player.Death.Override Respawn Health.Percentage", VarType.INTEGER, SubType.PERCENTAGE, 75),
+    PLAYER_RESPAWN_HEALTH_PERCENTAGE("Player.Death.Override Respawn Health.Percentage", VarType.INTEGER, SubType.PERCENTAGE, Disable.HUNDRED, 75),
     /**
      * how much food bar after respawn
      */
@@ -224,7 +224,7 @@ public enum RootNode implements ConfigNode
      * # HORSES #
      * ##########
      */
-    HORSE_CHEST_BLOCK_BELOW("Horses.Block Usage Of Chest Below", VarType.INTEGER, SubType.Y_VALUE, 55),
+    HORSE_CHEST_BLOCK_BELOW("Horses.Block Usage Of Chest Below", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 55),
 
     /**
      * ###########
@@ -441,15 +441,15 @@ public enum RootNode implements ConfigNode
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
-    GHASTS_DEFLECT_ARROWS("Ghasts.Arrows Do % Damage", VarType.INTEGER, 20),
+    GHASTS_DEFLECT_ARROWS("Ghasts.Arrows Do % Damage", VarType.INTEGER, SubType.PERCENTAGE, Disable.HUNDRED, 20),
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
-    GHASTS_EXP_MULTIPLIER("Ghasts.Exp Multiplier", VarType.INTEGER, 10),
+    GHASTS_EXP_MULTIPLIER("Ghasts.Exp Multiplier", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 10),
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
-    GHASTS_DROPS_MULTIPLIER("Ghasts.Drops Multiplier", VarType.INTEGER, 5),
+    GHASTS_DROPS_MULTIPLIER("Ghasts.Drops Multiplier", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 5),
     /**
      * ############
      * # ENDERMAN #
@@ -516,7 +516,7 @@ public enum RootNode implements ConfigNode
     /**
      * How much percent of plants you loose
      */
-    WEAK_FOOD_CROPS_LOSS_RATE("Farming.Weak Crops.Loss Rate", VarType.INTEGER, SubType.PERCENTAGE, 25),
+    WEAK_FOOD_CROPS_LOSS_RATE("Farming.Weak Crops.Loss Rate", VarType.INTEGER, SubType.PERCENTAGE, Disable.ZERO, 25),
     /**
      * Should desserts be really empty and hostile towards plants
      */
@@ -605,7 +605,7 @@ public enum RootNode implements ConfigNode
     /**
      * How many blocks will go flying
      */
-    EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE("Explosions.Physics.Blocks Affected Percentage", VarType.INTEGER, 20),
+    EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE("Explosions.Physics.Blocks Affected Percentage", VarType.INTEGER, SubType.PERCENTAGE, 20),
     /**
      * How fast the blocks accelerate upwards
      */
@@ -873,7 +873,19 @@ public enum RootNode implements ConfigNode
 
     /**
      * Get the Object that will disable this option
-     *
+     * <pre>Defaults:
+     * boolean: false
+     * int:
+     *   no SubType set: 0
+     *   no Disable value: 0
+     *   health: 20
+     *   percentage: 0
+     * double:
+     *   same as int
+     * string: ""
+     *   subtype and disable ignored
+     * list: .emptyList()
+     * </pre>
      * @return Object that will disable this option in the plugin
      */
     @Override
@@ -982,7 +994,11 @@ public enum RootNode implements ConfigNode
         /**
          * A value of 1 will disable this feature in the plugin
          */
-        ONE(1);
+        ONE(1),
+        /**
+         * A value of 100 (as in percentage will disable this feature)
+         */
+        HUNDRED(100);
 
 
         private Disable(Object obj)

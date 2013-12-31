@@ -29,10 +29,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Abstract class to handle the majority of the logic dealing with commands. Allows for a nested structure of commands.
@@ -202,7 +199,7 @@ public abstract class CommandHandler implements CommandExecutor
     {
         if (args.length == 0)
             return args;
-        final List<String> argList = Arrays.asList(args);
+        final List<String> argList = new LinkedList<String>(Arrays.asList(args));
         argList.remove(0);
         return argList.toArray(new String[argList.size()]);
     }
