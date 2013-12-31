@@ -209,11 +209,11 @@
 
         <!-- Compatibility Dependencies -->
         <!-- WorldGuard -->
-        <!--<dependency>-->
-        <!--<groupId>com.sk89q</groupId>-->
-        <!--<artifactId>worldguard</artifactId>-->
-        <!--<version>5.8</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>5.8.1-SNAPSHOT</version>
+        </dependency>
 
         <!-- Block Loggers -->
         <!-- Prism -->
