@@ -289,8 +289,8 @@ public class Explosions extends ListenerModule
 
             if (CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, worldName))
             {
-                blockModule.physicsCheck(location.add(0, 5, 0).getBlock(), 5, true, 3, null); //loosen ceiling
-                blockModule.physicsCheck(location.add(0, -3, 0).getBlock(), 5, true, 6, null); //ground loosen
+                blockModule.physicsCheck(location.add(0, 5, 0).getBlock(), 5, true, 3); //loosen ceiling
+                blockModule.physicsCheck(location.add(0, -3, 0).getBlock(), 5, true, 6); //ground loosen
             }
         }
         // FEATURE: in hardened stone mode, TNT only softens stone to cobble

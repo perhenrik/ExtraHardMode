@@ -63,11 +63,6 @@ public class BlockPhysicsCheckTask implements Runnable
      */
     private final RootConfig CFG;
 
-    /**
-     * Player causing the task to run
-     */
-    private final String playerName;
-
 
     /**
      * Constructor.
@@ -78,13 +73,12 @@ public class BlockPhysicsCheckTask implements Runnable
      * @param force          - do we want to check adjacent blocks no matter if the center block falls or not? Also checks a lot
      *                       further down
      */
-    public BlockPhysicsCheckTask(ExtraHardMode plugin, Block block, int recursionCount, boolean force, String playerName)
+    public BlockPhysicsCheckTask(ExtraHardMode plugin, Block block, int recursionCount, boolean force)
     {
         this.plugin = plugin;
         this.block = block;
         this.recursionCount = recursionCount;
         this.force = force;
-        this.playerName = playerName;
         CFG = plugin.getModuleForClass(RootConfig.class);
     }
 
@@ -108,7 +102,7 @@ public class BlockPhysicsCheckTask implements Runnable
                 (fallingBlocks.containsKey(material.getId()) && (fallingBlocks.get(material.getId()).isEmpty() || fallingBlocks.get(material.getId()).contains(block.getData()))))
                 && fallingBlocksEnabled && material != Material.AIR)
         {
-            module.applyPhysics(block, true, playerName);
+            module.applyPhysics(block, true);
             fall = true;
         }
 
@@ -119,41 +113,41 @@ public class BlockPhysicsCheckTask implements Runnable
                 if (force)
                 {
                     Block neighbor = block.getRelative(BlockFace.DOWN, 1);
-                    module.physicsCheck(neighbor, recursionCount - 1, false, 1, playerName);
+                    module.physicsCheck(neighbor, recursionCount - 1, false, 1);
 
                     neighbor = block.getRelative(BlockFace.DOWN, 2);
-                    module.physicsCheck(neighbor, recursionCount - 1, false, 2, playerName);
+                    module.physicsCheck(neighbor, recursionCount - 1, false, 2);
 
                     neighbor = block.getRelative(BlockFace.DOWN, 3);
-                    module.physicsCheck(neighbor, recursionCount - 1, false, 3, playerName);
+                    module.physicsCheck(neighbor, recursionCount - 1, false, 3);
 
                     neighbor = block.getRelative(BlockFace.DOWN, 4);
-                    module.physicsCheck(neighbor, recursionCount - 1, false, 4, playerName);
+                    module.physicsCheck(neighbor, recursionCount - 1, false, 4);
 
                     neighbor = block.getRelative(BlockFace.DOWN, 5);
-                    module.physicsCheck(neighbor, recursionCount - 1, false, 5, playerName);
+                    module.physicsCheck(neighbor, recursionCount - 1, false, 5);
 
                     neighbor = block.getRelative(BlockFace.DOWN, 6);
-                    module.physicsCheck(neighbor, recursionCount - 1, false, 6, playerName);
+                    module.physicsCheck(neighbor, recursionCount - 1, false, 6);
                 }
 
                 Block neighbor = block.getRelative(BlockFace.UP);
-                module.physicsCheck(neighbor, recursionCount - 1, false, 1, playerName);
+                module.physicsCheck(neighbor, recursionCount - 1, false, 1);
 
                 neighbor = block.getRelative(BlockFace.DOWN);
-                module.physicsCheck(neighbor, recursionCount - 1, false, 2, playerName);
+                module.physicsCheck(neighbor, recursionCount - 1, false, 2);
 
                 neighbor = block.getRelative(BlockFace.EAST);
-                module.physicsCheck(neighbor, recursionCount - 1, false, 3, playerName);
+                module.physicsCheck(neighbor, recursionCount - 1, false, 3);
 
                 neighbor = block.getRelative(BlockFace.WEST);
-                module.physicsCheck(neighbor, recursionCount - 1, false, 4, playerName);
+                module.physicsCheck(neighbor, recursionCount - 1, false, 4);
 
                 neighbor = block.getRelative(BlockFace.NORTH);
-                module.physicsCheck(neighbor, recursionCount - 1, false, 5, playerName);
+                module.physicsCheck(neighbor, recursionCount - 1, false, 5);
 
                 neighbor = block.getRelative(BlockFace.SOUTH);
-                module.physicsCheck(neighbor, recursionCount - 1, false, 6, playerName);
+                module.physicsCheck(neighbor, recursionCount - 1, false, 6);
             }
         }
     }

@@ -25,7 +25,6 @@ package com.extrahardmode.features;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.events.fakeevents.FakeBlockBreakEvent;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
@@ -88,8 +87,6 @@ public class RealisticChopping extends ListenerModule
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
     {
-        if (breakEvent instanceof FakeBlockBreakEvent)
-            return;
         Block block = breakEvent.getBlock();
         World world = block.getWorld();
         Player player = breakEvent.getPlayer();
@@ -141,13 +138,13 @@ public class RealisticChopping extends ListenerModule
                                 //TODO EhmRealisticChoppingLooseLogEvent
                                 //check 2 blocks down for logs to see if it it's a stem
                                 if (log.getRelative(BlockFace.DOWN).getType() != Material.LOG && log.getRelative(BlockFace.DOWN, 2).getType() != Material.LOG)
-                                    plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, log, player.getName()), plugin.getRandom().nextInt(50/*so they don't fall at once*/));
+                                    plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, log), plugin.getRandom().nextInt(50/*so they don't fall at once*/));
                             }
                             break; //can air fall?
                         }
                         case LOG:
                         {
-                            blockModule.applyPhysics(aboveLog, false, breakEvent.getPlayer().getName());
+                            blockModule.applyPhysics(aboveLog, false);
                             break;
                         }
                         default: //we reached something that is not part of a tree or leaves

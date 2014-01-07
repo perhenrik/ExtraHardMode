@@ -25,7 +25,6 @@ package com.extrahardmode.module;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.compatibility.CompatHandler;
-import com.extrahardmode.compatibility.SafeMethods;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.service.EHMModule;
@@ -82,14 +81,11 @@ public class BlockModule extends EHMModule
      * @param block          - Target block.
      * @param recursionCount - Number of times to execute.
      * @param forceCheck     - Whether to force adjacent blocks to be checked for the first iteration
-     * @param wait           - how many ticks to wait before the next task
-     * @param playerName     - player causing this check
+     * @param wait           - how many ticks to wait before the next task, mainly to prevent crashes when FallingBlocks collide
      */
-    public void physicsCheck(Block block, int recursionCount, boolean forceCheck, int wait, String playerName)
+    public void physicsCheck(Block block, int recursionCount, boolean forceCheck, int wait)
     {
-        if (CompatHandler.isProtectedBlock(block, playerName))
-            return;
-        int id = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new BlockPhysicsCheckTask(plugin, block, recursionCount, forceCheck, playerName), wait);
+        int id = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new BlockPhysicsCheckTask(plugin, block, recursionCount, forceCheck), wait);
         // check if it was scheduled. If not, notify in console.
         if (id == -1)
         {
@@ -103,14 +99,13 @@ public class BlockModule extends EHMModule
      *
      * @param block          Block to apply physics to.
      * @param damageEntities if Entities should be damaged
-     * @param playerName     player that caused physics to be applied
      *
      * @return the UUID of this FallingBlock
      */
-    public UUID applyPhysics(Block block, boolean damageEntities, String playerName)
+    public UUID applyPhysics(Block block, boolean damageEntities)
     {
         /* Spawning Falling Blocks with type = AIR crashes the Minecraft client */
-        if (block.getType() == Material.AIR || CompatHandler.isProtectedBlock(block, playerName))
+        if (block.getType() == Material.AIR)
             return null;
 
         // grass and mycel become dirt when they fall
@@ -136,7 +131,7 @@ public class BlockModule extends EHMModule
                 if (below.getType().isSolid())
                 {
                     if (breaksFallingBlock(current.getType()))
-                        SafeMethods.breakNaturally(current, playerName);
+                        current.breakNaturally();
                     //Will land on the block below
                     break;
                 }

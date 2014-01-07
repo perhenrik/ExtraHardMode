@@ -26,7 +26,6 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
-import com.extrahardmode.events.fakeevents.FakeBlockBreakEvent;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.module.PlayerModule;
@@ -126,8 +125,6 @@ public class AntiFarming extends ListenerModule
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent breakEvent)
     {
-        if (breakEvent instanceof FakeBlockBreakEvent)
-            return;
         Player player = breakEvent.getPlayer();
         Block block = breakEvent.getBlock();
         World world = block.getWorld();

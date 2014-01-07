@@ -52,11 +52,6 @@ public class FallingLogsTask implements Runnable
      */
     private final Block block;
 
-    /**
-     * Player causing the logs to fall
-     */
-    private final String playerName;
-
 
     /**
      * Constructor
@@ -65,14 +60,13 @@ public class FallingLogsTask implements Runnable
      * @param block  to apply physics to
      */
 
-    public FallingLogsTask(ExtraHardMode plugin, Block block, String playerName)
+    public FallingLogsTask(ExtraHardMode plugin, Block block)
     {
         Validate.notNull(block, "Block can't be null");
         Validate.notNull(plugin, "Plugin can't be null");
 
         this.block = block;
         this.plugin = plugin;
-        this.playerName = playerName;
         blockModule = plugin.getModuleForClass(BlockModule.class);
     }
 
@@ -141,7 +135,7 @@ public class FallingLogsTask implements Runnable
                         @Override
                         public void run()
                         {
-                            blockModule.applyPhysics(looseLog, true, playerName);
+                            blockModule.applyPhysics(looseLog, true);
                         }
                     }, i /*delay to prevent FallingBlock collision*/);
 
