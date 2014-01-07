@@ -76,9 +76,11 @@ public class Spiders extends ListenerModule
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
     {
+        LivingEntity entity = event.getEntity();
+        if (EntityHelper.isMarkedAsOurs(entity))
+            return;
         Location location = event.getLocation();
         World world = location.getWorld();
-        LivingEntity entity = event.getEntity();
         EntityType entityType = entity.getType();
 
         final int spiderBonusSpawnPercent = CFG.getInt(RootNode.BONUS_UNDERGROUND_SPIDER_SPAWN_PERCENT, world.getName());

@@ -89,12 +89,10 @@ public class MoreMonstersTask implements Runnable
                 location = verifyLocation(location);
                 if (location != null && location.getChunk().isLoaded())
                 {// spawn random monster(s)
-                    if (world.getEnvironment() == Environment.NORMAL)
+                    if (world.getEnvironment() == Environment.NORMAL && EntityHelper.arePlayersNearby(location, 16.0))
                     {
                         Entity mob = EntityHelper.spawnRandomMob(location);
-                        //If there are Players nearby don't spawn
-                        if (EntityHelper.arePlayersNearby(mob.getLocation(), 16.0))
-                            mob.remove();
+                        EntityHelper.markAsOurs(plugin, mob);
                     }
                 }
             } catch (IllegalArgumentException ignored)

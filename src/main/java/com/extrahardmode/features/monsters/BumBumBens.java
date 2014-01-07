@@ -77,8 +77,9 @@ public class BumBumBens extends ListenerModule
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
     {
-
         LivingEntity entity = event.getEntity();
+        if (EntityHelper.isMarkedAsOurs(entity))
+            return;
         EntityType entityType = entity.getType();
         World world = entity.getWorld();
 

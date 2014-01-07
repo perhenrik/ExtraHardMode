@@ -81,6 +81,7 @@ public class RespawnZombieTask implements Runnable
         zombie.setHealth(zombie.getHealth() / 2);
         // this zombie will not drop loot (again)
         EntityHelper.markLootLess(plugin, zombie);
+        EntityHelper.markAsOurs(plugin, zombie);
         // zombie is still madat the same player
         if (this.player != null && this.player.isOnline())
         {

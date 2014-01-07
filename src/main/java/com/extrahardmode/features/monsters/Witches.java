@@ -73,9 +73,11 @@ public class Witches extends ListenerModule
     @EventHandler(priority = EventPriority.LOW)
     public void onEntitySpawn(CreatureSpawnEvent event)
     {
+        LivingEntity entity = event.getEntity();
+        if (EntityHelper.isMarkedAsOurs(entity))
+            return;
         Location location = event.getLocation();
         World world = location.getWorld();
-        LivingEntity entity = event.getEntity();
         EntityType entityType = entity.getType();
 
         final int witchSpawnPercent = CFG.getInt(RootNode.BONUS_WITCH_SPAWN_PERCENT, world.getName());
