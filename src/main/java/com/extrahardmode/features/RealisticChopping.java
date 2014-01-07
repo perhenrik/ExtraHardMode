@@ -39,6 +39,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * When chopping down trees the logs fall down and loose logs fall down on the side and can injure you
  */
@@ -95,7 +99,7 @@ public class RealisticChopping extends ListenerModule
         final boolean playerHasBypass = playerModule.playerBypasses(player, Feature.REALISTIC_CHOPPING);
 
         // FEATURE: trees chop more naturally
-        if (block.getType() == Material.LOG && betterTreeChoppingEnabled && !playerHasBypass)
+        if ((block.getType() == Material.LOG || block.getType() == Material.LOG_2) && betterTreeChoppingEnabled && !playerHasBypass)
         {
             //Are there any leaves above the log? -> tree
             boolean isTree = false;
@@ -106,12 +110,14 @@ public class RealisticChopping extends ListenerModule
                 switch (upType)
                 {
                     case LEAVES:
+                    case LEAVES_2:
                     {
                         isTree = true;
                         break checkers;
                     }
                     case AIR:
                     case LOG:
+                    case LOG_2:
                     {
                         break; //skip to next iteration
                     }
@@ -132,17 +138,19 @@ public class RealisticChopping extends ListenerModule
                     {
                         case AIR:
                         {
-                            Block[] logs = blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 5, Material.LOG);
+                            List<Block> logs = new LinkedList<Block>(Arrays.asList(blockModule.getBlocksInArea(aboveLog.getLocation(), 1, 5, Material.LOG)));
+                            logs.addAll(Arrays.asList(blockModule.getBlocksInArea(aboveLog.getLocation(), 3, 5, Material.LOG_2)));
                             for (Block log : logs)
                             {
                                 //TODO EhmRealisticChoppingLooseLogEvent
                                 //check 2 blocks down for logs to see if it it's a stem
-                                if (log.getRelative(BlockFace.DOWN).getType() != Material.LOG && log.getRelative(BlockFace.DOWN, 2).getType() != Material.LOG)
+                                if (log.getRelative(BlockFace.DOWN).getType() != Material.LOG && !(log.getRelative(BlockFace.DOWN, 2).getType() == Material.LOG || log.getRelative(BlockFace.DOWN, 2).getType() == Material.LOG_2))
                                     plugin.getServer().getScheduler().runTaskLater(plugin, new FallingLogsTask(plugin, log), plugin.getRandom().nextInt(50/*so they don't fall at once*/));
                             }
                             break; //can air fall?
                         }
                         case LOG:
+                        case LOG_2:
                         {
                             blockModule.applyPhysics(aboveLog, false);
                             break;
