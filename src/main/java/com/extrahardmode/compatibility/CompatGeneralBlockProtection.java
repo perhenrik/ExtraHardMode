@@ -1,7 +1,7 @@
 package com.extrahardmode.compatibility;
 
 
-import com.extrahardmode.compatibility.fakeevents.FakeBlockBreakEvent;
+import com.extrahardmode.events.fakeevents.FakeBlockBreakEvent;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;

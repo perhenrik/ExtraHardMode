@@ -23,10 +23,11 @@ package com.extrahardmode.features.monsters;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.compatibility.fakeevents.FakeBlockBreakEvent;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageNode;
+import com.extrahardmode.events.fakeevents.FakeBlockBreakEvent;
+import com.extrahardmode.events.fakeevents.FakeEntityExplodeEvent;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.MsgModule;
@@ -418,6 +419,8 @@ public class Glydia extends ListenerModule
     @EventHandler
     public void onExplosion(EntityExplodeEvent event)
     {
+        if (event instanceof FakeEntityExplodeEvent)
+            return;
         World world = event.getLocation().getWorld();
         Entity entity = event.getEntity();
 

@@ -26,20 +26,18 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
+import com.extrahardmode.events.fakeevents.FakeEntityExplodeEvent;
 import com.extrahardmode.module.BlockModule;
-import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.ExplosionCompatStorage;
 import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.task.CreateExplosionTask;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Fireball;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -47,6 +45,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,13 +59,22 @@ public class Explosions extends ListenerModule
     private final String tag = "extrahardmode.explosion.fallingblock";
 
 
-    /** Your constructor of choice */
+    //     ___ ___  _  _ ___ _____ ___ _   _  ___ _____ ___  ___
+    //    / __/ _ \| \| / __|_   _| _ \ | | |/ __|_   _/ _ \| _ \
+    //   | (_| (_) | .` \__ \ | | |   / |_| | (__  | || (_) |   /
+    //    \___\___/|_|\_|___/ |_| |_|_\\___/ \___| |_| \___/|_|_\
+    //
     public Explosions(ExtraHardMode plugin)
     {
         super(plugin);
     }
 
 
+    //    ___ _____ _   ___ _____ ___ _  _  ___
+    //   / __|_   _/_\ | _ \_   _|_ _| \| |/ __|
+    //   \__ \ | |/ _ \|   / | |  | || .` | (_ |
+    //   |___/ |_/_/ \_\_|_\ |_| |___|_|\_|\___|
+    //
     @Override
     public void starting()
     {
@@ -77,115 +85,88 @@ public class Explosions extends ListenerModule
 
 
     /**
-     * Replace tnt explosion with multiple random explosions
-     *
-     * @param event Event that occured
+     * Regular listener:
+     * Bigger (custom) explosions
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onTntExplosion(EntityExplodeEvent event)
+    //    ___ ___ ___ _   _ _      _   ___   _    ___ ___ _____ ___ _  _ ___ ___
+    //   | _ \ __/ __| | | | |    /_\ | _ \ | |  |_ _/ __|_   _| __| \| | __| _ \
+    //   |   / _| (_ | |_| | |__ / _ \|   / | |__ | |\__ \ | | | _|| .` | _||   /
+    //   |_|_\___\___|\___/|____/_/ \_\_|_\ |____|___|___/ |_| |___|_|\_|___|_|_\
+    //
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void regularExplosions(EntityExplodeEvent event)
     {
-        Entity entity = event.getEntity();
-        World world = event.getLocation().getWorld();
+        if (event instanceof FakeEntityExplodeEvent || !(event.getEntity() instanceof Ghast || event.getEntity() instanceof TNTPrimed))
+            return;
 
-        final boolean customTntExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ENABLE, world.getName());
-        final boolean multipleExplosions = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
-
-        // FEATURE: bigger TNT booms
-        if (customTntExplosion)
-        {
-            if (entity != null && entity.getType() == EntityType.PRIMED_TNT && !EntityHelper.hasFlagIgnore(entity))
-            {
-                // create more explosions nearby
-                long serverTime = world.getFullTime();
-                int random1 = (int) (serverTime + entity.getLocation().getBlockZ()) % 8;
-                int random2 = (int) (serverTime + entity.getLocation().getBlockX()) % 8;
-
-                Location[] locations = new Location[]
-                        {
-                                entity.getLocation().add(random1, 1, random2),
-                                entity.getLocation().add(-random2, 0, random1 / 2),
-                                entity.getLocation().add(-random1 / 2, -1, -random2),
-                                entity.getLocation().add(random1 / 2, 0, -random2 / 2)
-                        };
-
-                final int explosionsNum = multipleExplosions ? locations.length : 1;
-
-                for (int i = 0; i < explosionsNum; i++)
-                {
-                    CreateExplosionTask task = new CreateExplosionTask(plugin, locations[i], ExplosionType.TNT, entity);
-                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 3L * (i + 1));
-                }
-            }
-        }
-    }
-
-
-    /**
-     * bigger ghast explosion , turn stone into cobble in hardened stone mode ,
-     *
-     * @param event - Event that occurred.
-     */
-    @EventHandler(priority = EventPriority.HIGHEST) //because
-    public void onExplosion(EntityExplodeEvent event)
-    {
-        World world = event.getLocation().getWorld();
-        Entity entity = event.getEntity();
+        final Entity sourceEntity = event.getEntity();
+        final World world = event.getLocation().getWorld();
+        final Location location = sourceEntity.getLocation();
 
         final boolean customGhastExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_GHASTS_ENABLE, world.getName());
-
-        final boolean turnStoneToCobble = CFG.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
+        final boolean customTntExplosion = CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ENABLE, world.getName());
+        final boolean multipleExplosions = CFG.getBoolean(RootNode.BETTER_TNT, world.getName());
         //cancel explosion if no worldDamage should be done
         final boolean tntWorldDamage = event.getLocation().getBlockY() > CFG.getInt(RootNode.EXPLOSIONS_Y, world.getName())
                 ? CFG.getBoolean(RootNode.EXPLOSIONS_TNT_ABOVE_WORLD_GRIEF, world.getName())
                 : CFG.getBoolean(RootNode.EXPLOSIONS_TNT_BELOW_WORLD_GRIEF, world.getName());
 
-        if (entity != null && (entity.getType() == EntityType.CREEPER || entity.getType() == EntityType.PRIMED_TNT))
-            event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
-
-
-        // FEATURE: in hardened stone mode, TNT only softens stone to cobble
-        if (turnStoneToCobble && entity == null) //
+        // TNT
+        if (sourceEntity instanceof TNTPrimed)
         {
-            List<Block> blocks = event.blockList();
-            Iterator<Block> iter = blocks.iterator();
-            while (iter.hasNext())
+            if (customTntExplosion && !multipleExplosions)
             {
-                Block block = iter.next();
-                if (block.getType() == Material.STONE)
-                {
-                    block.setType(Material.COBBLESTONE);
-                    iter.remove();
-                }
+                CreateExplosionTask explosionTask = new CreateExplosionTask(plugin, location, ExplosionType.TNT, sourceEntity);
+                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, explosionTask, 1L);
+            } else //multiple explosions will also handle the custom size
+            {
+                multipleExplosions(location, sourceEntity, ExplosionType.TNT);
             }
+            if (!tntWorldDamage && CFG.isEnabledIn(world.getName()))
+                event.setCancelled(true);
         }
 
-        //FEATURE: World damage based on the y-coordinate
-        if (!tntWorldDamage && CFG.isEnabledIn(world.getName()))
-            event.setCancelled(true);
-
-
-        // FEATURE: more powerful ghast fireballs
-        if (entity != null && entity instanceof Fireball && customGhastExplosion && !EntityHelper.hasFlagIgnore(entity))
+        // GHASTS
+        else if (sourceEntity instanceof Fireball)
         {
-            Fireball fireball = (Fireball) entity;
-            if (fireball.getShooter() != null && fireball.getShooter().getType() == EntityType.GHAST)
+            if (customGhastExplosion)
             {
-                event.setCancelled(true);
-                // same as vanilla TNT, plus fire
-                new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.GHAST_FIREBALL, entity).run();
+                Fireball fireball = (Fireball) sourceEntity;
+                if (fireball.getShooter() instanceof Ghast)
+                {
+                    event.setCancelled(true);
+                    // same as vanilla TNT, plus fire
+                    new CreateExplosionTask(plugin, sourceEntity.getLocation(), ExplosionType.GHAST_FIREBALL, sourceEntity).run();
+                }
             }
         }
     }
 
 
     /**
-     * Provide Compat for block protection and logging plugins. This is done by firing an explosion event with an entity and checking if the event has been cancelled or the
-     * blocklist has been modified. Clear out the blocklist of the actual event so that it is not recorded by blockloggers and manually break the blocks for the explosion and
-     * set optional fire.
+     * Provide compatibility for block protection and logging plugins.
+     * <pre>
+     *     1. call world.createExplosion()
+     *     2. save responsible entity and location with {@link com.extrahardmode.module.ExplosionCompatStorage}
+     *     --> our code starts here
+     *     3. compare location and call an additional {@link com.extrahardmode.events.fakeevents.FakeEntityExplodeEvent}
+     *     with blocklist() from the original Event
+     *     4. in any case the actual event gets cancelled,
+     *     so it doesn't get logged twice and doesn't get processed any further
+     *     5. this code will break blocks manually as a workaround,
+     *     because the actual explosion that would break the blocks has to be cancelled
+     * </pre>
      */
+    //     ___ ___  __  __ ___  _ _____ ___ ___ ___ _    ___ _______   __
+    //    / __/ _ \|  \/  | _ \/_\_   _|_ _| _ )_ _| |  |_ _|_   _\ \ / /
+    //   | (_| (_) | |\/| |  _/ _ \| |  | || _ \| || |__ | |  | |  \ V /
+    //    \___\___/|_|  |_|_|/_/ \_\_| |___|___/___|____|___| |_|   |_|
+    //
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onAnyExplosion(EntityExplodeEvent event)
+    public void provideCompatibility(EntityExplodeEvent event)
     {
+        if (event instanceof FakeEntityExplodeEvent)
+            return;
         //Only (our) custom explosions have no entity
         if (event.getEntity() == null)
         {
@@ -193,15 +174,19 @@ public class Explosions extends ListenerModule
             if (!explosionStorage.queueEmpty())
             {
                 //Just make sure that this explosion is in fact from us
-                if (explosionStorage.getCenterLocation().distanceSquared(event.getLocation()) == 0)
+                Location savedLoc = explosionStorage.getCenterLocation();
+                Location eventLoc = event.getLocation();
+                if (savedLoc.getBlockX() == eventLoc.getBlockX() && savedLoc.getBlockY() == eventLoc.getBlockY() && savedLoc.getBlockZ() == eventLoc.getBlockZ())
                 {
-                    // There is now way for us to pass the actual cause (the entity) of an explosion to bukkit other than this additional event
-                    EntityHelper.flagIgnore(plugin, explosionStorage.getExplosionCause());
-                    EntityExplodeEvent compatEvent = new EntityExplodeEvent(explosionStorage.getExplosionCause(), explosionStorage.getCenterLocation(), event.blockList(), event.getYield());
+                    // There is no way for us to pass the actual cause (the entity) of an explosion to bukkit other than this additional event
+                    FakeEntityExplodeEvent compatEvent = new FakeEntityExplodeEvent(explosionStorage.getExplosionCause(), explosionStorage.getCenterLocation(), event.blockList(), event.getYield());
                     plugin.getServer().getPluginManager().callEvent(compatEvent);
 
                     if (compatEvent.isCancelled())
+                        //We cancel the event because we only want the event with the correct Entity to be logged
                         event.setCancelled(true);
+                    else //do our additional processing
+                        explosionLogic(compatEvent);
 
                     //Some plugins might decide to clear the blocklist instead of cancelling the event, in that case the modified blocklist is the same
                     //Handle blockbreaking and setting fire ourselves
@@ -217,91 +202,23 @@ public class Explosions extends ListenerModule
                                 block.breakNaturally();
                         }
                     List<Block> copy = new ArrayList<Block>(event.blockList());
-                    event.blockList().clear(); //we don't want this event to be recorded
+                    event.blockList().clear(); //we don't want this event to be recorded, but we still want the explosion particles
                     compatEvent.blockList().addAll(copy);
 
                     explosionStorage.clearQueue();
                 }
             }
         }
-        /*//Remove Blocks that are in protected area
-        Iterator<Block> iter= event.blockList().iterator();
-        while (iter.hasNext())
-        {
-            Block block = iter.next();
-            if (CompatHandler.isExplosionProtected(block.getLocation()))
-            {
-                iter.remove();
-                //Restore old block
-                //block.setType(block.getLocation().getBlock().getType());
-            }
-        }*/
     }
 
 
-    /** Apply Physics after explosion */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPhysicsApply(final EntityExplodeEvent event)
-    {
-        final String worldName = event.getLocation().getWorld().getName();
-
-        final boolean damagePlayer = CFG.getInt(RootNode.MORE_FALLING_BLOCKS_DMG_AMOUNT, worldName) > 0;
-
-        if (CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE, worldName))
-        {
-            final boolean flyOtherPlugins = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE_OTHER, worldName);
-            final int flyPercentage = CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE, worldName);
-            final double upVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_UP_VEL, worldName);
-            final double spreadVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL, worldName);
-
-            if ((flyOtherPlugins || event.getEntity() != null) && !EntityHelper.hasFlagIgnore(event.getEntity()))
-            {
-                final List<FallingBlock> fallingBlockList = new ArrayList<FallingBlock>();
-                for (Block block : event.blockList())
-                {
-                    if (block.getType().isSolid())
-                    {
-                        //Only a few of the blocks fly as an effect
-                        if (plugin.random(flyPercentage))
-                        //if (block.getDrops().size() > 0)
-                        {
-                            FallingBlock fall = block.getLocation().getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
-                            fall.setMetadata(tag, new FixedMetadataValue(plugin, block.getLocation())); //decide on the distance if block should be placed
-                            //fall.setMetadata("drops", new FixedMetadataValue(plugin, block.getDrops()));
-                            fall.setDropItem(false);
-                            UtilityModule.moveUp(fall, upVel);
-                            //block.setType(Material.AIR);
-                            fallingBlockList.add(fall);
-                        }
-                    }
-                }
-
-                plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        for (FallingBlock fall : fallingBlockList)
-                        {
-                            UtilityModule.moveAway(fall, event.getLocation(), spreadVel);
-                            //fall.removeMetadata(tag, plugin);
-                            //fall.setMetadata("tag2", new FixedMetadataValue(plugin, true));
-                        }
-                    }
-                }, 2L);
-            }
-        }
-
-        if (CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, worldName))
-        {
-            blockModule.physicsCheck(event.getLocation().add(0, 5, 0).getBlock(), 5, true, 3, null); //loosen ceiling
-            blockModule.physicsCheck(event.getLocation().add(0, -3, 0).getBlock(), 5, true, 6, null); //ground loosen
-        }
-    }
-
-
+    //    _      _   _  _ ___ ___ _  _  ___   ___ _    ___   ___ _  _____
+    //   | |    /_\ | \| |   \_ _| \| |/ __| | _ ) |  / _ \ / __| |/ / __|
+    //   | |__ / _ \| .` | |) | || .` | (_ | | _ \ |_| (_) | (__| ' <\__ \
+    //   |____/_/ \_\_|\_|___/___|_|\_|\___| |___/____\___/ \___|_|\_\___/
+    //
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) //so we are last and if a block protection plugin cancelled the event we know it
-    public void blockLand(EntityChangeBlockEvent event)
+    public void handleLandedBlocksFromPhysics(EntityChangeBlockEvent event)
     {
         final int distance = (int) Math.pow(CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS, event.getBlock().getWorld().getName()), 2);
         if (event.getEntity() instanceof FallingBlock)
@@ -333,5 +250,154 @@ public class Explosions extends ListenerModule
                 }
             }
         }
+    }
+
+
+    /**
+     * This method only gets called by us once we have evaluated that we are allowed to trigger an explosion
+     *
+     * @param event event that occurred
+     */
+    public void explosionLogic(EntityExplodeEvent event)
+    {
+        Validate.notNull(event.getEntity(), "Entity was null [explosionLogic], but shouldn't be! x:" + event.getLocation().getBlockX() + " y:" + event.getLocation().getBlockY() + " z:" + event.getLocation().getBlockZ());
+        final Entity sourceEntity = event.getEntity();
+        final World world = event.getLocation().getWorld();
+        final String worldName = world.getName();
+        final Location location = sourceEntity.getLocation();
+        final Collection<Block> blocks = event.blockList();
+
+        final boolean flyingBlocks = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE, world.getName());
+
+        final boolean turnStoneToCobble = CFG.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
+
+        final boolean flyOtherPlugins = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE_OTHER, worldName);
+        final int flyPercentage = CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE, worldName);
+        final double upVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_UP_VEL, worldName);
+        final double spreadVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL, worldName);
+
+
+        if (sourceEntity instanceof Creeper || sourceEntity instanceof TNTPrimed)
+        {
+            event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
+        }
+
+        // PHYSICS
+        if (flyingBlocks && (flyOtherPlugins || sourceEntity != null))
+        {
+            applyExplosionPhysics(blocks, location, flyPercentage, upVel, spreadVel);
+
+            if (CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, worldName))
+            {
+                blockModule.physicsCheck(location.add(0, 5, 0).getBlock(), 5, true, 3, null); //loosen ceiling
+                blockModule.physicsCheck(location.add(0, -3, 0).getBlock(), 5, true, 6, null); //ground loosen
+            }
+        }
+        // FEATURE: in hardened stone mode, TNT only softens stone to cobble
+        if (turnStoneToCobble) //
+        {
+            changeBlockTypes(blocks, Material.STONE, Material.COBBLESTONE);
+        }
+
+    }
+
+    //    ___ ___ _   _ ___   _   ___ _    ___   ___ _   _ _  _  ___ _____ ___ ___  _  _ ___  ______
+    //   | _ \ __| | | / __| /_\ | _ ) |  | __| | __| | | | \| |/ __|_   _|_ _/ _ \| \| / __| \ \ \ \
+    //   |   / _|| |_| \__ \/ _ \| _ \ |__| _|  | _|| |_| | .` | (__  | |  | | (_) | .` \__ \  > > > >
+    //   |_|_\___|\___/|___/_/ \_\___/____|___| |_|  \___/|_|\_|\___| |_| |___\___/|_|\_|___/ /_/_/_/
+    //
+
+
+    /**
+     * Creates 4 additional explosions around a location to make the shape of the crater random and more natural
+     *
+     * @param location      center location to create explosions
+     * @param sourceEntity  entity that caused the explosion
+     * @param explosionType type determines the size of the explosion
+     */
+    public void multipleExplosions(Location location, Entity sourceEntity, ExplosionType explosionType)
+    {
+        // create more explosions nearby
+        long serverTime = location.getWorld().getFullTime();
+        int random1 = (int) (serverTime + location.getBlockZ()) % 8;
+        int random2 = (int) (serverTime + location.getBlockX()) % 8;
+
+        Location[] locations = new Location[]
+                {
+                        location.add(random1, 1, random2),
+                        location.add(-random2, 0, random1 / 2),
+                        location.add(-random1 / 2, -1, -random2),
+                        location.add(random1 / 2, 0, -random2 / 2)
+                };
+
+        final int explosionsNum = locations.length;
+
+        for (int i = 0; i < explosionsNum; i++)
+        {
+            CreateExplosionTask task = new CreateExplosionTask(plugin, locations[i], explosionType, sourceEntity);
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 3L * (i + 1));
+        }
+    }
+
+
+    public void changeBlockTypes(Collection<Block> blocks, Material previousType, Material newType)
+    {
+        Validate.notNull(previousType);
+        Validate.notNull(newType);
+
+        Iterator<Block> iter = blocks.iterator();
+        while (iter.hasNext())
+        {
+            Block block = iter.next();
+            if (block.getType() == previousType)
+            {
+                block.setType(newType);
+                iter.remove(); //?
+            }
+        }
+    }
+
+
+    /**
+     * Make blocks fly
+     *
+     * @param blocks        list of blocks
+     * @param center        center from which to spread blocks out
+     * @param flyPercentage percentage of blocks affected
+     * @param upVel         how fast to propel upwards
+     * @param spreadVel     how fast to propel on horizontal axis
+     */
+    public void applyExplosionPhysics(Collection<Block> blocks, final Location center, final int flyPercentage, final double upVel, final double spreadVel)
+    {
+        final List<FallingBlock> fallingBlockList = new ArrayList<FallingBlock>();
+        for (Block block : blocks)
+        {
+            if (block.getType().isSolid())
+            {
+                //Only a few of the blocks fly as an effect
+                if (plugin.random(flyPercentage))
+                {
+                    FallingBlock fall = block.getLocation().getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
+                    fall.setMetadata(tag, new FixedMetadataValue(plugin, block.getLocation())); //decide on the distance if block should be placed
+                    //fall.setMetadata("drops", new FixedMetadataValue(plugin, block.getDrops()));
+                    fall.setDropItem(false);
+                    UtilityModule.moveUp(fall, upVel);
+                    //block.setType(Material.AIR);
+                    fallingBlockList.add(fall);
+                }
+            }
+        }
+
+        plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                for (FallingBlock fall : fallingBlockList)
+                {
+                    UtilityModule.moveAway(fall, center, spreadVel);
+                }
+            }
+        }, 2L);
     }
 }

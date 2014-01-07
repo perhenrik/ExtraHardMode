@@ -23,9 +23,9 @@ package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.compatibility.fakeevents.FakeBlockBreakEvent;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
+import com.extrahardmode.events.fakeevents.FakeBlockBreakEvent;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;

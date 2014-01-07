@@ -1,4 +1,4 @@
-package com.extrahardmode.compatibility.fakeevents;
+package com.extrahardmode.events.fakeevents;
 
 
 import org.bukkit.block.Block;

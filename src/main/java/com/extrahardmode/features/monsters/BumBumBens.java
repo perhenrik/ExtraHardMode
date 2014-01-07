@@ -27,6 +27,7 @@ import com.extrahardmode.config.ExplosionType;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.events.EhmCreeperDropTntEvent;
+import com.extrahardmode.events.fakeevents.FakeEntityExplodeEvent;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
@@ -227,6 +228,8 @@ public class BumBumBens extends ListenerModule
     //give some time for other plugins to block the event
     public void onExplosion(EntityExplodeEvent event)
     {
+        if (event instanceof FakeEntityExplodeEvent)
+            return;
         Entity entity = event.getEntity();
         World world = event.getLocation().getWorld();
 
@@ -234,7 +237,7 @@ public class BumBumBens extends ListenerModule
 
         // FEATURE: bigger creeper explosions (for more-frequent cave-ins)
         // Charged creeper explosion is handled in onEntityDamage
-        if (customCreeper && entity instanceof Creeper && !EntityHelper.hasFlagIgnore(entity)) //We create an Explosion event and need to prevent loops
+        if (customCreeper && entity instanceof Creeper)
         {
             event.setCancelled(true);
             EntityHelper.flagIgnore(plugin, entity);//Ignore this creeper in further calls to this method
