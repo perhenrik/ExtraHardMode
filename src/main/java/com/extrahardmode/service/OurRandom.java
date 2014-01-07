@@ -19,17 +19,12 @@ public class OurRandom
 
     public static double nextDouble()
     {
-        if (rdm == null)
-            rdm = new Random();
         return rdm.nextDouble();
     }
 
 
     public static int nextInt(int range)
     {
-        //Dunno where the NPE comes from :'(
-        if (rdm == null)
-            rdm = new Random();
         return rdm.nextInt(range);
     }
 
@@ -49,8 +44,6 @@ public class OurRandom
      */
     public static int weightedRandom(Integer[] itemWeights)
     {
-        if (rdm == null)
-            rdm = new Random();
         // Compute the total weight of all items together
         int totalWeight = 0;
         for (int i : itemWeights)

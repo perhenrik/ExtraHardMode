@@ -85,9 +85,15 @@ public class CompatHandler extends EHMModule
             blockLoggerPls.add(prismCompat);
 
         //HawkEye Reloaded
-        CompatHawkEye compatHawkEye = new CompatHawkEye(plugin);
-        if (compatHawkEye.isEnabled())
-            blockLoggerPls.add(compatHawkEye);
+        try
+        {
+            CompatHawkEye compatHawkEye = new CompatHawkEye(plugin);
+            if (compatHawkEye.isEnabled())
+                blockLoggerPls.add(compatHawkEye);
+        } catch (Error ignored) //ClassNotFoundException, but that doesn't catch for whatever reason, whateeeeever
+        {
+            //Static API I guess, stop wasting my time any further or you are gonna get removed
+        }
 
         //CoreProtect
         CompatCoreProtect compatCoreProtect = new CompatCoreProtect(plugin);

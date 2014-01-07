@@ -129,7 +129,7 @@ public class ExtraHardMode extends JavaPlugin
         MoreMonstersTask task = new MoreMonstersTask(this);
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 600L, 600L);
 
-        //Metrics Plotter
+        //Metrics Plotter, this gets included by maven
         new ConfigPlotter(this, getModuleForClass(RootConfig.class));
     }
 
