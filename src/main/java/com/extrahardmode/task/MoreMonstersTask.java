@@ -82,14 +82,16 @@ public class MoreMonstersTask implements Runnable
         for (SimpleEntry<Player, Location> entry : dataStore.getPreviousLocations())
         {
             Location location = entry.getValue();
+            Player player = entry.getKey();
             World world = location.getWorld();
 
             try
             {
                 location = verifyLocation(location);
-                if (location != null && location.getChunk().isLoaded())
-                {// spawn random monster(s)
-                    if (world.getEnvironment() == Environment.NORMAL && !EntityHelper.arePlayersNearby(location, 16.0))
+                if (location != null && location.getChunk().isLoaded() && player.isOnline()) //fix monsters spawning at previous locations on login
+                {//Check if the player is within 64 blocks, but there are no other players within 16 blocks
+                    if (world.getEnvironment() == Environment.NORMAL &&
+                            (location.distanceSquared(player.getLocation()) < 64 * 64) && !EntityHelper.arePlayersNearby(location, 16.0))
                     {
                         Entity mob = EntityHelper.spawnRandomMob(location);
                         EntityHelper.markAsOurs(plugin, mob);
