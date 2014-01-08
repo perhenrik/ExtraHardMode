@@ -152,6 +152,13 @@
             <version>${mc-version}-${bukkit-ver}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- CraftBukkit -> because we are too lazy to add the jar to our build path for runtime debugging :D -->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>${mc-version}-${bukkit-ver}</version>
+            <scope>runtime</scope>
+        </dependency>
         <!-- Metrics for stats -->
         <dependency>
             <groupId>org.mcstats.bukkit</groupId>

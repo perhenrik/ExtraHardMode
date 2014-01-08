@@ -144,6 +144,44 @@ public class Explosions extends ListenerModule
 
 
     /**
+     * This gets called late so we know the explosion has been allowed
+     *
+     * @param event event that occurred
+     */
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST) //so it probably got cancelled already
+    public void onLateExplosion(EntityExplodeEvent event)
+    {
+        if (event instanceof FakeEntityExplodeEvent)
+            return;
+
+        final Entity sourceEntity = event.getEntity();
+        final World world = event.getLocation().getWorld();
+        final String worldName = world.getName();
+        final Location location = event.getLocation();
+        final Collection<Block> blocks = event.blockList();
+
+        final boolean flyingBlocks = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE, world.getName());
+
+        final boolean flyOtherPlugins = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE_OTHER, worldName);
+        final int flyPercentage = CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE, worldName);
+        final double upVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_UP_VEL, worldName);
+        final double spreadVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL, worldName);
+
+        // PHYSICS
+        if (flyingBlocks && (flyOtherPlugins || sourceEntity != null))
+        {
+            applyExplosionPhysics(blocks, location, flyPercentage, upVel, spreadVel);
+
+            if (CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, worldName))
+            {
+                blockModule.physicsCheck(location.add(0, 5, 0).getBlock(), 5, true, 3); //loosen ceiling
+                blockModule.physicsCheck(location.add(0, -3, 0).getBlock(), 5, true, 6); //ground loosen
+            }
+        }
+    }
+
+
+    /**
      * Provide compatibility for block protection and logging plugins.
      * <pre>
      *     1. call world.createExplosion()
@@ -282,17 +320,6 @@ public class Explosions extends ListenerModule
             event.setYield(1); //so people have enough blocks to fill creeper holes and because TNT explodes multiple times
         }
 
-        // PHYSICS
-        if (flyingBlocks && (flyOtherPlugins || sourceEntity != null))
-        {
-            applyExplosionPhysics(blocks, location, flyPercentage, upVel, spreadVel);
-
-            if (CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_ENABLE, worldName))
-            {
-                blockModule.physicsCheck(location.add(0, 5, 0).getBlock(), 5, true, 3); //loosen ceiling
-                blockModule.physicsCheck(location.add(0, -3, 0).getBlock(), 5, true, 6); //ground loosen
-            }
-        }
         // FEATURE: in hardened stone mode, TNT only softens stone to cobble
         if (turnStoneToCobble) //
         {
