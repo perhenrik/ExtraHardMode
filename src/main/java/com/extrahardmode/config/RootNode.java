@@ -908,29 +908,33 @@ public enum RootNode implements ConfigNode
                 obj = 0;
                 if (subType != null)
                 {
-                    switch (subType)
+                    if (disableValue != null && disableValue.get() != null)
+                        obj = disableValue.get();
+                    else
                     {
-                        case NATURAL_NUMBER:
-                        case Y_VALUE:
+                        switch (subType)
                         {
-                            if (disableValue != null)
-                                obj = (Integer) disableValue.get();
-                            break;
-                        }
-                        case HEALTH:
-                        {
-                            obj = 20;
-                            break;
-                        }
-                        case PERCENTAGE:
-                        {
-                            obj = 0;
-                            break;
-                        }
-                        default:
-                        {
-                            obj = defaultValue;
-                            throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
+                            case NATURAL_NUMBER:
+                            case Y_VALUE:
+                            {
+                                obj = 0;
+                                break;
+                            }
+                            case HEALTH:
+                            {
+                                obj = 20;
+                                break;
+                            }
+                            case PERCENTAGE:
+                            {
+                                obj = 0;
+                                break;
+                            }
+                            default:
+                            {
+                                obj = defaultValue;
+                                throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
+                            }
                         }
                     }
                 }
@@ -940,7 +944,11 @@ public enum RootNode implements ConfigNode
             {
                 obj = 0.0;
                 if (subType != null)
-                    switch (subType)
+                    if (disableValue != null && disableValue.get() != null)
+                        obj = disableValue.get();
+                    else
+                    {
+                        switch (subType)
                     {
                         case NATURAL_NUMBER:
                         case Y_VALUE:
@@ -964,6 +972,7 @@ public enum RootNode implements ConfigNode
                             obj = defaultValue;
                             throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
                         }
+                    }
                     }
                 break;
             }

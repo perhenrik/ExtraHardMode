@@ -108,6 +108,8 @@ public class TestRootConfig
     {
         //Integer
         assertEquals(0, cfg.getInt(RootNode.BONUS_NETHER_BLAZE_SPAWN_PERCENT, "test123"));
+        //Integer with disable value
+        assertEquals(100, cfg.getInt(RootNode.GHASTS_DEFLECT_ARROWS, "test123"));
         //Boolean
         assertEquals(false, cfg.getBoolean(RootNode.DONT_MOVE_WATER_SOURCE_BLOCKS, "test123"));
         //String
