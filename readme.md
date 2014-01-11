@@ -270,6 +270,13 @@ Players should go out adventuring while taking risks to gain rewards. The use of
 and makes good weapons "worthless", because they are easily obtainable. By forcing players to work for their gear, they will treasure it more.
 This module completely removes drops if it recognizes grinders or when a player has a great advantage over a monster.
 
+A great advantage can be:
+* Monster cannot reach the player (player behind a wall or standing on a pillar or similar)
+* Monster has taken more than 50% damage from natural causes (fall damage, being on fire, etc)
+* Monster is in water and therefore has a great disadvantage towards the player
+
+Activating this will also block monsters from spawning on non natural blocks to make most grinders not spawn any monsters.
+
 ``` yaml
 
 # simple on/off, request if you want any additional configuration
