@@ -150,5 +150,8 @@ public class DataStoreModule extends EHMModule
 
         /** Cached weight */
         public float cachedWeightStatus = -1.0F; //player can't have negative invetory....
+
+        /** If player is in debugmode */
+        public boolean inDebug = false;
     }
 }

@@ -51,6 +51,11 @@ public class RemoveExposedTorchesTask implements Runnable
      */
     private final RootConfig CFG;
 
+    /**
+     * If checks for rain should be bypassed (debugging/testing)
+     */
+    private final boolean force;
+
 
     /**
      * Constructor.
@@ -60,9 +65,22 @@ public class RemoveExposedTorchesTask implements Runnable
      */
     public RemoveExposedTorchesTask(ExtraHardMode plugin, Chunk chunk)
     {
+        this(plugin, chunk, false);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param plugin - Plugin instance.
+     * @param chunk  - Target chunk.
+     */
+    public RemoveExposedTorchesTask(ExtraHardMode plugin, Chunk chunk, boolean force)
+    {
         this.plugin = plugin;
         this.chunk = chunk;
         CFG = this.plugin.getModuleForClass(RootConfig.class);
+        this.force = force;
     }
 
 
@@ -72,18 +90,18 @@ public class RemoveExposedTorchesTask implements Runnable
         final boolean rainBreaksTorches = CFG.getBoolean(RootNode.RAIN_BREAKS_TORCHES, this.chunk.getWorld().getName());
         final boolean snowBreaksCrops = CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, this.chunk.getWorld().getName()) && CFG.getBoolean(RootNode.SNOW_BREAKS_CROPS, this.chunk.getWorld().getName());
 
-        if (this.chunk.getWorld().hasStorm())
+        if (this.chunk.getWorld().hasStorm() || force)
         {
             for (int x = 0; x < 16; x++)
             {
                 for (int z = 0; z < 16; z++)
                 {
                     /* Biome is saved on a per column basis */
-                    double temperature = chunk.getBlock(x, z, 1).getTemperature();
                     loopDown:
                     for (int y = chunk.getWorld().getMaxHeight() - 1; y > 0; y--)
                     {
                         Block block = chunk.getBlock(x, y, z);
+                        double temperature = block.getTemperature();
                         Material blockType = block.getType();
 
                         switch (blockType)

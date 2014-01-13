@@ -42,6 +42,8 @@ public class Commander extends CommandHandler
         registerCommand("reload", new ReloadCommand());
         registerCommand("version", new VersionCommand());
         registerCommand("enabled", new EnabledCommand());
+        registerCommand("debugtoggle", new DebugToggleCommand());
+        registerCommand("debug", new DebugCommand());
     }
 
 

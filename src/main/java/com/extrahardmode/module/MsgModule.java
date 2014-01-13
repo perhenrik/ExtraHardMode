@@ -323,6 +323,17 @@ public class MsgModule extends EHMModule
 
 
     /**
+     * Get the NotificationManager for direct sending of popups
+     *
+     * @return the manager used by extrahardmode
+     */
+    public NotificationManager getManager()
+    {
+        return manager;
+    }
+
+
+    /**
      * Hides/Removes the message with the given unqiue identifier
      *
      * @param player     player for which to hide message
