@@ -28,7 +28,6 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
@@ -71,7 +70,7 @@ public class RemoveExposedTorchesTask implements Runnable
     public void run()
     {
         final boolean rainBreaksTorches = CFG.getBoolean(RootNode.RAIN_BREAKS_TORCHES, this.chunk.getWorld().getName());
-        final boolean snowBreaksCrops = CFG.getBoolean(RootNode.SNOW_BREAKS_CROPS, this.chunk.getWorld().getName());
+        final boolean snowBreaksCrops = CFG.getBoolean(RootNode.WEAK_FOOD_CROPS, this.chunk.getWorld().getName()) && CFG.getBoolean(RootNode.SNOW_BREAKS_CROPS, this.chunk.getWorld().getName());
 
         if (this.chunk.getWorld().hasStorm())
         {
@@ -80,7 +79,7 @@ public class RemoveExposedTorchesTask implements Runnable
                 for (int z = 0; z < 16; z++)
                 {
                     /* Biome is saved on a per column basis */
-                    Biome biome = chunk.getBlock(x, z, 1).getBiome();
+                    double temperature = chunk.getBlock(x, z, 1).getTemperature();
                     loopDown:
                     for (int y = chunk.getWorld().getMaxHeight() - 1; y > 0; y--)
                     {
@@ -93,7 +92,7 @@ public class RemoveExposedTorchesTask implements Runnable
                                 continue loopDown;
                             case TORCH:
                             {
-                                if (rainBreaksTorches && biome != Biome.DESERT && biome != Biome.DESERT_HILLS)
+                                if (rainBreaksTorches && temperature < 1.0) //excludes warmer biomes like mesa and desert in which no rain falls
                                 {
                                     /* Reduce lag by torches lying on the ground */
                                     if (plugin.getRandom().nextInt(5) == 1)
@@ -115,31 +114,20 @@ public class RemoveExposedTorchesTask implements Runnable
                             case YELLOW_FLOWER:
                             case LONG_GRASS:
                             {
-                                if (snowBreaksCrops)
+                                if (snowBreaksCrops && temperature <= 0.15) //cold biomes in which snow falls
                                 {
-                                    switch (biome)
+                                    if (plugin.getRandom().nextInt(5) == 1)
+                                        block.breakNaturally();
+                                    //Snow can't be placed if its tilled soil
+                                    if (block.getRelative(BlockFace.DOWN).getType() == Material.SOIL)
+                                        block.getRelative(BlockFace.DOWN).setType(Material.DIRT);
+                                    block.setType(Material.SNOW);
+                                    if (plugin.getRandom().nextBoolean())
                                     {
-                                        case FROZEN_OCEAN:
-                                        case FROZEN_RIVER:
-                                        case ICE_MOUNTAINS:
-                                        case ICE_PLAINS:
-                                        case TAIGA:
-                                        case TAIGA_HILLS:
-                                        {
-                                            if (plugin.getRandom().nextInt(5) == 1)
-                                                block.breakNaturally();
-                                            //Snow can't be placed if its tilled soil
-                                            if (block.getRelative(BlockFace.DOWN).getType() == Material.SOIL)
-                                                block.getRelative(BlockFace.DOWN).setType(Material.DIRT);
-                                            block.setType(Material.SNOW);
-                                            if (plugin.getRandom().nextBoolean())
-                                            {
-                                                block.setData((byte) 1);
-                                            } else
-                                            {
-                                                block.setData((byte) 2);
-                                            }
-                                        }
+                                        block.setData((byte) 1);
+                                    } else
+                                    {
+                                        block.setData((byte) 2);
                                     }
                                 }
                                 break loopDown;
