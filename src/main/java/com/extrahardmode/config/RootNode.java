@@ -701,7 +701,7 @@ public enum RootNode implements ConfigNode
     /**
      * Size of Explosion below the border
      */
-    EXPLOSIONS_TNT_BELOW_POWER("Explosions.Tnt.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
+    EXPLOSIONS_TNT_BELOW_POWER("Explosions.Tnt.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 5),
     /**
      * Set Fire on Explosion below border
      */
@@ -713,7 +713,7 @@ public enum RootNode implements ConfigNode
     /**
      * Size of Explosion below border
      */
-    EXPLOSIONS_TNT_ABOVE_POWER("Explosions.Tnt.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 6),
+    EXPLOSIONS_TNT_ABOVE_POWER("Explosions.Tnt.Above Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
     /**
      * Set Fire on Explosion below border
      */
