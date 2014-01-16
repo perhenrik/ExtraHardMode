@@ -114,16 +114,20 @@ public class Explosions extends ListenerModule
         // TNT
         if (sourceEntity instanceof TNTPrimed)
         {
-            if (customTntExplosion && !multipleExplosions)
+            if (customTntExplosion)
             {
-                CreateExplosionTask explosionTask = new CreateExplosionTask(plugin, location, ExplosionType.TNT, sourceEntity);
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, explosionTask, 1L);
-            } else //multiple explosions will also handle the custom size
-            {
-                multipleExplosions(location, sourceEntity, ExplosionType.TNT);
+                if (!multipleExplosions)
+                {
+                    CreateExplosionTask explosionTask = new CreateExplosionTask(plugin, location, ExplosionType.TNT, sourceEntity);
+                    plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, explosionTask, 1L);
+                } else //multiple explosions will also handle the custom size
+                {
+                    multipleExplosions(location, sourceEntity, ExplosionType.TNT);
+                }
+
+                if (!tntWorldDamage && CFG.isEnabledIn(world.getName()))
+                    event.setCancelled(true);
             }
-            if (!tntWorldDamage && CFG.isEnabledIn(world.getName()))
-                event.setCancelled(true);
         }
 
         // GHASTS
