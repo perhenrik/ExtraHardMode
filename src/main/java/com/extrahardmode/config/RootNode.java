@@ -422,6 +422,10 @@ public enum RootNode implements ConfigNode
      */
     ALWAYS_ANGRY_PIG_ZOMBIES("PigZombies.Always Angry", VarType.BOOLEAN, true),
     /**
+     * Reduce dmg from pigmen because it's not meant to be a hostile mob
+     */
+    PIG_ZOMBIE_DMG_PERCENT("PigZombies.Dmg to players percent", VarType.INTEGER, SubType.NATURAL_NUMBER, 70),
+    /**
      * whether pig zombies always drop nether wart in nether fortresses
      */
     FORTRESS_PIGS_DROP_WART("PigZombies.Always Drop Netherwart In Fortresses", VarType.BOOLEAN, true),

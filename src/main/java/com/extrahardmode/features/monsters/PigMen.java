@@ -33,13 +33,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LightningStrike;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -147,6 +145,16 @@ public class PigMen extends ListenerModule
                     pigZombie.setAnger(Integer.MAX_VALUE);
                 }
             }
+        }
+    }
+
+
+    @EventHandler
+    public void onPlayerDamaged(EntityDamageByEntityEvent event)
+    {
+        if (event.getEntity() instanceof Player && event.getDamager() instanceof PigZombie)
+        {
+            event.setDamage(event.getDamage() * CFG.getInt(RootNode.PIG_ZOMBIE_DMG_PERCENT, event.getEntity().getWorld().getName()) / 100.0);
         }
     }
 
