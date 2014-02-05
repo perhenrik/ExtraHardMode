@@ -102,13 +102,18 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Water.class, new Water(this));
 
         //Monster Modules
-        registerModule(Witches.class, new Witches(this));
         registerModule(Blazes.class, new Blazes(this));
         registerModule(BumBumBens.class, new BumBumBens(this));
-        registerModule(Glydia.class, new Glydia(this));
         registerModule(Endermen.class, new Endermen(this));
+        registerModule(Glydia.class, new Glydia(this));
         registerModule(Ghasts.class, new Ghasts(this));
-        registerModule(Horses.class, new Horses(this));
+        try //Enabled from 1.6 onwards only
+        {
+            Class.forName("org.bukkit.entity.Horse", false, null);
+            registerModule(Horses.class, new Horses(this));
+        } catch (ClassNotFoundException ignored)
+        {
+        }
         registerModule(MonsterRules.class, new MonsterRules(this));
         registerModule(PigMen.class, new PigMen(this));
         registerModule(RealisticChopping.class, new RealisticChopping(this));
@@ -116,6 +121,7 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Skeletors.class, new Skeletors(this));
         registerModule(Spiders.class, new Spiders(this));
         registerModule(Zombies.class, new Zombies(this));
+        registerModule(Witches.class, new Witches(this));
 
         //Compatibility
         registerModule(CompatHandler.class, new CompatHandler(this));

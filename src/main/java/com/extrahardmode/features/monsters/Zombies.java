@@ -50,6 +50,8 @@ public class Zombies extends ListenerModule
 
     private PlayerModule playerModule;
 
+    private boolean hasReinforcements = false;
+
 
     public Zombies(ExtraHardMode plugin)
     {
@@ -63,6 +65,14 @@ public class Zombies extends ListenerModule
         super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
+        try
+        {
+            CreatureSpawnEvent.SpawnReason doesEnumExist = CreatureSpawnEvent.SpawnReason.REINFORCEMENTS;
+            hasReinforcements = true;
+        } catch (NoSuchFieldError e)
+        {
+            hasReinforcements = false;
+        }
     }
 
 
@@ -153,7 +163,7 @@ public class Zombies extends ListenerModule
     @EventHandler
     public void onZombieReinforcements(CreatureSpawnEvent event)
     {
-        if (event.getEntity() instanceof Zombie && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.REINFORCEMENTS)
+        if (hasReinforcements && event.getEntity() instanceof Zombie && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.REINFORCEMENTS)
         {
             EntityHelper.flagIgnore(plugin, event.getEntity());
         }
