@@ -88,7 +88,7 @@ public class Blazes extends ListenerModule
         EntityType entityType = entity.getType();
 
         // FEATURE: more blazes in nether
-        if (entityType == EntityType.PIG_ZOMBIE)
+        if (entityType == EntityType.PIG_ZOMBIE && world.getEnvironment() == World.Environment.NETHER)
         {
             if (plugin.random(bonusNetherBlazeSpawnPercent))
             {
@@ -137,17 +137,20 @@ public class Blazes extends ListenerModule
         int blazeSplitPercent = CFG.getInt(RootNode.NETHER_BLAZES_SPLIT_ON_DEATH_PERCENT, world.getName());
 
         // FEATURE: nether blazes drop extra loot (glowstone and gunpowder)
-        if (bonusLoot && entity instanceof Blaze && !EntityHelper.isLootLess(entity))
+        if (entity instanceof Blaze && !EntityHelper.isLootLess(entity))
         {
             if (world.getEnvironment() == World.Environment.NETHER)
             {
-                // 50% chance of each
-                if (plugin.getRandom().nextInt(2) == 0)
+                if (bonusLoot)
                 {
-                    event.getDrops().add(new ItemStack(Material.SULPHUR, 2));
-                } else
-                {
-                    event.getDrops().add(new ItemStack(Material.GLOWSTONE_DUST, 2));
+                    // 50% chance of each
+                    if (plugin.getRandom().nextInt(2) == 0)
+                    {
+                        event.getDrops().add(new ItemStack(Material.SULPHUR, 2));
+                    } else
+                    {
+                        event.getDrops().add(new ItemStack(Material.GLOWSTONE_DUST, 2));
+                    }
                 }
             } else if (blockDrops)// no drops in the normal world (restricting blaze rods to the nether)
             {
