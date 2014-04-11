@@ -128,7 +128,7 @@ public class Ghasts extends ListenerModule
                         // check permissions when it's shot by a player
                         Player player = (Player) arrow.getShooter();
                         if (!playerModule.playerBypasses(player, Feature.MONSTER_GHASTS))
-                            event.setDamage(event.getDamage() * arrowDamagePercent / 100.0);
+                            event.setDamage(event.getDamage() * arrowDamagePercent / 100);
                     }
                 }
             }

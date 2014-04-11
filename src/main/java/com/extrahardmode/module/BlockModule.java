@@ -364,7 +364,7 @@ public class BlockModule extends EHMModule
         return material.equals(Material.CARROT_ITEM)
                 || material.equals(Material.POTATO_ITEM)
                 || material.equals(Material.APPLE)
-                || material.equals(Material.HAY_BLOCK)
+                //|| material.equals(Material.HAY_BLOCK)
                 || material.equals(Material.WHEAT);
     }
 

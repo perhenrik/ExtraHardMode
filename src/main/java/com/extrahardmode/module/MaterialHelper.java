@@ -32,7 +32,7 @@ public class MaterialHelper
                 output.append("netherwart");
                 break;
             //Barding = horse armor
-            case IRON_BARDING:
+            /*case IRON_BARDING:
                 output.append("ironhorsearmor");
                 break;
             case GOLD_BARDING:
@@ -40,7 +40,7 @@ public class MaterialHelper
                 break;
             case DIAMOND_BARDING:
                 output.append("diamondhorsearmor");
-                break;
+                break;*/
             default:
                 output.append(toReadableString(stack.getType()));
         }

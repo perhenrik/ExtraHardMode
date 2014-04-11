@@ -154,7 +154,7 @@ public class PigMen extends ListenerModule
     {
         if (event.getEntity() instanceof Player && event.getDamager() instanceof PigZombie)
         {
-            event.setDamage(event.getDamage() * CFG.getInt(RootNode.PIG_ZOMBIE_DMG_PERCENT, event.getEntity().getWorld().getName()) / 100.0);
+            event.setDamage(event.getDamage() * CFG.getInt(RootNode.PIG_ZOMBIE_DMG_PERCENT, event.getEntity().getWorld().getName()) / 100);
         }
     }
 

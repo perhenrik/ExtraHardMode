@@ -107,13 +107,13 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Endermen.class, new Endermen(this));
         registerModule(Glydia.class, new Glydia(this));
         registerModule(Ghasts.class, new Ghasts(this));
-        try //Enabled from 1.6 onwards only
+        /*try //Enabled from 1.6 onwards only
         {
             Class.forName("org.bukkit.entity.Horse", false, null);
             registerModule(Horses.class, new Horses(this));
         } catch (ClassNotFoundException ignored)
         {
-        }
+        }*/
         registerModule(MonsterRules.class, new MonsterRules(this));
         registerModule(PigMen.class, new PigMen(this));
         registerModule(RealisticChopping.class, new RealisticChopping(this));

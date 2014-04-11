@@ -39,7 +39,7 @@ public class SetPlayerHealthAndFoodTask implements Runnable
     /**
      * Health level.
      */
-    private final double health;
+    private final int health;
 
     /**
      * Food level.
@@ -54,7 +54,7 @@ public class SetPlayerHealthAndFoodTask implements Runnable
      * @param health - Health level
      * @param food   - Food level.
      */
-    public SetPlayerHealthAndFoodTask(Player player, double health, int food)
+    public SetPlayerHealthAndFoodTask(Player player, int health, int food)
     {
         this.player = player;
         this.health = health;

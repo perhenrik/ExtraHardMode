@@ -36,7 +36,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -51,6 +50,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+//import org.bukkit.entity.Horse;
 
 /**
  * Playerchanges include
@@ -104,7 +105,7 @@ public class Players extends ListenerModule
         if (respawnFood < 20 && respawnHealthPercentage > 0 && respawnHealthPercentage < 100)
         {
             //TODO HIGH EhmPlayerRespawnEvent
-            SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, player.getMaxHealth() * respawnHealthPercentage / 100.0D, respawnFood);
+            SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, player.getMaxHealth() * respawnHealthPercentage / 100, respawnFood);
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L); // half-second delay
         }
         // FEATURE: players can't swim when they're carrying a lot of weight, reset the cached value
@@ -181,16 +182,16 @@ public class Players extends ListenerModule
                         break;
                     case FALL:
                         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (20 * event.getDamage()), 4));
-                        event.setDamage(event.getDamage() * 2.0);
+                        event.setDamage(event.getDamage() * 2);
                         break;
                     case SUFFOCATION:
-                        if (player.getVehicle() instanceof Horse)  //Reduced because you can easily glitch into blocks
+                        /*if (player.getVehicle() instanceof Horse)  //Reduced because you can easily glitch into blocks
                             event.setDamage(event.getDamage() * 2.0);
-                        else
-                            event.setDamage(event.getDamage() * 5.0);
+                        else*/
+                        event.setDamage(event.getDamage() * 5);
                         break;
                     case LAVA:
-                        event.setDamage(event.getDamage() * 2.0);
+                        event.setDamage(event.getDamage() * 2);
                         break;
                     case FIRE_TICK:
                         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
