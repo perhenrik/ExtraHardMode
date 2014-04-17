@@ -71,7 +71,8 @@ public interface ConfigNode
         DOUBLE,
         BOOLEAN,
         LIST,
-        COLOR
+        COLOR,
+        POTION_EFFECT
     }
 
 

@@ -22,8 +22,10 @@
 package com.extrahardmode.config;
 
 
+import com.extrahardmode.service.PotionEffectHolder;
 import com.extrahardmode.service.config.ConfigNode;
 import org.bukkit.Material;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -131,9 +133,36 @@ public enum RootNode implements ConfigNode
      */
     BETTER_TREE_CHOPPING("World Rules.Better Tree Felling", VarType.BOOLEAN, true),
     /**
+     * #################################
+     * # ENHANCED ENVIRONMENTAL DAMAGE #
+     * #################################
+     */
+    /**
      * whether players take additional damage and/or debuffs from environmental injuries
      */
-    ENHANCED_ENVIRONMENTAL_DAMAGE("Player.Enhanced Environmental Injuries", VarType.BOOLEAN, true),
+    //dmg before potion effect -> first value in list
+    ENHANCED_ENVIRONMENTAL_DAMAGE("Player.Enhanced Environmental Injuries.Enable", VarType.BOOLEAN, true),
+
+    ENHANCED_DMG_FALL_MULT("Player.Enhanced Environmental Injuries.Fall.Dmg Multiplier", VarType.DOUBLE, 2.0),
+
+    ENHANCED_DMG_FALL("Player.Enhanced Environmental Injuries.Fall", VarType.POTION_EFFECT, new PotionEffectHolder(PotionEffectType.SLOW, 4 * 20, 2)),
+
+    ENHANCED_DMG_EXPLOSION_MULT("Player.Enhanced Environmental Injuries.Explosion.Dmg Multiplier", VarType.DOUBLE, 1.0),
+
+    ENHANCED_DMG_EXPLOSION("Player.Enhanced Environmental Injuries.Explosion", VarType.POTION_EFFECT, new PotionEffectHolder(PotionEffectType.CONFUSION, 15 * 20, 3)),
+
+    ENHANCED_DMG_SUFFOCATION_MULT("Player.Enhanced Environmental Injuries.Suffocation.Dmg Multiplier", VarType.DOUBLE, 5.0),
+
+    ENHANCED_DMG_SUFFOCATION("Player.Enhanced Environmental Injuries.Suffocation", VarType.POTION_EFFECT, new PotionEffectHolder(null, 0, 0)),
+
+    ENHANCED_DMG_LAVA_MULT("Player.Enhanced Environmental Injuries.Lava.Dmg Multiplier", VarType.DOUBLE, 2.0),
+
+    ENHANCED_DMG_LAVA("Player.Enhanced Environmental Injuries.Lava", VarType.POTION_EFFECT, new PotionEffectHolder(null, 0, 0)),
+
+    ENHANCED_DMG_BURN_MULT("Player.Enhanced Environmental Injuries.Burning.Dmg Multiplier", VarType.DOUBLE, 1.0),
+
+    ENHANCED_DMG_BURN("Player.Enhanced Environmental Injuries.Burning", VarType.POTION_EFFECT, new PotionEffectHolder(PotionEffectType.BLINDNESS, 20, 1)),
+
     /**
      * whether players catch fire when extinguishing a fire up close
      */

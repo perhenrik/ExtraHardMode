@@ -23,6 +23,7 @@ package com.extrahardmode.config;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.service.PotionEffectHolder;
 import com.extrahardmode.service.Response;
 import com.extrahardmode.service.SpecialParsers;
 import com.extrahardmode.service.config.*;
@@ -347,7 +348,19 @@ public class RootConfig extends MultiWorldConfig
                 }
             }
 
-            config.getConfig().set(node.getPath(), response.getContent()); //has to be before we get the actual values
+            // write config, some objects have multiple subnodes
+            switch (node.getVarType())
+            {
+                case POTION_EFFECT:
+                {
+                    ((PotionEffectHolder) response.getContent()).saveToConfig(config.getConfig(), node.getPath());
+                    break;
+                }
+                default:
+                {
+                    config.getConfig().set(node.getPath(), response.getContent()); //has to be before we get the actual values
+                }
+            }
 
             //the actual values that need to be loaded into memory for the two modes to work
             if (response.getStatusCode() == Status.INHERITS || response.getStatusCode() == Status.DISABLES)
@@ -387,17 +400,31 @@ public class RootConfig extends MultiWorldConfig
         FileConfiguration reorderedConfig = new YamlConfiguration();
         for (RootNode node : RootNode.values())
         {
-            switch (node)
+            switch (node.getVarType())
             {
-                case MORE_FALLING_BLOCKS:
+                case POTION_EFFECT:
                 {
-                    reorderedConfig.set(node.getPath(),
-                            SpecialParsers.convertToStringList(
-                                    SpecialParsers.parseMaterials(config.getConfig().getStringList(node.getPath())).getContent()));
+                    //Load PotionEffect with custom code and rewrite
+                    PotionEffectHolder potionEffect = PotionEffectHolder.loadFromConfig(config.getConfig().getConfigurationSection(node.getPath()));
+                    if (potionEffect != null)
+                        potionEffect.saveToConfig(reorderedConfig, node.getPath());
                     break;
                 }
                 default:
-                    reorderedConfig.set(node.getPath(), config.getConfig().get(node.getPath()));
+                {
+                    switch (node)
+                    {
+                        case MORE_FALLING_BLOCKS:
+                        {
+                            reorderedConfig.set(node.getPath(),
+                                    SpecialParsers.convertToStringList(
+                                            SpecialParsers.parseMaterials(config.getConfig().getStringList(node.getPath())).getContent()));
+                            break;
+                        }
+                        default:
+                            reorderedConfig.set(node.getPath(), config.getConfig().get(node.getPath()));
+                    }
+                }
             }
         }
         config.setConfig(reorderedConfig);

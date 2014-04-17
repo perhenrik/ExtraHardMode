@@ -31,11 +31,13 @@ import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
+import com.extrahardmode.service.PotionEffectHolder;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -45,8 +47,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,29 +178,41 @@ public class Players extends ListenerModule
                     case ENTITY_EXPLOSION:
                         //TODO EhmPlayerEnvironmentalDamageEvent for each type
                         if (event.getDamage() > 2)
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 15, 3));
+                            applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_EXPLOSION, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_EXPLOSION_MULT, world.getName()));
                         break;
                     case FALL:
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (20 * event.getDamage()), 4));
-                        event.setDamage(event.getDamage() * 2);
+                        applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_FALL, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_FALL_MULT, world.getName()));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) (20 * event.getDamage()), 4));
+//                        event.setDamage(event.getDamage() * 2);
                         break;
                     case SUFFOCATION:
                         /*if (player.getVehicle() instanceof Horse)  //Reduced because you can easily glitch into blocks
                             event.setDamage(event.getDamage() * 2.0);
                         else*/
-                        event.setDamage(event.getDamage() * 5);
+                        applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_SUFFOCATION, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_SUFFOCATION_MULT, world.getName()));
+//                        event.setDamage(event.getDamage() * 5);
                         break;
                     case LAVA:
-                        event.setDamage(event.getDamage() * 2);
+                        applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_LAVA, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_LAVA_MULT, world.getName()));
+//                        event.setDamage(event.getDamage() * 2);
                         break;
                     case FIRE_TICK:
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
+                        applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_BURN, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_BURN_MULT, world.getName()));
+//                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                         break;
                 }
             }
         }
 
 
+    }
+
+
+    private void applyEffectOnDmg(EntityDamageEvent event, PotionEffectHolder potionEffect, double multiplier)
+    {
+        //Assume it's a LivingEntity,
+        potionEffect.applyEffect((LivingEntity) event.getEntity(), false);
+        event.setDamage((int) (event.getDamage() * multiplier));
     }
 
 

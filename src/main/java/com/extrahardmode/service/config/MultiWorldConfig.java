@@ -25,6 +25,7 @@ package com.extrahardmode.service.config;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.service.EHMModule;
+import com.extrahardmode.service.PotionEffectHolder;
 import com.extrahardmode.service.Response;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -191,6 +192,12 @@ public abstract class MultiWorldConfig extends EHMModule
                     obj = config.getBoolean(node.getPath());
                 break;
             }
+            case POTION_EFFECT:
+            {
+                ConfigurationSection section = config.getConfigurationSection(node.getPath());
+                obj = PotionEffectHolder.loadFromConfig(section);
+                break;
+            }
             default:
             {
                 obj = config.get(node.getPath());
@@ -296,6 +303,14 @@ public abstract class MultiWorldConfig extends EHMModule
             case BOOLEAN:
             {
                 if (value instanceof Boolean)
+                {
+                    OPTIONS.put(world, node, value);
+                    break;
+                }
+            }
+            case POTION_EFFECT:
+            {
+                if (value instanceof PotionEffectHolder)
                 {
                     OPTIONS.put(world, node, value);
                     break;
@@ -500,6 +515,31 @@ public abstract class MultiWorldConfig extends EHMModule
             }
         }
         return list;
+    }
+
+
+    public PotionEffectHolder getPotionEffect(final ConfigNode node, final String world)
+    {
+        PotionEffectHolder effect = new PotionEffectHolder();
+
+        switch (node.getVarType())
+        {
+            case POTION_EFFECT:
+            {
+                Object obj = null;
+                if (OPTIONS.contains(world, node))
+                    obj = OPTIONS.get(world, node);
+                else if (enabledForAll)
+                    obj = OPTIONS.get(ALL_WORLDS, node);
+                effect = obj instanceof PotionEffectHolder ? (PotionEffectHolder) obj : (PotionEffectHolder) node.getValueToDisable();
+                break;
+            }
+            default:
+            {
+                throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as a PotionEffectHolder.");
+            }
+        }
+        return effect;
     }
 
 
