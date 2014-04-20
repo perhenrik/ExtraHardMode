@@ -8,13 +8,7 @@ import java.util.Random;
  */
 public class OurRandom
 {
-    private static Random rdm;
-
-
-    public OurRandom()
-    {
-        rdm = new Random();
-    }
+    private static Random rdm = new Random();
 
 
     public static double nextDouble()

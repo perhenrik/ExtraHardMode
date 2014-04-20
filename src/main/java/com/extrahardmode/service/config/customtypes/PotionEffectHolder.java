@@ -15,7 +15,7 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class PotionEffectHolder
 {
-    public static String key_effect = "Potion Type", key_duration = "Duration (ticks)", key_amplifier = "Amplifier";
+    public final static String key_effect = "Potion Type", key_duration = "Duration (ticks)", key_amplifier = "Amplifier";
     private PotionEffect bukkitEffect;
     private PotionEffectType bukkitEffectType;
     private int duration = 5, amplifier = 1;   //default values

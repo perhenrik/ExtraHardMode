@@ -122,7 +122,7 @@ public class MoreTnt extends ListenerModule
                         {
                             int amountBefore = PlayerModule.countInvItem(inv, Material.TNT);
                             //Add the missing tnt 1 tick later, we count what has been added by shiftclicking and multiply it
-                            UtilityModule.addExtraItemsLater task = new UtilityModule.addExtraItemsLater(inv, amountBefore, Material.TNT, multiplier - 1);
+                            UtilityModule.AddExtraItemsLater task = new UtilityModule.AddExtraItemsLater(inv, amountBefore, Material.TNT, multiplier - 1);
                             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 1L);
                         }
                         break;

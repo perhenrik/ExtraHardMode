@@ -94,7 +94,7 @@ public class MsgModule extends EHMModule
                 } else
                 {
                     // FEATURE: don't spam messages
-                    DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+                    PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
                     long now = Calendar.getInstance().getTimeInMillis();
 
                     if (!node.equals(playerData.lastMessageSent) || now - playerData.lastMessageTimestamp > 30000)
@@ -131,6 +131,8 @@ public class MsgModule extends EHMModule
             case BROADCAST:
                 plugin.getServer().broadcastMessage(message);
                 break;
+            default:
+                throw new UnsupportedOperationException(messages.getCat(node) + " not implemented");
         }
     }
 

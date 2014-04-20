@@ -2,13 +2,13 @@ package com.extrahardmode.service.config.customtypes;
 
 
 import com.extrahardmode.service.RegexHelper;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -17,16 +17,11 @@ import java.util.regex.Pattern;
  *
  * @author Diemex
  */
-public class BlockType
+public final class BlockType
 {
     private static Pattern seperators = Pattern.compile("[^A-Za-z0-9_]");
     private int blockId = -1;
     private Set<Byte> meta = new LinkedHashSet<Byte>();
-
-
-    public BlockType()
-    {
-    }
 
 
     public BlockType(int blockId)
@@ -35,9 +30,17 @@ public class BlockType
     }
 
 
-    public BlockType(Material mat)
+    public BlockType(Material mat, Byte... meta)
     {
         this.blockId = mat.getId();
+        Collections.addAll(this.meta, meta);
+    }
+
+
+    public BlockType(int blockId, Byte... meta)
+    {
+        this.blockId = blockId;
+        Collections.addAll(this.meta, meta);
     }
 
 
@@ -61,18 +64,6 @@ public class BlockType
     }
 
 
-    public void setBlockId(int blockId)
-    {
-        this.blockId = blockId;
-    }
-
-
-    public void setBlockType(Material type)
-    {
-        this.blockId = type.getId();
-    }
-
-
     public Set<Byte> getAllMeta()
     {
         return meta;
@@ -83,34 +74,6 @@ public class BlockType
     {
         return meta.size() > 0 ? meta.iterator().next() : 0;
     }
-
-
-    public void setMeta(Collection<Byte> meta)
-    {
-        this.meta.clear();
-        addMeta(meta);
-    }
-
-
-    public void addMeta(byte meta)
-    {
-        this.meta.add(meta);
-    }
-
-
-    public void addMeta(Collection<Byte> meta)
-    {
-        this.meta.addAll(meta);
-    }
-
-
-//    private boolean matchesMeta(Collection<Byte> meta)
-//    {
-//        for (Byte aMeta : meta)
-//            if (matchesMeta(aMeta))
-//                return true;
-//        return false;
-//    }
 
 
     private boolean matchesMeta(byte meta)
@@ -140,12 +103,6 @@ public class BlockType
     }
 
 
-//    public boolean matches(int blockId, Collection<Byte> meta)
-//    {
-//        return matches(blockId) && matchesMeta(meta);
-//    }
-
-
     public boolean matches(Block block)
     {
         return matches(block.getTypeId(), block.getData());
@@ -163,18 +120,19 @@ public class BlockType
         if (input == null)
             return null;
         //PREPARATION
-        BlockType block = new BlockType();
+        int blockId;
+        Set<Byte> meta = new HashSet<Byte>();
         input = RegexHelper.trimWhitespace(input);
         String[] splitted = seperators.split(input);
         if (splitted.length == 0)
             return null;
         //BLOCK META
         for (int i = 1; i < splitted.length; i++) //first value is blockId
-            block.addMeta(RegexHelper.parseByte(splitted[i]));
+            meta.add(RegexHelper.parseByte(splitted[i]));
 
         //BLOCK ID
-        String blockId = splitted[0];
-        Material material = Material.matchMaterial(blockId);
+        String blockIdString = splitted[0];
+        Material material = Material.matchMaterial(blockIdString);
         if (material == null) //Not found in material enum
         {
             // try as a number (blockId)
@@ -186,10 +144,10 @@ public class BlockType
                 material = Material.matchMaterial(RegexHelper.stripEnum(input));
         }
         if (material != null)
-            block.setBlockId(material.getId());
+            blockId = material.getId();
         else //mod item or -1 if not valid
-            block.setBlockId(RegexHelper.parseNumber(input, -1));
-        return block;
+            blockId = RegexHelper.parseNumber(input, -1);
+        return new BlockType(blockId, meta);
     }
 
 
@@ -228,6 +186,25 @@ public class BlockType
     @Override
     public boolean equals(Object obj)
     {
-        return obj instanceof BlockType && ((BlockType) obj).blockId == this.blockId && ((BlockType) obj).meta.equals(this.meta);
+        if (obj == null)
+            return false;
+        else if (obj == this)
+            return true;
+        else if (!(obj instanceof BlockType))
+            return false;
+        return new EqualsBuilder()
+                .append(blockId, ((BlockType) obj).blockId)
+                .append(meta, ((BlockType) obj).meta)
+                .isEquals();
+    }
+
+
+    @Override
+    public int hashCode()
+    {
+        return new HashCodeBuilder(13, 53) //two primes
+                .append(blockId)
+                .append(meta)
+                .hashCode();
     }
 }

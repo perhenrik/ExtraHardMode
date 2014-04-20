@@ -31,11 +31,7 @@ public class BlockTypeTest
     @Test
     public void matches_advanced()
     {
-        BlockType block = new BlockType(3);
-
-        block.addMeta((byte) 1);
-        block.addMeta((byte) 3);
-        block.addMeta((byte) 4);
+        BlockType block = new BlockType(3, (byte) 1, (byte) 3, (byte) 4);
 
         assertTrue(block.matches(3, (byte) 1));
         assertFalse(block.matches(3, (byte) 2));
@@ -58,7 +54,7 @@ public class BlockTypeTest
     public void loadFromConfig_fail()
     {
         String input = "Srtone";
-        BlockType expected = new BlockType();
+        BlockType expected = new BlockType(-1);
         assertEquals(expected, BlockType.loadFromConfig(input));
     }
 
@@ -67,8 +63,7 @@ public class BlockTypeTest
     public void loadFromConfig_meta_simple()
     {
         String input = "Stone,2";
-        BlockType expected = new BlockType(Material.STONE);
-        expected.addMeta((byte) 2);
+        BlockType expected = new BlockType(Material.STONE, (byte) 2);
         assertEquals(expected, BlockType.loadFromConfig(input));
     }
 
@@ -77,10 +72,7 @@ public class BlockTypeTest
     public void loadFromConfig_meta_advanced()
     {
         String input = "Stone,2,3,4";
-        BlockType expected = new BlockType(Material.STONE);
-        expected.addMeta((byte) 2);
-        expected.addMeta((byte) 3);
-        expected.addMeta((byte) 4);
+        BlockType expected = new BlockType(Material.STONE, (byte) 2, (byte) 3, (byte) 4);
         assertEquals(expected, BlockType.loadFromConfig(input));
     }
 
@@ -89,10 +81,7 @@ public class BlockTypeTest
     public void saveToConfig_simple()
     {
         String expected = "STONE@1,2,3";
-        BlockType block = new BlockType(Material.STONE);
-        block.addMeta((byte) 1);
-        block.addMeta((byte) 2);
-        block.addMeta((byte) 3);
+        BlockType block = new BlockType(Material.STONE, (byte) 1, (byte) 2, (byte) 3);
         assertEquals(expected, block.saveToString());
     }
 }

@@ -19,10 +19,8 @@
  * along with ExtraHardMode.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.extrahardmode.service;
+package com.extrahardmode.service.config;
 
-
-import com.extrahardmode.service.config.Status;
 
 /**
  * Attach some status information to a returned value For example Status.OK when everything went fine

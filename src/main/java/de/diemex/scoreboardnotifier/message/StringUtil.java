@@ -117,7 +117,7 @@ public class StringUtil
                 else
                 {
                     offset = 0;
-                    line.append(" " + words[i].substring(offset));
+                    line.append(" " + words[i]);
                 }
             }
         }

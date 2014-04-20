@@ -19,10 +19,10 @@
  * along with ExtraHardMode.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.extrahardmode.service.config;
+package com.extrahardmode.config;
 
 
-import com.extrahardmode.config.RootNode;
+import com.extrahardmode.service.config.*;
 import com.extrahardmode.service.config.customtypes.BlockRelationsList;
 import com.extrahardmode.service.config.customtypes.BlockType;
 import com.extrahardmode.service.config.customtypes.BlockTypeList;

@@ -65,6 +65,15 @@ public class VersionCommand implements ICommand
                     }
                 } catch (IOException ignored)
                 {
+                } finally
+                {
+                    try
+                    {
+                        pluginFile.close();
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

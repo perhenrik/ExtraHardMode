@@ -305,18 +305,18 @@ public class Explosions extends ListenerModule
         Validate.notNull(event.getEntity(), "Entity was null [explosionLogic], but shouldn't be! x:" + event.getLocation().getBlockX() + " y:" + event.getLocation().getBlockY() + " z:" + event.getLocation().getBlockZ());
         final Entity sourceEntity = event.getEntity();
         final World world = event.getLocation().getWorld();
-        final String worldName = world.getName();
-        final Location location = sourceEntity.getLocation();
+//        final String worldName = world.getName();
+//        final Location location = sourceEntity.getLocation();
         final Collection<Block> blocks = event.blockList();
 
-        final boolean flyingBlocks = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE, world.getName());
+//        final boolean flyingBlocks = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE, world.getName());
 
         final boolean turnStoneToCobble = CFG.getBoolean(RootNode.EXPLOSIONS_TURN_STONE_TO_COBLE, world.getName());
 
-        final boolean flyOtherPlugins = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE_OTHER, worldName);
-        final int flyPercentage = CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE, worldName);
-        final double upVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_UP_VEL, worldName);
-        final double spreadVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL, worldName);
+//        final boolean flyOtherPlugins = CFG.getBoolean(RootNode.EXPLOSIONS_FYLING_BLOCKS_ENABLE_OTHER, worldName);
+//        final int flyPercentage = CFG.getInt(RootNode.EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE, worldName);
+//        final double upVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_UP_VEL, worldName);
+//        final double spreadVel = CFG.getDouble(RootNode.EXPLOSIONS_FLYING_BLOCKS_SPREAD_VEL, worldName);
 
 
         if (sourceEntity instanceof Creeper || sourceEntity instanceof TNTPrimed)

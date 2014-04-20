@@ -140,17 +140,17 @@ public enum MessageNode implements ConfigNode
             ("DragonDefeated.Mode", MsgCategory.BROADCAST),
     END_DRAGON_KILLED
             ("DragonDefeated.Msg", MsgCategory.BROADCAST, "end_dragon_killed",
-                    "The dragon has been defeated!  ( By: " + variables.PLAYERS.getVarName() + " )"),
+                    "The dragon has been defeated!  ( By: " + Variables.PLAYERS.getVarName() + " )"),
     END_DRAGON_PLAYER_KILLED_MODE
             ("PlayerKilledByDragon.Mode", MsgCategory.BROADCAST),
     END_DRAGON_PLAYER_KILLED
             ("PlayerKilledByDragon.Msg", MsgCategory.BROADCAST, "player_killed_dragon",
-                    variables.PLAYER.getVarName() + " was killed while fighting the dragon!"),
+                    Variables.PLAYER.getVarName() + " was killed while fighting the dragon!"),
     END_DRAGON_PLAYER_CHALLENGING_MODE
             ("PlayerChallengingDragon.Mode", MsgCategory.BROADCAST),
     END_DRAGON_PLAYER_CHALLENGING
             ("PlayerChallengingDragon.Msg", MsgCategory.BROADCAST, "player_challenging_dragon",
-                    variables.PLAYER.getVarName() + " is challenging the dragon!"),
+                    Variables.PLAYER.getVarName() + " is challenging the dragon!"),
 
     //Horses
     HORSE_FEED_LOW_MODE
@@ -258,7 +258,7 @@ public enum MessageNode implements ConfigNode
             ("ListLostItemsOnDeath.Mode", MsgCategory.NOTIFICATION),
     LOST_ITEMS
             ("ListLostItemsOnDeath.Msg", MsgCategory.NOTIFICATION, "lost_items_broadcast",
-                    "&eYou managed to lose " + variables.ITEMS.getVarName()),
+                    "&eYou managed to lose " + Variables.ITEMS.getVarName()),
     LOST_ITEMS_PLAYER_MODE
             ("InformPlayerOnLostItems.Mode", MsgCategory.TUTORIAL),
     LOST_ITEMS_PLAYER
@@ -484,7 +484,7 @@ public enum MessageNode implements ConfigNode
     /**
      * Variables that will be filled in by the plugin
      */
-    public enum variables
+    public enum Variables
     {
         //Search for this strings in the given order
         //Remove the support for $VAR and use §VAR instead
@@ -496,7 +496,7 @@ public enum MessageNode implements ConfigNode
         private final String[] variable;
 
 
-        private variables(String... variable)
+        private Variables(String... variable)
         {
             this.variable = variable;
         }
@@ -507,7 +507,7 @@ public enum MessageNode implements ConfigNode
          */
         public String[] getVarNames()
         {
-            return variable;
+            return variable.clone();
         }
 
 

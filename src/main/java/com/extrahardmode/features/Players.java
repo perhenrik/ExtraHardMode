@@ -28,6 +28,7 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.events.EhmPlayerExtinguishFireEvent;
 import com.extrahardmode.events.EhmPlayerInventoryLossEvent;
 import com.extrahardmode.module.DataStoreModule;
+import com.extrahardmode.module.PlayerData;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
@@ -113,7 +114,7 @@ public class Players extends ListenerModule
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L); // half-second delay
         }
         // FEATURE: players can't swim when they're carrying a lot of weight, reset the cached value
-        DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+        PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
         playerData.cachedWeightStatus = -1.0F;
     }
 

@@ -34,6 +34,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 
 /** Configuration handler for the messages.yml file. */
@@ -122,7 +123,7 @@ public class MessageConfig extends ModularConfig
             //Write header to a new file
             File tempFile = new File(plugin.getDataFolder(), "messages.new");
             FileOutputStream out = new FileOutputStream(tempFile);
-            OutputStreamWriter writer = new OutputStreamWriter(out);
+            OutputStreamWriter writer = new OutputStreamWriter(out, Charset.forName("UTF-8").newEncoder());
             String[] header = {
                     "Messages sent by ExtraHardMode",
                     "Messages are only sent for modules that are activated",

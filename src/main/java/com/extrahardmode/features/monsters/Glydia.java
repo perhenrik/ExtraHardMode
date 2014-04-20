@@ -193,7 +193,7 @@ public class Glydia extends ListenerModule
                     builder.append(player).append(", ");
                 }
 
-                messenger.broadcast(MessageNode.END_DRAGON_KILLED, new FindAndReplace(builder.toString(), MessageNode.variables.PLAYERS.getVarNames()));
+                messenger.broadcast(MessageNode.END_DRAGON_KILLED, new FindAndReplace(builder.toString(), MessageNode.Variables.PLAYERS.getVarNames()));
             }
 
             if (glydiaDropsEggs)
@@ -229,7 +229,7 @@ public class Glydia extends ListenerModule
         List<String> playersFightingDragon = data.getPlayers();
         if (dragonAnnouncements && playersFightingDragon.contains(player.getName()))
         {
-            messenger.broadcast(MessageNode.END_DRAGON_PLAYER_KILLED, new FindAndReplace(player.getName(), MessageNode.variables.PLAYER.getVarNames()));
+            messenger.broadcast(MessageNode.END_DRAGON_PLAYER_KILLED, new FindAndReplace(player.getName(), MessageNode.Variables.PLAYER.getVarNames()));
             data.getPlayers().remove(player.getName());
         }
     }
@@ -297,7 +297,7 @@ public class Glydia extends ListenerModule
 
                     if (dragonAnnouncements)
                     {
-                        messenger.broadcast(MessageNode.END_DRAGON_PLAYER_CHALLENGING, new FindAndReplace(damager.getName(), MessageNode.variables.PLAYER.getVarNames()));
+                        messenger.broadcast(MessageNode.END_DRAGON_PLAYER_CHALLENGING, new FindAndReplace(damager.getName(), MessageNode.Variables.PLAYER.getVarNames()));
                     }
                 }
 
@@ -398,8 +398,6 @@ public class Glydia extends ListenerModule
     @EventHandler
     public void onEntityTarget(EntityTargetEvent event)
     {
-        Entity entity = event.getEntity();
-
         // FEATURE: monsters don't target the ender dragon
         if (event.getTarget() != null && event.getTarget() instanceof EnderDragon)
         {

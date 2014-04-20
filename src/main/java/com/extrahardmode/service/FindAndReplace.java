@@ -67,7 +67,7 @@ public class FindAndReplace
      */
     public String[] getSearchWord()
     {
-        return searchFor;
+        return searchFor.clone();
     }
 
 

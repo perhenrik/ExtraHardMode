@@ -42,7 +42,6 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Put all the Utility Stuff here that doesn't fit into the other modules
@@ -108,7 +107,7 @@ public class UtilityModule extends EHMModule
             int durability = item.getDurability();
             durability += damagePerBlock;
 
-            if (new Random().nextDouble() < percent)
+            if (OurRandom.nextDouble() < percent)
                 durability += damagePerBlock;
 
             item.setDurability((short) durability);
@@ -173,7 +172,7 @@ public class UtilityModule extends EHMModule
     /**
      * Check the inventory after 1 tick and see how many items have been crafted, then add the amount defined by the multiplier
      */
-    public static class addExtraItemsLater implements Runnable
+    public static class AddExtraItemsLater implements Runnable
     {
         int amountBefore = 0;
 
@@ -184,7 +183,7 @@ public class UtilityModule extends EHMModule
         PlayerInventory inv = null;
 
 
-        public addExtraItemsLater(PlayerInventory inventory, int amountBefore, Material toCompare, int amountToAdd)
+        public AddExtraItemsLater(PlayerInventory inventory, int amountBefore, Material toCompare, int amountToAdd)
         {
             this.amountBefore = amountBefore;
             this.amountToAdd = amountToAdd;

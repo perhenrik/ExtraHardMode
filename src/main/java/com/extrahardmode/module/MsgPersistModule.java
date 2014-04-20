@@ -109,7 +109,8 @@ public class MsgPersistModule extends EHMModule
         int id = 0;
 
         Connection conn = null;
-        Statement aStatement;
+        Statement aStatement = null;
+        ResultSet resultSet = null;
         try
         {
             conn = retrieveConnection();
@@ -117,7 +118,7 @@ public class MsgPersistModule extends EHMModule
             String playerIdQuery = String.format(
                     "SELECT id FROM %s WHERE %s = %s", playerTable, "name", '"' + playerName + '"');
 
-            ResultSet resultSet = aStatement.executeQuery(playerIdQuery);
+            resultSet = aStatement.executeQuery(playerIdQuery);
             if (resultSet.next())
                 id = resultSet.getInt("id");
 
@@ -147,6 +148,8 @@ public class MsgPersistModule extends EHMModule
             try
             {
                 if (conn != null) conn.close();
+                if (aStatement != null) aStatement.close();
+                if (resultSet != null) resultSet.close();
             } catch (SQLException e)
             {
                 e.printStackTrace();
@@ -172,10 +175,11 @@ public class MsgPersistModule extends EHMModule
     private void initializeTables()
     {
         Connection conn = null;
+        Statement statement = null;
         try
         {
             conn = retrieveConnection();
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
             statement.setQueryTimeout(30);
 
             //One table holding the playername id relation
@@ -224,6 +228,7 @@ public class MsgPersistModule extends EHMModule
             try
             {
                 if (conn != null) conn.close();
+                if (statement != null) statement.close();
             } catch (SQLException e)
             {
                 e.printStackTrace();
@@ -258,10 +263,11 @@ public class MsgPersistModule extends EHMModule
     {
         Validate.isTrue(value >= 0, "Count has to be positive");
         Connection conn = null;
+        Statement statement = null;
         try
         {
             conn = retrieveConnection();
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
 
             //Set the count to the provided value
             String setQuery = String.format(
@@ -275,6 +281,7 @@ public class MsgPersistModule extends EHMModule
             try
             {
                 if (conn != null) conn.close();
+                if (statement != null) statement.close();
             } catch (SQLException e)
             {
                 e.printStackTrace();
@@ -308,16 +315,18 @@ public class MsgPersistModule extends EHMModule
     private int getCountFor(MessageNode node, int playerId)
     {
         Connection conn = null;
+        Statement statement = null;
+        ResultSet result = null;
         int value = 0;
 
         try
         {
             conn = retrieveConnection();
-            Statement statement = conn.createStatement();
+            statement = conn.createStatement();
 
             String select = String.format("SELECT * FROM %s WHERE %s = %s", msgTable, "id", playerId);
 
-            ResultSet result = statement.executeQuery(select);
+            result = statement.executeQuery(select);
             if (result.next())
                 value = result.getInt(node.getColumnName());
             else //create the missing row
@@ -334,6 +343,8 @@ public class MsgPersistModule extends EHMModule
             try
             {
                 if (conn != null) conn.close();
+                if (statement != null) statement.close();
+                if (result != null) result.close();
             } catch (SQLException e)
             {
                 e.printStackTrace();

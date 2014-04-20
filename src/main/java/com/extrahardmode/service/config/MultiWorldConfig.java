@@ -24,15 +24,12 @@ package com.extrahardmode.service.config;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.EHMModule;
-import com.extrahardmode.service.Response;
 import com.extrahardmode.service.config.customtypes.BlockRelationsList;
 import com.extrahardmode.service.config.customtypes.BlockType;
 import com.extrahardmode.service.config.customtypes.BlockTypeList;
 import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,145 +75,6 @@ public abstract class MultiWorldConfig extends EHMModule
     protected void init()
     {
         OPTIONS = HashBasedTable.create();
-    }
-
-
-    /**
-     * <pre>
-     * Get the value for the ConfigNode from the FileConfiguration passed in.
-     * Can return null if not found.
-     * Don't forget to set() if you want to save the returned value
-     * </pre>
-     *
-     * @param config   -  FileConfiguration to load from
-     * @param node     -  ConfigNode for the Path and DefaultValue
-    //* @param defaults -  will return the default value if not found in config
-     *
-     * @return the Object matching the type of the ConfigNode, otherwise null if not found
-     */
-    public Response loadNode(ConfigurationSection config, ConfigNode node/*, boolean defaults*/)
-    {
-        Validate.notNull(config, "config can't be null");
-        Validate.notNull(config, "node can't be null");
-
-        Status status = Status.NOT_FOUND;
-        Object obj = null;
-
-        switch (node.getVarType())
-        {
-            case LIST:
-            {
-                if (config.get(node.getPath()) instanceof List)
-                    obj = config.getStringList(node.getPath());
-                break;
-            }
-            case DOUBLE:
-            {
-                if (config.get(node.getPath()) instanceof Double)
-                    obj = config.getDouble(node.getPath());
-                break;
-            }
-            case STRING:
-            {
-                if (config.get(node.getPath()) instanceof String)
-                {
-                    obj = config.getString(node.getPath());
-                }
-                break;
-            }
-            case INTEGER:
-            {
-                if (config.get(node.getPath()) instanceof Integer)
-                    obj = config.getInt(node.getPath());
-                break;
-            }
-            case BOOLEAN:
-            {
-                if (config.get(node.getPath()) instanceof Boolean)
-                    obj = config.getBoolean(node.getPath());
-                break;
-            }
-            case POTION_EFFECT:
-            {
-                ConfigurationSection section = config.getConfigurationSection(node.getPath());
-                obj = PotionEffectHolder.loadFromConfig(section);
-                break;
-            }
-            case BLOCKTYPE:
-            {
-                if (config.getString(node.getPath()) != null)
-                    obj = BlockType.loadFromConfig(config.getString(node.getPath()));
-                break;
-            }
-            case BLOCKTYPE_LIST:
-            {
-                if (config.get(node.getPath()) instanceof List)
-                {
-                    List<String> list = config.getStringList(node.getPath());
-                    BlockTypeList blocks = new BlockTypeList();
-                    for (String str : list)
-                    {
-                        BlockType block = BlockType.loadFromConfig(str);
-                        if (block != null)
-                            blocks.add(block);
-                    }
-                    obj = blocks;
-                }
-                break;
-            }
-            default:
-            {
-                obj = config.get(node.getPath());
-                throw new UnsupportedOperationException(node.getPath() + "No specific getter available for Type: " + " " + node.getVarType());
-            }
-        }
-
-        if (config.isSet(node.getPath()))
-        {
-            if (obj != null)
-            {   //is in config and has been loaded sucesfully
-                status = Status.OK;
-                if (obj instanceof String) //for Strings makes sure their modes get recognized
-                {
-                    if (((String) obj).toUpperCase().equals(Mode.DISABLE.name()))
-                    {
-                        status = Status.DISABLES;
-                    } else if (((String) obj).toUpperCase().equals(Mode.INHERIT.name()))
-                    {
-                        status = Status.INHERITS;
-                    }
-                }
-            } else
-            {   //hasn't been loaded
-                if (config.getString(node.getPath()).toUpperCase().equals(Mode.INHERIT.name()))
-                {   //inherits in config
-                    status = Status.INHERITS;
-                    obj = Mode.INHERIT.name().toLowerCase();
-                } else if (config.getString(node.getPath()).toUpperCase().equals(Mode.DISABLE.name()))
-                {   //disabled in config
-                    status = Status.DISABLES;
-                    obj = Mode.DISABLE.name().toLowerCase();
-                } else
-                {   //should not be reached, but... we don't want to return null
-                    status = Status.NOT_FOUND;
-                    obj = node.getDefaultValue();
-                }
-            }
-        }
-//        else
-//        {   //default value gets returned for both, but the status represents the actual Status
-//            if (defaults)
-//            {
-//                obj = node.getDefaultValue();
-//                status = Status.ADJUSTED;
-//            } else
-//            {   //
-//                obj = node.getDefaultValue();
-//                status = Status.NOT_FOUND;
-//            }
-//        }
-
-        return new Response(status, obj);
     }
 
 

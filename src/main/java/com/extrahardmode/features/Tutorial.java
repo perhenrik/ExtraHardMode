@@ -331,7 +331,7 @@ public class Tutorial extends ListenerModule
         //Only print if items have been removed
         if (event.getStacksToRemove().size() > 0)
         {
-            messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS, new FindAndReplace(items.toString(), MessageNode.variables.ITEMS.getVarNames()));
+            messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS, new FindAndReplace(items.toString(), MessageNode.Variables.ITEMS.getVarNames()));
             messenger.send(event.getPlayer(), MessageNode.LOST_ITEMS_PLAYER);
         }
     }

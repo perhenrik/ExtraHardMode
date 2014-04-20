@@ -25,10 +25,10 @@ package com.extrahardmode.features;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.MsgModule;
+import com.extrahardmode.module.PlayerData;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
@@ -112,7 +112,7 @@ public class Water extends ListenerModule
             // only care about moving up
             if (to.getY() > from.getY())
             {
-                DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+                PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
                 // only when in water
                 Block underFromBlock = fromBlock.getRelative(BlockFace.DOWN);
                 if (fromBlock.getType() == Material.STATIONARY_WATER && toBlock.getType() == Material.STATIONARY_WATER && underFromBlock.getType() == Material.STATIONARY_WATER && underFromBlock.getRelative(BlockFace.DOWN).getType() == Material.STATIONARY_WATER)
@@ -172,9 +172,6 @@ public class Water extends ListenerModule
     {
         if (cachedWeightStatus > maxWeight)
         {
-            //TODO EhmDrownEvent
-            //TODO HIGH EhmPreDrownEvent warn player that he is carrying too much and give him a chance to exit the water
-            MessageConfig messages = plugin.getModuleForClass(MessageConfig.class);
             float rdm = plugin.getRandom().nextFloat(); //how expensive is this
             //drownrate + extra when overencumbered
             float drownPercent = ((float) drowningRate / 500.0F) + ((cachedWeightStatus - maxWeight) * overEncumbranceExtra) / 500.0F;
@@ -204,7 +201,7 @@ public class Water extends ListenerModule
     {
         // FEATURE: players can't swim when they're carrying a lot of weight
         Player player = event.getPlayer();
-        DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+        PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
         playerData.cachedWeightStatus = -1.0F;
     }
 
@@ -219,7 +216,7 @@ public class Water extends ListenerModule
     {
         // FEATURE: players can't swim when they're carrying a lot of weight
         Player player = event.getPlayer();
-        DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+        PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
         playerData.cachedWeightStatus = -1.0F;
     }
 
@@ -237,7 +234,7 @@ public class Water extends ListenerModule
         if (humanEntity instanceof Player)
         {
             Player player = (Player) humanEntity;
-            DataStoreModule.PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
+            PlayerData playerData = plugin.getModuleForClass(DataStoreModule.class).getPlayerData(player.getName());
             playerData.cachedWeightStatus = -1.0F;
         }
     }
