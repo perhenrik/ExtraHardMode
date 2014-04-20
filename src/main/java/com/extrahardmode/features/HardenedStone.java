@@ -34,7 +34,9 @@ import com.extrahardmode.module.UtilityModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.PermissionNode;
-import org.bukkit.Material;
+import com.extrahardmode.service.config.customtypes.BlockRelationsList;
+import com.extrahardmode.service.config.customtypes.BlockType;
+import com.extrahardmode.service.config.customtypes.BlockTypeList;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -49,7 +51,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Hardened Stone is there to make branchmining harder/impossible
@@ -97,33 +98,36 @@ public class HardenedStone extends ListenerModule
 
         final boolean hardStoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
         final boolean hardStonePhysix = CFG.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS, world.getName());
+        final boolean applyPhysics = CFG.getBoolean(RootNode.SUPER_HARD_STONE_PHYSICS_APPLY, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.HARDENEDSTONE);
 
-        final Map<Integer, List<Byte>> tools = CFG.getMappedNode(RootNode.SUPER_HARD_STONE_TOOLS, world.getName());
-        final Map<Integer, List<Byte>> physicsBlocks = CFG.getMappedNode(RootNode.SUPER_HARD_STONE_PHYSICS_BLOCKS, world.getName());
+        final BlockTypeList tools = CFG.getBlocktypeList(RootNode.SUPER_HARD_STONE_TOOLS, world.getName());
+        final BlockTypeList physicsBlocks = CFG.getBlocktypeList(RootNode.SUPER_HARD_STONE_ORE_BLOCKS, world.getName());
+        final BlockRelationsList stoneBlocks = CFG.getBlockRelationList(RootNode.SUPER_HARD_STONE_STONE_BLOCKS, world.getName());
 
         // FEATURE: stone breaks tools much quicker
-        if (hardStoneEnabled && block.getType() == Material.STONE && !playerBypasses)
+        if (hardStoneEnabled && stoneBlocks.contains(block) && !playerBypasses)
         {
             ItemStack inHandStack = player.getItemInHand();
 
             if (inHandStack != null)
             {
                 int toolId = inHandStack.getType().getId();
-                EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, tools.get(toolId) != null ? (short) tools.get(toolId).get(0) : 0);
+                short blocks = 0;
+                BlockType toolSettings = tools.get(toolId);
+                if (toolSettings != null && toolSettings.getAllMeta().size() > 0)
+                    blocks = toolSettings.getAllMeta().iterator().next();
+                EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, blocks);
 
-                if (tools.containsKey(toolId))
+                if (toolSettings != null)
                 {
-                    if (!tools.get(toolId).isEmpty())
-                    {
-                        /* Broadcast an Event for other Plugins to change if the tool can break stone and the amount of blocks */
-                        plugin.getServer().getPluginManager().callEvent(hardEvent);
+                    /* Broadcast an Event for other Plugins to change if the tool can break stone and the amount of blocks */
+                    plugin.getServer().getPluginManager().callEvent(hardEvent);
 
-                        // otherwise, drastically reduce tool durability when breaking stone
-                        if (hardEvent.getNumOfBlocks() > 0)
-                        {
-                            player.setItemInHand(UtilityModule.damage(hardEvent.getTool(), hardEvent.getNumOfBlocks()));
-                        }
+                    // otherwise, drastically reduce tool durability when breaking stone
+                    if (hardEvent.getNumOfBlocks() > 0)
+                    {
+                        player.setItemInHand(UtilityModule.damage(hardEvent.getTool(), hardEvent.getNumOfBlocks()));
                     }
                 }
                 if (hardEvent.getNumOfBlocks() == 0)
@@ -136,14 +140,17 @@ public class HardenedStone extends ListenerModule
         }
 
         // when ore is broken, it softens adjacent stone important to ensure players can reach the ore they break
-        if (hardStonePhysix && physicsBlocks.containsKey(block.getType().getId()))
+        if (hardStonePhysix && physicsBlocks.contains(block))
         {
-            //TODO HIGH EhmOrePhysicsEvent
             for (BlockFace face : blockModule.getTouchingFaces())
             {
                 Block adjacentBlock = block.getRelative(face);
-                if (adjacentBlock.getType() == Material.STONE)
-                    adjacentBlock.setType(Material.COBBLESTONE);
+                if (stoneBlocks.contains(adjacentBlock))
+                {
+                    adjacentBlock.setTypeIdAndData(stoneBlocks.get(adjacentBlock).getBlockId(), stoneBlocks.get(adjacentBlock).getMeta(), true);
+                    if (applyPhysics)
+                        blockModule.applyPhysics(adjacentBlock, true);
+                }
             }
         }
     }
@@ -161,10 +168,11 @@ public class HardenedStone extends ListenerModule
 
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.HARDENEDSTONE);
         final boolean hardstoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
-        final Map<Integer, List<Byte>> physicsBlocks = CFG.getMappedNode(RootNode.SUPER_HARD_STONE_PHYSICS_BLOCKS, world.getName());
+        final boolean blockOrePlacement = CFG.getBoolean(RootNode.SUPER_HARD_STONE_BLOCK_ORE_PLACEMENT, world.getName());
+        final BlockTypeList oreBlocks = CFG.getBlocktypeList(RootNode.SUPER_HARD_STONE_ORE_BLOCKS, world.getName());
+        final BlockRelationsList stoneBlocks = CFG.getBlockRelationList(RootNode.SUPER_HARD_STONE_STONE_BLOCKS, world.getName());
 
-        //TODO EhmBlockOrePlacementEvent
-        if (hardstoneEnabled && !playerBypasses && physicsBlocks.containsKey(block.getTypeId()))
+        if (hardstoneEnabled && blockOrePlacement && !playerBypasses && oreBlocks.contains(block))
         {
             ArrayList<Block> adjacentBlocks = new ArrayList<Block>();
             for (BlockFace face : blockModule.getTouchingFaces())
@@ -172,7 +180,7 @@ public class HardenedStone extends ListenerModule
 
             for (Block adjacentBlock : adjacentBlocks)
             {
-                if (adjacentBlock.getType() == Material.STONE)
+                if (stoneBlocks.contains(adjacentBlock))
                 {
                     messenger.send(player, MessageNode.NO_PLACING_ORE_AGAINST_STONE);
                     placeEvent.setCancelled(true);
@@ -196,17 +204,17 @@ public class HardenedStone extends ListenerModule
         World world = event.getBlock().getWorld();
 
         final boolean superHardStone = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
-        final Map<Integer, List<Byte>> physicsBlocks = CFG.getMappedNode(RootNode.SUPER_HARD_STONE_PHYSICS_BLOCKS, world.getName());
+        final boolean blockPistons = CFG.getBoolean(RootNode.SUPER_HARD_STONE_BLOCK_PISTONS, world.getName());
+        final BlockTypeList oreBlocks = CFG.getBlocktypeList(RootNode.SUPER_HARD_STONE_ORE_BLOCKS, world.getName());
+        final BlockRelationsList stoneBlocks = CFG.getBlockRelationList(RootNode.SUPER_HARD_STONE_STONE_BLOCKS, world.getName());
 
-        //TODO EhmBlockOrePlacementEvent
-        if (superHardStone)
+        if (superHardStone && blockPistons)
         {
             // which blocks are being pushed?
             for (Block block : blocks)
             {
                 // if any are ore or stone, don't push
-                Material material = block.getType();
-                if (material == Material.STONE || physicsBlocks.containsKey(material.getId()))
+                if (stoneBlocks.contains(block) || oreBlocks.contains(block))
                 {
                     event.setCancelled(true);
                     return;
@@ -228,15 +236,15 @@ public class HardenedStone extends ListenerModule
         Block block = event.getRetractLocation().getBlock();
         World world = block.getWorld();
 
-        final boolean hardStoneEnabled = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
-        final Map<Integer, List<Byte>> physicsBlocks = CFG.getMappedNode(RootNode.SUPER_HARD_STONE_PHYSICS_BLOCKS, world.getName());
+        final boolean superHardStone = CFG.getBoolean(RootNode.SUPER_HARD_STONE, world.getName());
+        final boolean blockPistons = CFG.getBoolean(RootNode.SUPER_HARD_STONE_BLOCK_PISTONS, world.getName());
+        final BlockTypeList oreBlocks = CFG.getBlocktypeList(RootNode.SUPER_HARD_STONE_ORE_BLOCKS, world.getName());
+        final BlockRelationsList stoneBlocks = CFG.getBlockRelationList(RootNode.SUPER_HARD_STONE_STONE_BLOCKS, world.getName());
 
-        //TODO EhmBlockOrePlacementEvent
-        // we only care about sticky pistons
-        if (event.isSticky() && hardStoneEnabled)
+        // only sticky pistons can pull back blocks
+        if (event.isSticky() && superHardStone && blockPistons)
         {
-            Material material = block.getType();
-            if (material == Material.STONE || physicsBlocks.containsKey(material.getId()))
+            if (stoneBlocks.contains(block) || oreBlocks.contains(block))
             {
                 event.setCancelled(true);
                 return;

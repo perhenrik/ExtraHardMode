@@ -31,7 +31,8 @@ import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
-import com.extrahardmode.service.PotionEffectHolder;
+import com.extrahardmode.service.config.customtypes.BlockType;
+import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -49,9 +50,12 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 //import org.bukkit.entity.Horse;
+
 
 /**
  * Playerchanges include
@@ -126,6 +130,15 @@ public class Players extends ListenerModule
         final int deathLossPercent = CFG.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.DEATH_INV_LOSS);
 
+        final int toolDmgPercent = 25;
+        final Set<BlockType> blacklisted = new HashSet<BlockType>();
+        final Set<BlockType> toolIds = new HashSet<BlockType>();
+        toolIds.add(new BlockType(Material.DIAMOND_AXE));
+        toolIds.add(new BlockType(Material.DIAMOND_SPADE));
+        toolIds.add(new BlockType(Material.DIAMOND_PICKAXE));
+        toolIds.add(new BlockType(Material.DIAMOND_SWORD));
+        final boolean destroyTools = false;
+
         // FEATURE: some portion of player inventory is permanently lost on death
         if (!playerBypasses)
         {
@@ -133,9 +146,15 @@ public class Players extends ListenerModule
             List<ItemStack> removedDrops = new ArrayList<ItemStack>();
 
             int numberOfStacksToRemove = (int) (drops.size() * (deathLossPercent / 100.0f));
+            loop:
             for (int i = 0; i < numberOfStacksToRemove && drops.size() > 0; i++)
-                removedDrops.add(drops.get(plugin.getRandom().nextInt(drops.size())));
-
+            {
+                ItemStack toRemove = drops.get(plugin.getRandom().nextInt(drops.size()));
+                for (BlockType block : blacklisted)
+                    if (block.matches(toRemove))
+                        continue loop; //don't remove blacklisted items
+                removedDrops.add(toRemove);
+            }
             EhmPlayerInventoryLossEvent inventoryLossEvent = new EhmPlayerInventoryLossEvent(event, drops, removedDrops);
             plugin.getServer().getPluginManager().callEvent(inventoryLossEvent);
 
@@ -143,12 +162,28 @@ public class Players extends ListenerModule
             {
                 List<ItemStack> evntDrops = inventoryLossEvent.getDrops();
                 List<ItemStack> evntDropsRemove = inventoryLossEvent.getStacksToRemove();
+                outer:
                 for (ItemStack item : evntDropsRemove)
+                {
+                    for (BlockType tool : toolIds)
+                    {
+                        //Damage valuable tools instead of completely destroying them
+                        if (tool.matches(item))
+                        {
+                            short dur = item.getDurability();
+                            short maxDurability = item.getType().getMaxDurability();
+                            dur += maxDurability / 100 * toolDmgPercent;
+                            //Prevent complete destroyal of heavily damaged items
+                            if (dur >= maxDurability && !destroyTools)
+                                dur = --maxDurability;
+                            item.setDurability(dur);
+                            continue outer;
+                        }
+                    }
                     evntDrops.remove(item);
+                }
             }
-            //TODO HIGH tools percentage, damage etc.
         }
-
     }
 
 

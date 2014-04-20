@@ -24,7 +24,6 @@ package com.extrahardmode.config;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.mocks.MockExtraHardMode;
-import com.extrahardmode.service.MockConfigNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -181,50 +180,50 @@ public class TestRootConfig
     }
 
 
-    @Test
-    public void testMetricsEnabledAll()
-    {
-        cfg.clearCache();
-        cfg.set("w1", MockConfigNode.BOOL_TRUE, true);
-        cfg.set("w2", MockConfigNode.BOOL_TRUE, true);
-        cfg.set("w3", MockConfigNode.BOOL_TRUE, true);
-
-        assertEquals(1, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
-    }
-
-
-    @Test
-    public void testMetricsEnabledSome1()
-    {
-        cfg.clearCache();
-        cfg.set("w1", MockConfigNode.BOOL_TRUE, true);
-        cfg.set("w2", MockConfigNode.BOOL_TRUE, false);
-        cfg.set("w3", MockConfigNode.BOOL_TRUE, true);
-
-        assertEquals(2, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
-    }
-
-
-    @Test
-    public void testMetricsEnabledSome2()
-    {
-        cfg.clearCache();
-        cfg.set("w1", MockConfigNode.BOOL_TRUE, false);
-        cfg.set("w2", MockConfigNode.BOOL_TRUE, false);
-        cfg.set("w3", MockConfigNode.BOOL_TRUE, true);
-
-        assertEquals(2, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
-    }
-
-
-    @Test
-    public void testMetricsDisabled()
-    {
-        cfg.clearCache();
-        cfg.set("w1", MockConfigNode.BOOL_TRUE, false);
-        cfg.set("w2", MockConfigNode.BOOL_TRUE, false);
-        cfg.set("w3", MockConfigNode.BOOL_TRUE, false);
-
-        assertEquals(0, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
-    }
+//    @Test
+//    public void testMetricsEnabledAll()
+//    {
+//        cfg.clearCache();
+//        cfg.set("w1", MockConfigNode.BOOL_TRUE, true);
+//        cfg.set("w2", MockConfigNode.BOOL_TRUE, true);
+//        cfg.set("w3", MockConfigNode.BOOL_TRUE, true);
+//
+//        assertEquals(1, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
+//    }
+//
+//
+//    @Test
+//    public void testMetricsEnabledSome1()
+//    {
+//        cfg.clearCache();
+//        cfg.set("w1", MockConfigNode.BOOL_TRUE, true);
+//        cfg.set("w2", MockConfigNode.BOOL_TRUE, false);
+//        cfg.set("w3", MockConfigNode.BOOL_TRUE, true);
+//
+//        assertEquals(2, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
+//    }
+//
+//
+//    @Test
+//    public void testMetricsEnabledSome2()
+//    {
+//        cfg.clearCache();
+//        cfg.set("w1", MockConfigNode.BOOL_TRUE, false);
+//        cfg.set("w2", MockConfigNode.BOOL_TRUE, false);
+//        cfg.set("w3", MockConfigNode.BOOL_TRUE, true);
+//
+//        assertEquals(2, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
+//    }
+//
+//
+//    @Test
+//    public void testMetricsDisabled()
+//    {
+//        cfg.clearCache();
+//        cfg.set("w1", MockConfigNode.BOOL_TRUE, false);
+//        cfg.set("w2", MockConfigNode.BOOL_TRUE, false);
+//        cfg.set("w3", MockConfigNode.BOOL_TRUE, false);
+//
+//        assertEquals(0, cfg.getMetricsValue(MockConfigNode.BOOL_TRUE));
+//    }
 }

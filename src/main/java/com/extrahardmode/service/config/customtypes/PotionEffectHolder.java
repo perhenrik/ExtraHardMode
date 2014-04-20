@@ -1,6 +1,7 @@
-package com.extrahardmode.service;
+package com.extrahardmode.service.config.customtypes;
 
 
+import com.extrahardmode.service.RegexHelper;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.LivingEntity;

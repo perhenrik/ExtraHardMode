@@ -14,6 +14,7 @@ public class RegexHelper
     private static Pattern onlyEnum = Pattern.compile("[^A-Z_]");
     private static Pattern containsNums = Pattern.compile(".*\\d.*");
     private static Pattern containsLetters = Pattern.compile(".*[a-zA-Z_].*");
+    private static Pattern whitespace = Pattern.compile("\\s"); //Includes tabs/newline characters
 
 
     /**
@@ -21,20 +22,45 @@ public class RegexHelper
      *
      * @return matched number
      */
-//    public static int parseNumber(String input, int defaultReturn)
-//    {
-//
-//    }
+    public static int parseNumber(String input, int defaultReturn)
+    {
+        int num = defaultReturn;
+        if (containsNumbers(input))
+        {
+            input = stripNumber(input);
+            num = Integer.parseInt(input);
+        }
+        return num;
+    }
+
+
     public static int parseNumber(String input) throws NumberFormatException
     {
         int num;
         if (containsNumbers(input))
         {
-            input = onlyNums.matcher(input).replaceAll("");
+            input = stripNumber(input);
             num = Integer.parseInt(input);
         } else
             throw new NumberFormatException("Not a readable number \"" + input + "\"");
         return num;
+    }
+
+
+    public static Byte parseByte(String input)
+    {
+        if (!containsNumbers(input))
+            return null;
+        input = stripNumber(input);
+
+        int metaInt = Integer.parseInt(input);
+        /* Prevent out of range errors */
+        if (metaInt < Byte.MIN_VALUE)
+            metaInt = Byte.MIN_VALUE;
+        else if (metaInt > Byte.MAX_VALUE)
+            metaInt = Byte.MAX_VALUE;
+
+        return (byte) metaInt;
     }
 
 
@@ -54,6 +80,22 @@ public class RegexHelper
     {
         input = input.toUpperCase();
         input = onlyEnum.matcher(input).replaceAll("");
+        return input;
+    }
+
+
+    public static String stripNumber(String input)
+    {
+        return onlyNums.matcher(input).replaceAll("");
+    }
+
+
+    public static String trimWhitespace(String input)
+    {
+        if (whitespace.matcher(input).find())
+        {
+            input = whitespace.matcher(input).replaceAll("");
+        }
         return input;
     }
 }

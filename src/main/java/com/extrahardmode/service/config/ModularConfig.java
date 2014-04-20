@@ -39,7 +39,6 @@ package com.extrahardmode.service.config;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.EHMModule;
-import com.extrahardmode.service.SpecialParsers;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 

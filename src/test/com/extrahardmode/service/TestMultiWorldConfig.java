@@ -26,19 +26,14 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.mocks.MockExtraHardMode;
 import com.extrahardmode.service.config.Mode;
 import com.extrahardmode.service.config.MultiWorldConfig;
-import com.extrahardmode.service.config.Status;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MultiWorldConfig.class, JavaPlugin.class, PluginLogger.class})
@@ -112,179 +107,179 @@ public class TestMultiWorldConfig
     private final MultiWorldConfig module = new Mock(plugin);
 
 
-    /**
-     * Test if normal retrieval of nodes which are present int the config is possible
-     */
-    @Test
-    public void testLoadNodeValidInput()
-    {
-        assertEquals(false, module.loadNode(config, MockConfigNode.BOOL_TRUE, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.BOOL_TRUE, false).getStatusCode() == Status.OK);
-
-        assertEquals(false, module.loadNode(config, MockConfigNode.BOOL_FALSE, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.BOOL_FALSE, false).getStatusCode() == Status.OK);
-
-        assertEquals(4, module.loadNode(config, MockConfigNode.INT_0, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == Status.OK);
-
-        assertEquals(9, module.loadNode(config, MockConfigNode.INT_9, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == Status.OK);
-
-        assertEquals(Mode.INHERIT.name(), (String) module.loadNode(config, MockConfigNode.STR_0, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.STR_0, false).getStatusCode() == Status.INHERITS);
-    }
-
-
-    /**
-     * Make sure that when a node is not found in the config that we get the default value back (not null). and that the
-     * Status is NOT_FOUND
-     */
-    @Test
-    public void testLoadNodeNotFound()
-    {
-        assertEquals(MockConfigNode.NOTFOUND_BOOL.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, false).getStatusCode() == Status.NOT_FOUND);
-
-        assertEquals(MockConfigNode.NOTFOUND_DOUBLE.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getStatusCode() == Status.NOT_FOUND);
-
-        assertEquals(MockConfigNode.NOTFOUND_INT.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getStatusCode() == Status.NOT_FOUND);
-
-        assertEquals(MockConfigNode.NOTFOUND_STR.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getStatusCode() == Status.NOT_FOUND);
-
-        assertEquals(MockConfigNode.NOTFOUND_LIST.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getStatusCode() == Status.NOT_FOUND);
-
-
-        assertEquals(true, module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getStatusCode() == Status.ADJUSTED);
-
-        assertEquals(1, module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getContent());
-        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getStatusCode() == Status.ADJUSTED);
-
-    }
-
-
-    /**
-     * Make sure that the Status returned is Status.INHERITS for all nodes with "inherit" as value and that "inherit" is
-     * the value returned (lowercase)
-     */
-    @Test
-    public void testLoadNodeInherited()
-    {
-        String inherit = Mode.INHERIT.name().toLowerCase();
-        Response response;
-
-        response = module.loadNode(config, MockConfigNode.INHERITS_BOOL, false);
-        assertEquals(inherit, response.getContent());
-        assertTrue(response.getStatusCode() == Status.INHERITS);
-
-        response = module.loadNode(config, MockConfigNode.INHERITS_INT, false);
-        assertEquals(inherit, response.getContent());
-        assertTrue(response.getStatusCode() == Status.INHERITS);
-
-        response = module.loadNode(config, MockConfigNode.INHERITS_DOUBLE, false);
-        assertEquals(inherit, response.getContent());
-        assertTrue(response.getStatusCode() == Status.INHERITS);
-
-        response = module.loadNode(config, MockConfigNode.INHERITS_STR, false);
-        assertEquals(Mode.INHERIT.name(), response.getContent()); //only for strings the expected output is the same as the input
-        assertTrue(response.getStatusCode() == Status.INHERITS);
-
-        response = module.loadNode(config, MockConfigNode.INHERITS_LIST, false);
-        assertEquals(inherit, response.getContent());
-        assertTrue(response.getStatusCode() == Status.INHERITS);
-    }
-
-
-    /**
-     * Throw everything at the method
-     */
-    @Test
-    public void testValPercent()
-    {
-        Response response;
-
-        response = module.validateInt(MockConfigNode.INT_PERC_1, -123);
-        assertEquals(0, response.getContent());
-        assertTrue(response.getStatusCode() == Status.ADJUSTED);
-
-        response = module.validateInt(MockConfigNode.INT_PERC_1, 42);
-        assertEquals(42, response.getContent());
-        assertTrue(response.getStatusCode() == Status.OK);
-
-        response = module.validateInt(MockConfigNode.INT_PERC_1, 0);
-        assertEquals(0, response.getContent());
-        assertTrue(response.getStatusCode() == Status.OK);
-
-        response = module.validateInt(MockConfigNode.INT_PERC_1, 100);
-        assertEquals(100, response.getContent());
-        assertTrue(response.getStatusCode() == Status.OK);
-
-        response = module.validateInt(MockConfigNode.INT_PERC_1, 101);
-        assertEquals(100, response.getContent());
-        assertTrue(response.getStatusCode() == Status.ADJUSTED);
-
-        response = module.validateInt(MockConfigNode.INT_PERC_1, 1032);
-        assertEquals(100, response.getContent());
-        assertTrue(response.getStatusCode() == Status.ADJUSTED);
-    }
-
-
-    /**
-     * Test the customBounds method through the health subtype Allowed values are 1-20
-     */
-    @Test
-    public void testCustomBounds()
-    {
-        Response response;
-
-        response = module.validateInt(MockConfigNode.INT_HP_1, -123);
-        assertEquals(1, response.getContent());
-        assertTrue(response.getStatusCode() == Status.ADJUSTED);
-
-        response = module.validateInt(MockConfigNode.INT_HP_1, 0);
-        assertEquals(1, response.getContent());
-        assertTrue(response.getStatusCode() == Status.ADJUSTED);
-
-        response = module.validateInt(MockConfigNode.INT_HP_1, 23);
-        assertEquals(20, response.getContent());
-        assertTrue(response.getStatusCode() == Status.ADJUSTED);
-
-        response = module.validateInt(MockConfigNode.INT_HP_1, 12);
-        assertEquals(12, response.getContent());
-        assertTrue(response.getStatusCode() == Status.OK);
-    }
-
-
-    /**
-     * Valid numbers are only positive including 0
-     */
-    @Test
-    public void testValNaturalNumbers()
-    {
-        Response response;
-
-        response = module.validateInt(MockConfigNode.INT_NN_1, -123);
-        assertEquals(0, response.getContent());
-        assertTrue(response.getStatusCode() == Status.ADJUSTED);
-
-        response = module.validateInt(MockConfigNode.INT_NN_1, -1);
-        assertEquals(0, response.getContent());
-        assertTrue(response.getStatusCode() == Status.ADJUSTED);
-
-        response = module.validateInt(MockConfigNode.INT_NN_1, 123);
-        assertEquals(123, response.getContent());
-        assertTrue(response.getStatusCode() == Status.OK);
-
-        response = module.validateInt(MockConfigNode.INT_NN_1, 42);
-        assertEquals(42, response.getContent());
-        assertTrue(response.getStatusCode() == Status.OK);
-
-        response = module.validateInt(MockConfigNode.INT_NN_1, 1);
-        assertEquals(1, response.getContent());
-        assertTrue(response.getStatusCode() == Status.OK);
-    }
+//    /**
+//     * Test if normal retrieval of nodes which are present int the config is possible
+//     */
+//    @Test
+//    public void testLoadNodeValidInput()
+//    {
+//        assertEquals(false, module.loadNode(config, MockConfigNode.BOOL_TRUE, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.BOOL_TRUE, false).getStatusCode() == Status.OK);
+//
+//        assertEquals(false, module.loadNode(config, MockConfigNode.BOOL_FALSE, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.BOOL_FALSE, false).getStatusCode() == Status.OK);
+//
+//        assertEquals(4, module.loadNode(config, MockConfigNode.INT_0, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == Status.OK);
+//
+//        assertEquals(9, module.loadNode(config, MockConfigNode.INT_9, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.INT_0, false).getStatusCode() == Status.OK);
+//
+//        assertEquals(Mode.INHERIT.name(), (String) module.loadNode(config, MockConfigNode.STR_0, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.STR_0, false).getStatusCode() == Status.INHERITS);
+//    }
+//
+//
+//    /**
+//     * Make sure that when a node is not found in the config that we get the default value back (not null). and that the
+//     * Status is NOT_FOUND
+//     */
+//    @Test
+//    public void testLoadNodeNotFound()
+//    {
+//        assertEquals(MockConfigNode.NOTFOUND_BOOL.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, false).getStatusCode() == Status.NOT_FOUND);
+//
+//        assertEquals(MockConfigNode.NOTFOUND_DOUBLE.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_DOUBLE, false).getStatusCode() == Status.NOT_FOUND);
+//
+//        assertEquals(MockConfigNode.NOTFOUND_INT.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_INT, false).getStatusCode() == Status.NOT_FOUND);
+//
+//        assertEquals(MockConfigNode.NOTFOUND_STR.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_STR, false).getStatusCode() == Status.NOT_FOUND);
+//
+//        assertEquals(MockConfigNode.NOTFOUND_LIST.getDefaultValue(), module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_LIST, false).getStatusCode() == Status.NOT_FOUND);
+//
+//
+//        assertEquals(true, module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_BOOL, true).getStatusCode() == Status.ADJUSTED);
+//
+//        assertEquals(1, module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getContent());
+//        assertTrue(module.loadNode(config, MockConfigNode.NOTFOUND_INT, true).getStatusCode() == Status.ADJUSTED);
+//
+//    }
+//
+//
+//    /**
+//     * Make sure that the Status returned is Status.INHERITS for all nodes with "inherit" as value and that "inherit" is
+//     * the value returned (lowercase)
+//     */
+//    @Test
+//    public void testLoadNodeInherited()
+//    {
+//        String inherit = Mode.INHERIT.name().toLowerCase();
+//        Response response;
+//
+//        response = module.loadNode(config, MockConfigNode.INHERITS_BOOL, false);
+//        assertEquals(inherit, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.INHERITS);
+//
+//        response = module.loadNode(config, MockConfigNode.INHERITS_INT, false);
+//        assertEquals(inherit, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.INHERITS);
+//
+//        response = module.loadNode(config, MockConfigNode.INHERITS_DOUBLE, false);
+//        assertEquals(inherit, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.INHERITS);
+//
+//        response = module.loadNode(config, MockConfigNode.INHERITS_STR, false);
+//        assertEquals(Mode.INHERIT.name(), response.getContent()); //only for strings the expected output is the same as the input
+//        assertTrue(response.getStatusCode() == Status.INHERITS);
+//
+//        response = module.loadNode(config, MockConfigNode.INHERITS_LIST, false);
+//        assertEquals(inherit, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.INHERITS);
+//    }
+//
+//
+//    /**
+//     * Throw everything at the method
+//     */
+//    @Test
+//    public void testValPercent()
+//    {
+//        Response response;
+//
+//        response = module.validateInt(MockConfigNode.INT_PERC_1, -123);
+//        assertEquals(0, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.ADJUSTED);
+//
+//        response = module.validateInt(MockConfigNode.INT_PERC_1, 42);
+//        assertEquals(42, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.OK);
+//
+//        response = module.validateInt(MockConfigNode.INT_PERC_1, 0);
+//        assertEquals(0, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.OK);
+//
+//        response = module.validateInt(MockConfigNode.INT_PERC_1, 100);
+//        assertEquals(100, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.OK);
+//
+//        response = module.validateInt(MockConfigNode.INT_PERC_1, 101);
+//        assertEquals(100, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.ADJUSTED);
+//
+//        response = module.validateInt(MockConfigNode.INT_PERC_1, 1032);
+//        assertEquals(100, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.ADJUSTED);
+//    }
+//
+//
+//    /**
+//     * Test the customBounds method through the health subtype Allowed values are 1-20
+//     */
+//    @Test
+//    public void testCustomBounds()
+//    {
+//        Response response;
+//
+//        response = module.validateInt(MockConfigNode.INT_HP_1, -123);
+//        assertEquals(1, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.ADJUSTED);
+//
+//        response = module.validateInt(MockConfigNode.INT_HP_1, 0);
+//        assertEquals(1, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.ADJUSTED);
+//
+//        response = module.validateInt(MockConfigNode.INT_HP_1, 23);
+//        assertEquals(20, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.ADJUSTED);
+//
+//        response = module.validateInt(MockConfigNode.INT_HP_1, 12);
+//        assertEquals(12, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.OK);
+//    }
+//
+//
+//    /**
+//     * Valid numbers are only positive including 0
+//     */
+//    @Test
+//    public void testValNaturalNumbers()
+//    {
+//        Response response;
+//
+//        response = module.validateInt(MockConfigNode.INT_NN_1, -123);
+//        assertEquals(0, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.ADJUSTED);
+//
+//        response = module.validateInt(MockConfigNode.INT_NN_1, -1);
+//        assertEquals(0, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.ADJUSTED);
+//
+//        response = module.validateInt(MockConfigNode.INT_NN_1, 123);
+//        assertEquals(123, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.OK);
+//
+//        response = module.validateInt(MockConfigNode.INT_NN_1, 42);
+//        assertEquals(42, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.OK);
+//
+//        response = module.validateInt(MockConfigNode.INT_NN_1, 1);
+//        assertEquals(1, response.getContent());
+//        assertTrue(response.getStatusCode() == Status.OK);
+//    }
 }

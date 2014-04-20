@@ -22,8 +22,11 @@
 package com.extrahardmode.config;
 
 
-import com.extrahardmode.service.PotionEffectHolder;
 import com.extrahardmode.service.config.ConfigNode;
+import com.extrahardmode.service.config.customtypes.BlockRelationsList;
+import com.extrahardmode.service.config.customtypes.BlockType;
+import com.extrahardmode.service.config.customtypes.BlockTypeList;
+import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
 import org.bukkit.Material;
 import org.bukkit.potion.PotionEffectType;
 
@@ -73,17 +76,33 @@ public enum RootNode implements ConfigNode
      */
     SUPER_HARD_STONE("World Rules.Mining.Inhibit Tunneling.Enable", VarType.BOOLEAN, true),
     /**
+     * If ore placement next to stone blocks should be blocked to prevent tunneling
+     */
+    SUPER_HARD_STONE_BLOCK_ORE_PLACEMENT("World Rules.Mining.Inhibit Tunneling.Block Placing Ore Next To Stone Exploit", VarType.BOOLEAN, true),
+    /**
+     * If movement of stone blocks with pistons should be blocked
+     */
+    SUPER_HARD_STONE_BLOCK_PISTONS("World Rules.Mining.Inhibit Tunneling.Block Moving Of Stone Blocks With Piston Exploit", VarType.BOOLEAN, true),
+    /**
      * whether stone is hardened to encourage cave exploration over tunneling
      */
-    SUPER_HARD_STONE_TOOLS("World Rules.Mining.Inhibit Tunneling.Amount of Stone Tool Can Mine (Tool@Blocks)", VarType.LIST, new DefaultToolDurabilities()),
+    SUPER_HARD_STONE_TOOLS("World Rules.Mining.Inhibit Tunneling.Amount of Stone Tool Can Mine (Tool@Blocks)", VarType.BLOCKTYPE_LIST, new DefaultToolDurabilities()),
     /**
      * Breaking an ore will cause surrounding stone to turn to cobble and fall
      */
     SUPER_HARD_STONE_PHYSICS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Enable", VarType.BOOLEAN, true),
     /**
+     * Apply physics to blocks surrounding stone
+     */
+    SUPER_HARD_STONE_PHYSICS_APPLY("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Apply Physics To Weakened Stone", VarType.BOOLEAN, true),
+    /**
      * These Blocks will turn surrounding stone into cobblestone
      */
-    SUPER_HARD_STONE_PHYSICS_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Blocks (Block@id,id2)", VarType.LIST, new DefaultPhysicsBlocks()),
+    SUPER_HARD_STONE_ORE_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Blocks (Block@id,id2)", VarType.BLOCKTYPE_LIST, new DefaultPhysicsBlocks()),
+    /**
+     * TODO
+     */
+    SUPER_HARD_STONE_STONE_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Stone Blocks (Stone@data-Cobble@data", VarType.BLOCK_RELATION_LIST, new DefaultStoneBlocks()),
     /**
      * ###########
      * # TORCHES #
@@ -615,7 +634,7 @@ public enum RootNode implements ConfigNode
     /**
      * which materials beyond sand and gravel should be subject to gravity
      */
-    MORE_FALLING_BLOCKS("Additional Falling Blocks.Enabled Blocks", VarType.LIST, new DefaultFallingBlocks()),
+    MORE_FALLING_BLOCKS("Additional Falling Blocks.Enabled Blocks", VarType.BLOCKTYPE_LIST, new DefaultFallingBlocks()),
 
     /**
      * ##############################
@@ -922,7 +941,9 @@ public enum RootNode implements ConfigNode
      * string: ""
      *   subtype and disable ignored
      * list: .emptyList()
+     * blocktypelist: same as list
      * </pre>
+     *
      * @return Object that will disable this option in the plugin
      */
     @Override
@@ -982,30 +1003,30 @@ public enum RootNode implements ConfigNode
                     else
                     {
                         switch (subType)
-                    {
-                        case NATURAL_NUMBER:
-                        case Y_VALUE:
                         {
-                            if (disableValue != null)
-                                obj = (Double) disableValue.get();
-                            break;
+                            case NATURAL_NUMBER:
+                            case Y_VALUE:
+                            {
+                                if (disableValue != null)
+                                    obj = (Double) disableValue.get();
+                                break;
+                            }
+                            case HEALTH:
+                            {
+                                obj = 20.0;
+                                break;
+                            }
+                            case PERCENTAGE:
+                            {
+                                obj = 0.0;
+                                break;
+                            }
+                            default:
+                            {
+                                obj = defaultValue;
+                                throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
+                            }
                         }
-                        case HEALTH:
-                        {
-                            obj = 20.0;
-                            break;
-                        }
-                        case PERCENTAGE:
-                        {
-                            obj = 0.0;
-                            break;
-                        }
-                        default:
-                        {
-                            obj = defaultValue;
-                            throw new UnsupportedOperationException("SubType hasn't been specified for " + path);
-                        }
-                    }
                     }
                 break;
             }
@@ -1017,6 +1038,16 @@ public enum RootNode implements ConfigNode
             case LIST:
             {
                 obj = Collections.emptyList();
+                break;
+            }
+            case BLOCKTYPE_LIST:
+            {
+                obj = BlockTypeList.EMPTY_LIST;
+                break;
+            }
+            case BLOCK_RELATION_LIST:
+            {
+                obj = BlockRelationsList.EMPTY_LIST;
                 break;
             }
             default:
@@ -1098,7 +1129,6 @@ public enum RootNode implements ConfigNode
      */
     private static class DefaultPhysicsBlocks extends ArrayList<String>
     {
-
         /**
          * Serial Version UID.
          */
@@ -1128,7 +1158,6 @@ public enum RootNode implements ConfigNode
      */
     private static class DefaultToolDurabilities extends ArrayList<String>
     {
-
         /**
          * Serial Version UID.
          */
@@ -1143,6 +1172,22 @@ public enum RootNode implements ConfigNode
             super();
             this.add(Material.IRON_PICKAXE.toString() + "@32");
             this.add(Material.DIAMOND_PICKAXE.toString() + "@64");
+        }
+    }
+
+
+    /**
+     * Default stone cobble relations
+     */
+    private static class DefaultStoneBlocks extends BlockRelationsList
+    {
+        /**
+         * Constructor.
+         */
+        public DefaultStoneBlocks()
+        {
+            super();
+            this.add(new BlockType(Material.STONE), new BlockType(Material.COBBLESTONE));
         }
     }
 }

@@ -112,7 +112,7 @@ public class ConfigPlotter
                     case ZOMBIES_DEBILITATE_PLAYERS:
                     {
                         Metrics.Graph graph1 = metrics.createGraph(getLastPart(node));
-                        final int metricsVal = CFG.getMetricsValue(node);
+                        final int metricsVal = getMetricsValue(node);
                         graph1.addPlotter(
                                 new Metrics.Plotter("Completely disabled")
                                 {
@@ -161,5 +161,58 @@ public class ConfigPlotter
         String path = node.getPath();
         String[] split = path.split("\\."); //Durr it's a regex...
         return split.length > 0 ? split[split.length - 1] : "";
+    }
+
+
+    /**
+     * Get a value to be used by metrics
+     * <pre>
+     * Boolean values:
+     * 0 = completely disabled
+     * 1 = enabled in all worlds
+     * 2 = Enabled in some worlds
+     *
+     * Integers:
+     * -----------
+     * Percentages:
+     * 0 = 0%
+     * 1 = 1-20%
+     * 2 = 21-40%
+     * 3 = 41-60%
+     * 4 = 61-80%
+     * 5 = 81-100%
+     * Health:
+     * 0 = 0
+     * 1 = 1-5
+     * 2 = 6-10
+     * 3 = 11-15
+     * 4 = 16-19
+     * 5 = 20
+     * Y-Value:
+     * 0 = 0
+     * 1 = 1-50
+     * 2 = 51-100
+     * 3 = 101-150
+     * 4 = 151-200
+     * 5 = 201-255
+     * </pre>
+     *
+     * @param node to get the value for
+     */
+    public int getMetricsValue(ConfigNode node)
+    {
+        switch (node.getVarType())
+        {
+            case BOOLEAN:
+            {
+                //Add up how often it's enabled
+                int value = 0;
+                for (String world : CFG.getEnabledWorlds())
+                    value += CFG.getBoolean(node, world) ? 1 : 0;
+                return value == 0 ? 0 : value == CFG.getEnabledWorlds().length ? 1 : 2;
+            }
+            default:
+                throw new UnsupportedOperationException(node.getPath() + " " + node.getVarType().name() + " not supported yet!");
+        }
     }
 }

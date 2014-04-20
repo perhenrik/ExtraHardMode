@@ -72,7 +72,10 @@ public interface ConfigNode
         BOOLEAN,
         LIST,
         COLOR,
-        POTION_EFFECT
+        POTION_EFFECT,
+        BLOCKTYPE,
+        BLOCKTYPE_LIST,
+        BLOCK_RELATION_LIST
     }
 
 
