@@ -33,6 +33,7 @@ import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.config.customtypes.BlockType;
+import com.extrahardmode.service.config.customtypes.BlockTypeList;
 import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
 import org.bukkit.Material;
@@ -51,9 +52,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 //import org.bukkit.entity.Horse;
 
@@ -131,14 +130,10 @@ public class Players extends ListenerModule
         final int deathLossPercent = CFG.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.DEATH_INV_LOSS);
 
-        final int toolDmgPercent = 25;
-        final Set<BlockType> blacklisted = new HashSet<BlockType>();
-        final Set<BlockType> toolIds = new HashSet<BlockType>();
-        toolIds.add(new BlockType(Material.DIAMOND_AXE));
-        toolIds.add(new BlockType(Material.DIAMOND_SPADE));
-        toolIds.add(new BlockType(Material.DIAMOND_PICKAXE));
-        toolIds.add(new BlockType(Material.DIAMOND_SWORD));
-        final boolean destroyTools = false;
+        final int toolDmgPercent = CFG.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT, world.getName());
+        final BlockTypeList blacklisted = CFG.getBlocktypeList(RootNode.PLAYER_DEATH_ITEMS_BLACKLIST, world.getName());
+        final BlockTypeList toolIds = CFG.getBlocktypeList(RootNode.PLAYER_DEATH_TOOLS_LIST, world.getName());
+        final boolean destroyTools = CFG.getBoolean(RootNode.PLAYER_DEATH_TOOLS_KEEP_DAMAGED, world.getName());
 
         // FEATURE: some portion of player inventory is permanently lost on death
         if (!playerBypasses)
@@ -151,7 +146,7 @@ public class Players extends ListenerModule
             for (int i = 0; i < numberOfStacksToRemove && drops.size() > 0; i++)
             {
                 ItemStack toRemove = drops.get(plugin.getRandom().nextInt(drops.size()));
-                for (BlockType block : blacklisted)
+                for (BlockType block : blacklisted.toArray())
                     if (block.matches(toRemove))
                         continue loop; //don't remove blacklisted items
                 removedDrops.add(toRemove);
@@ -166,7 +161,7 @@ public class Players extends ListenerModule
                 outer:
                 for (ItemStack item : evntDropsRemove)
                 {
-                    for (BlockType tool : toolIds)
+                    for (BlockType tool : toolIds.toArray())
                     {
                         //Damage valuable tools instead of completely destroying them
                         if (tool.matches(item))

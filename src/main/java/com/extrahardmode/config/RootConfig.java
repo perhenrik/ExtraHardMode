@@ -24,6 +24,7 @@ package com.extrahardmode.config;
 
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.config.ConfigNode;
+import com.extrahardmode.service.config.Header;
 import com.extrahardmode.service.config.MultiWorldConfig;
 
 import java.io.File;
@@ -110,8 +111,31 @@ public class RootConfig extends MultiWorldConfig
             }
         }
         //Save files
+        mainEhmConfig.setHeader(createHeader());
         mainEhmConfig.save();
 
+    }
+
+
+    private Header createHeader()
+    {
+        Header header = new Header();
+        header.setHeading("ExtraHardMode - Everything shall be configurable!");
+        String[] lines = new String[]{
+                "",
+                "1. Generally if you can specify a block you can add meta after an @",
+                "   F.e: STEP@3 = cobblestone slab. STEP@3,11 matches normal&upside cobble slabs",
+                "   If you specify meta it will only match cobble slabs and not the other slabs.",
+                "   If you don't specify meta it matches all slabs.",
+                "   You can use numerical block ids as well, they will be converted to bukkit names",
+                "2. If your empty lists reset, put [] instead",
+                "3. This config changes regularly, so you might want to revisit it after an update.",
+                "4. Lots of the configuration is user requested so if you need something just ask",
+                "5. Remember to use /ehm reload after you changed the config instead of /reload",
+                "",
+                "Happy configuring!"};
+        header.addLines(lines);
+        return header;
     }
 
 

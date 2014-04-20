@@ -3,10 +3,7 @@ package com.extrahardmode.service.config.customtypes;
 
 import org.bukkit.block.Block;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class BlockTypeList
 {
@@ -44,6 +41,13 @@ public class BlockTypeList
 
     public void add(BlockType blockType)
     {
+        //merge meta if exists
+        if (blockTypeMap.containsKey(blockType.getBlockId()))
+        {
+            Set<Byte> merged = blockTypeMap.get(blockType.getBlockId()).getAllMeta();
+            merged.addAll(blockType.getAllMeta());
+            blockType = new BlockType(blockType.getBlockId(), merged);
+        }
         blockTypeMap.put(blockType.getBlockId(), blockType);
     }
 

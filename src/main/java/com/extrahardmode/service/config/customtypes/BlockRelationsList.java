@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class BlockRelationsList
 {
-    private Map<Integer, BlockRelation> mBlockRelations = new HashMap<Integer, BlockRelation>();
+    private Map<BlockType, BlockType> mBlockRelations = new HashMap<BlockType, BlockType>();
     /**
      * An empty list
      */
@@ -46,11 +46,13 @@ public class BlockRelationsList
      */
     public String[] toConfigStrings()
     {
+        if (mBlockRelations.size() == 0)
+            return new String[]{""};
         String[] configStrings = new String[mBlockRelations.size()];
         int i = 0;
-        for (BlockRelation relation : mBlockRelations.values())
+        for (Map.Entry<BlockType, BlockType> relation : mBlockRelations.entrySet())
         {
-            configStrings[i] = relation.getKeyBlock().toString() + "-" + relation.getValueBlock().toString();
+            configStrings[i] = relation.getKey().toString() + "-" + relation.getValue().toString();
             i++;
         }
         return configStrings;
@@ -59,7 +61,7 @@ public class BlockRelationsList
 
     public void add(BlockType block1, BlockType block2)
     {
-        mBlockRelations.put(block1.getBlockId(), new BlockRelation(block1, block2));
+        mBlockRelations.put(block1, block2);
     }
 
 
@@ -77,12 +79,12 @@ public class BlockRelationsList
 
     public BlockType get(BlockType block1)
     {
-        return mBlockRelations.get(block1.getBlockId()).getValueBlock();
+        return mBlockRelations.get(block1);
     }
 
 
     public BlockType get(Block block)
     {
-        return mBlockRelations.get(block.getTypeId()).getValueBlock();
+        return mBlockRelations.get(block);
     }
 }

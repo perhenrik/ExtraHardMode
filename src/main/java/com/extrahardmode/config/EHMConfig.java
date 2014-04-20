@@ -22,6 +22,7 @@
 package com.extrahardmode.config;
 
 
+import com.extrahardmode.module.IoHelper;
 import com.extrahardmode.service.config.*;
 import com.extrahardmode.service.config.customtypes.BlockRelationsList;
 import com.extrahardmode.service.config.customtypes.BlockType;
@@ -33,7 +34,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -66,6 +70,11 @@ public class EHMConfig
      * Location we loaded the File from
      */
     private File mConfigFile;
+
+    /**
+     * Header is at the top of the file
+     */
+    private Header mHeader;
 
     /**
      * Mode with which this config will get loaded
@@ -167,6 +176,7 @@ public class EHMConfig
     public void save()
     {
         saveNodes();
+        writeHeader();
     }
 
 
@@ -425,7 +435,8 @@ public class EHMConfig
                                 blocks.add(block);
                         }
                         obj = blocks;
-                    }
+                    } else if (mConfig.isSet(node.getPath()))
+                        obj = BlockTypeList.EMPTY_LIST;
                     break;
                 }
                 case BLOCK_RELATION_LIST:
@@ -437,7 +448,8 @@ public class EHMConfig
                         for (String str : list)
                             blocks.addFromConfig(str);
                         obj = blocks;
-                    }
+                    } else if (mConfig.isSet(node.getPath()))
+                        obj = BlockRelationsList.EMPTY_LIST;
                     break;
                 }
                 default:
@@ -484,7 +496,7 @@ public class EHMConfig
     /**
      * Writes all our validated objects back to the config in the order they were added
      */
-    public void saveNodes()
+    private void saveNodes()
     {
         FileConfiguration outConfig = new YamlConfiguration();
         for (ConfigNode node : mConfigNodes)
@@ -545,6 +557,42 @@ public class EHMConfig
     }
 
 
+    private void writeHeader()
+    {
+        if (mHeader == null)
+            return;
+        File tempFile = new File(mConfigFile.getParent(), "copy1234567890.cfg");
+        FileOutputStream out = null;
+        OutputStreamWriter writer = null;
+        try
+        {
+            //Write Header to a temporary file
+            tempFile.createNewFile();
+            out = new FileOutputStream(tempFile);
+            writer = new OutputStreamWriter(out, Charset.forName("UTF-8").newEncoder());
+            writer.write(String.format(mHeader.toString()));
+            writer.close();
+            //Copy Header of the temp file to the beginning of the config file
+            IoHelper.copyFile(mConfigFile, tempFile, true);
+            mConfigFile.delete();
+            tempFile.renameTo(mConfigFile);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (out != null) out.close();
+                if (writer != null) writer.close();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     public boolean isEnabledForAll()
     {
         return mEnabledForAll;
@@ -567,5 +615,11 @@ public class EHMConfig
         if (mConfig == null)
             throw new IllegalStateException("FileConfiguration hasn't been loaded yet");
         return (mConfig.getValues(true).containsKey(RootNode.baseNode()) && mConfig.getStringList(RootNode.WORLDS.getPath()) != null) || isMainConfig();
+    }
+
+
+    public void setHeader(Header header)
+    {
+        this.mHeader = header;
     }
 }

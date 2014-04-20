@@ -66,7 +66,7 @@ public final class BlockType
 
     public Set<Byte> getAllMeta()
     {
-        return meta;
+        return new HashSet<Byte>(meta);
     }
 
 

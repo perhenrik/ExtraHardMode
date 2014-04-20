@@ -100,7 +100,7 @@ public enum RootNode implements ConfigNode
      */
     SUPER_HARD_STONE_ORE_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Blocks (Block@id,id2)", VarType.BLOCKTYPE_LIST, new DefaultPhysicsBlocks()),
     /**
-     * TODO
+     * Stone Blocks and their counter respective cobblestone blocks
      */
     SUPER_HARD_STONE_STONE_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Stone Blocks (Stone@data-Cobble@data", VarType.BLOCK_RELATION_LIST, new DefaultStoneBlocks()),
     /**
@@ -192,9 +192,26 @@ public enum RootNode implements ConfigNode
      * ################
      */
     /**
+     * Enabled item loss on death
+     */
+    PLAYER_DEATH_ITEMS_FORFEIT_ENABLE("Player.Death.Loose Items On Death.Enable", VarType.BOOLEAN, true),
+    /**
      * percentage of item stacks lost on death
      */
-    PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("Player.Death.Item Stacks Forfeit Percent", VarType.INTEGER, SubType.PERCENTAGE, 10),
+    PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("Player.Death.Loose Items On Death.Percentage", VarType.INTEGER, SubType.PERCENTAGE, 10),
+    /**
+     * Damage Tools instead by a percentage of their max durability instead of completely deleting the items
+     */
+    PLAYER_DEATH_TOOLS_DMG_PERCENTAGE("Player.Death.Loose Items On Death.Damage Tools By Percentage", VarType.INTEGER, SubType.PERCENTAGE, 30),
+    /**
+     * If a tool would be completely destroyed if we should keep it
+     */
+    PLAYER_DEATH_TOOLS_KEEP_DAMAGED("Player.Death.Loose Items On Death.Keep Heavily Damaged Tools", VarType.BOOLEAN, true),
+    /**
+     * List of items that count as tools
+     */
+    PLAYER_DEATH_TOOLS_LIST("Player.Death.Loose Items On Death.Tools", VarType.BLOCKTYPE_LIST, new DefaultValuableTools()),
+    PLAYER_DEATH_ITEMS_BLACKLIST("Player.Death.Loose Items On Death.Blacklisted Items", VarType.BLOCKTYPE_LIST, BlockTypeList.EMPTY_LIST),
     /**
      * Enable custom Health
      */
@@ -1097,29 +1114,22 @@ public enum RootNode implements ConfigNode
     /**
      * Default list of falling blocks.
      */
-    private static class DefaultFallingBlocks extends ArrayList<String>
+    private static class DefaultFallingBlocks extends BlockTypeList
     {
-
-        /**
-         * Serial Version UID.
-         */
-        private static final long serialVersionUID = 1L;
-
-
         /**
          * Constructor.
          */
         public DefaultFallingBlocks()
         {
             super();
-            this.add(Material.DIRT.toString());
-            this.add(Material.GRASS.toString());
-            this.add(Material.COBBLESTONE.toString());
-            this.add(Material.MOSSY_COBBLESTONE.toString());
-            this.add(Material.DOUBLE_STEP.toString() + "@3"); //cobble double halfslabs
-            this.add(Material.STEP.toString() + "@3");
-            this.add(Material.STEP.toString() + "@11");
-            this.add(Material.MYCEL.toString());
+            this.add(new BlockType(Material.DIRT));
+            this.add(new BlockType(Material.GRASS));
+            this.add(new BlockType(Material.COBBLESTONE));
+            this.add(new BlockType(Material.MOSSY_COBBLESTONE));
+            this.add(new BlockType(Material.DOUBLE_STEP, (byte) 3)); //cobble double halfslabs
+            this.add(new BlockType(Material.STEP, (byte) 3)); //normal
+            this.add(new BlockType(Material.STEP, (byte) 11)); //upside
+            this.add(new BlockType(Material.MYCEL));
         }
     }
 
@@ -1127,28 +1137,22 @@ public enum RootNode implements ConfigNode
     /**
      * Default list of falling blocks.
      */
-    private static class DefaultPhysicsBlocks extends ArrayList<String>
+    private static class DefaultPhysicsBlocks extends BlockTypeList
     {
-        /**
-         * Serial Version UID.
-         */
-        private static final long serialVersionUID = 1L;
-
-
         /**
          * Constructor.
          */
         public DefaultPhysicsBlocks()
         {
             super();
-            this.add(Material.COAL_ORE.toString());
-            this.add(Material.IRON_ORE.toString());
-            this.add(Material.GOLD_ORE.toString());
-            this.add(Material.LAPIS_ORE.toString());
-            this.add(Material.REDSTONE_ORE.toString());
-            this.add(Material.GLOWING_REDSTONE_ORE.toString());
-            this.add(Material.EMERALD_ORE.toString());
-            this.add(Material.DIAMOND_ORE.toString());
+            this.add(new BlockType(Material.COAL_ORE));
+            this.add(new BlockType(Material.IRON_ORE));
+            this.add(new BlockType(Material.GOLD_ORE));
+            this.add(new BlockType(Material.LAPIS_ORE));
+            this.add(new BlockType(Material.REDSTONE_ORE));
+            this.add(new BlockType(Material.GLOWING_REDSTONE_ORE));
+            this.add(new BlockType(Material.EMERALD_ORE));
+            this.add(new BlockType(Material.DIAMOND_ORE));
         }
     }
 
@@ -1156,22 +1160,16 @@ public enum RootNode implements ConfigNode
     /**
      * Default list of falling blocks.
      */
-    private static class DefaultToolDurabilities extends ArrayList<String>
+    private static class DefaultToolDurabilities extends BlockTypeList
     {
-        /**
-         * Serial Version UID.
-         */
-        private static final long serialVersionUID = 1L;
-
-
         /**
          * Constructor.
          */
         public DefaultToolDurabilities()
         {
             super();
-            this.add(Material.IRON_PICKAXE.toString() + "@32");
-            this.add(Material.DIAMOND_PICKAXE.toString() + "@64");
+            this.add(new BlockType(Material.IRON_PICKAXE, (byte) 32));
+            this.add(new BlockType(Material.DIAMOND_PICKAXE, (byte) 64));
         }
     }
 
@@ -1188,6 +1186,20 @@ public enum RootNode implements ConfigNode
         {
             super();
             this.add(new BlockType(Material.STONE), new BlockType(Material.COBBLESTONE));
+        }
+    }
+
+
+    private static class DefaultValuableTools extends BlockTypeList
+    {
+        public DefaultValuableTools()
+        {
+            super();
+            this.add(new BlockType(Material.DIAMOND_AXE));
+            this.add(new BlockType(Material.DIAMOND_SWORD));
+            this.add(new BlockType(Material.DIAMOND_PICKAXE));
+            this.add(new BlockType(Material.DIAMOND_SPADE));
+
         }
     }
 }

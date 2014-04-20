@@ -136,7 +136,7 @@ public class MessageConfig extends ModularConfig
                     "Variables:",
                     "$ALLCAPS is a variable and will be filled in for some messages",
                     "$PLAYER: Affected player",
-                    "$PLAYER: If multiple players are affected",
+                    "$PLAYERS: If multiple players are affected",
                     "$DEATH_MSG: Death message if someone dies",
                     "$ITEMS: a player lost"};
             StringBuilder sb = new StringBuilder();

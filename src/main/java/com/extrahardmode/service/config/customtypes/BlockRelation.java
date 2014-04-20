@@ -4,7 +4,7 @@ package com.extrahardmode.service.config.customtypes;
 /**
  * Simple Pair
  */
-public class BlockRelation
+public final class BlockRelation
 {
     private BlockType mBlock1 = null;
     private BlockType mBlock2 = null;
