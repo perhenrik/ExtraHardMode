@@ -44,9 +44,18 @@ public enum RootNode implements ConfigNode
      */
     MODE("Config Type", VarType.STRING, "MAIN"),
     /**
+     * Print Header?
+     */
+    PRINT_HEADER("Print Config Header", VarType.BOOLEAN, true, "If the big text on top of the config should be printed"),
+    /**
+     * Print Node Comments?
+     */
+    PRINT_COMMENTS("Print Comments", VarType.BOOLEAN, true, "If comments like this should be printed"),
+    /**
      * list of worlds where extra hard mode rules apply
      */
-    WORLDS("Enabled Worlds", VarType.LIST, new ArrayList<String>()),
+    WORLDS("Enabled Worlds", VarType.LIST, new ArrayList<String>(),
+            "By default the plugin is disabled in all worlds. Set the worlds you want ehm active here. F.e. [world, world_nether]"),
 
     /**
      * #############
@@ -56,53 +65,69 @@ public enum RootNode implements ConfigNode
     /**
      * If we should check for the bypass permission
      */
-    BYPASS_PERMISSION("Bypassing.Check For Permission", VarType.BOOLEAN, true),
+    BYPASS_PERMISSION("Bypassing.Check For Permission", VarType.BOOLEAN, true,
+            "Disabling this disables all checks for bypass permissions."),
     /**
      * If players in creative auto bypass (useful for building)
      */
-    BYPASS_CREATIVE("Bypassing.Creative Mode Bypasses", VarType.BOOLEAN, true),
+    BYPASS_CREATIVE("Bypassing.Creative Mode Bypasses", VarType.BOOLEAN, true,
+            "Disable ehm for creative mode players. Useful for building."),
     /**
      * If players with op should bypass by default
      */
-    BYPASS_OPS("Bypassing.Operators Bypass", VarType.BOOLEAN, false),
+    BYPASS_OPS("Bypassing.Operators Bypass", VarType.BOOLEAN, false,
+            "If activated ops automatically bypass. Disable if you want your ops to be able to play with ehm."),
 
     /**
      * ##################
      * # HARDENED STONE #
      * ##################
      */
+    _COMMENT_HARD_STONE("World Rules.Mining.Inhibit Tunneling",
+            "This module is mainly there to prevent branch/strip mining or make it unprofitable.",
+            "Players will have to take risks by exploring caves to gather resources."),
     /**
      * whether stone is hardened to encourage cave exploration over tunneling
      */
-    SUPER_HARD_STONE("World Rules.Mining.Inhibit Tunneling.Enable", VarType.BOOLEAN, true),
+    SUPER_HARD_STONE("World Rules.Mining.Inhibit Tunneling.Enable", VarType.BOOLEAN, true,
+            "If stone can only be broken by the tools specified below"),
     /**
      * If ore placement next to stone blocks should be blocked to prevent tunneling
      */
-    SUPER_HARD_STONE_BLOCK_ORE_PLACEMENT("World Rules.Mining.Inhibit Tunneling.Block Placing Ore Next To Stone Exploit", VarType.BOOLEAN, true),
+    SUPER_HARD_STONE_BLOCK_ORE_PLACEMENT("World Rules.Mining.Inhibit Tunneling.Block Placing Ore Next To Stone Exploit", VarType.BOOLEAN, true,
+            "Block players from placing ore next to stone to soften the stone when mining the ore."),
     /**
      * If movement of stone blocks with pistons should be blocked
      */
-    SUPER_HARD_STONE_BLOCK_PISTONS("World Rules.Mining.Inhibit Tunneling.Block Moving Of Stone Blocks With Piston Exploit", VarType.BOOLEAN, true),
+    SUPER_HARD_STONE_BLOCK_PISTONS("World Rules.Mining.Inhibit Tunneling.Block Moving Of Stone Blocks With Piston Exploit", VarType.BOOLEAN, true,
+            "Block sneaky players from trying to tunnel using pistons. This will block movement of stone and ore blocks with pistons."),
     /**
      * whether stone is hardened to encourage cave exploration over tunneling
      */
-    SUPER_HARD_STONE_TOOLS("World Rules.Mining.Inhibit Tunneling.Amount of Stone Tool Can Mine (Tool@Blocks)", VarType.BLOCKTYPE_LIST, new DefaultToolDurabilities()),
+    SUPER_HARD_STONE_TOOLS("World Rules.Mining.Inhibit Tunneling.Amount of Stone Tool Can Mine (Tool@Blocks)", VarType.BLOCKTYPE_LIST, new DefaultToolDurabilities(),
+            "List of tools that can mine stone. If a tool isn't in the list it can't mine stone.",
+            "F.e. DIAMOND_PICKAXE@100 = Mine 100 stone blocks -> pick broken"),
     /**
      * Breaking an ore will cause surrounding stone to turn to cobble and fall
      */
-    SUPER_HARD_STONE_PHYSICS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Enable", VarType.BOOLEAN, true),
+    SUPER_HARD_STONE_PHYSICS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Enable", VarType.BOOLEAN, true,
+            "Cave-ins are a persistent threat. Mining ore softens the stone around it, which can then fall and injure the careless player.",
+            "Dirt and grass, which is often compacted into a solid mass in cavern ceilings and floors, will also come crashing down when disturbed."),
     /**
      * Apply physics to blocks surrounding stone
      */
-    SUPER_HARD_STONE_PHYSICS_APPLY("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Apply Physics To Weakened Stone", VarType.BOOLEAN, true),
+    SUPER_HARD_STONE_PHYSICS_APPLY("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Apply Physics To Weakened Stone", VarType.BOOLEAN, true,
+            "If the softened stone blocks should fall"),
     /**
      * These Blocks will turn surrounding stone into cobblestone
      */
-    SUPER_HARD_STONE_ORE_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Blocks (Block@id,id2)", VarType.BLOCKTYPE_LIST, new DefaultPhysicsBlocks()),
+    SUPER_HARD_STONE_ORE_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Blocks (Block@id,id2)", VarType.BLOCKTYPE_LIST, new DefaultPhysicsBlocks(),
+            "Ore blocks that will soften surrounding stone blocks."),
     /**
      * Stone Blocks and their counter respective cobblestone blocks
      */
-    SUPER_HARD_STONE_STONE_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Stone Blocks (Stone@data-Cobble@data", VarType.BLOCK_RELATION_LIST, new DefaultStoneBlocks()),
+    SUPER_HARD_STONE_STONE_BLOCKS("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Stone Blocks (Stone@data-Cobble@data)", VarType.BLOCK_RELATION_LIST, new DefaultStoneBlocks(),
+            "Here you can specify custom stone blocks or change what stone softens into."),
     /**
      * ###########
      * # TORCHES #
@@ -111,15 +136,19 @@ public enum RootNode implements ConfigNode
     /**
      * maximum y for placing standard torches
      */
-    STANDARD_TORCH_MIN_Y("World Rules.Torches.No Placement Under Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 30),
+    STANDARD_TORCH_MIN_Y("World Rules.Torches.No Placement Under Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 30,
+            "No placement of torches below Defined Value. Makes for scarrier caves on the lower levels. Y: 0 to disable"),
     /**
      * whether players are limited to placing torches against specific materials
      */
-    LIMITED_TORCH_PLACEMENT("World Rules.Torches.No Placement On Soft Materials", VarType.BOOLEAN, true),
+    LIMITED_TORCH_PLACEMENT("World Rules.Torches.No Placement On Soft Materials", VarType.BOOLEAN, true,
+            "Soft materials include sand and dirt. Idea is that players don't litter the landscape with torches."),
     /**
      * whether rain should break torches
      */
-    RAIN_BREAKS_TORCHES("World Rules.Torches.Rain Breaks Torches", VarType.BOOLEAN, true),
+    RAIN_BREAKS_TORCHES("World Rules.Torches.Rain Breaks Torches", VarType.BOOLEAN, true,
+            "When it rains there is a chance that torches will be removed in a chunk.",
+            "Any kind of block above the torch is enough to protect the torch"),
 
     /**
      * ##########
@@ -129,11 +158,13 @@ public enum RootNode implements ConfigNode
     /**
      * Sound when torch placing fails
      */
-    SOUNDS_TORCH_FIZZ("World Rules.Play Sounds.Torch Fizzing", VarType.BOOLEAN, true),
+    SOUNDS_TORCH_FIZZ("World Rules.Play Sounds.Torch Fizzing", VarType.BOOLEAN, true,
+            "A lava fizz when a torch's placement has been blocked."),
     /**
      * Warning Sound when a creeper drops tnt
      */
-    SOUND_CREEPER_TNT("World Rules.Play Sounds.Creeper Tnt Warning", VarType.BOOLEAN, true),
+    SOUND_CREEPER_TNT("World Rules.Play Sounds.Creeper Tnt Warning", VarType.BOOLEAN, true,
+            "A Ghast shriek when a creeper drops tnt."),
     /**
      * #################
      * # WORLD EFFECTS #
@@ -142,15 +173,21 @@ public enum RootNode implements ConfigNode
     /**
      * percent chance for broken netherrack to start a fire
      */
-    BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT("World Rules.Breaking Netherrack Starts Fire Percent", VarType.INTEGER, SubType.PERCENTAGE, 20),
+    BROKEN_NETHERRACK_CATCHES_FIRE_PERCENT("World Rules.Breaking Netherrack Starts Fire Percent", VarType.INTEGER, SubType.PERCENTAGE, 20,
+            "Tunneling in the nether will randomly set a fire. Players have to be careful",
+            "to not set themselves on fire."),
     /**
      * whether players may place blocks directly underneath themselves
      */
-    LIMITED_BLOCK_PLACEMENT("World Rules.Limited Block Placement", VarType.BOOLEAN, true),
+    LIMITED_BLOCK_PLACEMENT("World Rules.Limited Block Placement", VarType.BOOLEAN, true,
+            "Blocks jumping and placing a block directly beneath you and branching out with no blocks to support"),
     /**
      * whether tree logs respect gravity
      */
-    BETTER_TREE_CHOPPING("World Rules.Better Tree Felling", VarType.BOOLEAN, true),
+    BETTER_TREE_CHOPPING("World Rules.Better Tree Felling", VarType.BOOLEAN, true,
+            "The trunk and branches of a tree will fall and potentially injure you.",
+            "It makes it easier to chop trees, but you have to watch out a little for the falling logs.",
+            "Also by making branchlogs fall down most treetops should decay."),
     /**
      * #################################
      * # ENHANCED ENVIRONMENTAL DAMAGE #
@@ -160,6 +197,9 @@ public enum RootNode implements ConfigNode
      * whether players take additional damage and/or debuffs from environmental injuries
      */
     //dmg before potion effect -> first value in list
+    _COMMENT_ENVIRONMENTAL_DMG("Player.Enhanced Environmental Injuries",
+            "Bukkit effect names: http://jd.bukkit.org/rb/apidocs/org/bukkit/potion/PotionEffectType.html",
+            "or effect ids: http://minecraft.gamepedia.com/Status_effects"),
     ENHANCED_ENVIRONMENTAL_DAMAGE("Player.Enhanced Environmental Injuries.Enable", VarType.BOOLEAN, true),
 
     ENHANCED_DMG_FALL_MULT("Player.Enhanced Environmental Injuries.Fall.Dmg Multiplier", VarType.DOUBLE, 2.0),
@@ -185,12 +225,17 @@ public enum RootNode implements ConfigNode
     /**
      * whether players catch fire when extinguishing a fire up close
      */
-    EXTINGUISHING_FIRE_IGNITES_PLAYERS("Player.Extinguishing Fires Ignites Player", VarType.BOOLEAN, true),
+    EXTINGUISHING_FIRE_IGNITES_PLAYERS("Player.Extinguishing Fires Ignites Player", VarType.BOOLEAN, true,
+            "Set the player on fire when he tries to extinguish fire with his bare hand."),
     /**
      * ################
      * # PLAYER DEATH #
      * ################
      */
+    _COMMENT_PLAYER_DEATH("Player.Death",
+            "On death, a small portion of the player's inventory disappears forever,",
+            "discouraging players from killing themselves to restore health and hunger.",
+            "After respawn, the player won't have a full health and food bar."),
     /**
      * Enabled item loss on death
      */
@@ -198,20 +243,26 @@ public enum RootNode implements ConfigNode
     /**
      * percentage of item stacks lost on death
      */
-    PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("Player.Death.Loose Items On Death.Percentage", VarType.INTEGER, SubType.PERCENTAGE, 10),
+    PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("Player.Death.Loose Items On Death.Percentage", VarType.INTEGER, SubType.PERCENTAGE, 10,
+            "Percentage of all players item that will get lost on death. Removes complete stacks."),
     /**
      * Damage Tools instead by a percentage of their max durability instead of completely deleting the items
      */
-    PLAYER_DEATH_TOOLS_DMG_PERCENTAGE("Player.Death.Loose Items On Death.Damage Tools By Percentage", VarType.INTEGER, SubType.PERCENTAGE, 30),
+    PLAYER_DEATH_TOOLS_DMG_PERCENTAGE("Player.Death.Loose Items On Death.Damage Tools By Percentage", VarType.INTEGER, SubType.PERCENTAGE, 30,
+            "Damage some tools from the list instead of completely removing them.",
+            "Encourages players to use more valuable tools as they won't completely loose them on death."),
     /**
      * If a tool would be completely destroyed if we should keep it
      */
-    PLAYER_DEATH_TOOLS_KEEP_DAMAGED("Player.Death.Loose Items On Death.Keep Heavily Damaged Tools", VarType.BOOLEAN, true),
+    PLAYER_DEATH_TOOLS_KEEP_DAMAGED("Player.Death.Loose Items On Death.Keep Heavily Damaged Tools", VarType.BOOLEAN, true,
+            "If an already heavily damaged tool should be kept or completely destroyed."),
     /**
      * List of items that count as tools
      */
-    PLAYER_DEATH_TOOLS_LIST("Player.Death.Loose Items On Death.Tools", VarType.BLOCKTYPE_LIST, new DefaultValuableTools()),
-    PLAYER_DEATH_ITEMS_BLACKLIST("Player.Death.Loose Items On Death.Blacklisted Items", VarType.BLOCKTYPE_LIST, BlockTypeList.EMPTY_LIST),
+    PLAYER_DEATH_TOOLS_LIST("Player.Death.Loose Items On Death.Tools", VarType.BLOCKTYPE_LIST, new DefaultValuableTools(),
+            "Tool settings apply only to these tools"),
+    PLAYER_DEATH_ITEMS_BLACKLIST("Player.Death.Loose Items On Death.Blacklisted Items", VarType.BLOCKTYPE_LIST, BlockTypeList.EMPTY_LIST,
+            "These items will never be removed on death."),
     /**
      * Enable custom Health
      */
@@ -219,16 +270,21 @@ public enum RootNode implements ConfigNode
     /**
      * how much health after respawn
      */
-    PLAYER_RESPAWN_HEALTH_PERCENTAGE("Player.Death.Override Respawn Health.Percentage", VarType.INTEGER, SubType.PERCENTAGE, Disable.HUNDRED, 75),
+    PLAYER_RESPAWN_HEALTH_PERCENTAGE("Player.Death.Override Respawn Health.Percentage", VarType.INTEGER, SubType.PERCENTAGE, Disable.HUNDRED, 75,
+            "Percentage of total health that the player will spawn with. Works with custom max health."),
     /**
      * how much food bar after respawn
      */
-    PLAYER_RESPAWN_FOOD_LEVEL("Player.Death.Respawn Foodlevel", VarType.INTEGER, SubType.HEALTH, 15),
+    PLAYER_RESPAWN_FOOD_LEVEL("Player.Death.Respawn Foodlevel", VarType.INTEGER, SubType.HEALTH, 15,
+            "How many food hunches a player will spawn with"),
     /**
      * #########################
      * # SWIMMING RESTRICTIONS #
      * #########################
      */
+    _COMMENT_SWIMMING("Player.No Swimming When Too Heavy",
+            "Adds a weight system to your inventory. If your inventory exceeds the weight you will be pulled down ",
+            "and eventually drown. This is to encourage players to use boats and make swimming up waterfalls harder."),
     /**
      * whether players may swim while wearing armor
      */
@@ -236,31 +292,39 @@ public enum RootNode implements ConfigNode
     /**
      * Block Swimming Up WaterFalls/WaterElevators
      */
-    NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS("Player.No Swimming When Too Heavy.Block Elevators/Waterfalls", VarType.BOOLEAN, true),
+    NO_SWIMMING_IN_ARMOR_BLOCK_ELEVATORS("Player.No Swimming When Too Heavy.Block Elevators/Waterfalls", VarType.BOOLEAN, true,
+            "Set to false if you want to exempt players from drowning when swimming up 1x1 water streams."),
     /**
      * The maximum amount of points you can have before being too heavy
      */
-    NO_SWIMMING_IN_ARMOR_MAX_POINTS("Player.No Swimming When Too Heavy.Max Points", VarType.DOUBLE, 18.0),
+    NO_SWIMMING_IN_ARMOR_MAX_POINTS("Player.No Swimming When Too Heavy.Max Points", VarType.DOUBLE, 18.0,
+            "The maximum inventory weight you can have before starting to drown."),
     /**
      * The amount of points a piece of armor adds to the max
      */
-    NO_SWIMMING_IN_ARMOR_ARMOR_POINTS("Player.No Swimming When Too Heavy.One Piece Of Worn Armor Adds", VarType.DOUBLE, 2.0),
+    NO_SWIMMING_IN_ARMOR_ARMOR_POINTS("Player.No Swimming When Too Heavy.One Piece Of Worn Armor Adds", VarType.DOUBLE, 2.0,
+            "One piece of worn armor would add 2.0 weight. So full set of armor adds 8.0"),
     /**
      * The amount of points that stuff in your inventory adds to the max
      */
-    NO_SWIMMING_IN_ARMOR_INV_POINTS("Player.No Swimming When Too Heavy.One Stack Adds", VarType.DOUBLE, 1.0),
+    NO_SWIMMING_IN_ARMOR_INV_POINTS("Player.No Swimming When Too Heavy.One Stack Adds", VarType.DOUBLE, 1.0,
+            "A stack of any item adds 1.0, half a stack add 0.5 so it calculates fractions"),
     /**
      * How much a tool or item which doesn't stack adds to the max
      */
-    NO_SWIMMING_IN_ARMOR_TOOL_POINTS("Player.No Swimming When Too Heavy.One Tool Adds", VarType.DOUBLE, 0.5),
+    NO_SWIMMING_IN_ARMOR_TOOL_POINTS("Player.No Swimming When Too Heavy.One Tool Adds", VarType.DOUBLE, 0.5,
+            "A tool is any item that doesn't stack, swords, axes, not worn armor, shears etc"),
     /**
      * How fast do you drown, 100 (percent) = you drown no chance, 25 there is a chance you'll drown
      */
-    NO_SWIMMING_IN_ARMOR_DROWN_RATE("Player.No Swimming When Too Heavy.Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 35),
+    NO_SWIMMING_IN_ARMOR_DROWN_RATE("Player.No Swimming When Too Heavy.Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 35,
+            "Basically an esoteric percentage of how fast you drown. 35 actually doesnt really make you drown. 50 would make you drown"),
     /**
      * How much do you drown faster per weight over the max
      */
-    NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA("Player.No Swimming When Too Heavy.Overencumbrance Adds To Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 2),
+    NO_SWIMMING_IN_ARMOR_ENCUMBRANCE_EXTRA("Player.No Swimming When Too Heavy.Overencumbrance Adds To Drown Rate", VarType.INTEGER, SubType.NATURAL_NUMBER, 2,
+            "If your inventory weight exceeds the max weight every weightpoint will add 2 to the drownrate.",
+            "Weight = 25 => (base) + (exceeding) * (modifier) = 35 + 7 * 2 = 49 (new drown rate)"),
 
     /**
      * #########################
@@ -270,7 +334,10 @@ public enum RootNode implements ConfigNode
     /**
      * whether monster grinders (or "farms") should be inhibited
      */
-    INHIBIT_MONSTER_GRINDERS("General Monster Rules.Inhibit Monster Grinders", VarType.BOOLEAN, true),
+    INHIBIT_MONSTER_GRINDERS("General Monster Rules.Inhibit Monster Grinders", VarType.BOOLEAN, true,
+            "This is an advanced anti monster grinder module. It will block drops if the monster",
+            "spawned on an unnatural block, took too much damage from natural causes (falldmg etc.)",
+            ", cant reach a player or can not easily reach a player f.e. monster is in water."),
     /**
      * max y value for extra monster spawns
      */
@@ -296,6 +363,8 @@ public enum RootNode implements ConfigNode
      * # ZOMBIES #
      * ###########
      */
+    _COMMENT_ZOMBIES("Zombies", "Instead of speeding Zombies up, a Zombie will slow a player down for a few seconds when the player is hit by a zombie.",
+            "Zombies may resurrect when slain. They will respawn after a few seconds and might ambush a player."),
     /**
      * whether zombies apply a debuff to players on hit
      */
@@ -856,6 +925,11 @@ public enum RootNode implements ConfigNode
     private final String path;
 
     /**
+     * Comment to be written to the file
+     */
+    private final String[] comments;
+
+    /**
      * Variable type.
      */
     private final VarType type;
@@ -885,14 +959,33 @@ public enum RootNode implements ConfigNode
      */
     private RootNode(String path, VarType type, Object def)
     {
+        this.comments = null;
         this.path = path;
         this.type = type;
         this.defaultValue = def;
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param path     - Configuration path.
+     * @param type     - Variable type.
+     * @param def      - Default value.
+     * @param comments - Explaining this node
+     */
+    private RootNode(String path, VarType type, Object def, String... comments)
+    {
+        this.path = path;
+        this.type = type;
+        this.defaultValue = def;
+        this.comments = comments;
     }
 
 
     private RootNode(String path, VarType type, SubType subType, Object def)
     {
+        this.comments = null;
         this.path = path;
         this.type = type;
         this.defaultValue = def;
@@ -900,13 +993,49 @@ public enum RootNode implements ConfigNode
     }
 
 
-    private RootNode(String path, VarType type, SubType subType, Disable disable, Object def)
+    private RootNode(String path, VarType type, SubType subType, Object def, String... comments)
     {
         this.path = path;
         this.type = type;
         this.defaultValue = def;
         this.subType = subType;
+        this.comments = comments;
+    }
+
+
+    private RootNode(String path, VarType type, SubType subType, Disable disable, Object def)
+    {
+        this.comments = null;
+        this.path = path;
+        this.type = type;
+        this.defaultValue = def;
+        this.subType = subType;
         this.disableValue = disable;
+    }
+
+
+    private RootNode(String path, VarType type, SubType subType, Disable disable, Object def, String... comments)
+    {
+        this.comments = comments;
+        this.path = path;
+        this.type = type;
+        this.defaultValue = def;
+        this.subType = subType;
+        this.disableValue = disable;
+    }
+
+
+    /**
+     * Comment Constructor
+     */
+    private RootNode(String path, String... comments)
+    {
+        this.path = path;
+        this.comments = comments;
+        this.type = VarType.COMMENT;
+        this.defaultValue = null;
+        this.subType = null;
+        this.disableValue = null;
     }
 
 
@@ -941,6 +1070,17 @@ public enum RootNode implements ConfigNode
     public static String baseNode()
     {
         return "ExtraHardMode";
+    }
+
+
+    /**
+     * Get comment describing this node
+     *
+     * @return comment or null if not set
+     */
+    public String[] getComments()
+    {
+        return comments;
     }
 
 

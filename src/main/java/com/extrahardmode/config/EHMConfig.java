@@ -47,29 +47,24 @@ import java.util.*;
 public class EHMConfig
 {
     /**
+     * Nodes to load from the config
+     */
+    private Set<ConfigNode> mConfigNodes = new LinkedHashSet<ConfigNode>();
+
+    /**
      * Loaded config values
      */
     private Map<ConfigNode, Object> mLoadedNodes = new HashMap<ConfigNode, Object>();
 
     /**
-     * If this config is enabled for all worlds
+     * Location we loaded the File from
      */
-    private boolean mEnabledForAll = false;
-
-    /**
-     * Worlds in which this config is active in
-     */
-    private Set<String> mWorlds = new LinkedHashSet<String>(); //Linked: keeps inserted order
+    private File mConfigFile;
 
     /**
      * Loaded FileConfiguration
      */
     private FileConfiguration mConfig;
-
-    /**
-     * Location we loaded the File from
-     */
-    private File mConfigFile;
 
     /**
      * Header is at the top of the file
@@ -80,6 +75,26 @@ public class EHMConfig
      * Mode with which this config will get loaded
      */
     private Mode mMode = Mode.NOT_SET;
+
+    /**
+     * Worlds in which this config is active in
+     */
+    private Set<String> mWorlds = new LinkedHashSet<String>(); //Linked: keeps inserted order
+
+    /**
+     * If this config is enabled for all worlds
+     */
+    private boolean mEnabledForAll = false;
+
+    /**
+     * If the header on top the config should be printed
+     */
+    private boolean mPrintHeader = true;
+
+    /**
+     * If line comments should be printed
+     */
+    private boolean mPrintComments = true;
 
     /**
      * Some status information about this Config
@@ -97,9 +112,14 @@ public class EHMConfig
     private ConfigNode mWorldsNode = RootNode.WORLDS;
 
     /**
-     * Nodes to load from the config
+     * Node that determines if the header should be printed
      */
-    private Set<ConfigNode> mConfigNodes = new LinkedHashSet<ConfigNode>();
+    private ConfigNode mPrintHeaderNode = RootNode.PRINT_HEADER;
+
+    /**
+     * Should node comments be printed
+     */
+    private ConfigNode mPrintCommentsNode = RootNode.PRINT_COMMENTS;
 
 
     /**
@@ -165,6 +185,7 @@ public class EHMConfig
     {
         loadMode();
         loadWorlds();
+        loadCommentOptions();
         loadNodes();
         validateNodes();
     }
@@ -176,7 +197,8 @@ public class EHMConfig
     public void save()
     {
         saveNodes();
-        writeHeader();
+        if (mPrintHeader)
+            writeHeader();
     }
 
 
@@ -298,6 +320,29 @@ public class EHMConfig
 
 
     /**
+     * Changes the node from which to load if we should print the header
+     *
+     * @param node node to set it to
+     */
+    public void setPrintHeaderNode(ConfigNode node)
+    {
+        this.mPrintHeaderNode = node;
+    }
+
+
+    /**
+     * Changes the node from which to load if we should print line comments
+     *
+     * @param node node to set it to
+     */
+
+    public void setPrintCommentsNode(ConfigNode node)
+    {
+        this.mPrintCommentsNode = node;
+    }
+
+
+    /**
      * Register new nodes to load from the config
      *
      * @param nodes nodes to register
@@ -366,6 +411,13 @@ public class EHMConfig
         //Check for all worlds placeholder = Enables plugin for all worlds
         if (mWorlds.contains(MultiWorldConfig.ALL_WORLDS))
             mEnabledForAll = true;
+    }
+
+
+    public void loadCommentOptions()
+    {
+        mPrintHeader = mConfig.getBoolean(mPrintHeaderNode.getPath(), true);
+        mPrintComments = mConfig.getBoolean(mPrintCommentsNode.getPath(), true);
     }
 
 
@@ -452,6 +504,9 @@ public class EHMConfig
                         obj = BlockRelationsList.EMPTY_LIST;
                     break;
                 }
+                //ignore comments
+                case COMMENT:
+                    break;
                 default:
                 {
                     obj = mConfig.get(node.getPath());
@@ -478,6 +533,8 @@ public class EHMConfig
                     mLoadedNodes.put(node, validated);
                     break;
                 }
+                case COMMENT:
+                    break;
                 //TODO ADD BLOCKTYPE_LIST
                 default:
                 {
@@ -541,6 +598,8 @@ public class EHMConfig
                         break;
                     }
                 }
+                case COMMENT:
+                    break;
                 default:
                 {
                     outConfig.set(node.getPath(), value);
@@ -621,5 +680,17 @@ public class EHMConfig
     public void setHeader(Header header)
     {
         this.mHeader = header;
+    }
+
+
+    public boolean printHeader()
+    {
+        return mPrintHeader;
+    }
+
+
+    public boolean printComments()
+    {
+        return mPrintComments;
     }
 }

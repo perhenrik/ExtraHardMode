@@ -75,7 +75,8 @@ public interface ConfigNode
         POTION_EFFECT,
         BLOCKTYPE,
         BLOCKTYPE_LIST,
-        BLOCK_RELATION_LIST
+        BLOCK_RELATION_LIST,
+        COMMENT
     }
 
 

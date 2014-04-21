@@ -26,12 +26,14 @@ import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.service.config.ConfigNode;
 import com.extrahardmode.service.config.Header;
 import com.extrahardmode.service.config.MultiWorldConfig;
+import com.extrahardmode.service.config.YamlCommentWriter;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -114,26 +116,35 @@ public class RootConfig extends MultiWorldConfig
         mainEhmConfig.setHeader(createHeader());
         mainEhmConfig.save();
 
+        //Prepare comments
+        Map<String, String[]> comments = new HashMap<String, String[]>();
+        for (RootNode node : RootNode.values())
+            if (node.getComments() != null)
+                comments.put(node.getPath(), node.getComments());
+
+        if (mainEhmConfig.printComments())
+            YamlCommentWriter.write(mainEhmConfig.getConfigFile(), comments);
     }
 
 
     private Header createHeader()
     {
         Header header = new Header();
-        header.setHeading("ExtraHardMode - Everything shall be configurable!");
+        header.setHeading("ExtraHardMode Config");
         String[] lines = new String[]{
                 "",
-                "1. Generally if you can specify a block you can add meta after an @",
+                "1. The config cleans itself, so if something resets you probably did something wrong",
+                "2. Generally if you can specify a block you can add meta after an @",
                 "   F.e: STEP@3 = cobblestone slab. STEP@3,11 matches normal&upside cobble slabs",
                 "   If you specify meta it will only match cobble slabs and not the other slabs.",
                 "   If you don't specify meta it matches all slabs.",
                 "   You can use numerical block ids as well, they will be converted to bukkit names",
-                "2. If your empty lists reset, put [] instead",
-                "3. This config changes regularly, so you might want to revisit it after an update.",
-                "4. Lots of the configuration is user requested so if you need something just ask",
-                "5. Remember to use /ehm reload after you changed the config instead of /reload",
+                "3. If your empty lists reset, put [] instead",
+                "4. This config changes regularly, so you might want to revisit it after an update.",
+                "5. Lots of the configuration is user requested so if you need something just ask",
+                "6. Remember to use /ehm reload after you changed the config instead of /reload",
                 "",
-                "Happy configuring!"};
+                "Happy Configuring!"};
         header.addLines(lines);
         return header;
     }
