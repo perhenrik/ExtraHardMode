@@ -183,6 +183,8 @@ public class EHMConfig
      */
     public void load()
     {
+        if (mConfigNodes.isEmpty())
+            throw new IllegalStateException("You forgot to add nodes to " + mConfigFile.getName());
         loadMode();
         loadWorlds();
         loadCommentOptions();
@@ -196,6 +198,8 @@ public class EHMConfig
      */
     public void save()
     {
+        if (mLoadedNodes.isEmpty())
+            throw new IllegalStateException("No nodes are loaded, nothing to save to " + mConfigFile.getName());
         saveNodes();
         if (mPrintHeader)
             writeHeader();

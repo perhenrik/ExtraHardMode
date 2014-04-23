@@ -22,7 +22,7 @@ public class YamlCommentWriter
     {
         BufferedReader br;
         //output
-        File tempFile = new File(input.getParent(), "copycat1234567890.yml");
+        File tempFile = new File(input.getParent(), "temporary_config_for_adding_comments.yml");
         FileOutputStream out = null;
         OutputStreamWriter writer = null;
         //nodes

@@ -90,11 +90,12 @@ public class RootConfig extends MultiWorldConfig
         //has config.yml been found? not -> create it
         if (mainEhmConfig == null)
         {
-            File mainFile = new File(plugin.getDataFolder(), "config.yml");
+            File mainFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
             if (!mainFile.exists())
             {
                 try
                 {
+                    mainFile.getParentFile().mkdirs();
                     mainFile.createNewFile();
                 } catch (IOException e)
                 {
@@ -103,6 +104,8 @@ public class RootConfig extends MultiWorldConfig
                 }
             }
             mainEhmConfig = new EHMConfig(mainFile);
+            mainEhmConfig.registerNodes(RootNode.values());
+            mainEhmConfig.load();
         }
         //Load config.yml
         for (Map.Entry<ConfigNode, Object> node : mainEhmConfig.getLoadedNodes().entrySet())
