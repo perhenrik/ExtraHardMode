@@ -30,6 +30,7 @@ import com.extrahardmode.service.config.customtypes.BlockTypeList;
 import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import org.apache.commons.lang.Validate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +88,8 @@ public abstract class MultiWorldConfig extends EHMModule
      */
     public void set(final String world, final ConfigNode node, Object value)
     {
+        Validate.notNull(node, "Supplied ConfigNode was null - world: " + world + " value: " + value);
+        Validate.notNull(world, "Supplied World was null - node: " + node + " value: " + value);
         switch (node.getVarType())
         {
             case LIST:
