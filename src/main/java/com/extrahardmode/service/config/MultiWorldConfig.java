@@ -28,7 +28,9 @@ import com.extrahardmode.service.config.customtypes.BlockRelationsList;
 import com.extrahardmode.service.config.customtypes.BlockType;
 import com.extrahardmode.service.config.customtypes.BlockTypeList;
 import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Table;
 import org.apache.commons.lang.Validate;
 
@@ -46,7 +48,7 @@ public abstract class MultiWorldConfig extends EHMModule
 {
 
     /**
-     * For mods like MystCraft which allow Players to create their own dimensions, so the admin doesnt have to add worlds manually
+     * For mods like MystCraft which allow Players to create their own dimensions, so the admin doesn't have to add worlds manually
      */
     protected boolean enabledForAll = false;
 
@@ -229,6 +231,49 @@ public abstract class MultiWorldConfig extends EHMModule
 //  / /_\\  __/ |_| ||  __/ |  \__ \
 //  \____/\___|\__|\__\___|_|  |___/
 //
+
+
+    private static final BiMap<ConfigNode.VarType, Class> varTypeClassMap = HashBiMap.create();
+
+
+    static
+    {
+        varTypeClassMap.put(ConfigNode.VarType.INTEGER, Integer.class);
+        varTypeClassMap.put(ConfigNode.VarType.BOOLEAN, Boolean.class);
+        varTypeClassMap.put(ConfigNode.VarType.BLOCKTYPE, BlockType.class);
+        varTypeClassMap.put(ConfigNode.VarType.BLOCKTYPE_LIST, BlockTypeList.class);
+        varTypeClassMap.put(ConfigNode.VarType.BLOCK_RELATION_LIST, BlockRelationsList.class);
+        varTypeClassMap.put(ConfigNode.VarType.DOUBLE, Double.class);
+        varTypeClassMap.put(ConfigNode.VarType.LIST, List.class);
+        varTypeClassMap.put(ConfigNode.VarType.POTION_EFFECT, PotionEffectHolder.class);
+        varTypeClassMap.put(ConfigNode.VarType.STRING, String.class);
+    }
+
+
+    /**
+     * Generic get() (untested)
+     *
+     * @param node  node to use
+     * @param world world name
+     * @param clazz type of node
+     * @param <T>
+     *
+     * @return node value for the given world
+     */
+    public <T> T get(final ConfigNode node, final String world, Class<T> clazz)
+    {
+        if (!varTypeClassMap.containsKey(node.getVarType()))
+            throw new IllegalArgumentException("Node " + node + " doesn't have a class set");
+        Object val = OPTIONS.get(world, node);
+        //VarType of node has to match VarType of the expected class
+        if (varTypeClassMap.inverse().get(clazz) == node.getVarType())
+        {
+            //Check cast
+            if (varTypeClassMap.get(node.getVarType()).isInstance(val))
+                return (T) OPTIONS.get(world, node);
+            else return (T) node.getValueToDisable();
+        } else throw new IllegalArgumentException("Attempted to get " + node.toString() + " of type " + node.getVarType() + " as " + varTypeClassMap.get(node.getVarType()));
+    }
 
 
     /**
