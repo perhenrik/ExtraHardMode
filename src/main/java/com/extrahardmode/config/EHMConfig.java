@@ -430,6 +430,7 @@ public class EHMConfig
      */
     public void loadNodes()
     {
+        loop:
         for (ConfigNode node : mConfigNodes)
         {
             Object obj = null;
@@ -510,7 +511,7 @@ public class EHMConfig
                 }
                 //ignore comments
                 case COMMENT:
-                    break;
+                    continue loop;
                 default:
                 {
                     obj = mConfig.get(node.getPath());
