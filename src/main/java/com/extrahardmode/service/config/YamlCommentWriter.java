@@ -22,16 +22,17 @@ public class YamlCommentWriter
     {
         BufferedReader br;
         //output
-        File tempFile = new File(input.getParent(), "temporary_config_for_adding_comments.yml");
-        FileOutputStream out = null;
+        ByteArrayOutputStream memStream = null;
+        FileOutputStream outStream = null;
         OutputStreamWriter writer = null;
         //nodes
         String[] nodes = new String[20];
         try
         {
             br = new BufferedReader(new FileReader(input));
-            out = new FileOutputStream(tempFile);
-            writer = new OutputStreamWriter(out, Charset.forName("UTF-8").newEncoder());
+            memStream = new ByteArrayOutputStream();
+            outStream = new FileOutputStream(input);
+            writer = new OutputStreamWriter(memStream, Charset.forName("UTF-8").newEncoder());
 
             String line;
             while ((line = br.readLine()) != null)
@@ -64,8 +65,8 @@ public class YamlCommentWriter
                 line.length();  //useless breakpoint line
             }
             br.close();
-            input.delete();
-            tempFile.renameTo(input);
+            //Overwrite the original file
+            memStream.writeTo(outStream);
         }
         //BLABLABLA EXCEPTIONS BLABLA
         catch (FileNotFoundException e)
@@ -79,7 +80,8 @@ public class YamlCommentWriter
             try
             {
                 if (writer != null) writer.close();
-                if (out != null) out.close();
+                if (memStream != null) memStream.close();
+                if (outStream != null) outStream.close();
             } catch (IOException e)
             {
                 e.printStackTrace();

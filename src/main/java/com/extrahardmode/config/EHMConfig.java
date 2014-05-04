@@ -22,7 +22,7 @@
 package com.extrahardmode.config;
 
 
-import com.extrahardmode.module.IoHelper;
+import com.extrahardmode.service.IoHelper;
 import com.extrahardmode.service.config.*;
 import com.extrahardmode.service.config.customtypes.BlockRelationsList;
 import com.extrahardmode.service.config.customtypes.BlockType;
@@ -33,8 +33,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -625,21 +625,17 @@ public class EHMConfig
     {
         if (mHeader == null)
             return;
-        File tempFile = new File(mConfigFile.getParent(), "copy1234567890.cfg");
-        FileOutputStream out = null;
-        OutputStreamWriter writer = null;
+        ByteArrayOutputStream memHeaderStream = null;
+        OutputStreamWriter memWriter = null;
         try
         {
             //Write Header to a temporary file
-            tempFile.createNewFile();
-            out = new FileOutputStream(tempFile);
-            writer = new OutputStreamWriter(out, Charset.forName("UTF-8").newEncoder());
-            writer.write(String.format(mHeader.toString()));
-            writer.close();
-            //Copy Header of the temp file to the beginning of the config file
-            IoHelper.copyFile(mConfigFile, tempFile, true);
-            mConfigFile.delete();
-            tempFile.renameTo(mConfigFile);
+            memHeaderStream = new ByteArrayOutputStream();
+            memWriter = new OutputStreamWriter(memHeaderStream, Charset.forName("UTF-8").newEncoder());
+            memWriter.write(String.format(mHeader.toString()));
+            memWriter.close();
+            //Copy Header to the beginning of the config file
+            IoHelper.writeHeader(mConfigFile, memHeaderStream);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -647,8 +643,8 @@ public class EHMConfig
         {
             try
             {
-                if (out != null) out.close();
-                if (writer != null) writer.close();
+                if (memHeaderStream != null) memHeaderStream.close();
+                if (memWriter != null) memWriter.close();
             } catch (IOException e)
             {
                 e.printStackTrace();

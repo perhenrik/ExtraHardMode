@@ -90,7 +90,7 @@ public class RootConfig extends MultiWorldConfig
         //has config.yml been found? not -> create it
         if (mainEhmConfig == null)
         {
-            File mainFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
+            File mainFile = new File(plugin.getDataFolder().getPath() + File.separator + "config.yml");
             if (!mainFile.exists())
             {
                 try

@@ -23,7 +23,7 @@ package com.extrahardmode.config.messages;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.module.IoHelper;
+import com.extrahardmode.service.IoHelper;
 import com.extrahardmode.service.config.ConfigNode;
 import com.extrahardmode.service.config.ModularConfig;
 import org.apache.commons.lang.StringUtils;
@@ -55,7 +55,7 @@ public class MessageConfig extends ModularConfig
     public MessageConfig(ExtraHardMode plugin)
     {
         super(plugin);
-        file = new File(plugin.getDataFolder().getAbsolutePath() + "/messages.yml");
+        file = new File(plugin.getDataFolder().getPath() + File.separator + "messages.yml");
         config = YamlConfiguration.loadConfiguration(file);
     }
 
@@ -121,9 +121,8 @@ public class MessageConfig extends ModularConfig
         try
         {
             //Write header to a new file
-            File tempFile = new File(plugin.getDataFolder(), "messages.new");
-            FileOutputStream out = new FileOutputStream(tempFile);
-            OutputStreamWriter writer = new OutputStreamWriter(out, Charset.forName("UTF-8").newEncoder());
+            ByteArrayOutputStream memStream = new ByteArrayOutputStream();
+            OutputStreamWriter memWriter = new OutputStreamWriter(memStream, Charset.forName("UTF-8").newEncoder());
             String[] header = {
                     "Messages sent by ExtraHardMode",
                     "Messages are only sent for modules that are activated",
@@ -149,19 +148,15 @@ public class MessageConfig extends ModularConfig
                 sb.append(line);
                 sb.append(StringUtils.repeat(" ", 100 / 2 - line.length() / 2 - 1 - line.length() % 2));
                 sb.append('#');
-                sb.append("%n");
+                sb.append(String.format("%n"));
             }
             sb.append(StringUtils.repeat("#", 100));
-            sb.append("%n");
+            sb.append(String.format("%n"));
             //String.format: %n as platform independent line seperator
-            writer.write(String.format(sb.toString()));
-            writer.close();
-            //copy the contents of the old config
-            IoHelper.copyFile(file, tempFile, true);
-            //rename the new config with the header
-            file.delete();
-            tempFile.renameTo(file);
-            //out.close();
+            memWriter.write(sb.toString());
+            memWriter.close();
+
+            IoHelper.writeHeader(file, memStream);
         } catch (FileNotFoundException e)
         {
             e.printStackTrace();
