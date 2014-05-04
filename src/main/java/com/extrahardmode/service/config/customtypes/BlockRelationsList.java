@@ -65,26 +65,26 @@ public class BlockRelationsList
     }
 
 
-    public boolean contains(Block block)
+    public BlockType get(BlockType blockType)
     {
-        return mBlockRelations.containsKey(block.getTypeId());
-    }
-
-
-    public boolean contains(BlockType block1)
-    {
-        return mBlockRelations.containsKey(block1.getBlockId());
-    }
-
-
-    public BlockType get(BlockType block1)
-    {
-        return mBlockRelations.get(block1);
+        for (Map.Entry<BlockType, BlockType> entry : mBlockRelations.entrySet())
+            if (entry.getKey().equals(blockType))
+                return entry.getValue();
+        return null;
     }
 
 
     public BlockType get(Block block)
     {
-        return mBlockRelations.get(block);
+        for (Map.Entry<BlockType, BlockType> entry : mBlockRelations.entrySet())
+            if (entry.getKey().matches(block.getTypeId(), block.getData()))
+                return entry.getValue();
+        return null;
+    }
+
+
+    public boolean contains(Block block)
+    {
+        return get(block) != null;
     }
 }

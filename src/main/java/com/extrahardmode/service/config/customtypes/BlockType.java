@@ -2,8 +2,6 @@ package com.extrahardmode.service.config.customtypes;
 
 
 import com.extrahardmode.service.RegexHelper;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -136,17 +134,17 @@ public final class BlockType
         if (material == null) //Not found in material enum
         {
             // try as a number (blockId)
-            String tempId = RegexHelper.stripNumber(input);
+            String tempId = RegexHelper.stripNumber(blockIdString);
             if (!tempId.isEmpty())
                 material = Material.getMaterial(tempId);
             // still fail -> try as enum again but strip numbers
             if (material == null)
-                material = Material.matchMaterial(RegexHelper.stripEnum(input));
+                material = Material.matchMaterial(RegexHelper.stripEnum(blockIdString));
         }
         if (material != null)
             blockId = material.getId();
         else //mod item or -1 if not valid
-            blockId = RegexHelper.parseNumber(input, -1);
+            blockId = RegexHelper.parseNumber(blockIdString, -1);
         return new BlockType(blockId, meta);
     }
 
@@ -192,19 +190,17 @@ public final class BlockType
             return true;
         else if (!(obj instanceof BlockType))
             return false;
-        return new EqualsBuilder()
-                .append(blockId, ((BlockType) obj).blockId)
-                .append(meta, ((BlockType) obj).meta)
-                .isEquals();
+        return blockId == ((BlockType) obj).blockId &&
+                meta.equals(((BlockType) obj).meta);
     }
 
 
     @Override
     public int hashCode()
     {
-        return new HashCodeBuilder(13, 53) //two primes
-                .append(blockId)
-                .append(meta)
-                .hashCode();
+        int hash = blockId;
+        for (byte data : meta)
+            hash += data;
+        return hash;
     }
 }
