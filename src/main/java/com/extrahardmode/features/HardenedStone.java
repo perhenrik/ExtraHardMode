@@ -116,7 +116,7 @@ public class HardenedStone extends ListenerModule
                 short blocks = 0;
                 BlockType toolSettings = tools.get(toolId);
                 if (toolSettings != null && toolSettings.getAllMeta().size() > 0)
-                    blocks = toolSettings.getAllMeta().iterator().next();
+                    blocks = toolSettings.getMeta();
                 EhmHardenedStoneEvent hardEvent = new EhmHardenedStoneEvent(player, inHandStack, blocks);
 
                 if (toolSettings != null)
@@ -147,7 +147,7 @@ public class HardenedStone extends ListenerModule
                 Block adjacentBlock = block.getRelative(face);
                 if (stoneBlocks.contains(adjacentBlock))
                 {
-                    adjacentBlock.setTypeIdAndData(stoneBlocks.get(adjacentBlock).getBlockId(), stoneBlocks.get(adjacentBlock).getMeta(), true);
+                    adjacentBlock.setTypeIdAndData(stoneBlocks.get(adjacentBlock).getBlockId(), stoneBlocks.get(adjacentBlock).getByteMeta(), true);
                     if (applyPhysics)
                         blockModule.applyPhysics(adjacentBlock, true);
                 }

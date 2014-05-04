@@ -44,7 +44,7 @@ public class BlockTypeList
         //merge meta if exists
         if (blockTypeMap.containsKey(blockType.getBlockId()))
         {
-            Set<Byte> merged = blockTypeMap.get(blockType.getBlockId()).getAllMeta();
+            Set<Short> merged = blockTypeMap.get(blockType.getBlockId()).getAllMeta();
             merged.addAll(blockType.getAllMeta());
             blockType = new BlockType(blockType.getBlockId(), merged);
         }

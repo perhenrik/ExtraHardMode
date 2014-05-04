@@ -1266,9 +1266,9 @@ public enum RootNode implements ConfigNode
             this.add(new BlockType(Material.GRASS));
             this.add(new BlockType(Material.COBBLESTONE));
             this.add(new BlockType(Material.MOSSY_COBBLESTONE));
-            this.add(new BlockType(Material.DOUBLE_STEP, (byte) 3)); //cobble double halfslabs
-            this.add(new BlockType(Material.STEP, (byte) 3)); //normal
-            this.add(new BlockType(Material.STEP, (byte) 11)); //upside
+            this.add(new BlockType(Material.DOUBLE_STEP, (short) 3)); //cobble double halfslabs
+            this.add(new BlockType(Material.STEP, (short) 3)); //normal
+            this.add(new BlockType(Material.STEP, (short) 11)); //upside
             this.add(new BlockType(Material.MYCEL));
         }
     }
@@ -1308,8 +1308,8 @@ public enum RootNode implements ConfigNode
         public DefaultToolDurabilities()
         {
             super();
-            this.add(new BlockType(Material.IRON_PICKAXE, (byte) 32));
-            this.add(new BlockType(Material.DIAMOND_PICKAXE, (byte) 64));
+            this.add(new BlockType(Material.IRON_PICKAXE, (short) 32));
+            this.add(new BlockType(Material.DIAMOND_PICKAXE, (short) 64));
         }
     }
 

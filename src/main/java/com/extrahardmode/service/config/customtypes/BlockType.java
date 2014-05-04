@@ -19,7 +19,7 @@ public final class BlockType
 {
     private static Pattern seperators = Pattern.compile("[^A-Za-z0-9_]");
     private int blockId = -1;
-    private Set<Byte> meta = new LinkedHashSet<Byte>();
+    private Set<Short> meta = new LinkedHashSet<Short>();
 
 
     public BlockType(int blockId)
@@ -28,28 +28,28 @@ public final class BlockType
     }
 
 
-    public BlockType(Material mat, Byte... meta)
+    public BlockType(Material mat, Short... meta)
     {
         this.blockId = mat.getId();
         Collections.addAll(this.meta, meta);
     }
 
 
-    public BlockType(int blockId, Byte... meta)
+    public BlockType(int blockId, Short... meta)
     {
         this.blockId = blockId;
         Collections.addAll(this.meta, meta);
     }
 
 
-    public BlockType(int blockId, byte meta)
+    public BlockType(int blockId, short meta)
     {
         this.blockId = blockId;
         this.meta.add(meta);
     }
 
 
-    public BlockType(int blockId, Collection<Byte> meta)
+    public BlockType(int blockId, Collection<Short> meta)
     {
         this.blockId = blockId;
         this.meta.addAll(meta);
@@ -62,23 +62,29 @@ public final class BlockType
     }
 
 
-    public Set<Byte> getAllMeta()
+    public Set<Short> getAllMeta()
     {
-        return new HashSet<Byte>(meta);
+        return new HashSet<Short>(meta);
     }
 
 
-    public byte getMeta()
+    public byte getByteMeta()
+    {
+        return meta.size() > 0 ? (byte) RegexHelper.safeCast(meta.iterator().next(), Byte.MIN_VALUE, Byte.MAX_VALUE) : 0;
+    }
+
+
+    public short getMeta()
     {
         return meta.size() > 0 ? meta.iterator().next() : 0;
     }
 
 
-    private boolean matchesMeta(byte meta)
+    private boolean matchesMeta(short meta)
     {
         if (this.meta.size() > 0)
         {
-            for (Byte aMeta : this.meta)
+            for (Short aMeta : this.meta)
             {
                 if (aMeta == meta)
                     return true;
@@ -95,7 +101,7 @@ public final class BlockType
     }
 
 
-    public boolean matches(int blockId, byte meta)
+    public boolean matches(int blockId, short meta)
     {
         return matches(blockId) && matchesMeta(meta);
     }
@@ -119,14 +125,14 @@ public final class BlockType
             return null;
         //PREPARATION
         int blockId;
-        Set<Byte> meta = new HashSet<Byte>();
+        Set<Short> meta = new HashSet<Short>();
         input = RegexHelper.trimWhitespace(input);
         String[] splitted = seperators.split(input);
         if (splitted.length == 0)
             return null;
         //BLOCK META
         for (int i = 1; i < splitted.length; i++) //first value is blockId
-            meta.add(RegexHelper.parseByte(splitted[i]));
+            meta.add(RegexHelper.parseShort(splitted[i]));
 
         //BLOCK ID
         String blockIdString = splitted[0];
@@ -156,7 +162,7 @@ public final class BlockType
         builder.append(material != null ? material.name() : blockId);
 
         boolean first = true;
-        for (Byte metaBit : meta)
+        for (Short metaBit : meta)
         {
             if (first) builder.append('@');
             else builder.append(',');
@@ -199,7 +205,7 @@ public final class BlockType
     public int hashCode()
     {
         int hash = blockId;
-        for (byte data : meta)
+        for (short data : meta)
             hash += data;
         return hash;
     }

@@ -102,13 +102,13 @@ public class UtilityModule extends EHMModule
         //Because tooldmg is an int we have to sometimes break the tool twice, I couldn't find the flaw in the first formula so oh well....
         double percent = damagePerBlock > 1 ? (maxDurability % blocks) / (double) maxDurability : ((double) maxDurability / blocks) - damagePerBlock;
 
-        if (damagePerBlock > 0)
+        if (damagePerBlock > 0 || percent > 0.0D)
         {
             int durability = item.getDurability();
             durability += damagePerBlock;
 
             if (OurRandom.nextDouble() < percent)
-                durability += damagePerBlock;
+                durability += (damagePerBlock > 0 ? damagePerBlock : 1);
 
             item.setDurability((short) durability);
         }

@@ -47,6 +47,25 @@ public class RegexHelper
     }
 
 
+    public static int safeCast(int input, int minValue, int maxValue)
+    {
+        return (input < minValue) ? minValue : (input > maxValue) ? maxValue : input;
+    }
+
+
+    public static Short parseShort(String input)
+    {
+        if (!containsNumbers(input))
+            return null;
+        input = stripNumber(input);
+
+        int metaInt = Integer.parseInt(input);
+        /* Prevent out of range errors */
+
+        return (short) safeCast(metaInt, Short.MIN_VALUE, Short.MAX_VALUE);
+    }
+
+
     public static Byte parseByte(String input)
     {
         if (!containsNumbers(input))
@@ -55,12 +74,8 @@ public class RegexHelper
 
         int metaInt = Integer.parseInt(input);
         /* Prevent out of range errors */
-        if (metaInt < Byte.MIN_VALUE)
-            metaInt = Byte.MIN_VALUE;
-        else if (metaInt > Byte.MAX_VALUE)
-            metaInt = Byte.MAX_VALUE;
 
-        return (byte) metaInt;
+        return (byte) safeCast(metaInt, Byte.MIN_VALUE, Byte.MAX_VALUE);
     }
 
 
