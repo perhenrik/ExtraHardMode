@@ -22,7 +22,7 @@ public class YamlCommentWriter
     {
         BufferedReader br;
         //output
-        ByteArrayOutputStream memStream = null;
+        ByteArrayOutputStream memStream = new ByteArrayOutputStream(1024);
         FileOutputStream outStream = null;
         OutputStreamWriter writer = null;
         //nodes
@@ -30,8 +30,6 @@ public class YamlCommentWriter
         try
         {
             br = new BufferedReader(new FileReader(input));
-            memStream = new ByteArrayOutputStream();
-            outStream = new FileOutputStream(input);
             writer = new OutputStreamWriter(memStream, Charset.forName("UTF-8").newEncoder());
 
             String line;
@@ -60,13 +58,17 @@ public class YamlCommentWriter
                 if (comments.containsKey(path) && !(comment || listItem)) //TODO split long lines
                     for (String commentLine : comments.get(path))
                         writer.write(StringUtils.repeat(" ", level * 2) + "# " + commentLine + String.format("%n"));
-                writer.write(line + String.format("%n"));
+                line += String.format("%n");
+                writer.write(line);
 
                 line.length();  //useless breakpoint line
             }
             br.close();
             //Overwrite the original file
+            outStream = new FileOutputStream(input);
+            writer.close();
             memStream.writeTo(outStream);
+            outStream.close();
         }
         //BLABLABLA EXCEPTIONS BLABLA
         catch (FileNotFoundException e)
@@ -75,17 +77,6 @@ public class YamlCommentWriter
         } catch (IOException e)
         {
             e.printStackTrace();
-        } finally
-        {
-            try
-            {
-                if (writer != null) writer.close();
-                if (memStream != null) memStream.close();
-                if (outStream != null) outStream.close();
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
         }
     }
 
