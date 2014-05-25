@@ -40,6 +40,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,8 +54,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-
-//import org.bukkit.entity.Horse;
 
 
 /**
@@ -217,10 +216,10 @@ public class Players extends ListenerModule
 //                        event.setDamage(event.getDamage() * 2);
                         break;
                     case SUFFOCATION:
-                        /*if (player.getVehicle() instanceof Horse)  //Reduced because you can easily glitch into blocks
-                            event.setDamage(event.getDamage() * 2.0);
-                        else*/
-                        applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_SUFFOCATION, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_SUFFOCATION_MULT, world.getName()));
+                        if (player.getVehicle() instanceof Horse)  //Reduced because you can easily glitch into blocks
+                            applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_SUFFOCATION, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_SUFFOCATION_MULT, world.getName()) / 2);
+                        else
+                            applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_SUFFOCATION, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_SUFFOCATION_MULT, world.getName()));
 //                        event.setDamage(event.getDamage() * 5);
                         break;
                     case LAVA:
