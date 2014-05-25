@@ -91,6 +91,8 @@ public enum RootNode implements ConfigNode
      */
     SUPER_HARD_STONE("World Rules.Mining.Inhibit Tunneling.Enable", VarType.BOOLEAN, true,
             "If stone can only be broken by the tools specified below"),
+    SUPER_HARD_BLOCKS("World Rules.Mining.Inhibit Tunneling.Hardened Blocks", VarType.BLOCKTYPE_LIST, new DefaultHardBlocks(),
+            "If stone can only be broken by the tools specified below"),
     /**
      * If ore placement next to stone blocks should be blocked to prevent tunneling
      */
@@ -1340,6 +1342,17 @@ public enum RootNode implements ConfigNode
             this.add(new BlockType(Material.DIAMOND_SWORD));
             this.add(new BlockType(Material.DIAMOND_PICKAXE));
             this.add(new BlockType(Material.DIAMOND_SPADE));
+
+        }
+    }
+
+
+    private static class DefaultHardBlocks extends BlockTypeList
+    {
+        public DefaultHardBlocks()
+        {
+            super();
+            this.add(new BlockType(Material.STONE));
 
         }
     }

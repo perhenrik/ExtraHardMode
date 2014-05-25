@@ -104,9 +104,10 @@ public class HardenedStone extends ListenerModule
         final BlockTypeList tools = CFG.getBlocktypeList(RootNode.SUPER_HARD_STONE_TOOLS, world.getName());
         final BlockTypeList physicsBlocks = CFG.getBlocktypeList(RootNode.SUPER_HARD_STONE_ORE_BLOCKS, world.getName());
         final BlockRelationsList stoneBlocks = CFG.getBlockRelationList(RootNode.SUPER_HARD_STONE_STONE_BLOCKS, world.getName());
+        final BlockTypeList hardBlocks = CFG.getBlocktypeList(RootNode.SUPER_HARD_BLOCKS, world.getName());
 
         // FEATURE: stone breaks tools much quicker
-        if (hardStoneEnabled && stoneBlocks.contains(block) && !playerBypasses)
+        if (hardStoneEnabled && hardBlocks.contains(block) && !playerBypasses)
         {
             ItemStack inHandStack = player.getItemInHand();
 
