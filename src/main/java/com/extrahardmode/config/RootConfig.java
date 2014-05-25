@@ -108,6 +108,8 @@ public class RootConfig extends MultiWorldConfig
             mainEhmConfig.load();
         }
         //Load config.yml
+        if (mainEhmConfig.isEnabledForAll())
+            enabledForAll = true;
         for (Map.Entry<ConfigNode, Object> node : mainEhmConfig.getLoadedNodes().entrySet())
         {
             for (String world : mainEhmConfig.getWorlds())

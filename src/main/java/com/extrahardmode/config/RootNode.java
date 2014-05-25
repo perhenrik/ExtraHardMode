@@ -23,6 +23,7 @@ package com.extrahardmode.config;
 
 
 import com.extrahardmode.service.config.ConfigNode;
+import com.extrahardmode.service.config.MultiWorldConfig;
 import com.extrahardmode.service.config.customtypes.BlockRelationsList;
 import com.extrahardmode.service.config.customtypes.BlockType;
 import com.extrahardmode.service.config.customtypes.BlockTypeList;
@@ -54,8 +55,8 @@ public enum RootNode implements ConfigNode
     /**
      * list of worlds where extra hard mode rules apply
      */
-    WORLDS("Enabled Worlds", VarType.LIST, new ArrayList<String>(),
-            "By default the plugin is disabled in all worlds. Set the worlds you want ehm active here. F.e. [world, world_nether]. \"@all\" enables ehm for all worlds"),
+    WORLDS("Enabled Worlds", VarType.LIST, new DefaultWorlds(),
+            "Set the worlds you want ehm active here. F.e. [world, world_nether]. \"@all\" enables ehm for all worlds"),
 
     /**
      * #############
@@ -84,15 +85,15 @@ public enum RootNode implements ConfigNode
      * ##################
      */
     _COMMENT_HARD_STONE("World Rules.Mining.Inhibit Tunneling",
-            "This module is mainly there to prevent branch/strip mining or make it unprofitable.",
-            "Players will have to take risks by exploring caves to gather resources."),
+            "Hardened blocks require certain tools to be broken and will wear those tools down quicker",
+            "This is to encourage caving, by making branch mining unprofitable"),
     /**
      * whether stone is hardened to encourage cave exploration over tunneling
      */
     SUPER_HARD_STONE("World Rules.Mining.Inhibit Tunneling.Enable", VarType.BOOLEAN, true,
-            "If stone can only be broken by the tools specified below"),
+            "If hardened blocks can only be broken by specific tools"),
     SUPER_HARD_BLOCKS("World Rules.Mining.Inhibit Tunneling.Hardened Blocks", VarType.BLOCKTYPE_LIST, new DefaultHardBlocks(),
-            "If stone can only be broken by the tools specified below"),
+            "These blocks will be treated as hardened"),
     /**
      * If ore placement next to stone blocks should be blocked to prevent tunneling
      */
@@ -1354,6 +1355,16 @@ public enum RootNode implements ConfigNode
             super();
             this.add(new BlockType(Material.STONE));
 
+        }
+    }
+
+
+    private static class DefaultWorlds extends ArrayList<String>
+    {
+        public DefaultWorlds()
+        {
+            super();
+            this.add(MultiWorldConfig.ALL_WORLDS);
         }
     }
 }
