@@ -41,23 +41,7 @@
         <bukkit-ver>R1.0</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/java/</srcDir>
-        <!--Jenkins Build-Number to be included in the jar manifest and will be parsed by the /version command-->
-        <buildNumber>${env.BUILD_NUMBER}</buildNumber>
     </properties>
-
-    <!-- maven deployment -->
-    <distributionManagement>
-        <repository>
-            <id>ehm-release</id>
-            <name>extrahardmode.com Releases</name>
-            <url>http://maven.extrahardmode.com/content/repositories/bukkit-plugins/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ehm-snapshot</id>
-            <name>extrahardmode.com Snapshots</name>
-            <url>http://maven.extrahardmode.com/content/repositories/bukkit-plugins-snapshot/</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <!-- Build instructions -->
     <build>
@@ -123,11 +107,6 @@
                 <version>2.4</version>
                 <configuration>
                     <outputDirectory>${outputdir}</outputDirectory>
-                    <archive>
-                        <manifestEntries>
-                            <Build-Number>${buildNumber}</Build-Number>
-                        </manifestEntries>
-                    </archive>
                 </configuration>
             </plugin>
 
@@ -136,11 +115,22 @@
 
     <!-- Repositories -->
     <repositories>
-        <!-- We have all the dependencies here so we don't have to rely on other peoples unreliable maven repositories -->
         <repository>
-            <id>extrahardmode.com</id>
-            <url>http://maven.extrahardmode.com/content/groups/public/</url>
+            <id>bukkit_repo</id>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>github-releases</id>
+            <url>http://di3mex.github.io/repo_bukkit/releases/</url>
+        </repository>
+        <repository>
+            <id>github-snapshots</id>
+            <url>http://di3mex.github.io/repo_bukkit/snapshots/</url>
+        </repository>
+        <!--<repository>
+            <id>local</id>
+            <url>http://localhost:8081/nexus/content/groups/public/</url>
+        </repository>-->
     </repositories>
 
     <!-- Dependencies -->
@@ -164,12 +154,6 @@
             <groupId>org.mcstats.bukkit</groupId>
             <artifactId>metrics</artifactId>
             <version>R7</version>
-        </dependency>
-        <!-- Persistence Framework -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>4.2.4.Final</version>
         </dependency>
 
         <!-- Unit testing dependencies -->
@@ -220,7 +204,7 @@
         <dependency>
             <groupId>me.botsko</groupId>
             <artifactId>prism</artifactId>
-            <version>2.0Beta3</version>
+            <version>2.0</version>
         </dependency>
         <!-- CoreProtect -->
         <dependency>

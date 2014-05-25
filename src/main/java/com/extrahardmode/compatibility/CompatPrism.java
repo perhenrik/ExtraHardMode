@@ -25,14 +25,14 @@ public class CompatPrism implements ICompat, IBlockLogger
     @Override
     public void logFallingBlockFall(Block block)
     {
-        RecordingQueue.addToQueue(ActionFactory.create("block-fall", block, fallingBlockFallTag));
+        RecordingQueue.addToQueue(ActionFactory.createBlock("block-fall", block, fallingBlockFallTag));
     }
 
 
     @Override
     public void logFallingBlockLand(BlockState block)
     {
-        RecordingQueue.addToQueue(ActionFactory.create("block-form", block, fallingBlockLandTag));
+        RecordingQueue.addToQueue(ActionFactory.createBlock("block-form", block, fallingBlockLandTag));
     }
 
 
