@@ -35,6 +35,7 @@ import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -64,14 +65,14 @@ public class Zombies extends ListenerModule
         super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
-        /*try
+        try
         {
             CreatureSpawnEvent.SpawnReason doesEnumExist = CreatureSpawnEvent.SpawnReason.REINFORCEMENTS;
             hasReinforcements = true;
         } catch (NoSuchFieldError e)
-        {*/
-        hasReinforcements = false;
-        //}
+        {
+            hasReinforcements = false;
+        }
     }
 
 
@@ -159,12 +160,12 @@ public class Zombies extends ListenerModule
 
 
     /** Flag Zombies that have been called in as reinforcements to not respawn */
-    /*@EventHandler
+    @EventHandler
     public void onZombieReinforcements(CreatureSpawnEvent event)
     {
         if (hasReinforcements && event.getEntity() instanceof Zombie && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.REINFORCEMENTS)
         {
             EntityHelper.flagIgnore(plugin, event.getEntity());
         }
-    }*/
+    }
 }

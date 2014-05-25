@@ -109,7 +109,7 @@ public class Players extends ListenerModule
         if (respawnFood < 20 && respawnHealthPercentage > 0 && respawnHealthPercentage < 100)
         {
             //TODO HIGH EhmPlayerRespawnEvent
-            SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, player.getMaxHealth() * respawnHealthPercentage / 100, respawnFood);
+            SetPlayerHealthAndFoodTask task = new SetPlayerHealthAndFoodTask(player, (int) player.getMaxHealth() * respawnHealthPercentage / 100, respawnFood);
             plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 10L); // half-second delay
         }
         // FEATURE: players can't swim when they're carrying a lot of weight, reset the cached value
