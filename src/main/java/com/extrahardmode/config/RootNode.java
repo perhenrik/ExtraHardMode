@@ -55,7 +55,7 @@ public enum RootNode implements ConfigNode
      * list of worlds where extra hard mode rules apply
      */
     WORLDS("Enabled Worlds", VarType.LIST, new ArrayList<String>(),
-            "By default the plugin is disabled in all worlds. Set the worlds you want ehm active here. F.e. [world, world_nether]"),
+            "By default the plugin is disabled in all worlds. Set the worlds you want ehm active here. F.e. [world, world_nether]. \"@all\" enables ehm for all worlds"),
 
     /**
      * #############
@@ -117,7 +117,7 @@ public enum RootNode implements ConfigNode
      * Apply physics to blocks surrounding stone
      */
     SUPER_HARD_STONE_PHYSICS_APPLY("World Rules.Mining.Breaking Blocks Softens Surrounding Stone.Apply Physics To Weakened Stone", VarType.BOOLEAN, true,
-            "If the softened stone blocks should fall"),
+            "If the softened stone blocks should fall. They do not have to be in additional falling blocks section for this."),
     /**
      * These Blocks will turn surrounding stone into cobblestone
      */
@@ -137,7 +137,7 @@ public enum RootNode implements ConfigNode
      * maximum y for placing standard torches
      */
     STANDARD_TORCH_MIN_Y("World Rules.Torches.No Placement Under Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 30,
-            "No placement of torches below Defined Value. Makes for scarrier caves on the lower levels. Y: 0 to disable"),
+            "No placement of torches below Defined Value. Makes for scarier caves on the lower levels. Y: 0 to disable"),
     /**
      * whether players are limited to placing torches against specific materials
      */
@@ -187,7 +187,7 @@ public enum RootNode implements ConfigNode
     BETTER_TREE_CHOPPING("World Rules.Better Tree Felling", VarType.BOOLEAN, true,
             "The trunk and branches of a tree will fall and potentially injure you.",
             "It makes it easier to chop trees, but you have to watch out a little for the falling logs.",
-            "Also by making branchlogs fall down most treetops should decay."),
+            "Also by making logs of branches fall down most treetops should decay naturally."),
     /**
      * #################################
      * # ENHANCED ENVIRONMENTAL DAMAGE #
@@ -198,6 +198,7 @@ public enum RootNode implements ConfigNode
      */
     //dmg before potion effect -> first value in list
     _COMMENT_ENVIRONMENTAL_DMG("Player.Enhanced Environmental Injuries",
+            "Apply effects and damage multipliers to players",
             "Bukkit effect names: http://jd.bukkit.org/rb/apidocs/org/bukkit/potion/PotionEffectType.html",
             "or effect ids: http://minecraft.gamepedia.com/Status_effects"),
     ENHANCED_ENVIRONMENTAL_DAMAGE("Player.Enhanced Environmental Injuries.Enable", VarType.BOOLEAN, true),
@@ -244,7 +245,7 @@ public enum RootNode implements ConfigNode
      * percentage of item stacks lost on death
      */
     PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT("Player.Death.Loose Items On Death.Percentage", VarType.INTEGER, SubType.PERCENTAGE, 10,
-            "Percentage of all players item that will get lost on death. Removes complete stacks."),
+            "Percentage of all of the players items that will get lost on death."),
     /**
      * Damage Tools instead by a percentage of their max durability instead of completely deleting the items
      */
