@@ -126,6 +126,7 @@ public class Players extends ListenerModule
         Player player = event.getEntity();
         World world = player.getWorld();
 
+        final boolean enableItemLoss = CFG.getBoolean(RootNode.PLAYER_DEATH_ITEMS_FORFEIT_ENABLE, world.getName());
         final int deathLossPercent = CFG.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.DEATH_INV_LOSS);
 
@@ -135,7 +136,7 @@ public class Players extends ListenerModule
         final boolean destroyTools = CFG.getBoolean(RootNode.PLAYER_DEATH_TOOLS_KEEP_DAMAGED, world.getName());
 
         // FEATURE: some portion of player inventory is permanently lost on death
-        if (!playerBypasses)
+        if (!playerBypasses && enableItemLoss)
         {
             List<ItemStack> drops = event.getDrops();
             List<ItemStack> removedDrops = new ArrayList<ItemStack>();
