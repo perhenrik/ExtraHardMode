@@ -29,6 +29,7 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.features.*;
 import com.extrahardmode.features.monsters.*;
+import com.extrahardmode.features.utils.TemporaryBlockHandler;
 import com.extrahardmode.metrics.ConfigPlotter;
 import com.extrahardmode.module.*;
 import com.extrahardmode.service.IModule;
@@ -101,19 +102,22 @@ public class ExtraHardMode extends JavaPlugin
         registerModule(Torches.class, new Torches(this));
         registerModule(Water.class, new Water(this));
 
+        //Utils
+        registerModule(TemporaryBlockHandler.class, new TemporaryBlockHandler(this));
+
         //Monster Modules
         registerModule(Blazes.class, new Blazes(this));
         registerModule(BumBumBens.class, new BumBumBens(this));
         registerModule(Endermen.class, new Endermen(this));
         registerModule(Glydia.class, new Glydia(this));
         registerModule(Ghasts.class, new Ghasts(this));
-        /*try //Enabled from 1.6 onwards only
+        try //Enabled from 1.6 onwards only
         {
             Class.forName("org.bukkit.entity.Horse", false, null);
             registerModule(Horses.class, new Horses(this));
         } catch (ClassNotFoundException ignored)
         {
-        }*/
+        }
         registerModule(MonsterRules.class, new MonsterRules(this));
         registerModule(PigMen.class, new PigMen(this));
         registerModule(RealisticChopping.class, new RealisticChopping(this));

@@ -2,7 +2,7 @@ package com.extrahardmode.command;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.features.monsters.DebugMode;
+import com.extrahardmode.features.DebugMode;
 import com.extrahardmode.service.ICommand;
 import com.extrahardmode.service.PermissionNode;
 import org.bukkit.ChatColor;

@@ -377,6 +377,11 @@ public enum RootNode implements ConfigNode
      * percent chance for a zombie to reanimate after death
      */
     ZOMBIES_REANIMATE_PERCENT("Zombies.Reanimate Percent", VarType.INTEGER, SubType.PERCENTAGE, 50),
+    ZOMBIES_REANIMATE_SKULLS("Zombies.Reanimate Place Skulls", VarType.BOOLEAN, true,
+            "If zombie heads should be placed at the location where a zombie will resurrect",
+            "Breaking the head will result in the zombie not resurrecting."),
+    ZOMBIE_REANIMATE_DROP_PERCENTAGE("Zombies.Reanimate Placed Skulls Drop Percentage", VarType.INTEGER, SubType.PERCENTAGE, 5,
+            "What percentage of the placed skulls should drop as an item, when broken before the zombie respawns."),
 
     /**
      * #############

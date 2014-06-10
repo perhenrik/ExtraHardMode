@@ -24,6 +24,7 @@ package com.extrahardmode.task;
 
 
 import com.extrahardmode.ExtraHardMode;
+import com.extrahardmode.features.utils.TemporaryBlock;
 import com.extrahardmode.module.EntityHelper;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -52,6 +53,11 @@ public class RespawnZombieTask implements Runnable
      */
     private final Player player;
 
+    /**
+     * Skull Block
+     */
+    private final TemporaryBlock block;
+
 
     /**
      * Constructor.
@@ -62,9 +68,24 @@ public class RespawnZombieTask implements Runnable
      */
     public RespawnZombieTask(ExtraHardMode plugin, Location location, Player target)
     {
+        this(plugin, location, target, null);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param plugin         - Plugin instance.
+     * @param location       - Respawn location.
+     * @param target         - Target player.
+     * @param temporaryBlock block where the skull is placed
+     */
+    public RespawnZombieTask(ExtraHardMode plugin, Location location, Player target, TemporaryBlock temporaryBlock)
+    {
         this.plugin = plugin;
         this.location = location;
         this.player = target;
+        this.block = temporaryBlock;
     }
 
 

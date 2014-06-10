@@ -1,4 +1,4 @@
-package com.extrahardmode.features.monsters;
+package com.extrahardmode.features;
 
 
 import com.extrahardmode.ExtraHardMode;
