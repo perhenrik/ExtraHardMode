@@ -113,7 +113,7 @@ public class BlockModule extends EHMModule
             block.setType(Material.DIRT);
 
         FallingBlock fallingBlock = block.getWorld().spawnFallingBlock(block.getLocation(), block.getTypeId(), block.getData());
-        fallingBlock.setDropItem(false);
+        fallingBlock.setDropItem(CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_DROP_ITEM, block.getWorld().getName()));
         // remove original block
         CompatHandler.logFallingBlockFall(block);
         block.setType(Material.AIR);

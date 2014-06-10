@@ -710,6 +710,11 @@ public enum RootNode implements ConfigNode
      */
     MORE_FALLING_BLOCKS_BREAK_TORCHES("Additional Falling Blocks.Break Torches", VarType.BOOLEAN, true),
     /**
+     * Whether a falling block that is broken by an obstructing block should drop as an item
+     */
+    MORE_FALLING_BLOCKS_DROP_ITEM("Additional Falling Blocks.Drop As Items", VarType.BOOLEAN, false,
+            "Whether a falling block that is broken by an obstructing block should drop as an item"),
+    /**
      * Cascading falling blocks
      */
     MORE_FALLING_BLOCKS_CASCADE("Additional Falling Blocks.Landed Blocks Can Cause Blocks To Fall", VarType.BOOLEAN, true),

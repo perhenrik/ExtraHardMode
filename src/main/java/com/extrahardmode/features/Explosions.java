@@ -411,7 +411,7 @@ public class Explosions extends ListenerModule
                     FallingBlock fall = block.getLocation().getWorld().spawnFallingBlock(block.getLocation(), block.getType(), block.getData());
                     fall.setMetadata(tag, new FixedMetadataValue(plugin, block.getLocation())); //decide on the distance if block should be placed
                     //fall.setMetadata("drops", new FixedMetadataValue(plugin, block.getDrops()));
-                    fall.setDropItem(false);
+                    fall.setDropItem(CFG.getBoolean(RootNode.MORE_FALLING_BLOCKS_DROP_ITEM, block.getWorld().getName()));
                     UtilityModule.moveUp(fall, upVel);
                     //block.setType(Material.AIR);
                     fallingBlockList.add(fall);
