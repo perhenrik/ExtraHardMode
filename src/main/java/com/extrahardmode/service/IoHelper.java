@@ -4,9 +4,8 @@ package com.extrahardmode.service;
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+
+import com.google.common.io.Files;
 
 /**
  * Helper Functions for general IoStuff
@@ -61,10 +60,10 @@ public class IoHelper
      */
     public static void renameTo(File currentFile, String newName)
     {
-        Path source = currentFile.toPath();
         try
         {
-            Files.move(source, source.resolveSibling(newName), StandardCopyOption.REPLACE_EXISTING);
+        	File newFile = new File(newName);
+            Files.move(currentFile, newFile);
         } catch (IOException e)
         {
             e.printStackTrace();

@@ -50,6 +50,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -405,6 +406,15 @@ public class Glydia extends ListenerModule
         }
     }
 
+    private EntityType shooterType(Projectile projectile) {
+        ProjectileSource source = projectile.getShooter();
+        if ((source instanceof LivingEntity) == false) {
+            return EntityType.UNKNOWN;
+        }
+
+        LivingEntity entity = (LivingEntity) source;
+        return entity.getType();
+    }
 
     /**
      * When an explosion occurs
@@ -426,7 +436,7 @@ public class Glydia extends ListenerModule
         {
             Fireball fireball = (Fireball) entity;
             Entity spawnedMonster = null;
-            if (fireball.getShooter() != null && fireball.getShooter().getType() == EntityType.ENDER_DRAGON)
+            if (fireball.getShooter() != null && shooterType(fireball) == EntityType.ENDER_DRAGON)
             {
                 int random = plugin.getRandom().nextInt(100);
                 if (random < 40)

@@ -38,6 +38,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 /**
  * All the changes to Witches
@@ -95,6 +96,16 @@ public class Witches extends ListenerModule
         }
     }
 
+    private EntityType shooterType(Projectile projectile) {
+        ProjectileSource source = projectile.getShooter();
+        if ((source instanceof LivingEntity) == false) {
+            return EntityType.UNKNOWN;
+        }
+
+        LivingEntity entity = (LivingEntity) source;
+        return entity.getType();
+    }
+
 
     /**
      * When a potion breaks When Witches throw a potion we sometimes spawn explosions or monsters
@@ -111,10 +122,9 @@ public class Witches extends ListenerModule
         final boolean additionalAttacks = CFG.getBoolean(RootNode.WITCHES_ADDITIONAL_ATTACKS, world.getName());
 
         // FEATURE: enhanced witches. they throw wolf spawner and teleport potions as well as poison potions
-        LivingEntity shooter = potion.getShooter();
-        if (additionalAttacks && shooter != null && shooter.getType() == EntityType.WITCH)
+        if (additionalAttacks && shooterType(potion) == EntityType.WITCH)
         {
-            Witch witch = (Witch) shooter;
+            Witch witch = (Witch) potion.getShooter();
 
             int random = plugin.getRandom().nextInt(100);
 
