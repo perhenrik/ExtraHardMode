@@ -22,6 +22,16 @@
 package com.extrahardmode.task;
 
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Collection;
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
@@ -29,13 +39,7 @@ import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-
-import java.util.AbstractMap.SimpleEntry;
+import com.extrahardmode.service.OurRandom;
 
 /**
  * Task to spawn more monsters, especially in light.
@@ -85,34 +89,53 @@ public class MoreMonstersTask implements Runnable
             Player player = entry.getKey();
             World world = location.getWorld();
 
-            try
-            {
-                location = verifyLocation(location);
-                if (location != null && location.getChunk().isLoaded() && player.isOnline()) //fix monsters spawning at previous locations on login
-                {//Check if the player is within 64 blocks, but there are no other players within 16 blocks
-                    if (world.getEnvironment() == Environment.NORMAL &&
-                            (location.distanceSquared(player.getLocation()) < 64 * 64) && !EntityHelper.arePlayersNearby(location, 16.0))
-                    {
-                        Entity mob = EntityHelper.spawnRandomMob(location);
-                        EntityHelper.markAsOurs(plugin, mob);
+            final int threshold = CFG.getInt(RootNode.MONSTER_SPAWNS_IN_LIGHT_PERCENTAGE, world.getName());
+
+            // another tweakable value to damped in case we overshoot the light or depth values
+            // and end up with too many mobs
+            if (OurRandom.percentChance(threshold)) {
+                try
+                {
+                    location = verifyLocation(location);
+                    if (location != null && location.getChunk().isLoaded() && player.isOnline()) //fix monsters spawning at previous locations on login
+                    {//Check if the player is within 64 blocks, but there are no other players within 16 blocks
+                        boolean worldOk = world.getEnvironment() == Environment.NORMAL;
+                        boolean playerClose = (location.distanceSquared(player.getLocation()) < 64 * 64);
+                        boolean tooClose = EntityHelper.arePlayersNearby(location, 16.0);
+
+                        if (worldOk && playerClose && !tooClose)
+                        {
+                            Entity mob = EntityHelper.spawnRandomMob(location);
+                            EntityHelper.markAsOurs(plugin, mob);
+                        }
                     }
+                } catch (IllegalArgumentException ignored) {
+                    // in case the player is in a different world from the saved location
                 }
-            } catch (IllegalArgumentException ignored)
-            {
-            } // in case the player is in a different world from the saved location
+            }
+
         }
 
         // plan for the next pass
         dataStore.getPreviousLocations().clear();
-        for (Player player : plugin.getServer().getOnlinePlayers())
-        {
-            Location verifiedLocation = null;
-            //only if player hasn't got bypass and is in survival check location
-            if (!playerModule.playerBypasses(player, Feature.MONSTERRULES))
-                verifiedLocation = verifyLocation(player.getLocation());
-            if (verifiedLocation != null)
-                dataStore.getPreviousLocations().add(new SimpleEntry<Player, Location>(player, verifiedLocation));
-        }
+
+      Collection<? extends Player> onlinePlayers = plugin.getServer().getOnlinePlayers();
+          for (Player player : onlinePlayers)
+          {
+              Location verifiedLocation = null;
+              //only if player hasn't got bypass and is in survival check location
+              if (!playerModule.playerBypasses(player, Feature.MONSTERRULES)) {
+                  verifiedLocation = verifyLocation(player.getLocation());
+              }
+
+              if (verifiedLocation != null) {
+                  dataStore.getPreviousLocations().add(new SimpleEntry<Player, Location>(player, verifiedLocation));
+              }
+          }
+    }
+
+    private void log(String msg) {
+        plugin.getLogger().fine(msg);
     }
 
     //TODO move this into a utility class
@@ -132,8 +155,21 @@ public class MoreMonstersTask implements Runnable
 
         // Only spawn monsters in normal world. End is crowded with endermen and nether is too extreme anyway, add config later
         int lightLvl = location.getBlock().getLightFromSky();
-        if (world.getEnvironment() == World.Environment.NORMAL && (location.getY() < maxY && lightLvl < 3))
+        boolean worldOk = world.getEnvironment() == World.Environment.NORMAL;
+        boolean depthOk = location.getY() < maxY;
+
+        final int maxLight = CFG.getInt(RootNode.MONSTER_SPAWNS_IN_LIGHT_MAX_LIGHT, world.getName());
+        boolean lightOk = lightLvl <= maxLight;
+
+        if (worldOk && depthOk && lightOk) {
             verifiedLoc = EntityHelper.isLocSafeSpawn(location);
+        }
+        else {
+            if (!lightOk) {
+                // have had issues w/weird light levels - maybe due to moon phase or dusk/dawn?
+                log("not spawning - too light");
+            }
+        }
 
         return verifiedLoc;
     }

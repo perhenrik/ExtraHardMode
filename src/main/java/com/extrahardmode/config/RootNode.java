@@ -350,10 +350,25 @@ public enum RootNode implements ConfigNode
      * what to multiply monster spawns by
      */
     MORE_MONSTERS_MULTIPLIER("General Monster Rules.More Monsters.Multiplier", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 2),
+
     /**
      * max y value for monsters to spawn in the light
      */
-    MONSTER_SPAWNS_IN_LIGHT_MAX_Y("General Monster Rules.Monsters Spawn In Light Max Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 50),
+    MONSTER_SPAWNS_IN_LIGHT_MAX_Y("General Monster Rules.Monsters Spawn In Light.Max Y", VarType.INTEGER, SubType.Y_VALUE, Disable.ZERO, 50),
+
+    /**
+     * max light value for monsters to spawn in the light
+     * 0-3  = bats spawn at depth
+     * 0-7  = mobs spawn in overworld normally
+     * 8-11 = mobs are hostile but do not burn
+     * 12+  = mobs except spiders, creepers, and witches burn (blazes hostile)
+     */
+    MONSTER_SPAWNS_IN_LIGHT_MAX_LIGHT("General Monster Rules.Monsters Spawn In Light.Max Light", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ZERO, 10),
+
+    /**
+     * percentage of time to spawn monsters in light
+     */
+    MONSTER_SPAWNS_IN_LIGHT_PERCENTAGE("General Monster Rules.Monsters Spawn In Light.Percentage", VarType.INTEGER, SubType.PERCENTAGE, Disable.ZERO, 100),
 
     /**
      * ##########
