@@ -36,7 +36,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.mainclass>com.extrahardmode.ExtraHardMode</project.mainclass>
         <!--Use a profile to overwrite this-->
-        <outputdir>${project.build.outputDirectory}</outputdir>
+        <outputdir>${project.package.outputDirectory}</outputdir>
         <mc-version>1.7.9</mc-version>
         <bukkit-ver>R0.3-SNAPSHOT</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
@@ -45,7 +45,6 @@
 
     <!-- Build instructions -->
     <build>
-        <finalName>${project.artifactId}</finalName>
         <defaultGoal>package</defaultGoal>
         <testSourceDirectory>${testDir}</testSourceDirectory>
         <sourceDirectory>${srcDir}</sourceDirectory>
