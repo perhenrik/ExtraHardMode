@@ -37,8 +37,8 @@
         <project.mainclass>com.extrahardmode.ExtraHardMode</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.package.outputDirectory}</outputdir>
-        <mc-version>1.7.9</mc-version>
-        <bukkit-ver>R0.3-SNAPSHOT</bukkit-ver>
+        <mc-version>1.7.10</mc-version>
+        <bukkit-ver>R0.1-SNAPSHOT</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/java/</srcDir>
     </properties>
@@ -251,6 +251,12 @@
             <id>Mitsugaru</id>
             <email>mitsugaru@gmail.com</email>
             <url>https://github.com/Mitsugaru</url>
+            <timezone>-7</timezone>
+        </developer>
+        <developer>
+            <id>bluekelp</id>
+            <email>bukkit-dev@bluekelp.com</email>
+            <url>https://github.com/bluekelp</url>
             <timezone>-7</timezone>
         </developer>
     </developers>
