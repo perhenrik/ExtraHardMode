@@ -119,8 +119,7 @@ public class MoreMonstersTask implements Runnable
         // plan for the next pass
         dataStore.getPreviousLocations().clear();
 
-      Collection<? extends Player> onlinePlayers = plugin.getServer().getOnlinePlayers();
-          for (Player player : onlinePlayers)
+          for (Player player : plugin.getServer().getOnlinePlayers())
           {
               Location verifiedLocation = null;
               //only if player hasn't got bypass and is in survival check location
