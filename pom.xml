@@ -38,7 +38,7 @@
         <!--Use a profile to overwrite this-->
         <outputdir>${project.package.outputDirectory}</outputdir>
         <mc-version>1.7.10</mc-version>
-        <bukkit-ver>R0.1-SNAPSHOT</bukkit-ver>
+        <bukkit-ver>R0.3-SNAPSHOT</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/java/</srcDir>
     </properties>
@@ -258,6 +258,9 @@
             <email>bukkit-dev@bluekelp.com</email>
             <url>https://github.com/bluekelp</url>
             <timezone>-7</timezone>
+            <roles>
+                <role>contributor</role>
+            </roles>
         </developer>
     </developers>
 
