@@ -231,6 +231,28 @@ public class Players extends ListenerModule
                         applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_BURN, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_BURN_MULT, world.getName()));
 //                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                         break;
+                    case DROWNING:
+                        applyEffectOnDmg(event, null, CFG.getDouble(RootNode.ENHANCED_DMG_DROWNING_MULT, world.getName()));
+                        break;
+                    case STARVATION:
+                        applyEffectOnDmg(event, null, CFG.getDouble(RootNode.ENHANCED_DMG_STARVATION_MULT, world.getName()));
+                        break;
+
+                    case CONTACT:
+                    case CUSTOM:
+                    case ENTITY_ATTACK:
+                    case FALLING_BLOCK:
+                    case FIRE:
+                    case LIGHTNING:
+                    case MAGIC:
+                    case MELTING:
+                    case POISON:
+                    case PROJECTILE:
+                    case SUICIDE:
+                    case THORNS:
+                    case VOID:
+                    case WITHER:
+                        break;
                 }
             }
         }
@@ -242,7 +264,9 @@ public class Players extends ListenerModule
     private void applyEffectOnDmg(EntityDamageEvent event, PotionEffectHolder potionEffect, double multiplier)
     {
         //Assume it's a LivingEntity,
-        potionEffect.applyEffect((LivingEntity) event.getEntity(), false);
+        if (potionEffect != null) {
+            potionEffect.applyEffect((LivingEntity) event.getEntity(), false);
+        }
         event.setDamage((int) (event.getDamage() * multiplier));
     }
 
