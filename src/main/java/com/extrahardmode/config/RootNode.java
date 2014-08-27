@@ -228,7 +228,11 @@ public enum RootNode implements ConfigNode
 
     ENHANCED_DMG_STARVATION_MULT("Player.Enhanced Environmental Injuries.Starvation.Dmg Multiplier", VarType.DOUBLE, 2.0),
 
+    ENHANCED_DMG_STARVATION("Player.Enhanced Environmental Injuries.Starvation", VarType.POTION_EFFECT, new PotionEffectHolder(null, 0, 0)),
+
     ENHANCED_DMG_DROWNING_MULT("Player.Enhanced Environmental Injuries.Drowning.Dmg Multiplier", VarType.DOUBLE, 2.0),
+
+    ENHANCED_DMG_DROWNING("Player.Enhanced Environmental Injuries.Drowning", VarType.POTION_EFFECT, new PotionEffectHolder(null, 0, 0)),
 
     /**
      * whether players catch fire when extinguishing a fire up close

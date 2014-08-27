@@ -232,10 +232,10 @@ public class Players extends ListenerModule
 //                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                         break;
                     case DROWNING:
-                        applyEffectOnDmg(event, null, CFG.getDouble(RootNode.ENHANCED_DMG_DROWNING_MULT, world.getName()));
+                        applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_DROWNING, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_DROWNING_MULT, world.getName()));
                         break;
                     case STARVATION:
-                        applyEffectOnDmg(event, null, CFG.getDouble(RootNode.ENHANCED_DMG_STARVATION_MULT, world.getName()));
+                        applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_STARVATION, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_STARVATION_MULT, world.getName()));
                         break;
 
                     case CONTACT:
