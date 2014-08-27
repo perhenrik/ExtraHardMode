@@ -398,7 +398,17 @@ public enum RootNode implements ConfigNode
     /**
      * whether zombies apply a debuff to players on hit
      */
-    ZOMBIES_DEBILITATE_PLAYERS("Zombies.Slow Players", VarType.BOOLEAN, true),
+    ZOMBIES_DEBILITATE_PLAYERS("Zombies.Slow Players.Enable", VarType.BOOLEAN, true),
+
+    ZOMBIES_DEBILITATE_PLAYERS_EFFECT("Zombies.Slow Players.Effect", VarType.POTION_EFFECT, new PotionEffectHolder(PotionEffectType.SLOW, 5 * 20, 1),
+            "Effect to apply to the player when he is hit."),
+
+    ZOMBIES_DEBILITATE_PLAYERS_EFFECT_STACK("Zombies.Slow Players.Stack Effect.Enable", VarType.BOOLEAN, true,
+            "If the effect strength should be increased when a player is hit in succession"),
+
+    ZOMBIES_DEBILITATE_PLAYERS_EFFECT_STACK_MAX("Zombies.Slow Players.Stack Effect.Max Strength", VarType.INTEGER, 3,
+            "Maximum strength of the effect that can be achieved."),
+
     /**
      * percent chance for a zombie to reanimate after death
      */

@@ -30,6 +30,7 @@ import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
+import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
 import com.extrahardmode.task.RespawnZombieTask;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -41,7 +42,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 /** Zombies <p> can resurrect themselves , make players slow when hit </p> */
 public class Zombies extends ListenerModule
@@ -131,6 +131,9 @@ public class Zombies extends ListenerModule
     {
         Entity entity = event.getEntity();
         World world = entity.getWorld();
+        final PotionEffectHolder effect = CFG.getPotionEffect(RootNode.ZOMBIES_DEBILITATE_PLAYERS_EFFECT, world.getName());
+        final boolean stackEffect = CFG.getBoolean(RootNode.ZOMBIES_DEBILITATE_PLAYERS_EFFECT_STACK, world.getName());
+        final int maxEffectAmplifier = CFG.getInt(RootNode.ZOMBIES_DEBILITATE_PLAYERS_EFFECT_STACK_MAX, world.getName());
 
         if (entity instanceof Player)
         {
@@ -152,7 +155,20 @@ public class Zombies extends ListenerModule
                 if (damageByEntityEvent != null && damageByEntityEvent.getDamager() instanceof Zombie)
                 {
                     //TODO EhmZombieSlowEvent
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 10, 3));
+                    if (stackEffect && player.hasPotionEffect(effect.getBukkitEffectType()))
+                    {
+                        int amplifier = 0;
+                        for (PotionEffect potion : player.getActivePotionEffects())
+                            if (potion.getType().equals(effect.getBukkitEffectType()))
+                            {
+                                amplifier = potion.getAmplifier();
+                                break;
+                            }
+                        if (amplifier + 1 < maxEffectAmplifier)
+                            amplifier++;
+                        player.addPotionEffect(new PotionEffect(effect.getBukkitEffectType(), effect.getDuration(), amplifier));
+                    } else
+                        effect.applyEffect(player, false);
                 }
             }
         }
