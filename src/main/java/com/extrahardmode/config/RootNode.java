@@ -349,7 +349,7 @@ public enum RootNode implements ConfigNode
     INHIBIT_MONSTER_GRINDERS("General Monster Rules.Inhibit Monster Grinders", VarType.BOOLEAN, true,
             "This is an advanced anti monster grinder module. It will block drops if the monster",
             "spawned on an unnatural block, took too much damage from natural causes (falldmg etc.)",
-            ", cant reach a player or can not easily reach a player f.e. monster is in water."),
+            "cant reach a player or can not easily reach a player f.e. monster is in water."),
     /**
      * max y value for extra monster spawns
      */
@@ -357,7 +357,8 @@ public enum RootNode implements ConfigNode
     /**
      * what to multiply monster spawns by
      */
-    MORE_MONSTERS_MULTIPLIER("General Monster Rules.More Monsters.Multiplier", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 2),
+    MORE_MONSTERS_MULTIPLIER("General Monster Rules.More Monsters.Multiplier", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 2,
+            "A simple multiplier to increase spawns under ground by increasing the packspawning size."),
 
     /**
      * max y value for monsters to spawn in the light
@@ -371,12 +372,14 @@ public enum RootNode implements ConfigNode
      * 8-11 = mobs are hostile but do not burn
      * 12+  = mobs except spiders, creepers, and witches burn (blazes hostile)
      */
-    MONSTER_SPAWNS_IN_LIGHT_MAX_LIGHT("General Monster Rules.Monsters Spawn In Light.Max Light", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ZERO, 10),
+    MONSTER_SPAWNS_IN_LIGHT_MAX_LIGHT("General Monster Rules.Monsters Spawn In Light.Max Light", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ZERO, 10,
+            "0-3: bats spawning, 0-7 normal mob spawning, 8-11 mobs are hostile but don't burn, 12+ mobs burn"),
 
     /**
      * percentage of time to spawn monsters in light
      */
-    MONSTER_SPAWNS_IN_LIGHT_PERCENTAGE("General Monster Rules.Monsters Spawn In Light.Percentage", VarType.INTEGER, SubType.PERCENTAGE, Disable.ZERO, 100),
+    MONSTER_SPAWNS_IN_LIGHT_PERCENTAGE("General Monster Rules.Monsters Spawn In Light.Percentage", VarType.INTEGER, SubType.PERCENTAGE, Disable.ZERO, 100,
+            "Spawns monsters at locations where player has been previously."),
 
     /**
      * ##########
@@ -399,7 +402,9 @@ public enum RootNode implements ConfigNode
     /**
      * percent chance for a zombie to reanimate after death
      */
-    ZOMBIES_REANIMATE_PERCENT("Zombies.Reanimate Percent", VarType.INTEGER, SubType.PERCENTAGE, 50),
+    ZOMBIES_REANIMATE_PERCENT("Zombies.Reanimate Percent", VarType.INTEGER, SubType.PERCENTAGE, 50,
+            "Percentage for the 1st respawn to occur. To reduce the amount of consecutive respawns the percentage gets applied again.",
+            "F.e 1: 40%, 2: 40% of 40% = 16%, 3: 40% of 16% = 6% and so on"),
 
     /**
      * #############
@@ -585,11 +590,13 @@ public enum RootNode implements ConfigNode
     /**
      * Reduce dmg from pigmen because it's not meant to be a hostile mob
      */
-    PIG_ZOMBIE_DMG_PERCENT("PigZombies.Dmg to players percent", VarType.INTEGER, SubType.NATURAL_NUMBER, 70),
+    PIG_ZOMBIE_DMG_PERCENT("PigZombies.Dmg to players percent", VarType.INTEGER, SubType.NATURAL_NUMBER, 70,
+            "This simple multiplier allows you to reduce the damage of PigZombies. They are a bit too tough otherwise."),
     /**
      * whether pig zombies always drop nether wart in nether fortresses
      */
-    FORTRESS_PIGS_DROP_WART("PigZombies.Always Drop Netherwart In Fortresses", VarType.BOOLEAN, true),
+    FORTRESS_PIGS_DROP_WART("PigZombies.Always Drop Netherwart In Fortresses", VarType.BOOLEAN, true,
+            "Add netherwart to the drops of pigzombies."),
     /**
      * Whether pig zombies should drop netherwart occasionally elsewhere in Nether
      */
@@ -606,7 +613,8 @@ public enum RootNode implements ConfigNode
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
-    GHASTS_DEFLECT_ARROWS("Ghasts.Arrows Do % Damage", VarType.INTEGER, SubType.PERCENTAGE, Disable.HUNDRED, 20),
+    GHASTS_DEFLECT_ARROWS("Ghasts.Arrows Do % Damage", VarType.INTEGER, SubType.PERCENTAGE, Disable.HUNDRED, 20,
+            "Reduce the damage arrows do to Ghasts to make fights with Ghasts more challenging."),
     /**
      * whether ghasts should deflect arrows and drop extra loot percentage like skeleton deflect
      */
@@ -623,7 +631,8 @@ public enum RootNode implements ConfigNode
     /**
      * whether endermen may teleport players
      */
-    IMPROVED_ENDERMAN_TELEPORTATION("Endermen.May Teleport Players", VarType.BOOLEAN, true),
+    IMPROVED_ENDERMAN_TELEPORTATION("Endermen.May Teleport Players", VarType.BOOLEAN, true,
+            "No more easy killing by standing under a 3 high roof! An enderman may teleport a Player. Makes fights with enderman challenging and dangerous."),
 
     /**
      * ###########
@@ -633,7 +642,8 @@ public enum RootNode implements ConfigNode
     /**
      * Do Witches have additional attacks
      */
-    WITCHES_ADDITIONAL_ATTACKS("Witches.Additional Attacks", VarType.BOOLEAN, true),
+    WITCHES_ADDITIONAL_ATTACKS("Witches.Additional Attacks", VarType.BOOLEAN, true,
+            "Includes spawning of baby zombies, explosions and teleporting"),
     /**
      * percentage of surface zombies which spawn as witches
      */
@@ -659,15 +669,18 @@ public enum RootNode implements ConfigNode
     /**
      * whether the dragon spits fireballs and summons minions
      */
-    ENDER_DRAGON_ADDITIONAL_ATTACKS("EnderDragon.Harder Battle", VarType.BOOLEAN, true),
+    ENDER_DRAGON_ADDITIONAL_ATTACKS("EnderDragon.Harder Battle", VarType.BOOLEAN, true,
+            "Dragon summons minions including blazes and zombies. Can also aggro nearby endermen!"),
     /**
      * whether server wide messages will broadcast player victories and defeats
      */
-    ENDER_DRAGON_COMBAT_ANNOUNCEMENTS("EnderDragon.Battle Announcements", VarType.BOOLEAN, true),
+    ENDER_DRAGON_COMBAT_ANNOUNCEMENTS("EnderDragon.Battle Announcements", VarType.BOOLEAN, true,
+            "Announces in chat when someone is challenging the dragon or has beaten her."),
     /**
      * whether players will be allowed to build in the end
      */
-    ENDER_DRAGON_NO_BUILDING("EnderDragon.No Building Allowed", VarType.BOOLEAN, true),
+    ENDER_DRAGON_NO_BUILDING("EnderDragon.No Building Allowed", VarType.BOOLEAN, true,
+            "Block building in the end to prevent players from building big protective structures."),
 
     /**
      * ###########
@@ -740,11 +753,13 @@ public enum RootNode implements ConfigNode
     /**
      * Cascading falling blocks
      */
-    MORE_FALLING_BLOCKS_CASCADE("Additional Falling Blocks.Landed Blocks Can Cause Blocks To Fall", VarType.BOOLEAN, true),
+    MORE_FALLING_BLOCKS_CASCADE("Additional Falling Blocks.Landed Blocks Can Cause Blocks To Fall", VarType.BOOLEAN, true,
+            "When a falling block lands it checks if the blocks around it should fall as well. Can cascade downwards infinitely."),
     /**
      * How much damage loose Falling Logs do to Players and Animals
      */
-    MORE_FALLING_BLOCKS_DMG_AMOUNT("Additional Falling Blocks.Dmg Amount When Hitting Players", VarType.INTEGER, 2),
+    MORE_FALLING_BLOCKS_DMG_AMOUNT("Additional Falling Blocks.Dmg Amount When Hitting Players", VarType.INTEGER, 2,
+            "Should a falling block damage players when it lands on them."),
     /**
      * wheter falling grass/mycel turns into dirt
      */
@@ -762,7 +777,8 @@ public enum RootNode implements ConfigNode
     /**
      * Should Stone be turned to cobblestone
      */
-    EXPLOSIONS_TURN_STONE_TO_COBLE("Explosions.Turn Stone To Cobble", VarType.BOOLEAN, true),
+    EXPLOSIONS_TURN_STONE_TO_COBLE("Explosions.Turn Stone To Cobble", VarType.BOOLEAN, true,
+            "When enabled explosions will turn surrounding stone into cobblestone "),
     /**
      * #####################
      * # EXPLOSION PHYSICS #
@@ -771,7 +787,8 @@ public enum RootNode implements ConfigNode
     /**
      * Enable cool flying blocks
      */
-    EXPLOSIONS_FYLING_BLOCKS_ENABLE("Explosions.Physics.Enable", VarType.BOOLEAN, true),
+    EXPLOSIONS_FYLING_BLOCKS_ENABLE("Explosions.Physics.Enable", VarType.BOOLEAN, true,
+            "Makes explosions uber cool by throwing blocks up into the air"),
     /**
      * If explosions from other plugins should also be affected (disabled by default)
      */
@@ -779,11 +796,13 @@ public enum RootNode implements ConfigNode
     /**
      * How many blocks will go flying
      */
-    EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE("Explosions.Physics.Blocks Affected Percentage", VarType.INTEGER, SubType.PERCENTAGE, 20),
+    EXPLOSIONS_FLYING_BLOCKS_PERCENTAGE("Explosions.Physics.Blocks Affected Percentage", VarType.INTEGER, SubType.PERCENTAGE, 20,
+            "How many of the blocks that would have been destroyed should go flying instead"),
     /**
      * How fast the blocks accelerate upwards
      */
-    EXPLOSIONS_FLYING_BLOCKS_UP_VEL("Explosions.Physics.Up Velocity", VarType.DOUBLE, 2.0),
+    EXPLOSIONS_FLYING_BLOCKS_UP_VEL("Explosions.Physics.Up Velocity", VarType.DOUBLE, 2.0,
+            "Following 2 variables basically determine the angle and speed in what the blocks go flying"),
     /**
      * How far the blocks spread
      */
@@ -791,11 +810,14 @@ public enum RootNode implements ConfigNode
     /**
      * In what radius the flying blocks shouldnt be placed
      */
-    EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS("Explosions.Physics.Exceed Radius Autoremove", VarType.INTEGER, 10),
+    EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS("Explosions.Physics.Exceed Radius Autoremove", VarType.INTEGER, 10,
+            "Blocks exceeding this radius will no be placed in the world to avoid explosions uglying the landscape.",
+            "Set to 0 if you want blocks to not be placed at all"),
     /**
      * This determines if the explosion is categorized as under or above
      */
-    EXPLOSIONS_Y("Explosions.Border Y", VarType.INTEGER, 55),
+    EXPLOSIONS_Y("Explosions.Border Y", VarType.INTEGER, 55,
+            "Determines where your surface is located. You can have seperate settings for the surface and caves."),
 
     //WHEN ADDING NEW EXPLOSIONTYPES YOU HAVE TO ADD THE NODES TO EXPLOSIONTYPE AND ALSO UPDATE THE EXPLOSIONTASK
     /**
@@ -805,7 +827,8 @@ public enum RootNode implements ConfigNode
     /**
      * Size of Explosion below border
      */
-    EXPLOSIONS_CREEPERS_BELOW_POWER("Explosions.Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
+    EXPLOSIONS_CREEPERS_BELOW_POWER("Explosions.Creeper.Below Border.Explosion Power", VarType.INTEGER, SubType.NATURAL_NUMBER, 3,
+            "3 = default creeper, 4 = default tnt, 6 = default charged creeper"),
     /**
      * Set Fire on Explosion below border
      */
@@ -825,7 +848,8 @@ public enum RootNode implements ConfigNode
     /**
      * Damage the world below border
      */
-    EXPLOSIONS_CREEPERS_ABOVE_WORLD_GRIEF("Explosions.Creeper.Above Border.World Damage", VarType.BOOLEAN, true),
+    EXPLOSIONS_CREEPERS_ABOVE_WORLD_GRIEF("Explosions.Creeper.Above Border.World Damage", VarType.BOOLEAN, true,
+            "Disabling worlddamage allows you to have explosions that damage players above ground, but doesn't make a mess."),
 
     /**
      * Charged CREEPER Enable?
@@ -863,11 +887,14 @@ public enum RootNode implements ConfigNode
     /**
      * whether TNT should explode multiple times
      */
-    BETTER_TNT("Explosions.Tnt.Enable Multiple Explosions", VarType.BOOLEAN, true),
+    BETTER_TNT("Explosions.Tnt.Enable Multiple Explosions", VarType.BOOLEAN, true,
+            "Creates 3 explosions at random locations close to the original tnt",
+            "Makes for more natural looking craters."),
     /**
      * wheter the crafting recipe should give more tnt
      */
-    MORE_TNT_NUMBER("Explosions.Tnt.Tnt Per Recipe", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 3),
+    MORE_TNT_NUMBER("Explosions.Tnt.Tnt Per Recipe", VarType.INTEGER, SubType.NATURAL_NUMBER, Disable.ONE, 3,
+            "Change recipe to yield 3 tnt instead of 1"),
     /**
      * Size of Explosion below the border
      */
