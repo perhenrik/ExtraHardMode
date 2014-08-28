@@ -406,7 +406,7 @@ public enum RootNode implements ConfigNode
     ZOMBIES_DEBILITATE_PLAYERS_EFFECT_STACK("Zombies.Slow Players.Stack Effect.Enable", VarType.BOOLEAN, true,
             "If the effect strength should be increased when a player is hit in succession"),
 
-    ZOMBIES_DEBILITATE_PLAYERS_EFFECT_STACK_MAX("Zombies.Slow Players.Stack Effect.Max Strength", VarType.INTEGER, 3,
+    ZOMBIES_DEBILITATE_PLAYERS_EFFECT_STACK_MAX("Zombies.Slow Players.Stack Effect.Max Strength", VarType.INTEGER, SubType.NATURAL_NUMBER, 3,
             "Maximum strength of the effect that can be achieved."),
 
     /**

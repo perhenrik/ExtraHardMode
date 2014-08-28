@@ -157,7 +157,7 @@ public class Zombies extends ListenerModule
                     //TODO EhmZombieSlowEvent
                     if (stackEffect && player.hasPotionEffect(effect.getBukkitEffectType()))
                     {
-                        int amplifier = 0;
+                        int amplifier = 1;
                         for (PotionEffect potion : player.getActivePotionEffects())
                             if (potion.getType().equals(effect.getBukkitEffectType()))
                             {
@@ -166,6 +166,7 @@ public class Zombies extends ListenerModule
                             }
                         if (amplifier + 1 < maxEffectAmplifier)
                             amplifier++;
+                        player.removePotionEffect(effect.getBukkitEffectType());
                         player.addPotionEffect(new PotionEffect(effect.getBukkitEffectType(), effect.getDuration(), amplifier));
                     } else
                         effect.applyEffect(player, false);
