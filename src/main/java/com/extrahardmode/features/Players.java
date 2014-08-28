@@ -126,6 +126,7 @@ public class Players extends ListenerModule
         Player player = event.getEntity();
         World world = player.getWorld();
 
+        final boolean enableItemLoss = CFG.getBoolean(RootNode.PLAYER_DEATH_ITEMS_FORFEIT_ENABLE, world.getName());
         final int deathLossPercent = CFG.getInt(RootNode.PLAYER_DEATH_ITEM_STACKS_FORFEIT_PERCENT, world.getName());
         final boolean playerBypasses = playerModule.playerBypasses(player, Feature.DEATH_INV_LOSS);
 
@@ -135,7 +136,7 @@ public class Players extends ListenerModule
         final boolean destroyTools = CFG.getBoolean(RootNode.PLAYER_DEATH_TOOLS_KEEP_DAMAGED, world.getName());
 
         // FEATURE: some portion of player inventory is permanently lost on death
-        if (!playerBypasses)
+        if (!playerBypasses && enableItemLoss)
         {
             List<ItemStack> drops = event.getDrops();
             List<ItemStack> removedDrops = new ArrayList<ItemStack>();
@@ -230,6 +231,28 @@ public class Players extends ListenerModule
                         applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_BURN, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_BURN_MULT, world.getName()));
 //                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 1));
                         break;
+                    case DROWNING:
+                        applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_DROWNING, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_DROWNING_MULT, world.getName()));
+                        break;
+                    case STARVATION:
+                        applyEffectOnDmg(event, CFG.getPotionEffect(RootNode.ENHANCED_DMG_STARVATION, world.getName()), CFG.getDouble(RootNode.ENHANCED_DMG_STARVATION_MULT, world.getName()));
+                        break;
+
+                    case CONTACT:
+                    case CUSTOM:
+                    case ENTITY_ATTACK:
+                    case FALLING_BLOCK:
+                    case FIRE:
+                    case LIGHTNING:
+                    case MAGIC:
+                    case MELTING:
+                    case POISON:
+                    case PROJECTILE:
+                    case SUICIDE:
+                    case THORNS:
+                    case VOID:
+                    case WITHER:
+                        break;
                 }
             }
         }
@@ -241,7 +264,9 @@ public class Players extends ListenerModule
     private void applyEffectOnDmg(EntityDamageEvent event, PotionEffectHolder potionEffect, double multiplier)
     {
         //Assume it's a LivingEntity,
-        potionEffect.applyEffect((LivingEntity) event.getEntity(), false);
+        if (potionEffect != null) {
+            potionEffect.applyEffect((LivingEntity) event.getEntity(), false);
+        }
         event.setDamage((int) (event.getDamage() * multiplier));
     }
 

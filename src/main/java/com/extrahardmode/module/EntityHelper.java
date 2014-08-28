@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.List;
 import java.util.Random;
@@ -313,5 +314,19 @@ public class EntityHelper
         return false;
     }
 
+    /**
+     * Computes the EntityType of the given Projectile's shooter, so we can add damage or effect to impacts, nerf things, etc.
+     * @param projectile
+     * @return
+     */
+    public static EntityType shooterType(Projectile projectile) {
+        ProjectileSource source = projectile.getShooter();
+        if ((source instanceof LivingEntity) == false) {
+            return EntityType.UNKNOWN;
+        }
+
+        LivingEntity entity = (LivingEntity) source;
+        return entity.getType();
+    }
 
 }

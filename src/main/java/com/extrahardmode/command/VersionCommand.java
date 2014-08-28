@@ -60,7 +60,7 @@ public class VersionCommand implements ICommand
                     if (manifest != null)
                     {
                         String buildNumber = manifest.getMainAttributes().getValue("Build-Number");
-                        if (buildNumber.length() > 0)
+                        if (buildNumber != null && buildNumber.length() > 0)
                             sender.sendMessage(ChatColor.BLUE + "Build: " + ChatColor.WHITE + buildNumber);
                     }
                 } catch (IOException ignored)

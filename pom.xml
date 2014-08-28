@@ -37,15 +37,14 @@
         <project.mainclass>com.extrahardmode.ExtraHardMode</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
-        <mc-version>1.6.4</mc-version>
-        <bukkit-ver>R1.0</bukkit-ver>
+        <mc-version>1.7.9</mc-version>
+        <bukkit-ver>R0.3-SNAPSHOT</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/java/</srcDir>
     </properties>
 
     <!-- Build instructions -->
     <build>
-        <finalName>${project.artifactId}</finalName>
         <defaultGoal>package</defaultGoal>
         <testSourceDirectory>${testDir}</testSourceDirectory>
         <sourceDirectory>${srcDir}</sourceDirectory>
@@ -225,6 +224,12 @@
             <version>1.6.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>14.0.1</version>
+        </dependency>
+
     </dependencies>
 
     <!-- Developers -->
@@ -247,6 +252,15 @@
             <email>mitsugaru@gmail.com</email>
             <url>https://github.com/Mitsugaru</url>
             <timezone>-7</timezone>
+        </developer>
+        <developer>
+            <id>bluekelp</id>
+            <email>bukkit-dev@bluekelp.com</email>
+            <url>https://github.com/bluekelp</url>
+            <timezone>-7</timezone>
+            <roles>
+                <role>contributor</role>
+            </roles>
         </developer>
     </developers>
 
