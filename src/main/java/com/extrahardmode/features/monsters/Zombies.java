@@ -25,14 +25,23 @@ package com.extrahardmode.features.monsters;
 import com.extrahardmode.ExtraHardMode;
 import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
-import com.extrahardmode.events.EhmZombieRespawnEvent;
+import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.EntityHelper;
 import com.extrahardmode.module.PlayerModule;
+import com.extrahardmode.module.temporaryblock.TemporaryBlock;
+import com.extrahardmode.module.temporaryblock.TemporaryBlockBreakEvent;
+import com.extrahardmode.module.temporaryblock.TemporaryBlockHandler;
 import com.extrahardmode.service.Feature;
 import com.extrahardmode.service.ListenerModule;
+import com.extrahardmode.service.OurRandom;
 import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
 import com.extrahardmode.task.RespawnZombieTask;
+import org.bukkit.Material;
+import org.bukkit.SkullType;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Skull;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -50,6 +59,8 @@ public class Zombies extends ListenerModule
 
     private PlayerModule playerModule;
 
+    private TemporaryBlockHandler temporaryBlockHandler;
+
     private boolean hasReinforcements = false;
 
 
@@ -65,6 +76,7 @@ public class Zombies extends ListenerModule
         super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
+        temporaryBlockHandler = plugin.getModuleForClass(TemporaryBlockHandler.class);
         try
         {
             CreatureSpawnEvent.SpawnReason doesEnumExist = CreatureSpawnEvent.SpawnReason.REINFORCEMENTS;
@@ -88,6 +100,7 @@ public class Zombies extends ListenerModule
         World world = entity.getWorld();
 
         int zombiesReanimatePercent = CFG.getInt(RootNode.ZOMBIES_REANIMATE_PERCENT, world.getName());
+        boolean placeSkulls = CFG.getBoolean(RootNode.ZOMBIES_REANIMATE_SKULLS, world.getName());
 
         // FEATURE: zombies may reanimate if not on fire when they die
         if (zombiesReanimatePercent > 0 && !EntityHelper.hasFlagIgnore(entity))
@@ -103,16 +116,26 @@ public class Zombies extends ListenerModule
                 //Zombies which have respawned already are less likely to respawn
                 int respawnCount = entity.getMetadata("extrahardmode.zombie.respawncount").size() > 0 ? entity.getMetadata("extrahardmode.zombie.respawncount").get(0).asInt() : 0;
                 respawnCount++;
-                zombiesReanimatePercent = (int) (1.0D / respawnCount * zombiesReanimatePercent);
+                zombiesReanimatePercent = (int) ((1.0D / respawnCount) * zombiesReanimatePercent);
 
-                EhmZombieRespawnEvent zombieEvent = new EhmZombieRespawnEvent(player, zombie, zombiesReanimatePercent, !plugin.random(zombiesReanimatePercent));
-                plugin.getServer().getPluginManager().callEvent(zombieEvent);
-                if (!zombie.isVillager() && entity.getFireTicks() < 1 && !zombieEvent.isCancelled())
+                if (!zombie.isVillager() && entity.getFireTicks() < 1 && OurRandom.percentChance(zombiesReanimatePercent))
                 {
                     //Save the incremented respawncount
                     entity.setMetadata("extrahardmode.zombie.respawncount", new FixedMetadataValue(plugin, respawnCount));
-
-                    RespawnZombieTask task = new RespawnZombieTask(plugin, entity.getLocation(), player);
+                    TemporaryBlock tempBlock = null;
+                    if (placeSkulls)
+                    {
+                        Block block = entity.getLocation().getBlock();
+                        block.setType(Material.SKULL);
+                        Skull skull = (Skull) block.getState();
+                        skull.setSkullType(SkullType.ZOMBIE);
+                        //Random rotation
+                        BlockFace[] faces = BlockModule.getHorizontalAdjacentFaces();
+                        skull.setRotation(faces[OurRandom.nextInt(faces.length)]);
+                        skull.update();
+                        tempBlock = temporaryBlockHandler.addTemporaryBlock(entity.getLocation(), "respawn_skull");
+                    }
+                    RespawnZombieTask task = new RespawnZombieTask(plugin, entity.getLocation(), player, tempBlock);
                     int respawnSeconds = plugin.getRandom().nextInt(6) + 3; // 3-8 seconds
                     plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, task, 20L * respawnSeconds); // /20L ~ 1 second
                 }
@@ -183,6 +206,24 @@ public class Zombies extends ListenerModule
         if (hasReinforcements && event.getEntity() instanceof Zombie && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.REINFORCEMENTS)
         {
             EntityHelper.flagIgnore(plugin, event.getEntity());
+        }
+    }
+
+
+    @EventHandler
+    public void onSkullBroken(TemporaryBlockBreakEvent event)
+    {
+        final int dropPercentage = CFG.getInt(RootNode.ZOMBIE_REANIMATE_SKULLS_DROP_PERCENTAGE, event.getBlock().getLoc().getWorld().getName());
+        TemporaryBlock temporaryBlock = event.getBlock();
+        Object[] data = temporaryBlock.getData();
+        if (data.length == 1 && data[0] instanceof String && data[0].equals("respawn_skull"))
+        {
+            //Clear item drops: this is the only way
+            if (dropPercentage == 0 || !OurRandom.percentChance(dropPercentage))
+            {
+                event.getBlockBreakEvent().setCancelled(true);
+                event.getBlockBreakEvent().getBlock().setType(Material.AIR);
+            }
         }
     }
 }

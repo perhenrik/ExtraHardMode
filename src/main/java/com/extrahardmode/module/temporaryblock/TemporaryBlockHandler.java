@@ -1,4 +1,4 @@
-package com.extrahardmode.features.utils;
+package com.extrahardmode.module.temporaryblock;
 
 
 import com.extrahardmode.ExtraHardMode;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class TemporaryBlockHandler extends ListenerModule
 {
-    private Map<Location, TemporaryBlock> temporaryBlockList = new HashMap<Location, TemporaryBlock>();
+    private Map<LiteLocation, TemporaryBlock> temporaryBlockList = new HashMap<LiteLocation, TemporaryBlock>();
 
 
     public TemporaryBlockHandler(ExtraHardMode plugin)
@@ -33,17 +33,19 @@ public class TemporaryBlockHandler extends ListenerModule
     public void onBlockBreak(BlockBreakEvent event)
     {
         Block block = event.getBlock();
-        if (temporaryBlockList.containsKey(block.getLocation()))
+        if (temporaryBlockList.containsKey(LiteLocation.fromLocation(block.getLocation())))
         {
-            temporaryBlockList.get(block.getLocation()).isBroken = true;
-            plugin.getServer().getPluginManager().callEvent(new TemporaryBlockBreakEvent(event.getBlock().getLocation()));
+            TemporaryBlock temporaryBlock = temporaryBlockList.remove(LiteLocation.fromLocation(block.getLocation()));
+            temporaryBlock.isBroken = true;
+            plugin.getServer().getPluginManager().callEvent(new TemporaryBlockBreakEvent(temporaryBlock, event));
         }
     }
 
 
-    public void addTemporaryBlock(Location loc)
+    public TemporaryBlock addTemporaryBlock(Location loc, Object... data)
     {
-        TemporaryBlock temporaryBlock = new TemporaryBlock(loc);
-        temporaryBlockList.put(loc, temporaryBlock);
+        TemporaryBlock temporaryBlock = new TemporaryBlock(loc, data);
+        temporaryBlockList.put(LiteLocation.fromLocation(loc), temporaryBlock);
+        return temporaryBlock;
     }
 }

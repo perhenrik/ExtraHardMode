@@ -18,7 +18,6 @@ public class EhmZombieRespawnEvent extends Event implements Cancellable
 
     private final Zombie zombie;
 
-    private final int respawnChance;
 
     private boolean cancelled = false;
 
@@ -28,13 +27,11 @@ public class EhmZombieRespawnEvent extends Event implements Cancellable
      *
      * @param player        killer if it was a Player kill
      * @param zombie        that was killed
-     * @param respawnChance percentage that was used
      */
-    public EhmZombieRespawnEvent(final Player player, final Zombie zombie, int respawnChance)
+    public EhmZombieRespawnEvent(final Player player, final Zombie zombie)
     {
         this.player = player;
         this.zombie = zombie;
-        this.respawnChance = respawnChance;
     }
 
 
@@ -43,12 +40,11 @@ public class EhmZombieRespawnEvent extends Event implements Cancellable
      *
      * @param player        killer if it was a Player kill
      * @param zombie        that was killed
-     * @param respawnChance percentage that was used
      * @param cancelled     if the Event is cancelled by default
      */
-    public EhmZombieRespawnEvent(final Player player, final Zombie zombie, int respawnChance, boolean cancelled)
+    public EhmZombieRespawnEvent(final Player player, final Zombie zombie, boolean cancelled)
     {
-        this(player, zombie, respawnChance);
+        this(player, zombie);
         this.cancelled = cancelled;
     }
 
@@ -70,16 +66,6 @@ public class EhmZombieRespawnEvent extends Event implements Cancellable
         return player;
     }
 
-
-    /**
-     * Use this if you want to change something based on the percentage
-     *
-     * @return the percentage that was used to calculate if the Zombie should respawn
-     */
-    public int getRespawnChance()
-    {
-        return respawnChance;
-    }
 
 
     /**

@@ -412,14 +412,14 @@ public enum RootNode implements ConfigNode
     /**
      * percent chance for a zombie to reanimate after death
      */
-    ZOMBIES_REANIMATE_SKULLS("Zombies.Reanimate Place Skulls", VarType.BOOLEAN, true,
+    ZOMBIES_REANIMATE_SKULLS("Zombies.Reanimate.Place Skulls", VarType.BOOLEAN, true,
             "If zombie heads should be placed at the location where a zombie will resurrect",
             "Breaking the head will result in the zombie not resurrecting."),
-    ZOMBIE_REANIMATE_DROP_PERCENTAGE("Zombies.Reanimate Placed Skulls Drop Percentage", VarType.INTEGER, SubType.PERCENTAGE, 5,
+    ZOMBIE_REANIMATE_SKULLS_DROP_PERCENTAGE("Zombies.Reanimate.Placed Skulls Drop Percentage", VarType.INTEGER, SubType.PERCENTAGE, 5,
             "What percentage of the placed skulls should drop as an item, when broken before the zombie respawns."),
-    ZOMBIES_REANIMATE_PERCENT("Zombies.Reanimate Percent", VarType.INTEGER, SubType.PERCENTAGE, 50,
-            "Percentage for the 1st respawn to occur. To reduce the amount of consecutive respawns the percentage gets applied again.",
-            "F.e 1: 40%, 2: 40% of 40% = 16%, 3: 40% of 16% = 6% and so on"),
+    ZOMBIES_REANIMATE_PERCENT("Zombies.Reanimate.Percent", VarType.INTEGER, SubType.PERCENTAGE, 50,
+            "Percentage for the 1st respawn to occur. To reduce the amount of consecutive respawns the percentage reduced by 1/n respawns.",
+            "F.e 1: 50%, 2: 1/2 of 50% = 25%, 3: 1/3 of 25% = 7.5% and so on"),
 
     /**
      * #############

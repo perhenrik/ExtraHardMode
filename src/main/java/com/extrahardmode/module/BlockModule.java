@@ -272,7 +272,7 @@ public class BlockModule extends EHMModule
      *
      * @return Blockfaces[]
      */
-    public BlockFace[] getHorizontalAdjacentFaces()
+    public static BlockFace[] getHorizontalAdjacentFaces()
     {
         return new BlockFace[]{
                 BlockFace.WEST,

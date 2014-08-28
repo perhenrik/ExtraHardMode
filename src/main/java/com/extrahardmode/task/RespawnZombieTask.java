@@ -24,10 +24,12 @@ package com.extrahardmode.task;
 
 
 import com.extrahardmode.ExtraHardMode;
-import com.extrahardmode.features.utils.TemporaryBlock;
+import com.extrahardmode.events.EhmZombieRespawnEvent;
 import com.extrahardmode.module.EntityHelper;
+import com.extrahardmode.module.temporaryblock.TemporaryBlock;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
@@ -92,21 +94,28 @@ public class RespawnZombieTask implements Runnable
     @Override
     public void run()
     {
-        Chunk chunk = location.getChunk();
-        if (!chunk.isLoaded())
+        if (block == null || !block.isBroken())
         {
-            return;
-        }
-        Zombie zombie = (Zombie) location.getWorld().spawnEntity(location, EntityType.ZOMBIE);
-        // zombie has half normal zombie health
-        zombie.setHealth(zombie.getHealth() / 2);
-        // this zombie will not drop loot (again)
-        EntityHelper.markLootLess(plugin, zombie);
-        EntityHelper.markAsOurs(plugin, zombie);
-        // zombie is still madat the same player
-        if (this.player != null && this.player.isOnline())
-        {
-            zombie.setTarget(this.player);
+            Chunk chunk = location.getChunk();
+            if (!chunk.isLoaded())
+            {
+                return;
+            }
+            Zombie zombie = (Zombie) location.getWorld().spawnEntity(location, EntityType.ZOMBIE);
+            // zombie has half normal zombie health
+            zombie.setHealth(zombie.getHealth() / 2);
+            // this zombie will not drop loot (again)
+            EntityHelper.markLootLess(plugin, zombie);
+            EntityHelper.markAsOurs(plugin, zombie);
+            // zombie is still madat the same player
+            if (this.player != null && this.player.isOnline())
+            {
+                zombie.setTarget(this.player);
+            }
+            EhmZombieRespawnEvent zombieEvent = new EhmZombieRespawnEvent(player, zombie, false);
+            plugin.getServer().getPluginManager().callEvent(zombieEvent);
+            if (block != null)
+                block.getLoc().getBlock().setType(Material.AIR);
         }
     }
 }
