@@ -123,7 +123,9 @@ public class Zombies extends ListenerModule
                     //Save the incremented respawncount
                     entity.setMetadata("extrahardmode.zombie.respawncount", new FixedMetadataValue(plugin, respawnCount));
                     TemporaryBlock tempBlock = null;
-                    if (placeSkulls)
+                    //Water washes skulls away which then drop to the ground, cancelling the BlockFromToEvent didn't prevent the skull from dropping
+                    Material type = entity.getLocation().getBlock().getType();
+                    if (placeSkulls && (type != Material.WATER && type != Material.STATIONARY_WATER))
                     {
                         Block block = entity.getLocation().getBlock();
                         block.setType(Material.SKULL);
