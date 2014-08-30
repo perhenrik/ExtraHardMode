@@ -93,7 +93,7 @@ public class ConfigPlotter
                         //case GHASTS_DEFLECT_ARROWS:
                     case IMPROVED_ENDERMAN_TELEPORTATION:
                     case INHIBIT_MONSTER_GRINDERS:
-                    case LIMITED_BLOCK_PLACEMENT_BRIDGING_ENABLE:
+                    case LIMITED_BLOCK_PLACEMENT:
                     case LIMITED_TORCH_PLACEMENT:
                     case MAGMA_CUBES_BECOME_BLAZES_ON_DAMAGE:
                         //case MORE_MONSTERS_MULTIPLIER:
