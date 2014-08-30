@@ -37,6 +37,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -184,6 +185,8 @@ public class AntiFarming extends ListenerModule
         if (weakCropsEnabled && plugin.getModuleForClass(BlockModule.class).plantDies(event.getBlock(), event.getNewState().getData()))
         {
             event.setCancelled(true);
+            //shrub gets removed on farmland
+            event.getBlock().getRelative(BlockFace.DOWN).setType(Material.DIRT);
             event.getBlock().setType(Material.DEAD_BUSH); // dead shrub
         }
     }

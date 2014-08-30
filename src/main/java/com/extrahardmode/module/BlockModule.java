@@ -29,7 +29,6 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.service.EHMModule;
 import com.extrahardmode.task.BlockPhysicsCheckTask;
-import org.bukkit.CropState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -37,7 +36,6 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.FallingBlock;
-import org.bukkit.material.Crops;
 import org.bukkit.material.MaterialData;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -206,7 +204,7 @@ public class BlockModule extends EHMModule
         if (weakFoodCropsEnabled)
         {
             // not evaluated until the plant is nearly full grown
-            if (newDataValue instanceof Crops && ((Crops) newDataValue).getState() == CropState.RIPE)
+            if (newDataValue.getData() >= 7)
             {
                 Material material = block.getType();
                 if (material == Material.CROPS || material == Material.CARROT || material == Material.POTATO)
