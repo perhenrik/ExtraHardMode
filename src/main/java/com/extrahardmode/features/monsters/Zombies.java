@@ -180,7 +180,7 @@ public class Zombies extends ListenerModule
                 if (damageByEntityEvent != null && damageByEntityEvent.getDamager() instanceof Zombie)
                 {
                     //TODO EhmZombieSlowEvent
-                    if (stackEffect && player.hasPotionEffect(effect.getBukkitEffectType()))
+                    if (stackEffect && effect != null && player.hasPotionEffect(effect.getBukkitEffectType()))
                     {
                         int amplifier = 1;
                         for (PotionEffect potion : player.getActivePotionEffects())
@@ -193,7 +193,7 @@ public class Zombies extends ListenerModule
                             amplifier++;
                         player.removePotionEffect(effect.getBukkitEffectType());
                         player.addPotionEffect(new PotionEffect(effect.getBukkitEffectType(), effect.getDuration(), amplifier));
-                    } else
+                    } else if (effect != null)
                         effect.applyEffect(player, false);
                 }
             }

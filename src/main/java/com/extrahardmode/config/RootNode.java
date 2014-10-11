@@ -1281,6 +1281,10 @@ public enum RootNode implements ConfigNode
                 obj = BlockRelationsList.EMPTY_LIST;
                 break;
             }
+            case POTION_EFFECT:
+            {
+                return null;
+            }
             default:
             {
                 throw new UnsupportedOperationException("Type of " + type + " doesn't have a default value to be disabled");
