@@ -548,7 +548,7 @@ public enum RootNode implements ConfigNode
     /**
      * Number of Fireworks to show when creeper launches
      */
-    FLAMING_CREEPERS_FIREWORK("Creepers.Fire Triggers Explosion.Firework Count", VarType.INTEGER, 3),
+    FLAMING_CREEPERS_FIREWORK("Creepers.Fire Triggers Explosion.Firework Count", VarType.INTEGER, SubType.NATURAL_NUMBER, 3),
     /**
      * Speed at which a creeper ascends
      */
@@ -773,7 +773,7 @@ public enum RootNode implements ConfigNode
     /**
      * How much damage loose Falling Logs do to Players and Animals
      */
-    MORE_FALLING_BLOCKS_DMG_AMOUNT("Additional Falling Blocks.Dmg Amount When Hitting Players", VarType.INTEGER, 2,
+    MORE_FALLING_BLOCKS_DMG_AMOUNT("Additional Falling Blocks.Dmg Amount When Hitting Players", VarType.INTEGER, SubType.NATURAL_NUMBER, 2,
             "Should a falling block damage players when it lands on them."),
     /**
      * wheter falling grass/mycel turns into dirt
@@ -825,13 +825,13 @@ public enum RootNode implements ConfigNode
     /**
      * In what radius the flying blocks shouldnt be placed
      */
-    EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS("Explosions.Physics.Exceed Radius Autoremove", VarType.INTEGER, 10,
+    EXPLOSIONS_FLYING_BLOCKS_AUTOREMOVE_RADIUS("Explosions.Physics.Exceed Radius Autoremove", VarType.INTEGER, SubType.NATURAL_NUMBER, 10,
             "Blocks exceeding this radius will no be placed in the world to avoid explosions uglying the landscape.",
             "Set to 0 if you want blocks to not be placed at all"),
     /**
      * This determines if the explosion is categorized as under or above
      */
-    EXPLOSIONS_Y("Explosions.Border Y", VarType.INTEGER, 55,
+    EXPLOSIONS_Y("Explosions.Border Y", VarType.INTEGER, SubType.NATURAL_NUMBER, 55,
             "Determines where your surface is located. You can have seperate settings for the surface and caves."),
 
     //WHEN ADDING NEW EXPLOSIONTYPES YOU HAVE TO ADD THE NODES TO EXPLOSIONTYPE AND ALSO UPDATE THE EXPLOSIONTASK
