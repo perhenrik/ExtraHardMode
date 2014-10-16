@@ -73,11 +73,6 @@ public class CompatHandler extends EHMModule
         monsterProtectionPls = new HashSet<IMonsterProtection>();
         blockLoggerPls = new HashSet<IBlockLogger>();
 
-        //Check if spawns are allowed
-        CompatWorldGuard w = new CompatWorldGuard();
-        if (w.isEnabled())
-            monsterProtectionPls.add(w);
-
         //BlockLoggers//
         //Prism
         CompatPrism prismCompat = new CompatPrism(plugin);
