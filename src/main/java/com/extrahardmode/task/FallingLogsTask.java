@@ -77,7 +77,8 @@ public class FallingLogsTask implements Runnable
         if (block != null)
         {
             /* Prevent wooden structures near trees from being affected*/
-            if (blockModule.getBlocksInArea(block.getLocation(), 2, 1, Material.LEAVES).length > 3)
+            if (blockModule.getBlocksInArea(block.getLocation(), 2, 1, Material.LEAVES).length > 3 ||
+                    blockModule.getBlocksInArea(block.getLocation(), 2, 1, Material.LEAVES_2).length > 3)
             {
                 //Clear the area below of leaves
                 Block below = block;
@@ -99,11 +100,13 @@ public class FallingLogsTask implements Runnable
                             break;
                         }
                         case LEAVES:
+                        case LEAVES_2:
                         {
                             below.breakNaturally();
                             break;
                         }
                         case LOG:
+                        case LOG_2:
                         {
                             //Prevent Logs on adjacent sides (Jungle Tree) from turning to FallingBlocks and some of them turning into items
                             switch (below.getRelative(BlockFace.DOWN).getType())

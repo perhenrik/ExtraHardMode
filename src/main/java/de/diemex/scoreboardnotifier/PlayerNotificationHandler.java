@@ -203,13 +203,6 @@ public class PlayerNotificationHandler
         {
             if (notifications.containsKey(i))
             {
-                //Use the title and color of the newest message
-                if (updateTitle)
-                {
-                    objective.setDisplayName(notifications.get(i).getTitle());
-                    updateTitle = false;
-                }
-
                 NotificationHolder popup = notifications.get(i);
                 List<String> msg = popup.getMsg();
                 for (String msgLine : msg)
@@ -224,6 +217,13 @@ public class PlayerNotificationHandler
                 OfflinePlayer dash = plugin.getServer().getOfflinePlayer(sb.toString());
                 if (i != 1) //not last line
                     objective.getScore(dash).setScore(lastLine--);
+
+                //Use the title and color of the newest message
+                if (updateTitle && objective.getScoreboard().getEntries().size() > 0)
+                {
+                    objective.setDisplayName(notifications.get(i).getTitle());
+                    updateTitle = false;
+                }
             }
         }
     }
@@ -282,7 +282,7 @@ public class PlayerNotificationHandler
     private void restoreScoreboard()
     {
         Player player = Bukkit.getPlayer(playerName);
-        if (player != null)
+        if (player != null && previousBoard != null)
             player.setScoreboard(previousBoard);
     }
 }
