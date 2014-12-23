@@ -3,7 +3,6 @@ package de.diemex.scoreboardnotifier;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -175,10 +174,7 @@ public class PlayerNotificationHandler
         {
             msgCount--;
             for (String line : notifications.get(id).getMsg())
-            {
-                OfflinePlayer remove = plugin.getServer().getOfflinePlayer(line);
-                msgBoard.resetScores(remove);
-            }
+                msgBoard.resetScores(line);
             notifications.remove(id);
             //Update all the line numbers
             updateIndexes();
@@ -194,7 +190,7 @@ public class PlayerNotificationHandler
         int separator = 0; //pos of =
 
         //Clear scoreboard
-        for (OfflinePlayer player : msgBoard.getPlayers())
+        for (String player : msgBoard.getEntries())
             msgBoard.resetScores(player);
 
         //Update the scores and put separators in between the lines
@@ -204,19 +200,6 @@ public class PlayerNotificationHandler
             if (notifications.containsKey(i))
             {
                 NotificationHolder popup = notifications.get(i);
-                List<String> msg = popup.getMsg();
-                for (String msgLine : msg)
-                {
-                    OfflinePlayer line = plugin.getServer().getOfflinePlayer(msgLine);
-                    Score score = objective.getScore(line);
-                    score.setScore(lastLine--);
-                }
-
-                StringBuilder sb = new StringBuilder(StringUtils.repeat("-", 16));
-                sb.setCharAt(separator < 16 ? separator++ : 0, '='); //Maximum of 16 messages at a time...
-                OfflinePlayer dash = plugin.getServer().getOfflinePlayer(sb.toString());
-                if (i != 1) //not last line
-                    objective.getScore(dash).setScore(lastLine--);
 
                 //Use the title and color of the newest message
                 if (updateTitle && objective.getScoreboard().getEntries().size() > 0)
@@ -224,6 +207,18 @@ public class PlayerNotificationHandler
                     objective.setDisplayName(notifications.get(i).getTitle());
                     updateTitle = false;
                 }
+
+                List<String> msg = popup.getMsg();
+                for (String msgLine : msg)
+                {
+                    Score score = objective.getScore(msgLine);
+                    score.setScore(lastLine--);
+                }
+
+                StringBuilder sb = new StringBuilder(StringUtils.repeat("-", 16));
+                sb.setCharAt(separator < 16 ? separator++ : 0, '='); //Maximum of 16 messages at a time...
+                if (i != 1) //not last line
+                    objective.getScore(sb.toString()).setScore(lastLine--);
             }
         }
     }

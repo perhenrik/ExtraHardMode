@@ -10,10 +10,9 @@ import com.extrahardmode.events.*;
 import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.MaterialHelper;
 import com.extrahardmode.module.MsgModule;
-import com.extrahardmode.module.PlayerModule;
 import com.extrahardmode.service.FindAndReplace;
 import com.extrahardmode.service.ListenerModule;
-import org.bukkit.ChatColor;
+import com.extrahardmode.task.WeightCheckTask;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -27,6 +26,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -343,31 +343,9 @@ public class Tutorial extends ListenerModule
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event)
     {
-        if (CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, event.getWhoClicked().getWorld().getName()))
-            if (event.getWhoClicked() instanceof Player && event.getWhoClicked() != null && messenger.popupsAreEnabled(MsgCategory.NOTIFICATION))
-            {
-                final Player player = (Player) event.getWhoClicked();
-
-                final double armorPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, player.getWorld().getName());
-                final double invPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, player.getWorld().getName());
-                final double toolPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, player.getWorld().getName());
-                final double maxPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, player.getWorld().getName());
-
-                //Because when player takes out we still have old inventory
-                plugin.getServer().getScheduler().runTask(plugin, new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        final float weight = PlayerModule.inventoryWeight(player, (float) armorPoints, (float) invPoints, (float) toolPoints);
-
-                        List<String> weightMessage = new ArrayList<String>(2);
-                        weightMessage.add(String.format("Weight %.1f/%.1f", weight, maxPoints));
-                        weightMessage.add(weight > maxPoints ? ChatColor.RED + "U will drown" : ChatColor.GREEN + "U won't drown");
-                        messenger.sendPopup(player, MsgCategory.WEIGHT_MSG, weightMessage, false);
-                    }
-                });
-            }
+        if (CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, event.getWhoClicked().getWorld().getName())
+                && event.getWhoClicked() instanceof Player && messenger.popupsAreEnabled(MsgCategory.NOTIFICATION))
+            WeightCheckTask.addPlayer(event.getWhoClicked().getUniqueId());
     }
 
 
@@ -375,9 +353,15 @@ public class Tutorial extends ListenerModule
     public void onInventoryClose(InventoryCloseEvent event)
     {
         if (event.getPlayer() instanceof Player)
-        {
             messenger.hidePopup((Player) event.getPlayer(), MsgCategory.WEIGHT_MSG.getUniqueIdentifier());
-        }
+        WeightCheckTask.removePlayer(event.getPlayer().getUniqueId());
+    }
+
+
+    @EventHandler
+    public void onLogout(PlayerQuitEvent event)
+    {
+        WeightCheckTask.removePlayer(event.getPlayer().getUniqueId());
     }
 
     //TODO Farming: NetherWart, Mushrooms

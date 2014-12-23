@@ -26,6 +26,7 @@ package com.extrahardmode;
 import com.extrahardmode.command.Commander;
 import com.extrahardmode.compatibility.CompatHandler;
 import com.extrahardmode.config.RootConfig;
+import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.features.*;
 import com.extrahardmode.features.monsters.*;
@@ -35,6 +36,8 @@ import com.extrahardmode.module.temporaryblock.TemporaryBlockHandler;
 import com.extrahardmode.service.IModule;
 import com.extrahardmode.service.OurRandom;
 import com.extrahardmode.task.MoreMonstersTask;
+import com.extrahardmode.task.WeightCheckTask;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -139,6 +142,14 @@ public class ExtraHardMode extends JavaPlugin
         // FEATURE: monsters spawn in the light under a configurable Y level
         MoreMonstersTask task = new MoreMonstersTask(this);
         this.getServer().getScheduler().scheduleSyncRepeatingTask(this, task, 600L, 600L);
+
+        //Feature: check weight task if no swimming in armor active and feature active in at least one world
+        boolean active = false;
+        for (World world : getServer().getWorlds())
+            if (getModuleForClass(RootConfig.class).getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, world.getName()))
+                active = true;
+        if (active)
+            this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new WeightCheckTask(this), 20L * 5, 20L * 5);
 
         //Metrics Plotter, this gets included by maven
         new ConfigPlotter(this, getModuleForClass(RootConfig.class));
