@@ -157,9 +157,9 @@ public class PlayerModule extends EHMModule
      *
      * @return the percentage as double. Example 0.8 when full armor is worn
      */
-    public double getArmorPoints(final Player player)
+    public static float getArmorPoints(final Player player)
     {
-        double points = 0.0;
+        float points = 0.0F;
         for (ItemStack armor : player.getInventory().getArmorContents())
         {
             switch (armor.getType())

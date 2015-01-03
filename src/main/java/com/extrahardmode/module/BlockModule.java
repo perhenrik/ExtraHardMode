@@ -481,6 +481,15 @@ public class BlockModule extends EHMModule
     }
 
 
+    public static boolean isOneOf(Block block, Material... materials)
+    {
+        for (Material material : materials)
+            if (block.getType() == material)
+                return true;
+        return false;
+    }
+
+
     @Override
     public void closing()
     {/*ignored*/}

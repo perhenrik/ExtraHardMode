@@ -339,6 +339,30 @@ public enum RootNode implements ConfigNode
             "Weight = 25 => (base) + (exceeding) * (modifier) = 35 + 7 * 2 = 49 (new drown rate)"),
 
     /**
+     * #################
+     * # ARMOR CHANGES #
+     * #################
+     */
+
+    /**
+     * If wearing armor should slow a player down
+     */
+    ARMOR_SLOWDOWN_ENABLE("Player.Armor Changes.Enable", VarType.BOOLEAN, true,
+            "Enables slowdown of players wearing armor."),
+    /**
+     * Speed of player walking with no worn armor
+     */
+    ARMOR_SLOWDOWN_BASESPEED("Player.Armor Changes.Basespeed", VarType.DOUBLE, 0.22,
+            "Player speed with no armor. Minecraft default is 0.2.",
+            "Slightly increased to 0.22 to give players with no armor an advantage."),
+    /**
+     * Maximum percentage
+     */
+    ARMOR_SLOWDOWN_PERCENT("Player.Armor Changes.Slowdown Percentage", VarType.INTEGER, SubType.PERCENTAGE, 40,
+            "How much percent players wearing full diamond armor will be slowed down.",
+            "This is the maximum value and will scale to how much armor you are wearing."),
+
+    /**
      * #########################
      * # GENERAL MONSTER RULES #
      * #########################

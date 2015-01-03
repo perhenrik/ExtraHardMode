@@ -27,6 +27,7 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.events.EhmPlayerExtinguishFireEvent;
 import com.extrahardmode.events.EhmPlayerInventoryLossEvent;
+import com.extrahardmode.module.BlockModule;
 import com.extrahardmode.module.DataStoreModule;
 import com.extrahardmode.module.PlayerData;
 import com.extrahardmode.module.PlayerModule;
@@ -36,9 +37,11 @@ import com.extrahardmode.service.config.customtypes.BlockType;
 import com.extrahardmode.service.config.customtypes.BlockTypeList;
 import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
@@ -49,8 +52,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -264,7 +270,8 @@ public class Players extends ListenerModule
     private void applyEffectOnDmg(EntityDamageEvent event, PotionEffectHolder potionEffect, double multiplier)
     {
         //Assume it's a LivingEntity,
-        if (potionEffect != null) {
+        if (potionEffect != null)
+        {
             potionEffect.applyEffect((LivingEntity) event.getEntity(), false);
         }
         event.setDamage((int) (event.getDamage() * multiplier));
@@ -300,5 +307,35 @@ public class Players extends ListenerModule
                     player.setFireTicks(fireEvent.getBurnTicks());
             }
         }
+    }
+
+
+    //Prevent sprint jumping as a workaround for slower armor
+    @EventHandler(priority = EventPriority.LOWEST)
+    void onPlayerMove(PlayerMoveEvent event)
+    {
+        Player player = event.getPlayer();
+        if (!CFG.getBoolean(RootNode.ARMOR_SLOWDOWN_ENABLE, player.getWorld().getName()))
+            return;
+        final int slowdownPercent = CFG.getInt(RootNode.ARMOR_SLOWDOWN_PERCENT, player.getWorld().getName());
+        final float armorPoints = PlayerModule.getArmorPoints(player);
+        if (player.getGameMode() != GameMode.CREATIVE && event.getTo().getY() > event.getFrom().getY())
+        {
+            Block block, control;
+            Vector dir = player.getVelocity();
+            dir.multiply(new Vector(1 - armorPoints / 0.8F * (slowdownPercent / 100F), 1, 1 - armorPoints / 0.8F * (slowdownPercent / 100F)));
+            block = player.getLocation().getBlock();
+            control = player.getLocation().getBlock().getRelative(BlockFace.UP, 2);
+            //Don't slow/drown players down in water
+            if (!BlockModule.isOneOf(block, Material.WATER, Material.STATIONARY_WATER, Material.LAVA, Material.STATIONARY_LAVA) && control.getType() == Material.AIR)
+                event.getPlayer().setVelocity(dir);
+        }
+    }
+
+
+    @EventHandler
+    public void onPlayerDisconnect(PlayerQuitEvent event)
+    {
+        event.getPlayer().setWalkSpeed(0.2F);
     }
 }

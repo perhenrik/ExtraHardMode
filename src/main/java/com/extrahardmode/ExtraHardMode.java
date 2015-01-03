@@ -35,9 +35,11 @@ import com.extrahardmode.module.*;
 import com.extrahardmode.module.temporaryblock.TemporaryBlockHandler;
 import com.extrahardmode.service.IModule;
 import com.extrahardmode.service.OurRandom;
+import com.extrahardmode.task.ArmorWeightTask;
 import com.extrahardmode.task.MoreMonstersTask;
 import com.extrahardmode.task.WeightCheckTask;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -151,6 +153,14 @@ public class ExtraHardMode extends JavaPlugin
         if (active)
             this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new WeightCheckTask(this), 20L * 5, 20L * 5);
 
+        //Armor task
+        active = false;
+        for (World world : getServer().getWorlds())
+            if (getModuleForClass(RootConfig.class).getBoolean(RootNode.ARMOR_SLOWDOWN_ENABLE, world.getName()))
+                active = true;
+        if (active)
+            this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new ArmorWeightTask(this), 20L * 5, 20L * 3);
+
         //Metrics Plotter, this gets included by maven
         new ConfigPlotter(this, getModuleForClass(RootConfig.class));
     }
@@ -163,6 +173,8 @@ public class ExtraHardMode extends JavaPlugin
         //Gracefully stop all modules
         for (IModule module : modules.values())
             module.closing();
+        for (Player player : getServer().getOnlinePlayers())
+            player.setWalkSpeed(0.2F);
         modules.clear();
     }
 
