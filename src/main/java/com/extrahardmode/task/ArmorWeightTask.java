@@ -36,6 +36,8 @@ public class ArmorWeightTask implements Runnable
     {
         for (Player player : mPlugin.getServer().getOnlinePlayers())
         {
+            if (!CFG.getBoolean(RootNode.ARMOR_SLOWDOWN_ENABLE, player.getWorld().getName()))
+                continue;
             final float basespeed = (float) CFG.getDouble(RootNode.ARMOR_SLOWDOWN_BASESPEED, player.getWorld().getName());
             final int slowdownPercent = CFG.getInt(RootNode.ARMOR_SLOWDOWN_PERCENT, player.getWorld().getName());
             final float armorPoints = PlayerModule.getArmorPoints(player);
