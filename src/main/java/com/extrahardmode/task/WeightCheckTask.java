@@ -10,14 +10,17 @@ import com.extrahardmode.module.PlayerModule;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class WeightCheckTask implements Runnable
 {
     private final ExtraHardMode mPlugin;
     private final RootConfig CFG;
     private final MsgModule mMessenger;
-    private static Set<UUID> mPlayerList = new HashSet<UUID>();
+    private static HashMap<UUID, Long> mLastClicks = new HashMap<UUID, Long>();
 
 
     public WeightCheckTask(ExtraHardMode plugin)
@@ -31,12 +34,15 @@ public class WeightCheckTask implements Runnable
     @Override
     public void run()
     {
-        for (UUID playerUuuid : mPlayerList)
+        for (UUID playerUuuid : mLastClicks.keySet())
         {
             Player player = mPlugin.getServer().getPlayer(playerUuuid);
-            if (player == null)
-                mPlayerList.remove(playerUuuid);
-            else
+            //Remove players that haven't clicked in their inventory for 5 seconds
+            if (System.currentTimeMillis() - mLastClicks.get(playerUuuid) > 5000 || player == null)
+            {
+                mLastClicks.remove(playerUuuid);
+                mMessenger.hidePopup(player, MsgCategory.WEIGHT_MSG.getUniqueIdentifier());
+            } else
             {
                 final double armorPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, player.getWorld().getName());
                 final double invPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, player.getWorld().getName());
@@ -54,14 +60,8 @@ public class WeightCheckTask implements Runnable
     }
 
 
-    public static void addPlayer(UUID uuid)
+    public static void updateLastCLick(UUID uuid)
     {
-        mPlayerList.add(uuid);
-    }
-
-
-    public static void removePlayer(UUID uuid)
-    {
-        mPlayerList.remove(uuid);
+        mLastClicks.put(uuid, System.currentTimeMillis());
     }
 }

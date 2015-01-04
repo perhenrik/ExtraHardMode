@@ -23,10 +23,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -345,23 +343,7 @@ public class Tutorial extends ListenerModule
     {
         if (CFG.getBoolean(RootNode.NO_SWIMMING_IN_ARMOR, event.getWhoClicked().getWorld().getName())
                 && event.getWhoClicked() instanceof Player && messenger.popupsAreEnabled(MsgCategory.NOTIFICATION))
-            WeightCheckTask.addPlayer(event.getWhoClicked().getUniqueId());
-    }
-
-
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event)
-    {
-        if (event.getPlayer() instanceof Player)
-            messenger.hidePopup((Player) event.getPlayer(), MsgCategory.WEIGHT_MSG.getUniqueIdentifier());
-        WeightCheckTask.removePlayer(event.getPlayer().getUniqueId());
-    }
-
-
-    @EventHandler
-    public void onLogout(PlayerQuitEvent event)
-    {
-        WeightCheckTask.removePlayer(event.getPlayer().getUniqueId());
+            WeightCheckTask.updateLastCLick(event.getWhoClicked().getUniqueId());
     }
 
     //TODO Farming: NetherWart, Mushrooms
