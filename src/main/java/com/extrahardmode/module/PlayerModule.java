@@ -198,10 +198,6 @@ public class PlayerModule extends EHMModule
                 case DIAMOND_CHESTPLATE:
                     points += 0.32;
                     break;
-                case AIR:
-                    break;
-                default:
-                    throw new UnsupportedOperationException("There seems to be a new armor type name: " + armor.getType().name() + " id: " + armor.getType().getId());
             }
         }
         return points;
