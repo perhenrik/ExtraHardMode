@@ -359,8 +359,13 @@ public enum RootNode implements ConfigNode
      * Maximum percentage
      */
     ARMOR_SLOWDOWN_PERCENT("Player.Armor Changes.Slowdown Percentage", VarType.INTEGER, SubType.PERCENTAGE, 40,
-            "How much percent players wearing full diamond armor will be slowed down.",
-            "This is the maximum value and will scale to how much armor you are wearing."),
+            "How much percent players wearing a full diamond armor will be slowed down.",
+            "This is the maximum slow down, the amount of armor points determines how much a player will be slowed down."),
+//    /**
+//     * Maximum percentage
+//     */
+//    ARMOR_JUMP_SLOWDOWN_PERCENT("Player.Armor Changes.Jump Slowdown Percentage", VarType.INTEGER, SubType.PERCENTAGE, 30,
+//            "By how much players jumping (esp. sprint jumping) will be slowed down."),
 
     /**
      * #########################

@@ -160,45 +160,87 @@ public class PlayerModule extends EHMModule
     public static float getArmorPoints(final Player player)
     {
         float points = 0.0F;
+        int i = 0;
         for (ItemStack armor : player.getInventory().getArmorContents())
         {
-            switch (armor.getType())
+            switch (i)
             {
-                case LEATHER_HELMET:
-                case LEATHER_BOOTS:
-                case GOLD_BOOTS:
-                case CHAINMAIL_BOOTS:
-                    points += 0.04;
+                //HEAD
+                case 3:
+                    switch (armor.getType())
+                    {
+                        case LEATHER_HELMET:
+                            points += 0.04;
+                            break;
+                        case GOLD_HELMET:
+                        case CHAINMAIL_HELMET:
+                        case IRON_HELMET:
+                            points += 0.08;
+                            break;
+                        case DIAMOND_HELMET:
+                            points += 0.12;
+                            break;
+                    }
                     break;
-                case GOLD_HELMET:
-                case CHAINMAIL_HELMET:
-                case IRON_HELMET:
-                case IRON_BOOTS:
-                case LEATHER_LEGGINGS:
-                    points += 0.08;
+                //CHEST
+                case 2:
+                    switch (armor.getType())
+                    {
+                        case LEATHER_CHESTPLATE:
+                            points += 0.12;
+                            break;
+                        case GOLD_CHESTPLATE:
+                        case CHAINMAIL_CHESTPLATE:
+                            points += 0.2;
+                            break;
+                        case IRON_CHESTPLATE:
+                            points += 0.24;
+                            break;
+                        case DIAMOND_CHESTPLATE:
+                            points += 0.32;
+                            break;
+                    }
                     break;
-                case DIAMOND_HELMET:
-                case DIAMOND_BOOTS:
-                case GOLD_LEGGINGS:
-                case LEATHER_CHESTPLATE:
-                    points += 0.12;
+                //LEGGINGS
+                case 1:
+                    switch (armor.getType())
+                    {
+                        case LEATHER_LEGGINGS:
+                            points += 0.08;
+                            break;
+                        case GOLD_LEGGINGS:
+                            points += 0.12;
+                            break;
+                        case CHAINMAIL_LEGGINGS:
+                            points += 0.16;
+                            break;
+                        case IRON_LEGGINGS:
+                            points += 0.2;
+                            break;
+                        case DIAMOND_LEGGINGS:
+                            points += 0.24;
+                            break;
+                    }
                     break;
-                case CHAINMAIL_LEGGINGS:
-                    points += 0.16;
-                    break;
-                case IRON_LEGGINGS:
-                case GOLD_CHESTPLATE:
-                case CHAINMAIL_CHESTPLATE:
-                    points += 0.2;
-                    break;
-                case DIAMOND_LEGGINGS:
-                case IRON_CHESTPLATE:
-                    points += 0.24;
-                    break;
-                case DIAMOND_CHESTPLATE:
-                    points += 0.32;
+                //BOOTS
+                case 0:
+                    switch (armor.getType())
+                    {
+                        case LEATHER_BOOTS:
+                        case GOLD_BOOTS:
+                        case CHAINMAIL_BOOTS:
+                            points += 0.04;
+                            break;
+                        case IRON_BOOTS:
+                            points += 0.08;
+                            break;
+                        case DIAMOND_BOOTS:
+                            points += 0.12;
+                            break;
+                    }
                     break;
             }
+            i++;
         }
         return points;
     }

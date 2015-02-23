@@ -305,6 +305,47 @@ public class Players extends ListenerModule
     }
 
 
+//    //Prevent sprint jumping as a workaround for slower armor
+//    @EventHandler(priority = EventPriority.LOWEST)
+//    void onPlayerMove(PlayerMoveEvent event)
+//    {
+//        Player player = event.getPlayer();
+//        if (!CFG.getBoolean(RootNode.ARMOR_SLOWDOWN_ENABLE, player.getWorld().getName()))
+//            return;
+//        final int slowdownPercent = CFG.getInt(RootNode.ARMOR_JUMP_SLOWDOWN_PERCENT, player.getWorld().getName());
+//        final float armorPoints = PlayerModule.getArmorPoints(player);
+//        if (player.getGameMode() != GameMode.CREATIVE && event.getTo().getY() > event.getFrom().getY())
+//        {
+//            Block block, control;
+//            Vector dir = player.getVelocity();
+//            float armorPointsNorm = armorPoints / 0.8F;
+//            float factor = (1 - armorPointsNorm * (slowdownPercent / 100F)) / 5; //for every jump 5 move events are called
+//            dir.multiply(new Vector(factor, 1, factor));
+//            block = player.getLocation().getBlock();
+//            control = player.getLocation().getBlock().getRelative(BlockFace.UP, 2);
+//            if (block.getType() == Material.AIR && control.getType() == Material.AIR)// && !mapGet(player.getUniqueId(), false))
+//            {
+////                mJumpingPl.put(player.getUniqueId(), true);
+//                event.getPlayer().setVelocity(dir);
+//                player.sendMessage("=");
+//            }
+//        }
+////        if (event.getTo().getY() < event.getFrom().getY())
+////           mJumpingPl.put(player.getUniqueId(), false);
+//    }
+//
+//
+//    Map<UUID, Boolean> mJumpingPl = new HashMap<UUID, Boolean>();
+//
+//
+//    private boolean mapGet(UUID key, boolean defaultVal)
+//    {
+//        Boolean ret = mJumpingPl.get(key);
+//        return ret != null ? ret : defaultVal;
+//    }
+//
+
+
     @EventHandler
     public void onPlayerDisconnect(PlayerQuitEvent event)
     {
