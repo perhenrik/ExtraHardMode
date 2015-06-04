@@ -175,6 +175,7 @@ public class ExtraHardMode extends JavaPlugin
             module.closing();
         for (Player player : getServer().getOnlinePlayers())
             player.setWalkSpeed(0.2F);
+        this.getServer().getScheduler().cancelTasks(this);
         modules.clear();
     }
 
