@@ -37,8 +37,8 @@
         <project.mainclass>com.extrahardmode.ExtraHardMode</project.mainclass>
         <!--Use a profile to overwrite this-->
         <outputdir>${project.build.outputDirectory}</outputdir>
-        <mc-version>1.8</mc-version>
-        <bukkit-ver>R0.1-SNAPSHOT</bukkit-ver>
+        <mc-version>1.7.9</mc-version>
+        <bukkit-ver>R0.3-SNAPSHOT</bukkit-ver>
         <testDir>${basedir}/src/test/</testDir>
         <srcDir>${basedir}/src/main/java/</srcDir>
     </properties>
