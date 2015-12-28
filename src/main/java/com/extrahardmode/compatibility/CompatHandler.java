@@ -75,9 +75,9 @@ public class CompatHandler extends EHMModule
 
         //BlockLoggers//
         //Prism
-        CompatPrism prismCompat = new CompatPrism(plugin);
-        if (prismCompat.isEnabled())
-            blockLoggerPls.add(prismCompat);
+//        CompatPrism prismCompat = new CompatPrism(plugin);
+//        if (prismCompat.isEnabled())
+//            blockLoggerPls.add(prismCompat);
 
         //HawkEye Reloaded
         try

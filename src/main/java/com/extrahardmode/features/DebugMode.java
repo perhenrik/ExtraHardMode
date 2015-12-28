@@ -70,7 +70,7 @@ public class DebugMode extends ListenerModule
         Player player = event.getPlayer();
         if (isInDebugMode(player.getName()))
         {
-            Block target = player.getTargetBlock(null, 50);
+            Block target = player.getTargetBlock(new HashSet<Material>(), 50);
             for (int line = 0; line < 6; line++)
                 msgModule.getManager().removePopup(player.getName(), key_blockdata_msg + line);
             DecimalFormat twoDecimalPlaces = new DecimalFormat("#.##");
