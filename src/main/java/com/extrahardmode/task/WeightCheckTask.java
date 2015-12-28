@@ -10,10 +10,7 @@ import com.extrahardmode.module.PlayerModule;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -37,36 +34,26 @@ public class WeightCheckTask implements Runnable
     @Override
     public void run()
     {
-        if (lock.tryLock()) //Prevent concurrent modification
-        {
-            try
-            {
-                for (UUID playerUuuid : mLastClicks.keySet())
-                {
-                    Player player = mPlugin.getServer().getPlayer(playerUuuid);
-                    //Remove players that haven't clicked in their inventory for 5 seconds
-                    if (System.currentTimeMillis() - mLastClicks.get(playerUuuid) > 5000 || player == null)
-                    {
-                        mLastClicks.remove(playerUuuid);
-                        mMessenger.hidePopup(player, MsgCategory.WEIGHT_MSG.getUniqueIdentifier());
-                    } else
-                    {
-                        final double armorPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, player.getWorld().getName());
-                        final double invPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, player.getWorld().getName());
-                        final double toolPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, player.getWorld().getName());
-                        final double maxPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, player.getWorld().getName());
+        Iterator<UUID> lastClicksIter = mLastClicks.keySet().iterator();
+        while(lastClicksIter.hasNext()){
+            UUID playerUuuid = lastClicksIter.next();
+            Player player = mPlugin.getServer().getPlayer(playerUuuid);
+            //Remove players that haven't clicked in their inventory for 5 seconds
+            if (System.currentTimeMillis() - mLastClicks.get(playerUuuid) > 5000 || player == null) {
+                lastClicksIter.remove();
+                mMessenger.hidePopup(player, MsgCategory.WEIGHT_MSG.getUniqueIdentifier());
+            } else {
+                final double armorPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_ARMOR_POINTS, player.getWorld().getName());
+                final double invPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_INV_POINTS, player.getWorld().getName());
+                final double toolPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_TOOL_POINTS, player.getWorld().getName());
+                final double maxPoints = CFG.getDouble(RootNode.NO_SWIMMING_IN_ARMOR_MAX_POINTS, player.getWorld().getName());
 
-                        final float weight = PlayerModule.inventoryWeight(player, (float) armorPoints, (float) invPoints, (float) toolPoints);
+                final float weight = PlayerModule.inventoryWeight(player, (float) armorPoints, (float) invPoints, (float) toolPoints);
 
-                        List<String> weightMessage = new ArrayList<String>(2);
-                        weightMessage.add(String.format("Weight %.1f/%.1f", weight, maxPoints));
-                        weightMessage.add(weight > maxPoints ? ChatColor.RED + "U will drown" : ChatColor.GREEN + "U won't drown");
-                        mMessenger.sendPopup(player, MsgCategory.WEIGHT_MSG, weightMessage, false);
-                    }
-                }
-            } finally
-            {
-                lock.unlock();
+                List<String> weightMessage = new ArrayList<String>(2);
+                weightMessage.add(String.format("Weight %.1f/%.1f", weight, maxPoints));
+                weightMessage.add(weight > maxPoints ? ChatColor.RED + "U will drown" : ChatColor.GREEN + "U won't drown");
+                mMessenger.sendPopup(player, MsgCategory.WEIGHT_MSG, weightMessage, false);
             }
         }
     }
