@@ -20,10 +20,11 @@ task copySpigotToServer(type: Copy) {
 task copyEHMToServer(type: Copy) {
     from 'build/libs'
     into 'spigot/server/plugins'
-    include 'ExtraHardMode-*.jar'
+    include 'ExtraHardMode-*-all.jar'
 }
 
 task buildEHM {
+    dependsOn 'build'
     dependsOn 'shadowJar'
     dependsOn 'copySpigotToServer'
     dependsOn 'copyEHMToServer'
