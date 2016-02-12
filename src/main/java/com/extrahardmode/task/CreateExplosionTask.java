@@ -181,6 +181,7 @@ public class CreateExplosionTask implements Runnable
 
         //entity should be ignored so our code doesn't think that it's a regular creeper etc.
         EntityHelper.flagIgnore(plugin, explosionCause);
+        System.out.println("EHMDEBUG: " + String.valueOf(power) + " " + String.valueOf(setFire) + " " + String.valueOf(damageWorld));
         loc.getWorld().createExplosion(loc.getX(), loc.getY(), loc.getZ(), power, setFire, damageWorld);
         //}
     }
