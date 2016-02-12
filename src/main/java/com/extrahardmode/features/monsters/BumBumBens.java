@@ -240,7 +240,7 @@ public class BumBumBens extends ListenerModule
         // Charged creeper explosion is handled in onEntityDamage
         if (customCreeper && entity instanceof Creeper)
         {
-            //event.setCancelled(true);
+            event.setCancelled(true);
             EntityHelper.flagIgnore(plugin, entity);//Ignore this creeper in further calls to this method
             if (((Creeper) entity).isPowered())
                 new CreateExplosionTask(plugin, entity.getLocation(), ExplosionType.CREEPER_CHARGED, entity).run();
