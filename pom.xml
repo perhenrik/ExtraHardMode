@@ -45,6 +45,7 @@
 
     <!-- Build instructions -->
     <build>
+        <finalName>${project.name}</finalName>
         <defaultGoal>package</defaultGoal>
         <testSourceDirectory>${testDir}</testSourceDirectory>
         <sourceDirectory>${srcDir}</sourceDirectory>
