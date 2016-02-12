@@ -135,7 +135,7 @@ public enum MessageNode implements ConfigNode
             ("NoSwimmingInArmor.Mode", MsgCategory.NOTIFICATION),
     NO_SWIMMING_IN_ARMOR
             ("NoSwimmingInArmor.Msg", MsgCategory.NOTIFICATION, "no_swimming_in_armor_warning",
-                    "You're carrying too much weight to swim!"),
+                    "Ur inventory iz2heavy4u 2 swim!"),
     END_DRAGON_KILLED_MODE
             ("DragonDefeated.Mode", MsgCategory.BROADCAST),
     END_DRAGON_KILLED
@@ -211,7 +211,7 @@ public enum MessageNode implements ConfigNode
             ("Ghast.Mode", MsgCategory.TUTORIAL),
     GHAST_TARGET
             ("Ghast.Msg", MsgCategory.TUTORIAL, "ghast_warning",
-                    "&cThese fearsome Ghasts wear invisible arrow deflective armor! Ghasts drop a lot more loot as well."),
+                    "&cThese fearsome Ghasts hav adapt3d 2 ur puny arrows! Ghasts drop a lot more loot as well."),
     PIGZOMBIE_TARGET_MODE
             ("PigZombieAlwaysAngry.Mode", MsgCategory.TUTORIAL),
     PIGZOMBIE_TARGET
@@ -228,7 +228,7 @@ public enum MessageNode implements ConfigNode
             ("ZombieRespawn.Mode", MsgCategory.TUTORIAL),
     ZOMBIE_RESPAWN
             ("ZombieRespawn.Msg", MsgCategory.TUTORIAL, "zombie_respawn",
-                    "&cZombies might resurrect if not on fire!"),
+                    "&cZombies might resurrect if not on fire or if u don't break da zombie skull they drop."),
     ZOMBIE_SLOW_PLAYERS_MODE
             ("ZombieSlowPlayer.Mode", MsgCategory.TUTORIAL),
     ZOMBIE_SLOW_PLAYERS
@@ -238,12 +238,12 @@ public enum MessageNode implements ConfigNode
             ("SkeletonDeflectArrows.Mode", MsgCategory.TUTORIAL),
     SKELETON_DEFLECT
             ("SkeletonDeflectArrows.Msg", MsgCategory.TUTORIAL, "skeleton_deflect_arrow",
-                    "&cArrows just pass through Skeletons, you gotta go close combat!"),
+                    "&cDem skellys r hard 2 n0sc0p3 wit ur arrows bcuz they g0t n0 sk1n!"),
     ENDERMAN_GENERAL_MODE
             ("EndermanGeneral.Mode", MsgCategory.TUTORIAL),
     ENDERMAN_GENERAL
             ("EndermanGeneral.Msg", MsgCategory.TUTORIAL, "enderman_teleport",
-                    "&cEnderman can teleport you too!"),
+                    "&cEnderman can teleport u 2!!11!"),
     CREEPER_DROP_TNT_MODE
             ("CreeperDropTnt.Mode", MsgCategory.TUTORIAL),
     CREEPER_DROP_TNT
@@ -253,17 +253,17 @@ public enum MessageNode implements ConfigNode
             ("ExtinguishFire.Mode", MsgCategory.TUTORIAL),
     EXTINGUISH_FIRE
             ("ExtinguishFire.Msg", MsgCategory.TUTORIAL, "extinguish_fire",
-                    "&cPutting out fire with your hand will catch you on fire."),
+                    "&cU r on fire bcuz u put it out with ur hand u dummy."),
     LOST_ITEMS_MODE
             ("ListLostItemsOnDeath.Mode", MsgCategory.NOTIFICATION),
     LOST_ITEMS
             ("ListLostItemsOnDeath.Msg", MsgCategory.NOTIFICATION, "lost_items_broadcast",
-                    "&eYou managed to lose " + Variables.ITEMS.getVarName()),
+                    "&eU managed to lose " + Variables.ITEMS.getVarName()),
     LOST_ITEMS_PLAYER_MODE
             ("InformPlayerOnLostItems.Mode", MsgCategory.TUTORIAL),
     LOST_ITEMS_PLAYER
             ("InformPlayerOnLostItems.Msg", MsgCategory.TUTORIAL, "lost_items",
-                    "On death there is a a chance you might lose some of your items!"),
+                    "On death there iz a chance u might lose some of ur nub items!"),
 
     //Farming
     BUCKET_FILL_MODE
@@ -292,7 +292,7 @@ public enum MessageNode implements ConfigNode
             ("NetherWarning.Mode", MsgCategory.TUTORIAL),
     NETHER_WARNING
             ("NetherWarning.Msg", MsgCategory.TUTORIAL, "nether_warn",
-                    "&cThis is a dangerous place. Make sure you come prepared with arrows and good gear.");
+                    "&cThis is a dangerous place. Make sure u r prepared with arrows and gud gear.");
 
     /**
      * Path in the Config
