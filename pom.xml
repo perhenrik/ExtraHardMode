@@ -100,14 +100,14 @@
             </plugin>
 
             <!-- Use a profile to override the outputdir, e.g. to a local testserver-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <outputDirectory>${outputdir}</outputDirectory>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jar-plugin</artifactId>-->
+                <!--<version>2.4</version>-->
+                <!--<configuration>-->
+                    <!--<outputDirectory>${outputdir}</outputDirectory>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
 
         </plugins>
     </build>
