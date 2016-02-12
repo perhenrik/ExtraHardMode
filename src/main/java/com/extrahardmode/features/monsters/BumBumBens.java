@@ -158,7 +158,7 @@ public class BumBumBens extends ListenerModule
         // FEATURE: charged creepers explode on hit
         if (chargedExplodeOnHit)
         {
-            if (entityType == EntityType.CREEPER && !entity.isDead())
+            if ((entityType == EntityType.CREEPER) && !entity.isDead())
             {
                 Creeper creeper = (Creeper) entity;
                 if (creeper.isPowered())
