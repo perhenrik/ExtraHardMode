@@ -30,7 +30,6 @@ import com.extrahardmode.config.RootNode;
 import com.extrahardmode.config.messages.MessageConfig;
 import com.extrahardmode.features.*;
 import com.extrahardmode.features.monsters.*;
-import com.extrahardmode.metrics.ConfigPlotter;
 import com.extrahardmode.module.*;
 import com.extrahardmode.module.temporaryblock.TemporaryBlockHandler;
 import com.extrahardmode.service.IModule;
@@ -160,9 +159,6 @@ public class ExtraHardMode extends JavaPlugin
                 active = true;
         if (active)
             this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new ArmorWeightTask(this), 20L * 5, 20L * 3);
-
-        //Metrics Plotter, this gets included by maven
-        new ConfigPlotter(this, getModuleForClass(RootConfig.class));
     }
 
 
