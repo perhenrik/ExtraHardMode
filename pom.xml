@@ -86,14 +86,14 @@
 
     <!-- Repositories -->
     <repositories>
-        <!-- <repository>
+        <repository>
             <id>github-releases</id>
             <url>http://di3mex.github.io/repo_bukkit/releases/</url>
         </repository>
         <repository>
             <id>github-snapshots</id>
             <url>http://di3mex.github.io/repo_bukkit/snapshots/</url>
-        </repository> -->
+        </repository>
         <!-- Spigot Repo -->
         <repository>
             <id>spigot-repo</id>
