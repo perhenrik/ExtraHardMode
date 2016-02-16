@@ -89,10 +89,14 @@
         <repository>
             <id>github-releases</id>
             <url>http://di3mex.github.io/repo_bukkit/releases/</url>
+            <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+      	    <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
         </repository>
         <repository>
             <id>github-snapshots</id>
             <url>http://di3mex.github.io/repo_bukkit/snapshots/</url>
+            <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+            <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
         </repository>
         <!-- Spigot Repo -->
         <repository>
