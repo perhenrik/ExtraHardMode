@@ -48,7 +48,7 @@ public class PotionEffectHolder
         if (effect == null) //Strip values that are most likely invalid
             effect = PotionEffectType.getByName(RegexHelper.stripEnum(input));
         if (effect == null && containsNumbers)
-            effect = PotionEffectType.getById(RegexHelper.parseNumber(input));
+            effect = PotionEffectType.getById(RegexHelper.parseNumber(input)); //TODO: Fix deprecation
 
         return effect;
     }

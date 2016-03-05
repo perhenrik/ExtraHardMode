@@ -102,7 +102,7 @@ public class Endermen extends ListenerModule
                 int distanceSquared = (int) player.getLocation().distanceSquared(enderman.getLocation());
 
                 // play sound at old location
-                world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+                world.playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
                 Block destinationBlock;
 
                 // if the player is far away
@@ -142,7 +142,7 @@ public class Endermen extends ListenerModule
                     player.teleport(teleportEvent.getTeleportTo(), PlayerTeleportEvent.TeleportCause.ENDER_PEARL);
 
                     // play sound at new location
-                    world.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+                    world.playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
                     event.setCancelled(true);
                 }
             }
