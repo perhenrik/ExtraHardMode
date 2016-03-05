@@ -71,6 +71,35 @@
                 </configuration>
             </plugin>
 
+            <!-- Shade Metrics -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.mcstats.bukkit:metrics</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.mcstats</pattern>
+                                    <shadedPattern>com.extrahardmode.metrics</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <!--<minimizeJar>true</minimizeJar>-->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Use a profile to override the outputdir, e.g. to a local testserver-->
             <!--<plugin>-->
                 <!--<groupId>org.apache.maven.plugins</groupId>-->
@@ -124,6 +153,12 @@
             <artifactId>craftbukkit</artifactId>
             <version>${mc-version}-${bukkit-ver}</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- Metrics for stats -->
+        <dependency>
+            <groupId>org.mcstats.bukkit</groupId>
+            <artifactId>metrics</artifactId>
+            <version>R7</version>
         </dependency>
 
         <!-- Unit testing dependencies -->
