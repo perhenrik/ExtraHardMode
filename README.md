@@ -3,10 +3,6 @@ ExtraHardMode
 
 Official repository for [ExtraHardMode Bukkit Plugin](http://dev.bukkit.org/bukkit-plugins/fun-hard-mode/).
 
-## Dev Builds
-
-Development builds are hosted in this repo under the [releases section](https://github.com/Di3mex/ExtraHardMode/releases)
-
 ## Build instructions
 
 We use maven to handle our dependencies.
