@@ -5,7 +5,6 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.service.config.ConfigNode;
 import org.bukkit.plugin.Plugin;
-import org.mcstats.Metrics;
 
 /**
  * Output all the choosen modules to mcstats in nice plots

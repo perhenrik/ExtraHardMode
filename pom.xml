@@ -26,7 +26,7 @@
     <!-- Project properties. -->
     <groupId>com.extrahardmode</groupId>
     <artifactId>ExtraHardMode</artifactId>
-    <version>3.7</version>
+    <version>3.7.1</version>
     <name>ExtraHardMode</name>
     <description>New game rules and mechanics for Minecraft.</description>
     <url>http://dev.bukkit.org/server-mods/fun-hard-mode</url>
@@ -72,33 +72,33 @@
             </plugin>
 
             <!-- Shade Metrics -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.mcstats.bukkit:metrics</include>
-                                </includes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.mcstats</pattern>
-                                    <shadedPattern>com.extrahardmode.metrics</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <!--<minimizeJar>true</minimizeJar>-->
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-shade-plugin</artifactId>-->
+                <!--<version>1.5</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>shade</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<artifactSet>-->
+                                <!--<includes>-->
+                                    <!--<include>org.mcstats.bukkit:metrics</include>-->
+                                <!--</includes>-->
+                            <!--</artifactSet>-->
+                            <!--<relocations>-->
+                                <!--<relocation>-->
+                                    <!--<pattern>org.mcstats</pattern>-->
+                                    <!--<shadedPattern>com.extrahardmode.metrics</shadedPattern>-->
+                                <!--</relocation>-->
+                            <!--</relocations>-->
+                            <!--&lt;!&ndash;<minimizeJar>true</minimizeJar>&ndash;&gt;-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
 
             <!-- Use a profile to override the outputdir, e.g. to a local testserver-->
             <!--<plugin>-->
@@ -159,11 +159,11 @@
             <!--<scope>provided</scope>-->
         <!--</dependency>-->
         <!-- Metrics for stats -->
-        <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics</artifactId>
-            <version>R7</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.mcstats.bukkit</groupId>-->
+            <!--<artifactId>metrics</artifactId>-->
+            <!--<version>R7</version>-->
+        <!--</dependency>-->
 
         <!-- Unit testing dependencies -->
         <!-- JUnit: Assertions and test framework -->
