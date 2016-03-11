@@ -307,6 +307,8 @@ public class EntityHelper
         List<Player> otherEntities = loc.getWorld().getPlayers();
         for (Player player : otherEntities)
         {
+            //if (player.getLocation().getWorld() != loc.getWorld()) //Perhaps in the rare case of an async player teleport? This shouldn't ever be true but there was a bug report on it :S
+                //continue;
             double playerDist = player.getLocation().distanceSquared(loc);
             if (playerDist < squared)
                 return true;

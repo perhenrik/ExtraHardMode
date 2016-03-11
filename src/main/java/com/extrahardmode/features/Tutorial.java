@@ -263,15 +263,20 @@ public class Tutorial extends ListenerModule
             //Warn players before they build big farms in the desert
             if (block.getType() == Material.DIRT)
             {
-                switch (block.getBiome())
+                try
                 {
-                    case DESERT:
-                    case DESERT_HILLS:
+                    switch (block.getBiome())
                     {
-                        messenger.send(player, MessageNode.ANTIFARMING_DESSERT_WARNING);
-                        break;
+                        case DESERT:
+                        case DESERT_HILLS:
+                        {
+                            messenger.send(player, MessageNode.ANTIFARMING_DESSERT_WARNING);
+                            break;
+                        }
                     }
                 }
+                catch (IllegalArgumentException e) {} //ignore custom biomes
+
             }
         }
     }

@@ -33,6 +33,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitScheduler;
 
 /**
  * Player centric actions
@@ -163,6 +164,11 @@ public class PlayerModule extends EHMModule
         int i = 0;
         for (ItemStack armor : player.getInventory().getArmorContents())
         {
+            if (armor == null) //itemstacks now return null in 1.9 instead of air (CB change)
+            {
+                i++;
+                continue;
+            }
             switch (i)
             {
                 //HEAD
