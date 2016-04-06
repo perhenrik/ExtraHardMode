@@ -127,15 +127,26 @@ public class Endermen extends ListenerModule
                 //Limit the height difference so players arent teleported into caves or teleported out of caves etc.
                 int playerY = player.getLocation().getBlockY(), destY = destinationBlock.getLocation().getBlockY();
                 if (playerY > destY ? (playerY - destY) > 10 : (destY - playerY) > 10)
+                {
+                    plugin.getLogger().info("didn't teleport due to destination detected as a cave");
                     return;
+                }
 
                 //Prevent Enderman from loosing aggro because player got ported into water
                 Material underType = destinationBlock.getRelative(BlockFace.DOWN).getType();
                 if (underType == Material.WATER || underType == Material.STATIONARY_WATER)
+                {
+                    plugin.getLogger().info("didn't teleport due to destination detected as water");
                     return;
+                }
 
                 EhmEndermanTeleportEvent teleportEvent = new EhmEndermanTeleportEvent(player, enderman, destinationBlock.getLocation());
                 plugin.getServer().getPluginManager().callEvent(teleportEvent);
+
+                if (teleportEvent.isCancelled())
+                {
+                    plugin.getLogger().info("didn't teleport due to teleport event being canceled");
+                }
 
                 if (!teleportEvent.isCancelled())
                 {
