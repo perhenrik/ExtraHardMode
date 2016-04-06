@@ -76,26 +76,37 @@ public class Endermen extends ListenerModule
     {
         Entity entity = event.getEntity();
         World world = entity.getWorld();
+        Bukkit.broadcastMessage("EHM: EntityTeleportEvent was called");
 
         final boolean improvedEndermanTeleportation = CFG.getBoolean(RootNode.IMPROVED_ENDERMAN_TELEPORTATION, world.getName());
 
         if (entity instanceof Enderman && improvedEndermanTeleportation && world.getEnvironment().equals(World.Environment.NORMAL))
         {
+            Bukkit.broadcastMessage("EHM: starting prechecks");
             Enderman enderman = (Enderman) entity;
 
             // ignore endermen which aren't fighting players
             if (!(enderman.getTarget() instanceof Player))
+            {
+                Bukkit.broadcastMessage("EHM: Enderman was not targeting a player");
                 return;
+            }
 
             // ignore endermen which are taking damage from the environment (to avoid rapid teleportation due to rain or suffocation)
             if (enderman.getLastDamageCause() != null && enderman.getLastDamageCause().getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK)
+            {
+                Bukkit.broadcastMessage("EHM: Enderman was taking damage from environment, not player");
                 return;
+            }
 
             Player player = (Player) enderman.getTarget();
 
             // ignore when player is in a different world from the enderman
             if (!player.getWorld().equals(enderman.getWorld()))
+            {
+                Bukkit.broadcastMessage("EHM: Enderman was targeting a player in another world");
                 return;
+            }
 
             Bukkit.broadcastMessage("EHM: all prechecks passed, testing for random percent chance");
 
@@ -132,7 +143,7 @@ public class Endermen extends ListenerModule
                 int playerY = player.getLocation().getBlockY(), destY = destinationBlock.getLocation().getBlockY();
                 if (playerY > destY ? (playerY - destY) > 10 : (destY - playerY) > 10)
                 {
-                    plugin.getLogger().info("didn't teleport due to destination detected as a cave");
+                    Bukkit.broadcastMessage("didn't teleport due to destination detected as a cave");
                     return;
                 }
 
@@ -140,7 +151,7 @@ public class Endermen extends ListenerModule
                 Material underType = destinationBlock.getRelative(BlockFace.DOWN).getType();
                 if (underType == Material.WATER || underType == Material.STATIONARY_WATER)
                 {
-                    plugin.getLogger().info("didn't teleport due to destination detected as water");
+                    Bukkit.broadcastMessage("didn't teleport due to destination detected as water");
                     return;
                 }
 
@@ -149,7 +160,7 @@ public class Endermen extends ListenerModule
 
                 if (teleportEvent.isCancelled())
                 {
-                    plugin.getLogger().info("didn't teleport due to teleport event being canceled");
+                    Bukkit.broadcastMessage("didn't teleport due to teleport event being canceled");
                 }
 
                 if (!teleportEvent.isCancelled())
