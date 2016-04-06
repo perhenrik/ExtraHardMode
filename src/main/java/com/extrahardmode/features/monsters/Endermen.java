@@ -27,6 +27,7 @@ import com.extrahardmode.config.RootConfig;
 import com.extrahardmode.config.RootNode;
 import com.extrahardmode.events.EhmEndermanTeleportEvent;
 import com.extrahardmode.service.ListenerModule;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -96,9 +97,12 @@ public class Endermen extends ListenerModule
             if (!player.getWorld().equals(enderman.getWorld()))
                 return;
 
+            Bukkit.broadcastMessage("EHM: all prechecks passed, testing for random percent chance");
+
             // half the time, teleport the player instead
             if (plugin.random(50))
             {
+                Bukkit.broadcastMessage("EHM: RANDOM HAZ BEEN REACHED");
                 int distanceSquared = (int) player.getLocation().distanceSquared(enderman.getLocation());
 
                 // play sound at old location
