@@ -36,6 +36,7 @@ import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.OurRandom;
 import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
 import com.extrahardmode.task.RespawnZombieTask;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.World;
@@ -128,6 +129,13 @@ public class Zombies extends ListenerModule
                     if (placeSkulls && (type != Material.WATER && type != Material.STATIONARY_WATER))
                     {
                         Block block = entity.getLocation().getBlock();
+                        //Don't replace blocks that aren't air, but aren't solid either
+                        if (!block.getType().isSolid())
+                        {
+                            Location location = block.getLocation();
+                            location.setY(location.getY() + 1);
+                            block = location.getBlock();
+                        }
                         block.setType(Material.SKULL);
                         Skull skull = (Skull) block.getState();
                         skull.setSkullType(SkullType.ZOMBIE);
