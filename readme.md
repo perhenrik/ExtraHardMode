@@ -622,8 +622,6 @@ Additional Falling Blocks:
 
 ```
 
-##
-
 ## Explosions
 
 Explosions are a big part of ehm and what makes it pretty awesome. We have custom explosion physics and allow you to tweak explosions to your heart's content.
