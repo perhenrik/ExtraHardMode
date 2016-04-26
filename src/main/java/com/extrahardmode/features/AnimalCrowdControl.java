@@ -7,13 +7,11 @@ import com.extrahardmode.config.messages.MessageNode;
 import com.extrahardmode.module.MsgModule;
 import com.extrahardmode.service.ListenerModule;
 import java.util.List;
-import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -45,8 +43,7 @@ public class AnimalCrowdControl extends ListenerModule {
     }
 
     private boolean isEntityAnimal(Entity a) {
-        return a instanceof Animals
-                && a.getType() != EntityType.HORSE
+        return a.getType() != EntityType.HORSE
                 && a.getType() != EntityType.WOLF
                 && a.getType() != EntityType.OCELOT;
     }
@@ -71,9 +68,13 @@ public class AnimalCrowdControl extends ListenerModule {
      *
      * Check if overcrowded if so slowly kill farm animals
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onAnimalOverCrowd(CreatureSpawnEvent event) {
         final Entity e = event.getEntity();
+
+        //If entity is not an animal, we don't care
+        if (!(e instanceof Animals)) return;
+
         final World world = e.getWorld();
 
         final boolean animalOverCrowdControl = CFG.getBoolean(RootNode.ANIMAL_OVERCROWD_CONTROL, world.getName());
@@ -81,10 +82,11 @@ public class AnimalCrowdControl extends ListenerModule {
 
         //First check if config allow this feature
         if (!animalOverCrowdControl) return;
-        //Get nearby entities from newly spawn animals
+
+        //Get nearby entities from newly spawned animals
         
         //Just to check if animal is part of a Pet Plugin assuming spawned pet have nametags already given
-        if(e.getCustomName()!= null) return;
+        if(e.getCustomName() != null) return;
         
         List<Entity> cattle = e.getNearbyEntities(3, 3, 3);
         int density = 0;
@@ -100,7 +102,7 @@ public class AnimalCrowdControl extends ListenerModule {
             
             //Check if the amount of animals is bigger than the threshold given
             if (density < threshold) continue;
-            final LivingEntity animal = (LivingEntity) a;
+            final Animals animal = (Animals) a;
             if(animal.hasMetadata("hasRunnable")) continue;
             /**
              * This creates a runnable assign to each animals will close once if
@@ -149,10 +151,13 @@ public class AnimalCrowdControl extends ListenerModule {
      *
      * display a message about Animal Overcrowding Control
      */
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEntityEvent event) {
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        //If the entity is not an animal, we don't care
+        if (!(event.getRightClicked() instanceof Animals)) return;
+
         Player player = event.getPlayer();
-        LivingEntity animal = (LivingEntity) event.getRightClicked();
+        Animals animal = (Animals)event.getRightClicked();
         World world = player.getWorld();
 
         final boolean animalOverCrowdControl = CFG.getBoolean(RootNode.ANIMAL_OVERCROWD_CONTROL, world.getName());
@@ -168,9 +173,12 @@ public class AnimalCrowdControl extends ListenerModule {
      *
      * remove drops and exp from death cause not by player
      */
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onAnimalDeath(EntityDeathEvent event) {
-        LivingEntity animal = event.getEntity();
+        //If the entity is not an animal, we don't care
+        if (!(event.getEntity() instanceof Animals)) return;
+
+        Animals animal = (Animals)event.getEntity();
         World world = animal.getWorld();
 
         final boolean animalOverCrowdControl = CFG.getBoolean(RootNode.ANIMAL_OVERCROWD_CONTROL, world.getName());
