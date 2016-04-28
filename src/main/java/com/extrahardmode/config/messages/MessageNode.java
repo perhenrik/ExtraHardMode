@@ -40,7 +40,7 @@ public enum MessageNode implements ConfigNode
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
-    SB_MSG_TITLE("Display Messages In Scoreboard.Scoreboard Title", VarType.STRING, SubType.PLAYER_NAME, "ExtraHardMode"),
+    SB_MSG_TITLE("Display Messages In Scoreboard.Scoreboard Title", VarType.STRING, SubType.PLAYER_NAME, "&cExtraHardMode"),
     /**
      * Display messages from extrahardmode in the scoreboard instead of spamming the chat?
      */
