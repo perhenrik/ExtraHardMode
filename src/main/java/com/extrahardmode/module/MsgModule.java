@@ -119,7 +119,7 @@ public class MsgModule extends EHMModule
                     {
                         timeouts.put(player.getName(), node, now);
                         String msgText = messages.getString(node);
-                        if (manager != null)
+                        if (manager != null && popupsAreEnabled(MsgCategory.TUTORIAL))
                             sendPopup(player, MsgCategory.TUTORIAL, msgText);
                         else
                             player.sendMessage(ChatColor.DARK_RED + plugin.getTag() + ChatColor.WHITE + " " + msgText);
