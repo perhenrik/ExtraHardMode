@@ -82,12 +82,11 @@ public class AnimalCrowdControl extends ListenerModule {
 
         //First check if config allow this feature
         if (!animalOverCrowdControl) return;
-
-        //Get nearby entities from newly spawned animals
         
         //Just to check if animal is part of a Pet Plugin assuming spawned pet have nametags already given
         if(e.getCustomName() != null) return;
-        
+
+        //Get nearby entities from newly spawned animals
         List<Entity> cattle = e.getNearbyEntities(3, 3, 3);
         int density = 0;
 
@@ -96,7 +95,7 @@ public class AnimalCrowdControl extends ListenerModule {
          * animals have spawned by incrementing density
          */
         for (Entity a : cattle) {
-            if (!isEntityAnimal(a)) continue;
+            if (!isEntityAnimal(a) && !(a instanceof Animals)) continue;
             density++;
             
             
