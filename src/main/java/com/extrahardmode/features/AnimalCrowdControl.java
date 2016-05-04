@@ -43,7 +43,8 @@ public class AnimalCrowdControl extends ListenerModule {
     }
 
     private boolean isEntityAnimal(Entity a) {
-        return a.getType() != EntityType.HORSE
+        return (a instanceof Animals)
+                && a.getType() != EntityType.HORSE
                 && a.getType() != EntityType.WOLF
                 && a.getType() != EntityType.OCELOT;
     }
@@ -73,7 +74,7 @@ public class AnimalCrowdControl extends ListenerModule {
         final Entity e = event.getEntity();
 
         //If entity is not an animal, we don't care
-        if (!(e instanceof Animals)) return;
+        if (!isEntityAnimal(e)) return;
 
         final World world = e.getWorld();
 
@@ -95,7 +96,7 @@ public class AnimalCrowdControl extends ListenerModule {
          * animals have spawned by incrementing density
          */
         for (Entity a : cattle) {
-            if (!isEntityAnimal(a) && !(a instanceof Animals)) continue;
+            if (!isEntityAnimal(a)) continue;
             density++;
             
             
@@ -110,8 +111,8 @@ public class AnimalCrowdControl extends ListenerModule {
             animal.setMetadata("hasRunnable", new FixedMetadataValue(this.plugin, true));
             new BukkitRunnable() {
 
-                int dizzenes = 0;
-                int maxDizzenes = 10; //basically max seconds before getting damaged
+                int dizziness = 0;
+                int maxDizziness = 7; //basically max seconds before getting damaged
                 
                 @Override
                 public void run() {
@@ -121,25 +122,20 @@ public class AnimalCrowdControl extends ListenerModule {
                         animal.removeMetadata("hasRunnable", plugin);
                         animal.removeMetadata("isClaustrophobic", plugin);
                         this.cancel();
-                    } else if (dizzenes >= maxDizzenes) {
-                        /**
-                         * Hack to force animal to move away exploits the
-                         * default AI of animals the set Velocity make sure that
-                         * no knockback is given
-                         */
+                    } else if (dizziness >= maxDizziness) {
                         animal.damage(0.5, animal);
-                        animal.setVelocity(new Vector());
-                        dizzenes = 0;
+                        animal.setVelocity(new Vector()); //Triggers animal's "run away" AI
+                        dizziness = 0;
                     }
                     
                     if(!(animal.hasMetadata("isClaustrophobic"))) {
                         animal.setMetadata("isClaustrophobic", new FixedMetadataValue(plugin, true));
                     }
                     
-                    if(dizzenes < maxDizzenes) {
+                    if(dizziness < maxDizziness) {
                        world.spigot().playEffect(animal.getLocation(), Effect.VILLAGER_THUNDERCLOUD);
                     }
-                    dizzenes++;
+                    dizziness++;
                 }
             }.runTaskTimer(this.plugin, 20, 20);
         }
@@ -153,7 +149,7 @@ public class AnimalCrowdControl extends ListenerModule {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         //If the entity is not an animal, we don't care
-        if (!(event.getRightClicked() instanceof Animals)) return;
+        if (!isEntityAnimal(event.getRightClicked())) return;
 
         Player player = event.getPlayer();
         Animals animal = (Animals)event.getRightClicked();
@@ -161,8 +157,7 @@ public class AnimalCrowdControl extends ListenerModule {
 
         final boolean animalOverCrowdControl = CFG.getBoolean(RootNode.ANIMAL_OVERCROWD_CONTROL, world.getName());
 
-        if (animalOverCrowdControl && isEntityAnimal(animal) 
-                && animal.hasMetadata("isClaustrophobic")) {
+        if (animalOverCrowdControl && animal.hasMetadata("isClaustrophobic")) {
             messenger.send(player, MessageNode.ANIMAL_OVERCROWD_CONTROL);
         }
     }
@@ -175,7 +170,7 @@ public class AnimalCrowdControl extends ListenerModule {
     @EventHandler(ignoreCancelled = true)
     public void onAnimalDeath(EntityDeathEvent event) {
         //If the entity is not an animal, we don't care
-        if (!(event.getEntity() instanceof Animals)) return;
+        if (!isEntityAnimal(event.getEntity())) return;
 
         Animals animal = (Animals)event.getEntity();
         World world = animal.getWorld();
