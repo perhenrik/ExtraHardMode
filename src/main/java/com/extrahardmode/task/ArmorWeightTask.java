@@ -20,14 +20,16 @@ public class ArmorWeightTask implements Runnable
     private final ExtraHardMode mPlugin;
     private final RootConfig CFG;
     private final MsgModule mMessenger;
+    private final Player player;
     private static Set<UUID> mPlayerList = new HashSet<UUID>();
 
 
-    public ArmorWeightTask(ExtraHardMode plugin)
+    public ArmorWeightTask(ExtraHardMode plugin, Player player)
     {
         mPlugin = plugin;
         CFG = plugin.getModuleForClass(RootConfig.class);
         mMessenger = plugin.getModuleForClass(MsgModule.class);
+        this.player = player;
     }
 
     float previousSpeed = 0f;
@@ -36,10 +38,8 @@ public class ArmorWeightTask implements Runnable
     @Override
     public void run()
     {
-        for (Player player : mPlugin.getServer().getOnlinePlayers())
-        {
             if (!CFG.getBoolean(RootNode.ARMOR_SLOWDOWN_ENABLE, player.getWorld().getName()))
-                continue;
+                return;
             final float basespeed = (float) CFG.getDouble(RootNode.ARMOR_SLOWDOWN_BASESPEED, player.getWorld().getName());
             final int slowdownPercent = CFG.getInt(RootNode.ARMOR_SLOWDOWN_PERCENT, player.getWorld().getName());
             final float armorPoints = PlayerModule.getArmorPoints(player);
@@ -56,6 +56,5 @@ public class ArmorWeightTask implements Runnable
                 player.setWalkSpeed(basespeed);
                 previousSpeed = basespeed;
             }
-        }
     }
 }

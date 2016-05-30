@@ -35,6 +35,7 @@ import com.extrahardmode.service.ListenerModule;
 import com.extrahardmode.service.config.customtypes.BlockType;
 import com.extrahardmode.service.config.customtypes.BlockTypeList;
 import com.extrahardmode.service.config.customtypes.PotionEffectHolder;
+import com.extrahardmode.task.ArmorWeightTask;
 import com.extrahardmode.task.SetPlayerHealthAndFoodTask;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -49,12 +50,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -68,6 +72,10 @@ public class Players extends ListenerModule
     private RootConfig CFG = null;
 
     private PlayerModule playerModule;
+
+    private boolean isArmorWeightEnabled = false;
+
+    private Map<Player, Integer> armorCheckingPlayers = new HashMap<Player, Integer>();
 
 
     /**
@@ -85,6 +93,25 @@ public class Players extends ListenerModule
         super.starting();
         CFG = plugin.getModuleForClass(RootConfig.class);
         playerModule = plugin.getModuleForClass(PlayerModule.class);
+        for (World world : plugin.getServer().getWorlds())
+            if (CFG.getBoolean(RootNode.ARMOR_SLOWDOWN_ENABLE, world.getName()))
+            {
+                isArmorWeightEnabled = true;
+                break;
+            }
+    }
+
+    /**
+     * Armor weight task
+     * Using a runnable per-player instead of one runnable to iterate through all players
+     * allows us to be somewhat more compatible with other plugins that change player speed,
+     * by not constantly setting the player's walkspeed when not necessary.
+     */
+    @EventHandler
+    void onPlayerJoin(PlayerJoinEvent event)
+    {
+        if (isArmorWeightEnabled)
+            armorCheckingPlayers.put(event.getPlayer(), plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new ArmorWeightTask(plugin, event.getPlayer()), 20L * 5, 20L * 3));
     }
 
 
@@ -350,5 +377,10 @@ public class Players extends ListenerModule
     public void onPlayerDisconnect(PlayerQuitEvent event)
     {
         event.getPlayer().setWalkSpeed(0.2F);
+        if (isArmorWeightEnabled)
+        {
+            int cancelId = armorCheckingPlayers.get(event.getPlayer());
+            plugin.getServer().getScheduler().cancelTask(cancelId);
+        }
     }
 }
