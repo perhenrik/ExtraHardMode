@@ -187,7 +187,7 @@ public class Players extends ListenerModule
     /**
      * Environmental effects when player is damaged
      */
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)//so we know if the event got cancelled
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)//so we know if the event got cancelled
     public void onEntityDamage(EntityDamageEvent event)
     {
         Entity entity = event.getEntity();
