@@ -30,6 +30,8 @@ public class ArmorWeightTask implements Runnable
         mMessenger = plugin.getModuleForClass(MsgModule.class);
     }
 
+    float previousSpeed = 0f;
+
 
     @Override
     public void run()
@@ -44,9 +46,16 @@ public class ArmorWeightTask implements Runnable
             if (armorPoints != 0)
             {
                 float value = basespeed * (1 - armorPoints / 0.8F * (slowdownPercent / 100F));
-                player.setWalkSpeed(value);
-            } else
+                if (value != previousSpeed)
+                {
+                    player.setWalkSpeed(value);
+                    previousSpeed = value;
+                }
+            } else if (basespeed != previousSpeed)
+            {
                 player.setWalkSpeed(basespeed);
+                previousSpeed = basespeed;
+            }
         }
     }
 }
