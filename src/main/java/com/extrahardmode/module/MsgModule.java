@@ -157,6 +157,9 @@ public class MsgModule extends EHMModule
      */
     public void send(Player player, MessageNode node)
     {
+        //Don't send a message if node is empty/null
+        if (messages.getString(node).isEmpty() || messages.getString(node) == null)
+            return;
         send(player, node, messages.getString(node));
     }
 
